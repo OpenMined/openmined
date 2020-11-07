@@ -19,7 +19,7 @@
               "apps/courses/src/favicon.ico",
               "apps/courses/src/assets"
             ],
-            "styles": ["apps/courses/src/styles.css"],
+            "styles": [],
             "scripts": [],
             "webpackConfig": "@nrwl/react/plugins/webpack"
           },
@@ -107,15 +107,15 @@
   "schematics": {
     "@nrwl/react": {
       "application": {
-        "style": "css",
+        "style": "none",
         "linter": "eslint",
         "babel": true
       },
       "component": {
-        "style": "css"
+        "style": "none"
       },
       "library": {
-        "style": "css",
+        "style": "none",
         "linter": "eslint"
       }
     }

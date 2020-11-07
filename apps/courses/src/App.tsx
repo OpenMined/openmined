@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { ReactComponent as Logo } from './logo.svg';
-import star from './star.svg';
+import { ReactComponent as Logo } from './assets/logo.svg';
+import star from './assets/star.svg';
 
 import { Route, Link } from 'react-router-dom';
 

@@ -12,25 +12,16 @@
           "options": {
             "outputPath": "dist/apps/courses",
             "index": "apps/courses/src/index.html",
-            "main": "apps/courses/src/main.tsx",
+            "main": "apps/courses/src/index.tsx",
             "polyfills": "apps/courses/src/polyfills.ts",
             "tsConfig": "apps/courses/tsconfig.app.json",
-            "assets": [
-              "apps/courses/src/favicon.ico",
-              "apps/courses/src/assets"
-            ],
+            "assets": ["apps/courses/src/assets"],
             "styles": [],
             "scripts": [],
             "webpackConfig": "@nrwl/react/plugins/webpack"
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "apps/courses/src/environments/environment.ts",
-                  "with": "apps/courses/src/environments/environment.prod.ts"
-                }
-              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -109,14 +100,22 @@
       "application": {
         "style": "none",
         "linter": "eslint",
-        "babel": true
+        "babel": true,
+        "pascalCaseFiles": true,
+        "routing": true
       },
       "component": {
-        "style": "none"
+        "style": "none",
+        "linter": "eslint",
+        "export": true,
+        "pascalCaseFiles": true,
+        "routing": false
       },
       "library": {
         "style": "none",
-        "linter": "eslint"
+        "linter": "eslint",
+        "pascalCaseFiles": true,
+        "routing": false
       }
     }
   },

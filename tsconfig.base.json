@@ -15,7 +15,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@openmined/shared/util-page": ["libs/shared/util-page/src/index.tsx"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

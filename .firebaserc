@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "openmined-org"
+  },
+  "targets": {
+    "openmined-org": {
+      "hosting": {
+        "openmined-education": [
+          "openmined-education"
+        ]
+      }
+    }
+  }
+}

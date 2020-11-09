@@ -15,7 +15,14 @@
             "main": "apps/courses/src/index.tsx",
             "polyfills": "apps/courses/src/polyfills.ts",
             "tsConfig": "apps/courses/tsconfig.app.json",
-            "assets": ["apps/courses/src/assets"],
+            "assets": [
+              "apps/courses/src/assets",
+              {
+                "input": "libs/shared/util-page/src/lib",
+                "glob": "!(*.js|*ts)",
+                "output": ""
+              }
+            ],
             "styles": [],
             "scripts": [],
             "webpackConfig": "@nrwl/react/plugins/webpack"
@@ -87,6 +94,27 @@
           "builder": "@nrwl/linter:eslint",
           "options": {
             "lintFilePatterns": ["apps/courses-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    },
+    "shared-util-page": {
+      "root": "libs/shared/util-page",
+      "sourceRoot": "libs/shared/util-page/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/shared/util-page/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/shared/util-page/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }

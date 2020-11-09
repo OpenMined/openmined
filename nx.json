@@ -32,6 +32,9 @@
     "courses-e2e": {
       "tags": [],
       "implicitDependencies": ["courses"]
+    },
+    "shared-util-page": {
+      "tags": []
     }
   }
 }

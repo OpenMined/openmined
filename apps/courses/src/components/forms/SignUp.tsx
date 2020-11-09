@@ -2,7 +2,6 @@ import React from 'react';
 import { Button, Icon } from '@chakra-ui/core';
 import * as yup from 'yup';
 import { useAuth } from 'reactfire';
-import firebase from 'firebase/app';
 
 import Form from './_form';
 import {
@@ -22,6 +21,8 @@ interface SignUpFormProps {
 export default ({ callback }: SignUpFormProps) => {
   const auth = useAuth();
   const toast = useToast();
+
+  const GithubAuthProvider = useAuth.GithubAuthProvider;
 
   const onSuccess = () => {
     toast({
@@ -73,7 +74,7 @@ export default ({ callback }: SignUpFormProps) => {
   };
 
   const onGithubSubmit = async () => {
-    const provider = new firebase.auth.GithubAuthProvider();
+    const provider = new GithubAuthProvider();
 
     provider.addScope('repo');
     provider.addScope('read:user');

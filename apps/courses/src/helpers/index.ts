@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toastConfig } from '../components/Toast';
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
@@ -26,3 +27,11 @@ export const useWindowSize = () => {
 
   return windowSize;
 };
+
+export const handleErrors = (toast, error) =>
+  toast({
+    ...toastConfig,
+    title: 'Error',
+    description: error.message,
+    status: 'error',
+  });

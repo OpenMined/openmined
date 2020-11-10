@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Icon } from '@chakra-ui/core';
+import { Button, Divider, Flex, Icon, Text, Link } from '@chakra-ui/core';
+import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
-import { useAuth } from 'reactfire';
+import { useAuth, useFirestore } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
@@ -14,6 +15,7 @@ import {
 } from './_validation';
 
 import useToast, { toastConfig } from '../Toast';
+import { handleErrors } from '../../helpers';
 
 interface SignUpFormProps {
   callback?: () => void;
@@ -21,9 +23,14 @@ interface SignUpFormProps {
 
 export default ({ callback }: SignUpFormProps) => {
   const auth = useAuth();
+  const db = useFirestore();
   const toast = useToast();
 
-  const GithubAuthProvider = useAuth.GithubAuthProvider;
+  const provider = new useAuth.GithubAuthProvider();
+
+  provider.addScope('repo');
+  provider.addScope('read:user');
+  provider.addScope('user.email');
 
   const onSuccess = () => {
     toast({
@@ -35,64 +42,47 @@ export default ({ callback }: SignUpFormProps) => {
     if (callback) callback();
   };
 
-  const onSubmit = async ({ email, password, first_name, last_name }) => {
-    // TODO: Remove this if possible and remove the @typescript-eslint/ban-ts-comment rule in the root .eslintrc.json
-    // @ts-ignore
-    const { user } = await auth
+  const onSubmit = ({ email, password, first_name, last_name }) =>
+    auth
       .createUserWithEmailAndPassword(email, password)
-      .catch(({ message }) =>
-        toast({
-          ...toastConfig,
-          title: 'Error',
-          description: message,
-          status: 'error',
-        })
-      );
-
-    await user
-      .updateProfile({
-        displayName: `${first_name} ${last_name}`,
-      })
-      .catch(({ message }) =>
-        toast({
-          ...toastConfig,
-          title: 'Error',
-          description: message,
-          status: 'error',
-        })
-      );
-
-    await user.sendEmailVerification().catch(({ message }) =>
-      toast({
-        ...toastConfig,
-        title: 'Error',
-        description: message,
-        status: 'error',
-      })
-    );
-
-    onSuccess();
-  };
+      .then(() =>
+        auth.currentUser
+          .sendEmailVerification()
+          .then(() =>
+            db
+              .collection('users')
+              .doc(auth.currentUser.uid)
+              .set({
+                first_name: first_name,
+                last_name: last_name,
+              })
+              .then(onSuccess)
+              .catch((error) => handleErrors(toast, error))
+          )
+          .catch((error) => handleErrors(toast, error))
+      )
+      .catch((error) => handleErrors(toast, error));
 
   const onGithubSubmit = async () => {
-    const provider = new GithubAuthProvider();
-
-    provider.addScope('repo');
-    provider.addScope('read:user');
-    provider.addScope('user.email');
-
-    const createUser = await auth
+    const authUser = await auth
       .signInWithPopup(provider)
-      .catch(({ message }) =>
-        toast({
-          ...toastConfig,
-          title: 'Error',
-          description: message,
-          status: 'error',
-        })
-      );
+      .catch((error) => handleErrors(toast, error));
 
-    if (createUser) onSuccess();
+    const splitName = authUser.user.displayName.split(' ');
+    const firstName =
+      splitName.length >= 1 ? splitName[0] : authUser.user.displayName;
+    const lastName = splitName.length >= 2 ? splitName.slice(1).join(' ') : '';
+
+    const databaseUser = db
+      .collection('users')
+      .doc(auth.currentUser.uid)
+      .set({
+        first_name: firstName,
+        last_name: lastName,
+      })
+      .catch((error) => handleErrors(toast, error));
+
+    if (authUser && databaseUser) onSuccess();
   };
 
   const schema = yup.object().shape({
@@ -144,24 +134,50 @@ export default ({ callback }: SignUpFormProps) => {
       onSubmit={onSubmit}
       schema={schema}
       fields={fields}
-      submit={
-        <Button mt={8} mr={4} colorScheme="black">
-          Sign Up
-        </Button>
-      }
-      nextToSubmit={
-        <Button mt={8} onClick={onGithubSubmit} colorScheme="black">
-          {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
-          Sign Up with Github{' '}
-          <Icon
-            as={FontAwesomeIcon}
-            icon={faGithub}
-            ml={2}
-            boxSize={4}
-            color="white"
-          />
-        </Button>
-      }
+      submit={(isDisabled, isSubmitting) => (
+        <>
+          <Flex align="center" wrap="wrap" mt={6}>
+            <Button
+              mr={4}
+              mt={2}
+              colorScheme="black"
+              type="submit"
+              disabled={isDisabled}
+              isLoading={isSubmitting}
+            >
+              Sign Up
+            </Button>
+            <Button
+              mt={2}
+              onClick={onGithubSubmit}
+              colorScheme="black"
+              isLoading={isSubmitting}
+            >
+              {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+              Sign Up with Github{' '}
+              <Icon
+                as={FontAwesomeIcon}
+                icon={faGithub}
+                ml={2}
+                boxSize={4}
+                color="white"
+              />
+            </Button>
+          </Flex>
+          <Divider my={6} />
+          <Text fontSize="sm" color="gray.700">
+            By signing up you agree to our{' '}
+            <Link as={RRDLink} to="/terms">
+              Terms of Use
+            </Link>{' '}
+            and{' '}
+            <Link as={RRDLink} to="/policy">
+              Privacy Policy
+            </Link>
+            .
+          </Text>
+        </>
+      )}
     />
   );
 };

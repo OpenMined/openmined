@@ -18,6 +18,7 @@ import theme from '../../theme';
 import logo from '../../assets/logo.svg';
 import GridContainer from '../../components/GridContainer';
 import Modal from '../../components/Modal';
+import { useNavigate } from 'react-router-dom';
 
 const gradientOverlay: ChakraProps = {
   position: 'relative',
@@ -235,6 +236,7 @@ const Course = ({
 
 export default ({ title, description, courses }) => {
   const [isHovered, setIsHovered] = useState(null);
+  const navigate = useNavigate();
 
   const [modalContent, setModalContent] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -244,17 +246,13 @@ export default ({ title, description, courses }) => {
       title: (
         <Image src={logo} alt="OpenMined Courses" width={[160, null, 200]} />
       ),
-      content: (
+      children: (
         <CourseModal
           {...course}
           onSignup={() => {
             onClose();
 
-            setTimeout(() => {
-              document
-                .getElementById('signup')
-                .scrollIntoView({ behavior: 'smooth' });
-            }, 200);
+            setTimeout(() => navigate('/signup'), 200);
           }}
         />
       ),

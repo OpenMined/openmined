@@ -9,13 +9,28 @@ import {
   ModalCloseButton,
 } from '@chakra-ui/core';
 
-export default ({ isOpen, onClose, content, title, buttons, ...props }) => (
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  buttons?: React.ReactNode;
+  children: React.ReactNode;
+}
+
+export default ({
+  isOpen,
+  onClose,
+  title,
+  buttons,
+  children,
+  ...props
+}: ModalProps) => (
   <Modal isOpen={isOpen} onClose={onClose} {...props}>
     <ModalOverlay>
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>{content}</ModalBody>
+        <ModalBody>{children}</ModalBody>
         {buttons && <ModalFooter>{buttons}</ModalFooter>}
       </ModalContent>
     </ModalOverlay>

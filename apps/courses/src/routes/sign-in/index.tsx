@@ -4,14 +4,14 @@ import Page from '@openmined/shared/util-page';
 
 import content from '../../content/homepage';
 import GridContainer from '../../components/GridContainer';
-import Signup from '../../components/forms/SignUp';
+import Signin from '../../components/forms/SignIn';
 import waveform from '../../assets/waveform.jpg';
 
 export default () => {
-  const { title, description } = content.signup;
+  const { title, description } = content.signin;
 
   return (
-    <Page title="Sign Up">
+    <Page title="Sign In">
       <Box
         position="relative"
         pt={8}
@@ -30,9 +30,9 @@ export default () => {
           backgroundSize: 'contain',
         }}
       >
-        <GridContainer isInitial pt={{ lg: 16 }} pb={[16, null, null, 32]}>
+        <GridContainer isInitial pb={[16, null, null, 32]}>
           <SimpleGrid columns={[1, null, null, 2]} spacing={[4, null, 8]}>
-            <Box mr={8}>
+            <Box alignSelf="center" mr={8}>
               <Heading as="h1" size="3xl" mb={4}>
                 {title}
               </Heading>
@@ -41,7 +41,7 @@ export default () => {
               </Text>
             </Box>
             <Box bg="whiteAlpha.800" boxShadow="lg" p={6} borderRadius="md">
-              <Signup />
+              <Signin />
             </Box>
           </SimpleGrid>
         </GridContainer>

@@ -10,6 +10,7 @@ import { faTimes, faBars } from '@fortawesome/free-solid-svg-icons';
 import GridContainer from './GridContainer';
 
 import logo from '../assets/logo.svg';
+import { handleErrors } from '../helpers';
 
 interface LinkProps {
   title: string;
@@ -30,7 +31,6 @@ const createLinks = (
 
   const linkStyles = {
     color: isScrolled ? 'white' : 'gray.600',
-    textDecoration: 'none',
     _hover: {
       color: isScrolled ? 'gray.400' : 'black',
     },
@@ -91,9 +91,9 @@ export default () => {
 
   const RIGHT_LINKS: LinkProps[] = [
     {
-      title: 'Login',
+      title: 'Sign In',
       type: 'text',
-      to: '/login',
+      to: '/signin',
       unauth: true,
     },
     {
@@ -122,14 +122,7 @@ export default () => {
               status: 'success',
             })
           )
-          .catch(({ message }) =>
-            toast({
-              ...toastConfig,
-              title: 'Error',
-              description: message,
-              status: 'error',
-            })
-          ),
+          .catch((error) => handleErrors(toast, error)),
       auth: true,
     },
   ];

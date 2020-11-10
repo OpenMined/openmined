@@ -178,6 +178,7 @@ export default ({ title, description, buttons, links }) => (
                 href={link}
                 target="_blank"
                 color="gray.400"
+                _hover={{ color: 'white' }}
                 ml={i === 0 ? 0 : 4}
               >
                 {title}

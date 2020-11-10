@@ -271,8 +271,20 @@ export default extendTheme({
         fontWeight: 'medium',
       },
       sizes: {
+        '3xl': {
+          fontSize: ['5xl', null, '6xl'],
+        },
         hero: {
-          fontSize: ['6xl', null, null, null, 'hero'],
+          fontSize: ['5xl', null, '6xl', null, 'hero'],
+        },
+      },
+    },
+    Link: {
+      baseStyle: {
+        color: 'blue.500',
+        _hover: {
+          color: 'blue.800',
+          textDecoration: 'none',
         },
       },
     },

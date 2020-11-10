@@ -232,6 +232,11 @@ export default {
     description:
       'Sign up today to reserve your spot in the first class, starting on January 2nd, 2021.',
   },
+  signin: {
+    title: 'Welcome back!',
+    // TODO: This isn't official copy!
+    description: `"Tell me and I forget, teach me and I may remember, involve me and I learn." - Benjamin Franklin`,
+  },
   footer: {
     title: 'Join the Community',
     description:

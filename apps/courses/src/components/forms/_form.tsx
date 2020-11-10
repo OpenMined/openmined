@@ -44,12 +44,14 @@ interface FormProps {
   schema: ObjectSchema;
   onSubmit: (any) => void;
   fields: (Field | Field[])[];
-  submit?: React.ReactElement;
-  nextToSubmit?: React.ReactElement;
+  submit?:
+    | ((isDisabled: boolean, isSubmitting: boolean) => React.ReactNode)
+    | string;
 }
 
 const SIZE = 'lg';
 const VARIANT = 'filled';
+const SPACING = 4;
 
 const createInput = ({ options, left, right, ...input }, register, control) => {
   let elem;
@@ -151,8 +153,7 @@ export default ({
   schema,
   onSubmit,
   fields,
-  submit,
-  nextToSubmit,
+  submit = 'Submit',
 }: FormProps) => {
   const defVals = {};
 
@@ -175,14 +176,16 @@ export default ({
     defaultValues: defVals,
   });
 
-  const SPACING = 4;
-
-  const composeInput = (input) => {
+  const composeInput = (input, isFirst) => {
     const hasErrors = Object.prototype.hasOwnProperty.call(errors, input.name);
     const { label } = input;
 
     return (
-      <FormControl key={input.name} isInvalid={hasErrors} mt={SPACING}>
+      <FormControl
+        key={input.name}
+        isInvalid={hasErrors}
+        mt={isFirst ? 0 : SPACING}
+      >
         {label && (
           <FormLabel
             htmlFor={input.name}
@@ -205,6 +208,8 @@ export default ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {fields.map((field, i) => {
+        const isFirst = i === 0;
+
         if (Array.isArray(field)) {
           // Add labels to subfields that don't have it
           field = field.map((f) => ({
@@ -217,34 +222,28 @@ export default ({
               key={i}
               columns={[1, field.length]}
               spacing={[0, SPACING]}
+              mt={isFirst ? -SPACING : 0}
             >
-              {field.map((subfield) => composeInput(subfield))}
+              {field.map((subfield) => composeInput(subfield, false))}
             </SimpleGrid>
           );
         } else {
-          return composeInput(field);
+          return composeInput(field, isFirst);
         }
       })}
-      <Flex align="center" wrap="wrap">
-        {!submit && (
-          <Button
-            mt={SPACING}
-            colorScheme="blue"
-            disabled={!isDirty || (isDirty && !isValid)}
-            isLoading={isSubmitting}
-            type="submit"
-          >
-            Submit
-          </Button>
-        )}
-        {submit &&
-          React.cloneElement(submit, {
-            disabled: !isDirty || (isDirty && !isValid),
-            isLoading: isSubmitting,
-            type: 'submit',
-          })}
-        {nextToSubmit}
-      </Flex>
+      {typeof submit === 'string' && (
+        <Button
+          mt={SPACING}
+          colorScheme="blue"
+          disabled={!isDirty || (isDirty && !isValid)}
+          isLoading={isSubmitting}
+          type="submit"
+        >
+          {submit}
+        </Button>
+      )}
+      {typeof submit !== 'string' &&
+        submit(!isDirty || (isDirty && !isValid), isSubmitting)}
     </form>
   );
 };

@@ -6,6 +6,7 @@ import Form from './_form';
 import { validEmail } from './_validation';
 
 import useToast, { toastConfig } from '../Toast';
+import { handleErrors } from '../../helpers';
 
 export default () => {
   const auth = useAuth();
@@ -21,14 +22,7 @@ export default () => {
           status: 'success',
         })
       )
-      .catch(({ message }) =>
-        toast({
-          ...toastConfig,
-          title: 'Error',
-          description: message,
-          status: 'error',
-        })
-      );
+      .catch((error) => handleErrors(toast, error));
 
   const schema = yup.object().shape({
     email: validEmail,
@@ -38,7 +32,8 @@ export default () => {
     {
       name: 'email',
       type: 'email',
-      placeholder: 'Email address',
+      placeholder: 'ada.lovelace@openmined.org',
+      label: 'Email Address',
     },
   ];
 

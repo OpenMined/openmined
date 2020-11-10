@@ -5,7 +5,7 @@ import GridContainer from '../../components/GridContainer';
 import Signup from '../../components/forms/SignUp';
 
 export default ({ title, description }) => (
-  <GridContainer id="signup" py={[16, null, null, 32]}>
+  <GridContainer py={[16, null, null, 32]}>
     <SimpleGrid columns={[1, null, null, 2]} spacing={[4, null, 8]}>
       <Box alignSelf="center" mr={8}>
         <Heading as="h2" size="2xl" mb={4}>

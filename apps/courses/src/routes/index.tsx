@@ -4,7 +4,7 @@ import { useUser } from 'reactfire';
 
 const Homepage = lazy(() => import('./homepage'));
 const Signup = lazy(() => import('./sign-up'));
-const Login = lazy(() => import('./login'));
+const Signin = lazy(() => import('./sign-in'));
 const NoMatch = lazy(() => import('./no-match'));
 
 const AuthRoute = (props) => {
@@ -23,7 +23,7 @@ export default () => (
   <Routes>
     <Route path="/" element={<Homepage />} />
     <UnauthRoute path="signup" element={<Signup />} />
-    <UnauthRoute path="login" element={<Login />} />
+    <UnauthRoute path="signin" element={<Signin />} />
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

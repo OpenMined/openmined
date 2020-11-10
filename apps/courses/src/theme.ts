@@ -211,6 +211,9 @@ export default extendTheme({
     tall: '1.6',
     taller: '2',
   },
+  space: {
+    header: '4.5rem',
+  },
   components: {
     Button: {
       baseStyle: {

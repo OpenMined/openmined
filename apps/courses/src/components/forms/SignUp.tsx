@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, Icon } from '@chakra-ui/core';
 import * as yup from 'yup';
 import { useAuth } from 'reactfire';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import Form from './_form';
 import {
@@ -12,7 +14,6 @@ import {
 } from './_validation';
 
 import useToast, { toastConfig } from '../Toast';
-import { GithubIcon } from '../../content/homepage';
 
 interface SignUpFormProps {
   callback?: () => void;
@@ -150,8 +151,15 @@ export default ({ callback }: SignUpFormProps) => {
       }
       nextToSubmit={
         <Button mt={8} onClick={onGithubSubmit} colorScheme="black">
+          {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
           Sign Up with Github{' '}
-          <Icon as={GithubIcon} ml={2} boxSize={4} color="white" />
+          <Icon
+            as={FontAwesomeIcon}
+            icon={faGithub}
+            ml={2}
+            boxSize={4}
+            color="white"
+          />
         </Button>
       }
     />

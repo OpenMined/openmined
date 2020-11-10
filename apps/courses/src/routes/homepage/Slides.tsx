@@ -13,12 +13,15 @@ import {
   Flex,
   CircularProgress,
   CircularProgressProps,
+  Icon,
 } from '@chakra-ui/core';
 import { useTimer } from 'use-timer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 import theme from '../../theme';
 import GridContainer from '../../components/GridContainer';
-import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+
 import { useWindowSize } from '../../helpers';
 
 const absolute: CSSProperties = {
@@ -44,11 +47,22 @@ const ProgressButton = ({ value, direction, onClick }) => (
       size={8}
       style={absolute}
     />
+    {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
     {direction === 'forward' && (
-      <ArrowForwardIcon onClick={onClick} style={absolute} />
+      <Icon
+        as={FontAwesomeIcon}
+        icon={faArrowRight}
+        onClick={onClick}
+        style={absolute}
+      />
     )}
     {direction === 'back' && (
-      <ArrowBackIcon onClick={onClick} style={absolute} />
+      <Icon
+        as={FontAwesomeIcon}
+        icon={faArrowLeft}
+        onClick={onClick}
+        style={absolute}
+      />
     )}
   </Box>
 );

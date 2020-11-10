@@ -23,9 +23,9 @@ export default ({ title, description, video, partners }) => (
         backgroundSize: 'contain',
       }}
     >
-      <GridContainer pt="72px">
+      <GridContainer isInitial>
         <Flex
-          mt={[5, null, 8, 12, 16]}
+          pt={[5, null, 8, 12, 16]}
           direction="column"
           align="center"
           textAlign="center"

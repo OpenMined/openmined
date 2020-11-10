@@ -17,11 +17,13 @@ import {
   InputRightElement,
   InputLeftAddon,
   InputRightAddon,
+  Icon,
 } from '@chakra-ui/core';
 import { ObjectSchema } from 'yup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { capitalize } from '../../helpers';
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 
 interface Field {
   name: string;
@@ -117,7 +119,10 @@ const FieldArray = ({
                   control
                 )}
                 <InputRightElement cursor="pointer">
-                  <DeleteIcon
+                  {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+                  <Icon
+                    as={FontAwesomeIcon}
+                    icon={faTrash}
                     color="red.500"
                     onClick={() => fieldArray.remove(index)}
                   />
@@ -133,7 +138,8 @@ const FieldArray = ({
         colorScheme="blue"
         mt={2}
       >
-        <AddIcon mr={2} />
+        {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+        <Icon as={FontAwesomeIcon} icon={faPlus} mr={2} />
         <Text>Add</Text>
       </Button>
     </>

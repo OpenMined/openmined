@@ -7,7 +7,7 @@ export default ({ children, isInitial = false, ...props }) => (
     width={['100%', null, null, 960, 1200]}
     px={[5, null, null, 0]}
     mx="auto"
-    my={isInitial ? { base: 5, lg: 12 } : 0}
+    mt={isInitial ? 'header' : 0}
   >
     {children}
   </Box>

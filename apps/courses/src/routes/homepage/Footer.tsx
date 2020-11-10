@@ -6,6 +6,7 @@ import {
   Geography,
   Marker,
 } from 'react-simple-maps';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from '../../components/GridContainer';
 import theme from '../../theme';
@@ -158,7 +159,15 @@ export default ({ title, description, buttons, links }) => (
                 mr={i === 0 ? 4 : 0}
                 colorScheme="gray"
               >
-                {title} <Icon as={icon} ml={2} boxSize={4} color="black" />
+                {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+                {title}{' '}
+                <Icon
+                  as={FontAwesomeIcon}
+                  icon={icon}
+                  ml={2}
+                  boxSize={4}
+                  color="black"
+                />
               </Button>
             ))}
           </Flex>

@@ -7,7 +7,14 @@ export const SEOProvider = ({ metadata, children }) => (
   <SEOContext.Provider value={metadata}>{children}</SEOContext.Provider>
 );
 
-export default ({ children }) => {
+interface OverrideProps {
+  children: React.ReactNode;
+  title?: string;
+  description?: string;
+  noIndex?: boolean;
+}
+
+export default ({ children, ...overrides }: OverrideProps) => {
   const DEFAULT_TITLE = 'OpenMined';
   const DEFAULT_DESCRIPTION =
     'OpenMined is an open-source community whose goal is to make the world more privacy-preserving by lowering the barrier-to-entry to private AI technologies.';
@@ -17,8 +24,8 @@ export default ({ children }) => {
   const TWITTER_ACCOUNT = '@openminedorg';
 
   const {
-    name,
-    short_name,
+    name = DEFAULT_TITLE,
+    short_name = DEFAULT_TITLE,
     description = DEFAULT_DESCRIPTION,
     images,
   } = useContext(SEOContext);
@@ -45,10 +52,7 @@ export default ({ children }) => {
 
   return (
     <>
-      <Helmet
-        defaultTitle={DEFAULT_TITLE}
-        titleTemplate={`%s | ${DEFAULT_TITLE}`}
-      >
+      <Helmet defaultTitle={name} titleTemplate={`%s | ${name}`}>
         <html lang="en" />
 
         <base target="_blank" href={`${BASE_URL}/`} />
@@ -57,8 +61,11 @@ export default ({ children }) => {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <meta itemProp="name" content={name} />
-        <meta name="description" content={description} />
+        <meta itemProp="name" content={overrides.title || name} />
+        <meta
+          name="description"
+          content={overrides.description || description}
+        />
         <meta itemProp="image" content={images.main} />
 
         <meta name="apple-mobile-web-app-title" content={name} />
@@ -66,16 +73,22 @@ export default ({ children }) => {
         <meta name="msapplication-TileColor" content={DEFAULT_COLOR} />
         <meta name="theme-color" content={DEFAULT_COLOR} />
 
-        <meta property="og:title" content={name} />
+        <meta property="og:title" content={overrides.title || name} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={images.facebook} />
-        <meta property="og:description" content={description} />
+        <meta
+          property="og:description"
+          content={overrides.description || description}
+        />
         <meta property="og:site_name" content={name} />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content={TWITTER_ACCOUNT} />
-        <meta name="twitter:title" content={name} />
-        <meta name="twitter:description" content={description} />
+        <meta name="twitter:title" content={overrides.title || name} />
+        <meta
+          name="twitter:description"
+          content={overrides.description || description}
+        />
         <meta name="twitter:creator" content={TWITTER_ACCOUNT} />
         <meta name="twitter:image:src" content={images.twitter} />
 
@@ -106,8 +119,10 @@ export default ({ children }) => {
           color={DEFAULT_COLOR}
         />
 
+        {overrides.noIndex && <meta name="robots" content="noindex" />}
+
         <title itemProp="name" lang="en">
-          {name}
+          {overrides.title}
         </title>
       </Helmet>
       {children}

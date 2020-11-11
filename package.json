@@ -2,6 +2,10 @@
   "name": "openmined",
   "version": "0.0.0",
   "license": "Apache-2.0",
+  "private": true,
+  "engines": {
+    "node": "12"
+  },
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
@@ -25,7 +29,6 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help"
   },
-  "private": true,
   "dependencies": {
     "@chakra-ui/core": "1.0.0-rc.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",

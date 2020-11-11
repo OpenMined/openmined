@@ -138,13 +138,7 @@
             "production": {
               "optimization": true,
               "extractLicenses": true,
-              "inspect": false,
-              "fileReplacements": [
-                {
-                  "replace": "apps/firebase-api/src/environments/environment.ts",
-                  "with": "apps/firebase-api/src/environments/environment.prod.ts"
-                }
-              ]
+              "inspect": false
             }
           }
         },

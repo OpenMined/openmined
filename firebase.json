@@ -1,0 +1,39 @@
+{
+  "firestore": {
+    "rules": "apps/firebase-api/firestore.rules",
+    "indexes": "apps/firebase-api/firestore.indexes.json"
+  },
+  "functions": {
+    "predeploy": ["yarn lint functions", "yarn build functions --prod"],
+    "source": "/"
+  },
+  "hosting": [
+    {
+      "target": "openmined-education",
+      "public": "dist/apps/courses",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ],
+  "storage": {
+    "rules": "apps/firebase-api/storage.rules"
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": true
+    }
+  }
+}

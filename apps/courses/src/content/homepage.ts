@@ -35,7 +35,7 @@ export default {
     title: 'The Private AI Series',
     description:
       'Learn how privacy technology is changing our world and how you can lead the charge.',
-    video: 'DppXfA6C8L8',
+    video: '-b0CQFr6xyA',
     partnersText: 'Course content developed in partnership with...',
     partners: [
       {

@@ -53,7 +53,7 @@ export default ({ title, description, video, partners, partnersText }) => (
             <Box
               as="iframe"
               title="OpenMined Courses"
-              src={`https://www.youtube.com/embed/${video}?controls=0&modestbranding=1&rel=0`}
+              src={`https://www.youtube.com/embed/${video}?modestbranding=1&rel=0`}
               allowFullScreen
             />
           </AspectRatio>

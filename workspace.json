@@ -74,10 +74,10 @@
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
-              {
-                "command": "yarn build courses --prod"
-              }
-            ]
+              "yarn build courses --prod",
+              "firebase deploy --only hosting:openmined-education"
+            ],
+            "parallel": false
           }
         }
       }
@@ -140,7 +140,7 @@
           "builder": "@nrwl/node:build",
           "options": {
             "outputPath": "dist/apps/firebase-api",
-            "main": "apps/firebase-api/src/main.ts",
+            "main": "apps/firebase-api/src/index.ts",
             "tsConfig": "apps/firebase-api/tsconfig.app.json",
             "assets": ["apps/firebase-api/src/assets"]
           },
@@ -175,10 +175,10 @@
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
-              {
-                "command": "yarn build firebase-api --prod"
-              }
-            ]
+              "yarn build firebase-api --prod",
+              "firebase deploy --only functions,firestore:rules,storage"
+            ],
+            "parallel": false
           }
         }
       }

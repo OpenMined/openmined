@@ -80,7 +80,7 @@ export default {
         description:
           "Privacy infrastructure is changing how information is managed in society. In this course, you'll learn how it creates both opportunity and disruption within nearly every corner of society and how you can join this next great wave of innovation.",
         prerequisites: ['None'],
-        forWhom: [
+        learnHow: [
           'Understand how privacy is transforming the world',
           'Learn how privacy-preserving AI can be used in products and services',
         ],
@@ -103,7 +103,7 @@ export default {
           'Beginner Python, or other programming languages',
           'Experience with Numpy is helpful',
         ],
-        forWhom: [
+        learnHow: [
           'Build privacy-preserving technologies from scratch',
           'Use federated learning to work with protected data on remote devices',
           'Understand the math behind encrypted computations',
@@ -127,7 +127,7 @@ export default {
         prerequisites: [
           'Complete the Foundations of Private Computation Course',
         ],
-        forWhom: [
+        learnHow: [
           'Share data in a private data warehouse',
           'Access private data for statistical analysis or training machine learning models',
         ],
@@ -149,7 +149,7 @@ export default {
         prerequisites: [
           'Complete the Foundations of Private Computation Course',
         ],
-        forWhom: [
+        learnHow: [
           'Train AI models across multiple mobile devices using federated learning',
         ],
         project:

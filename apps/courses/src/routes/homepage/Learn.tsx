@@ -39,7 +39,7 @@ const CourseModal = ({
   title,
   description,
   prerequisites,
-  forWhom,
+  learnHow,
   project,
   visual,
   cost,
@@ -98,9 +98,9 @@ const CourseModal = ({
           <Text color={color}>{prerequisites.join(', ')}</Text>
         </Box>
         <Box mb={8}>
-          <Text fontWeight="bold">For those who:</Text>
+          <Text fontWeight="bold">Learn how to:</Text>
           <List>
-            {forWhom.map((item, i) => (
+            {learnHow.map((item, i) => (
               <ListItem key={i}>
                 <ListIcon as={ListIconDot} bg={color} />
                 <Text as="span" color="gray.700">

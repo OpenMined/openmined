@@ -118,6 +118,56 @@
           }
         }
       }
+    },
+    "firebase-api": {
+      "root": "apps/firebase-api",
+      "sourceRoot": "apps/firebase-api/src",
+      "projectType": "application",
+      "prefix": "firebase-api",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/firebase-api",
+            "main": "apps/firebase-api/src/main.ts",
+            "tsConfig": "apps/firebase-api/tsconfig.app.json",
+            "assets": ["apps/firebase-api/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/firebase-api/src/environments/environment.ts",
+                  "with": "apps/firebase-api/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "firebase-api:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/firebase-api/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/firebase-api/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

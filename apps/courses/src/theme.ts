@@ -41,6 +41,11 @@ export default extendTheme({
       '.chakra-progress[variant="controlled-motion"] .chakra-progress__indicator': {
         transition: 'none',
       },
+      // TODO: Fix this when this issue is resolved: https://github.com/chakra-ui/chakra-ui/issues/2405
+      '.chakra-divider': {
+        borderColor: '#9D9D9D !important',
+        opacity: 1,
+      },
     },
   },
   colors: {

@@ -18,28 +18,34 @@ const Map = () => {
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
+    let mounted = true;
+
     fetch('https://stats.openmined.org/github')
       .then((data) => data.json())
       .then((data) => {
-        const finalMembers = data.members
-          .map(({ coords }) => {
-            if (!coords) return null;
-            return [Math.round(coords[0]), Math.round(coords[1])];
-          })
-          .filter((d) => d);
+        if (mounted) {
+          const finalMembers = data.members
+            .map(({ coords }) => {
+              if (!coords) return null;
+              return [Math.round(coords[0]), Math.round(coords[1])];
+            })
+            .filter((d) => d);
 
-        // TODO: Remove this if possible and remove the @typescript-eslint/ban-ts-comment rule in the root .eslintrc.json
-        // @ts-ignore
-        const uniqueMembers = Array.from(
-          new Set(finalMembers.map(JSON.stringify)),
-          JSON.parse
-        );
+          // TODO: Remove this if possible and remove the @typescript-eslint/ban-ts-comment rule in the root .eslintrc.json
+          // @ts-ignore
+          const uniqueMembers = Array.from(
+            new Set(finalMembers.map(JSON.stringify)),
+            JSON.parse
+          );
 
-        setMembers(uniqueMembers);
+          setMembers(uniqueMembers);
+        }
       })
       .catch((error) => {
         console.error('Error fetching members', error);
       });
+
+    return () => (mounted = false);
   }, []);
 
   if (members.length === 0) return null;

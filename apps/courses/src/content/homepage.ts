@@ -1,9 +1,10 @@
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
 import { faHandHoldingUsd } from '@fortawesome/free-solid-svg-icons';
 
+import pytorch from '../assets/homepage/pytorch.png';
 import facebookAI from '../assets/homepage/facebook-ai.svg';
 import oxford from '../assets/homepage/oxford.png';
-import pytorch from '../assets/homepage/pytorch.png';
+import futureHumanity from '../assets/homepage/future-humanity.png';
 import unGlobal from '../assets/homepage/un-global.png';
 import openmined from '../assets/homepage/openmined.png';
 
@@ -35,22 +36,17 @@ export default {
     description:
       'Learn how privacy technology is changing our world and how you can lead the charge.',
     video: 'DppXfA6C8L8',
+    partnersText: 'Course content developed in partnership with...',
     partners: [
-      {
-        title: 'Facebook AI',
-        image: facebookAI,
-        link: 'https://ai.facebook.com',
-      },
       {
         title: 'PyTorch',
         image: pytorch,
         link: 'https://pytorch.org',
       },
       {
-        title: 'OpenMined',
-        image: openmined,
-        link: 'https://openmined.org',
-        extra: true,
+        title: 'Facebook AI',
+        image: facebookAI,
+        link: 'https://ai.facebook.com',
       },
       {
         title: 'University of Oxford',
@@ -58,9 +54,19 @@ export default {
         link: 'https://www.ox.ac.uk/',
       },
       {
+        title: 'Future of Humanity Institute',
+        image: futureHumanity,
+        link: 'https://www.fhi.ox.ac.uk/',
+      },
+      {
         title: 'United Nations',
         image: unGlobal,
         link: 'https://unstats.un.org/bigdata/',
+      },
+      {
+        title: 'OpenMined',
+        image: openmined,
+        link: 'https://openmined.org',
       },
     ],
   },
@@ -231,6 +237,12 @@ export default {
     title: 'Sign Up Today',
     description:
       'Sign up today to reserve your spot in the first class, starting on January 2nd, 2021.',
+  },
+  signedup: {
+    title: 'Thanks for Signing Up!',
+    // TODO: This isn't official copy!
+    description:
+      'Your spot has been reserved in the first class, starting on January 2nd, 2021.',
   },
   signin: {
     title: 'Welcome back!',

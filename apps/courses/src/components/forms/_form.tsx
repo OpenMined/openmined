@@ -3,7 +3,6 @@ import { useForm, useFieldArray, UseFormOptions } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
-  Flex,
   FormErrorMessage,
   FormLabel,
   FormControl,
@@ -85,15 +84,7 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   );
 };
 
-const FieldArray = ({
-  name,
-  max,
-  fields,
-  control,
-  register,
-  defaultValue,
-  ...props
-}) => {
+const FieldArray = ({ name, max, fields, control, register, defaultValue }) => {
   const fieldArray = useFieldArray({
     control,
     name,
@@ -154,6 +145,7 @@ export default ({
   onSubmit,
   fields,
   submit = 'Submit',
+  ...props
 }: FormProps) => {
   const defVals = {};
 
@@ -206,44 +198,46 @@ export default ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {fields.map((field, i) => {
-        const isFirst = i === 0;
+    <Box {...props}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {fields.map((field, i) => {
+          const isFirst = i === 0;
 
-        if (Array.isArray(field)) {
-          // Add labels to subfields that don't have it
-          field = field.map((f) => ({
-            ...f,
-            label: f.label || 'BLANK',
-          }));
+          if (Array.isArray(field)) {
+            // Add labels to subfields that don't have it
+            field = field.map((f) => ({
+              ...f,
+              label: f.label || 'BLANK',
+            }));
 
-          return (
-            <SimpleGrid
-              key={i}
-              columns={[1, field.length]}
-              spacing={[0, SPACING]}
-              mt={isFirst ? -SPACING : 0}
-            >
-              {field.map((subfield) => composeInput(subfield, false))}
-            </SimpleGrid>
-          );
-        } else {
-          return composeInput(field, isFirst);
-        }
-      })}
-      {typeof submit === 'string' && (
-        <Button
-          mt={SPACING}
-          colorScheme="blue"
-          disabled={!isDirty || (isDirty && !isValid)}
-          isLoading={isSubmitting}
-          type="submit"
-        >
-          {submit}
-        </Button>
-      )}
-      {typeof submit !== 'string' &&
-        submit(!isDirty || (isDirty && !isValid), isSubmitting)}
-    </form>
+            return (
+              <SimpleGrid
+                key={i}
+                columns={[1, field.length]}
+                spacing={[0, SPACING]}
+                mt={isFirst ? -SPACING : 0}
+              >
+                {field.map((subfield) => composeInput(subfield, false))}
+              </SimpleGrid>
+            );
+          } else {
+            return composeInput(field, isFirst);
+          }
+        })}
+        {typeof submit === 'string' && (
+          <Button
+            mt={SPACING}
+            colorScheme="blue"
+            disabled={!isDirty || (isDirty && !isValid)}
+            isLoading={isSubmitting}
+            type="submit"
+          >
+            {submit}
+          </Button>
+        )}
+        {typeof submit !== 'string' &&
+          submit(!isDirty || (isDirty && !isValid), isSubmitting)}
+      </form>
+    </Box>
   );
 };

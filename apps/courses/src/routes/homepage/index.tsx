@@ -16,7 +16,7 @@ export default () => (
     <Learn {...content.learn} />
     <Slides {...content.slides} />
     <Features {...content.features} />
-    <Signup {...content.signup} />
+    <Signup signup={content.signup} signedup={content.signedup} />
     <Footer {...content.footer} />
   </Page>
 );

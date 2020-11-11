@@ -1,5 +1,13 @@
 import React from 'react';
-import { Button, Divider, Flex, Icon, Text, Link } from '@chakra-ui/core';
+import {
+  Button,
+  Divider,
+  Flex,
+  Icon,
+  Text,
+  Link,
+  BoxProps,
+} from '@chakra-ui/core';
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAuth, useFirestore } from 'reactfire';
@@ -13,15 +21,22 @@ import {
   validMatchingPassword,
   requiredString,
 } from './_validation';
+import {
+  firstNameField,
+  lastNameField,
+  emailField,
+  passwordField,
+  passwordConfirmField,
+} from './_fields';
 
 import useToast, { toastConfig } from '../Toast';
 import { handleErrors } from '../../helpers';
 
-interface SignUpFormProps {
+interface SignUpFormProps extends BoxProps {
   callback?: () => void;
 }
 
-export default ({ callback }: SignUpFormProps) => {
+export default ({ callback, ...props }: SignUpFormProps) => {
   const auth = useAuth();
   const db = useFirestore();
   const toast = useToast();
@@ -94,43 +109,14 @@ export default ({ callback }: SignUpFormProps) => {
   });
 
   const fields = [
-    [
-      {
-        name: 'first_name',
-        type: 'text',
-        placeholder: 'Ada',
-        label: 'First Name',
-      },
-      {
-        name: 'last_name',
-        type: 'text',
-        placeholder: 'Lovelace',
-        label: 'Last Name',
-      },
-    ],
-    {
-      name: 'email',
-      type: 'email',
-      placeholder: 'ada.lovelace@openmined.org',
-      label: 'Email Address',
-    },
-    [
-      {
-        name: 'password',
-        type: 'password',
-        placeholder: 'Password',
-        label: 'Password',
-      },
-      {
-        name: 'passwordConfirm',
-        type: 'password',
-        placeholder: 'Password confirmation',
-      },
-    ],
+    [firstNameField, lastNameField],
+    emailField,
+    [passwordField, passwordConfirmField],
   ];
 
   return (
     <Form
+      {...props}
       onSubmit={onSubmit}
       schema={schema}
       fields={fields}

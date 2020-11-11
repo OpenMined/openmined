@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Image, Flex, Link, Button, Icon, Stack } from '@chakra-ui/core';
+import {
+  Box,
+  Image,
+  Flex,
+  Link,
+  Button,
+  Icon,
+  Stack,
+  Divider,
+} from '@chakra-ui/core';
 import { useAuth, useUser } from 'reactfire';
 import { Link as RRDLink } from 'react-router-dom';
 import useToast, { toastConfig } from './Toast';
@@ -24,15 +33,16 @@ interface LinkProps {
 const createLinks = (
   links: LinkProps[],
   user: boolean,
-  isScrolled: boolean
+  isScrolled: boolean,
+  onClick: () => void
 ) => {
   const appropriateLinks = (l: LinkProps) =>
     (l.auth && user) || (l.unauth && !user) || (!l.auth && !l.unauth);
 
   const linkStyles = {
-    color: isScrolled ? 'white' : 'gray.600',
+    color: isScrolled ? 'gray.400' : 'gray.600',
     _hover: {
-      color: isScrolled ? 'gray.400' : 'black',
+      color: isScrolled ? 'white' : 'black',
     },
   };
 
@@ -40,6 +50,16 @@ const createLinks = (
     .filter(appropriateLinks)
     .map(({ type, title, auth, unauth, ...link }: LinkProps) => {
       const as = link.to ? { as: RRDLink } : {};
+
+      if (!link.onClick) link.onClick = onClick;
+      else {
+        const currOnClick = link.onClick;
+
+        link.onClick = () => {
+          currOnClick();
+          onClick();
+        };
+      }
 
       if (type === 'text') {
         return (
@@ -81,51 +101,70 @@ export default () => {
     else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
   }, [scrollY, isScrolled]);
 
-  const LEFT_LINKS: LinkProps[] = [
-    {
-      title: 'Courses',
-      type: 'text',
-      to: '/courses',
-    },
-  ];
+  // TODO: Patrick, these are the links we will have until this website goes live
+  let LEFT_LINKS: LinkProps[], RIGHT_LINKS: LinkProps[];
 
-  const RIGHT_LINKS: LinkProps[] = [
-    {
-      title: 'Sign In',
-      type: 'text',
-      to: '/signin',
-      unauth: true,
-    },
-    {
-      title: 'Sign Up',
-      type: 'button',
-      to: '/signup',
-      unauth: true,
-    },
-    {
-      title: 'My Courses',
-      type: 'text',
-      to: '/my-courses',
-      auth: true,
-    },
-    {
-      title: 'Logout',
-      type: 'button',
-      onClick: () =>
-        auth
-          .signOut()
-          .then(() =>
-            toast({
-              ...toastConfig,
-              title: 'Sign out successful',
-              description: 'Come back soon!',
-              status: 'success',
-            })
-          )
-          .catch((error) => handleErrors(toast, error)),
-      auth: true,
-    },
-  ];
+  if (process.env.NODE_ENV === 'production') {
+    LEFT_LINKS = [];
+    RIGHT_LINKS = [
+      {
+        title: 'Sign Up',
+        type: 'button',
+        onClick: () => {
+          document
+            .getElementById('signup')
+            .scrollIntoView({ behavior: 'smooth' });
+        },
+        unauth: true,
+      },
+    ];
+  } else {
+    LEFT_LINKS = [
+      {
+        title: 'Courses',
+        type: 'text',
+        to: '/courses',
+      },
+    ];
+
+    RIGHT_LINKS = [
+      {
+        title: 'Sign In',
+        type: 'text',
+        to: '/signin',
+        unauth: true,
+      },
+      {
+        title: 'Sign Up',
+        type: 'button',
+        to: '/signup',
+        unauth: true,
+      },
+      {
+        title: 'My Courses',
+        type: 'text',
+        to: '/my-courses',
+        auth: true,
+      },
+      {
+        title: 'Logout',
+        type: 'button',
+        onClick: () =>
+          auth
+            .signOut()
+            .then(() =>
+              toast({
+                ...toastConfig,
+                title: 'Sign out successful',
+                description: 'Come back soon!',
+                status: 'success',
+              })
+            )
+            .catch((error) => handleErrors(toast, error)),
+        auth: true,
+      },
+    ];
+  }
 
   const BREAK = 'md';
   const iconStyles = {
@@ -146,11 +185,12 @@ export default () => {
       transitionDuration="normal"
       transitionTimingFunction="ease-in-out"
       bg={isScrolled ? 'gray.900' : 'white'}
+      boxShadow={{ base: 'md', [BREAK]: 'none' }}
       zIndex={1}
     >
       <GridContainer>
         <Flex as="nav" align="center" justify="space-between" wrap="wrap">
-          <RRDLink to="/">
+          <RRDLink to="/" onClick={() => setShow(false)}>
             <Image
               src={logo}
               alt="OpenMined Courses"
@@ -173,17 +213,28 @@ export default () => {
             )}
           </Box>
           <Box
-            display={{ base: show ? 'block' : 'none', [BREAK]: 'block' }}
+            display={{ base: show ? 'flex' : 'none', [BREAK]: 'flex' }}
             width={{ base: 'full', [BREAK]: 'auto' }}
             flexGrow={1}
             my={{ base: 4, [BREAK]: 0 }}
           >
+            {/* TODO: Patrick, this conditional also won't apply when we move to production and can be removed then */}
+            {LEFT_LINKS.length > 0 && (
+              <Divider
+                orientation="vertical"
+                height={6}
+                mr={{ base: 4, [BREAK]: 6 }}
+                display={{ base: 'none', [BREAK]: 'block' }}
+              />
+            )}
             <Stack
               align={{ [BREAK]: 'center' }}
               direction={{ base: 'column', [BREAK]: 'row' }}
               spacing={{ base: 4, [BREAK]: 6 }}
             >
-              {createLinks(LEFT_LINKS, isLoggedIn, isScrolled)}
+              {createLinks(LEFT_LINKS, isLoggedIn, isScrolled, () =>
+                setShow(false)
+              )}
             </Stack>
           </Box>
           <Box
@@ -195,7 +246,9 @@ export default () => {
               direction={{ base: 'column', [BREAK]: 'row' }}
               spacing={{ base: 4, [BREAK]: 6 }}
             >
-              {createLinks(RIGHT_LINKS, isLoggedIn, isScrolled)}
+              {createLinks(RIGHT_LINKS, isLoggedIn, isScrolled, () =>
+                setShow(false)
+              )}
             </Stack>
           </Box>
         </Flex>

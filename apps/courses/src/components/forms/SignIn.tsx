@@ -7,6 +7,7 @@ import {
   Text,
   Link,
   useDisclosure,
+  BoxProps,
 } from '@chakra-ui/core';
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
@@ -15,20 +16,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import Form from './_form';
+import ResetPassword from './ResetPassword';
 import { validEmail, validPassword } from './_validation';
+import { emailField, passwordField } from './_fields';
 
 import useToast, { toastConfig } from '../Toast';
-import { handleErrors } from '../../helpers';
 import Modal from '../Modal';
-import ResetPassword from './ResetPassword';
+import { handleErrors } from '../../helpers';
 
-interface SignInFormProps {
+interface SignInFormProps extends BoxProps {
   callback?: () => void;
 }
 
-// TODO: Patrick, remove onResetPassword and just hardwire the modal into the signin form
-
-export default ({ callback }: SignInFormProps) => {
+export default ({ callback, ...props }: SignInFormProps) => {
   const auth = useAuth();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -68,30 +68,23 @@ export default ({ callback }: SignInFormProps) => {
     password: validPassword,
   });
 
-  const fields = [
-    {
-      name: 'email',
-      type: 'email',
-      placeholder: 'ada.lovelace@openmined.org',
-      label: 'Email Address',
-    },
-    {
-      name: 'password',
-      type: 'password',
-      placeholder: 'Password',
-      label: 'Password',
-    },
-  ];
+  const fields = [emailField, passwordField];
 
   return (
     <>
       <Form
+        {...props}
         onSubmit={onSubmit}
         schema={schema}
         fields={fields}
         submit={(isDisabled, isSubmitting) => (
           <>
-            <Flex align="center" wrap="wrap" mt={6}>
+            <Flex
+              align="center"
+              justify={{ base: 'flex-start', md: 'center' }}
+              wrap="wrap"
+              mt={6}
+            >
               <Button
                 mr={4}
                 mt={2}

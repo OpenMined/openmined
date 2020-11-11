@@ -54,6 +54,7 @@ export default ({ signup, signedup }) => {
           >
             {signedupLinks.map(({ icon, title, link }) => (
               <Link
+                key={title}
                 as="a"
                 target="_blank"
                 rel="noopener noreferrer"

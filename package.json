@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "private": true,
   "engines": {
-    "node": "12"
+    "node": ">12"
   },
   "scripts": {
     "nx": "nx",
@@ -13,6 +13,7 @@
     "test": "nx test",
     "lint": "nx workspace-lint && nx lint",
     "e2e": "nx e2e",
+    "deploy": "nx deploy",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
     "affected:build": "nx affected:build",

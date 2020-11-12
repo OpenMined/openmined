@@ -252,6 +252,7 @@ export default ({ title, description, courses }) => {
           onSignup={() => {
             onClose();
 
+            // TODO: We can uncomment this when we're ready to launch
             // setTimeout(() => navigate('/signup'), 200);
             setTimeout(() => {
               document

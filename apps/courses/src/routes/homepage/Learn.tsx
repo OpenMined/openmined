@@ -252,7 +252,12 @@ export default ({ title, description, courses }) => {
           onSignup={() => {
             onClose();
 
-            setTimeout(() => navigate('/signup'), 200);
+            // setTimeout(() => navigate('/signup'), 200);
+            setTimeout(() => {
+              document
+                .getElementById('signup')
+                .scrollIntoView({ behavior: 'smooth' });
+            }, 200);
           }}
         />
       ),

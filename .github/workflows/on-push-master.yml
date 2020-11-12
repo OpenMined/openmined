@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@master
+      - name: Use Node 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
       - name: Install Dependencies
         run: yarn install
       - name: Build Courses

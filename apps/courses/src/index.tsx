@@ -1,6 +1,6 @@
 import React from 'react';
 // TODO: Fix the below
-// @ts-expect-error this definitely exists... but for some reason cannot be found
+// @ts-ignore
 import { unstable_createRoot } from 'react-dom';
 import { FirebaseAppProvider } from 'reactfire';
 import { HelmetProvider } from 'react-helmet-async';

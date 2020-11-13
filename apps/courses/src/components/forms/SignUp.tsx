@@ -150,7 +150,8 @@ export default ({ callback, ...props }: SignUpFormProps) => {
               />
             </Button>
           </Flex>
-          <Divider my={6} />
+          {/* TODO: Patrick, uncomment these when these pages exist */}
+          {/* <Divider my={6} />
           <Text fontSize="sm" color="gray.700">
             By signing up you agree to our{' '}
             <Link as={RRDLink} to="/terms">
@@ -161,7 +162,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
               Privacy Policy
             </Link>
             .
-          </Text>
+          </Text> */}
         </>
       )}
     />

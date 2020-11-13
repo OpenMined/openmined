@@ -7,6 +7,7 @@ import Routes from './routes';
 
 import Header from './components/Header';
 import Loading from './components/Loading';
+import Cookies from './components/Cookies';
 
 const Analytics = ({ location }) => {
   const analytics = useAnalytics();
@@ -21,6 +22,9 @@ const Analytics = ({ location }) => {
 const history = createBrowserHistory();
 
 const App = () => {
+  const [cookiePrefs, setCookiePrefs] = useState(
+    window.localStorage.getItem('@openmined/cookie-preferences') || null
+  );
   const [action, setAction] = useState(history.action);
   const [location, setLocation] = useState(history.location);
 
@@ -31,12 +35,18 @@ const App = () => {
     });
   }, []);
 
+  const storeCookiePrefs = (preference) => {
+    window.localStorage.setItem('@openmined/cookie-preferences', preference);
+    setCookiePrefs(preference);
+  };
+
   return (
     <Router action={action} location={location} navigator={history}>
       <Suspense fallback={<Loading />}>
-        <Analytics location={location} />
+        {cookiePrefs === 'all' && <Analytics location={location} />}
         <Header />
         <Routes />
+        {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
       </Suspense>
     </Router>
   );

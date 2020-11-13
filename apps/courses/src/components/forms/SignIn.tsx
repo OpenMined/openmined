@@ -115,7 +115,8 @@ export default ({ callback, ...props }: SignInFormProps) => {
             <Link onClick={onOpen} mt={4} display="block">
               Reset your password
             </Link>
-            <Divider my={6} />
+            {/* TODO: Patrick, uncomment these when these pages exist */}
+            {/* <Divider my={6} />
             <Text fontSize="sm" color="gray.700">
               By signing in you agree to our{' '}
               <Link as={RRDLink} to="/terms">
@@ -126,7 +127,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
                 Privacy Policy
               </Link>
               .
-            </Text>
+            </Text> */}
           </>
         )}
       />

@@ -41,9 +41,10 @@ export default ({ callback, ...props }: SignUpFormProps) => {
   const db = useFirestore();
   const toast = useToast();
 
+  // TODO: Patrick, find a way to centralize this logic since it's done twice in the codebase
   const provider = new useAuth.GithubAuthProvider();
 
-  provider.addScope('repo');
+  provider.addScope('public_repo');
   provider.addScope('read:user');
   provider.addScope('user.email');
 

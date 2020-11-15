@@ -300,5 +300,14 @@ export default extendTheme({
         },
       },
     },
+    Tabs: {
+      variants: {
+        sticky: {
+          tablist: {
+            flexDirection: 'column',
+          },
+        },
+      },
+    },
   },
 });

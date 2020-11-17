@@ -25,4 +25,5 @@ jobs:
         with:
           args: deploy --only hosting:openmined-education
         env:
+          PROJECT_ID: production
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

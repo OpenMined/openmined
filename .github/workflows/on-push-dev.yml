@@ -19,10 +19,10 @@ jobs:
       - name: Install Dependencies
         run: yarn install
       - name: Build Courses
-        run: yarn build courses --prod
+        run: yarn build courses
       - name: Deploy Courses to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only hosting:openmined-education-dev project=development
+          args: deploy --only hosting:openmined-education-dev
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

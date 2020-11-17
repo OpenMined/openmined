@@ -70,22 +70,22 @@
             "passWithNoTests": true
           }
         },
-        "deploy:production": {
+        "deploy-production": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
               "yarn build courses --prod",
-              "firebase deploy --only hosting:openmined-education project=production"
+              "firebase deploy --only hosting:openmined-education"
             ],
             "parallel": false
           }
         },
-        "deploy:development": {
+        "deploy-development": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
-              "yarn build courses --prod",
-              "firebase deploy --only hosting:openmined-education-dev project=development"
+              "yarn build courses",
+              "firebase deploy --only hosting:openmined-education-dev"
             ],
             "parallel": false
           }
@@ -181,22 +181,25 @@
             "passWithNoTests": true
           }
         },
-        "deploy:production": {
+        "deploy-production": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
               "yarn build firebase-api --prod",
-              "firebase deploy --only functions,firestore:rules,storage project=production"
+              "firebase use production",
+              "firebase deploy --only functions,firestore:rules,storage",
+              "firebase use development"
             ],
             "parallel": false
           }
         },
-        "deploy:development": {
+        "deploy-development": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
-              "yarn build firebase-api --prod",
-              "firebase deploy --only functions,firestore:rules,storage project=development"
+              "yarn build firebase-api",
+              "firebase use development",
+              "firebase deploy --only functions,firestore:rules,storage"
             ],
             "parallel": false
           }

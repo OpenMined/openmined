@@ -304,8 +304,24 @@ export default extendTheme({
       variants: {
         sticky: {
           tablist: {
+            minWidth: 280,
+            mr: [0, null, null, 8],
             flexDirection: 'column',
+            alignItems: 'flex-start',
           },
+          tab: {
+            borderRadius: 'md',
+            width: 'full',
+            justifyContent: 'flex-start',
+            color: 'gray.700',
+            mb: 2,
+            _selected: {
+              bg: 'indigo.500',
+              color: 'indigo.50',
+              fontWeight: 'bold',
+            },
+          },
+          tabpanel: { p: 0 },
         },
       },
     },

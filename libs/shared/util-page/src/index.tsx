@@ -12,6 +12,7 @@ interface OverrideProps {
   title?: string;
   description?: string;
   noIndex?: boolean;
+  style?: string;
 }
 
 export default ({ children, ...overrides }: OverrideProps) => {
@@ -124,6 +125,8 @@ export default ({ children, ...overrides }: OverrideProps) => {
         <title itemProp="name" lang="en">
           {overrides.title}
         </title>
+
+        {overrides.style && <style type="text/css">{overrides.style}</style>}
       </Helmet>
       {children}
     </>

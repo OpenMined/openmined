@@ -3,12 +3,12 @@ import * as yup from 'yup';
 import { useAuth } from 'reactfire';
 import { BoxProps } from '@chakra-ui/core';
 
-import Form from './_form';
-import { validEmail } from './_validation';
-import { emailField } from './_fields';
+import Form from '../_form';
+import { validEmail } from '../_validation';
+import { emailField } from '../_fields';
 
-import useToast, { toastConfig } from '../Toast';
-import { handleErrors } from '../../helpers';
+import useToast, { toastConfig } from '../../Toast';
+import { handleErrors } from '../../../helpers';
 
 interface ResetPasswordFormProps extends BoxProps {
   callback?: () => void;

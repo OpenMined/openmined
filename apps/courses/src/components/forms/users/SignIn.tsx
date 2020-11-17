@@ -15,14 +15,14 @@ import { useAuth } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
-import Form from './_form';
 import ResetPassword from './ResetPassword';
-import { validEmail, validPassword } from './_validation';
-import { emailField, passwordField } from './_fields';
+import Form from '../_form';
+import { validEmail, validPassword } from '../_validation';
+import { emailField, passwordField } from '../_fields';
 
-import useToast, { toastConfig } from '../Toast';
-import Modal from '../Modal';
-import { handleErrors } from '../../helpers';
+import useToast, { toastConfig } from '../../Toast';
+import Modal from '../../Modal';
+import { handleErrors } from '../../../helpers';
 
 interface SignInFormProps extends BoxProps {
   callback?: () => void;

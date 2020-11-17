@@ -4,7 +4,7 @@ import Page from '@openmined/shared/util-page';
 
 import content from '../../content/homepage';
 import GridContainer from '../../components/GridContainer';
-import Signup from '../../components/forms/SignUp';
+import Signup from '../../components/forms/users/SignUp';
 import waveform from '../../assets/waveform/waveform-rainbow.png';
 
 export default () => {

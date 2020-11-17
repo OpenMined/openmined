@@ -17,6 +17,9 @@ import {
   InputLeftAddon,
   InputRightAddon,
   Icon,
+  RadioGroup,
+  Stack,
+  Radio,
 } from '@chakra-ui/core';
 import { ObjectSchema } from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -46,11 +49,11 @@ interface FormProps {
   submit?:
     | ((isDisabled: boolean, isSubmitting: boolean) => React.ReactNode)
     | string;
+  isBreathable?: boolean;
 }
 
 const SIZE = 'lg';
 const VARIANT = 'filled';
-const SPACING = 4;
 
 const createInput = ({ options, left, right, ...input }, register, control) => {
   let elem;
@@ -58,9 +61,21 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   if (input.type === 'select') {
     elem = (
       <Select {...input} variant={VARIANT} size={SIZE} ref={register}>
-        {options.map((option) => (
-          <option {...option} />
-        ))}
+        {options.map((option) => {
+          if (typeof option === 'string') {
+            return (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            );
+          } else {
+            return (
+              <option key={option.label} value={option.value}>
+                {option.label}
+              </option>
+            );
+          }
+        })}
       </Select>
     );
   } else if (input.type === 'textarea') {
@@ -69,6 +84,30 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
     // TODO: Not sure why this is going wrong, should fix it
     // @ts-ignore
     elem = <FieldArray {...input} control={control} register={register} />;
+  } else if (input.type === 'read-only') {
+    elem = <Text>{input.value}</Text>;
+  } else if (input.type === 'radio') {
+    elem = (
+      <RadioGroup {...input} ref={register}>
+        <Stack spacing={2} direction="column">
+          {options.map((option) => {
+            if (typeof option === 'string') {
+              return (
+                <Radio key={option} value={option}>
+                  {option}
+                </Radio>
+              );
+            } else {
+              return (
+                <Radio key={option.label} value={option.value}>
+                  {option.label}
+                </Radio>
+              );
+            }
+          })}
+        </Stack>
+      </RadioGroup>
+    );
   } else {
     elem = <Input {...input} variant={VARIANT} size={SIZE} ref={register} />;
   }
@@ -145,8 +184,11 @@ export default ({
   onSubmit,
   fields,
   submit = 'Submit',
+  isBreathable,
   ...props
 }: FormProps) => {
+  const spacing = isBreathable ? 8 : 4;
+
   const defVals = {};
 
   // TODO: Not sure why this is going wrong, should fix it
@@ -176,7 +218,7 @@ export default ({
       <FormControl
         key={input.name}
         isInvalid={hasErrors}
-        mt={isFirst ? 0 : SPACING}
+        mt={isFirst ? 0 : spacing}
       >
         {label && (
           <FormLabel
@@ -205,19 +247,29 @@ export default ({
 
           if (Array.isArray(field)) {
             // Add labels to subfields that don't have it
-            field = field.map((f) => ({
-              ...f,
-              label: f.label || 'BLANK',
-            }));
+            field = field.map((f) => {
+              // If we have a null field (a "spacer")
+              if (!f) return null;
+
+              return {
+                ...f,
+                label: f.label || 'BLANK',
+              };
+            });
 
             return (
               <SimpleGrid
                 key={i}
                 columns={[1, field.length]}
-                spacing={[0, SPACING]}
-                mt={isFirst ? -SPACING : 0}
+                spacing={[0, spacing]}
+                mt={isFirst ? -spacing : 0}
               >
-                {field.map((subfield) => composeInput(subfield, false))}
+                {field.map((subfield) => {
+                  // If we have a null field (a "spacer")
+                  if (!subfield) return null;
+
+                  return composeInput(subfield, false);
+                })}
               </SimpleGrid>
             );
           } else {
@@ -226,7 +278,7 @@ export default ({
         })}
         {typeof submit === 'string' && (
           <Button
-            mt={SPACING}
+            mt={spacing}
             colorScheme="blue"
             disabled={!isDirty || (isDirty && !isValid)}
             isLoading={isSubmitting}

@@ -14,7 +14,7 @@ import { faRss } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
 
 import GridContainer from '../../components/GridContainer';
-import Signup from '../../components/forms/SignUp';
+import Signup from '../../components/forms/users/SignUp';
 
 export default ({ signup, signedup }) => {
   const user = useUser();

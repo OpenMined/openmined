@@ -14,23 +14,23 @@ import { useAuth, useFirestore } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
-import Form from './_form';
+import Form from '../_form';
 import {
   validEmail,
   validPassword,
   validMatchingPassword,
   requiredString,
-} from './_validation';
+} from '../_validation';
 import {
   firstNameField,
   lastNameField,
   emailField,
   passwordField,
   passwordConfirmField,
-} from './_fields';
+} from '../_fields';
 
-import useToast, { toastConfig } from '../Toast';
-import { handleErrors } from '../../helpers';
+import useToast, { toastConfig } from '../../Toast';
+import { handleErrors } from '../../../helpers';
 
 interface SignUpFormProps extends BoxProps {
   callback?: () => void;

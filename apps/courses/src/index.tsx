@@ -14,16 +14,28 @@ import seoMain from './assets/seo-main.jpg';
 import seoFacebook from './assets/seo-facebook.jpg';
 import seoTwitter from './assets/seo-twitter.jpg';
 
-const firebaseConfig = {
-  apiKey: process.env.NX_FIREBASE_API_KEY,
-  authDomain: process.env.NX_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.NX_FIREBASE_DATABASE_URL,
-  projectId: process.env.NX_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NX_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NX_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NX_FIREBASE_APP_ID,
-  measurementId: process.env.NX_FIREBASE_MEASUREMENT_ID,
-};
+const firebaseConfig =
+  process.env.NODE_ENV === 'production'
+    ? {
+        apiKey: process.env.NX_FIREBASE_PROD_API_KEY,
+        authDomain: process.env.NX_FIREBASE_PROD_AUTH_DOMAIN,
+        databaseURL: process.env.NX_FIREBASE_PROD_DATABASE_URL,
+        projectId: process.env.NX_FIREBASE_PROD_PROJECT_ID,
+        storageBucket: process.env.NX_FIREBASE_PROD_STORAGE_BUCKET,
+        messagingSenderId: process.env.NX_FIREBASE_PROD_MESSAGING_SENDER_ID,
+        appId: process.env.NX_FIREBASE_PROD_APP_ID,
+        measurementId: process.env.NX_FIREBASE_PROD_MEASUREMENT_ID,
+      }
+    : {
+        apiKey: process.env.NX_FIREBASE_DEV_API_KEY,
+        authDomain: process.env.NX_FIREBASE_DEV_AUTH_DOMAIN,
+        databaseURL: process.env.NX_FIREBASE_DEV_DATABASE_URL,
+        projectId: process.env.NX_FIREBASE_DEV_PROJECT_ID,
+        storageBucket: process.env.NX_FIREBASE_DEV_STORAGE_BUCKET,
+        messagingSenderId: process.env.NX_FIREBASE_DEV_MESSAGING_SENDER_ID,
+        appId: process.env.NX_FIREBASE_DEV_APP_ID,
+        measurementId: process.env.NX_FIREBASE_DEV_MEASUREMENT_ID,
+      };
 
 const metadata = {
   name: process.env.NX_NAME,

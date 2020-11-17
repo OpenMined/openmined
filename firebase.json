@@ -16,6 +16,16 @@
           "destination": "/index.html"
         }
       ]
+    },
+    {
+      "target": "openmined-education-dev",
+      "public": "dist/apps/courses",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
     }
   ],
   "storage": {

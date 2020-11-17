@@ -9,7 +9,6 @@ import LinkedAccounts from './LinkedAccounts';
 
 /*
 TODO:
-- Create another version of the Firebase backend for development purposes
 - Implement a variant that has the tab list displayed vertically and the tabs container horizontal
 - Style from there and then implement the individual forms
 */

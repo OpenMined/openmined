@@ -70,12 +70,22 @@
             "passWithNoTests": true
           }
         },
-        "deploy": {
+        "deploy:production": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
               "yarn build courses --prod",
-              "firebase deploy --only hosting:openmined-education"
+              "firebase deploy --only hosting:openmined-education project=production"
+            ],
+            "parallel": false
+          }
+        },
+        "deploy:development": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "yarn build courses --prod",
+              "firebase deploy --only hosting:openmined-education-dev project=development"
             ],
             "parallel": false
           }
@@ -171,12 +181,22 @@
             "passWithNoTests": true
           }
         },
-        "deploy": {
+        "deploy:production": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "commands": [
               "yarn build firebase-api --prod",
-              "firebase deploy --only functions,firestore:rules,storage"
+              "firebase deploy --only functions,firestore:rules,storage project=production"
+            ],
+            "parallel": false
+          }
+        },
+        "deploy:development": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "yarn build firebase-api --prod",
+              "firebase deploy --only functions,firestore:rules,storage project=development"
             ],
             "parallel": false
           }

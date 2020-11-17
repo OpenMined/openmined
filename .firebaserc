@@ -1,11 +1,17 @@
 {
   "projects": {
-    "default": "openmined-org"
+    "production": "openmined-org",
+    "development": "openmined-org-dev"
   },
   "targets": {
     "openmined-org": {
       "hosting": {
         "openmined-education": ["openmined-education"]
+      }
+    },
+    "openmined-org-dev": {
+      "hosting": {
+        "openmined-education-dev": ["openmined-education-dev"]
       }
     }
   }

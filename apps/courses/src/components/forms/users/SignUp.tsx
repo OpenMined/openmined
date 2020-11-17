@@ -110,9 +110,9 @@ export default ({ callback, ...props }: SignUpFormProps) => {
   });
 
   const fields = [
-    [firstNameField, lastNameField],
-    emailField,
-    [passwordField, passwordConfirmField],
+    [firstNameField(), lastNameField()],
+    emailField(),
+    [passwordField(), passwordConfirmField()],
   ];
 
   return (

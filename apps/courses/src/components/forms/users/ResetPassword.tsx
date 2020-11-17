@@ -38,7 +38,7 @@ export default ({ callback, ...props }: ResetPasswordFormProps) => {
     email: validEmail,
   });
 
-  const fields = [emailField];
+  const fields = [emailField()];
 
   return (
     <Form {...props} onSubmit={onSubmit} schema={schema} fields={fields} />

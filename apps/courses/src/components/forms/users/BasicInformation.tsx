@@ -1,7 +1,7 @@
 import React from 'react';
 import { BoxProps } from '@chakra-ui/core';
 import * as yup from 'yup';
-import { useAuth, useFirestore } from 'reactfire';
+import { useUser, useFirestore, useFirestoreDocData } from 'reactfire';
 
 import Form from '../_form';
 import { requiredString, optionalString, optionalItem } from '../_validation';
@@ -26,17 +26,31 @@ interface BasicInformationFormProps extends BoxProps {
 
 /*
 TODO:
-- Default values
-- Read-only email field
+- Move UserDB type to its own library just for interfaces
+- Handle issues with github provider, email provider, and multi-provider
 - Double click bug for radios
 - Submit
 - Change link
 */
 
+interface UserDB {
+  first_name: string;
+  last_name: string;
+  skill_level?: string;
+  primary_language?: string;
+  city?: string;
+  country?: string;
+  timezone?: string;
+}
+
 export default ({ callback, ...props }: BasicInformationFormProps) => {
-  const auth = useAuth();
+  const user = useUser();
   const db = useFirestore();
   const toast = useToast();
+
+  // @ts-ignore
+  const dbUserRef = db.collection('users').doc(user.uid);
+  const dbUser: UserDB = useFirestoreDocData(dbUserRef);
 
   const onSuccess = () => {
     toast({
@@ -48,26 +62,11 @@ export default ({ callback, ...props }: BasicInformationFormProps) => {
     if (callback) callback();
   };
 
-  const onSubmit = ({ email, password, first_name, last_name }) =>
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then(() =>
-        auth.currentUser
-          .sendEmailVerification()
-          .then(() =>
-            db
-              .collection('users')
-              .doc(auth.currentUser.uid)
-              .set({
-                first_name: first_name,
-                last_name: last_name,
-              })
-              .then(onSuccess)
-              .catch((error) => handleErrors(toast, error))
-          )
-          .catch((error) => handleErrors(toast, error))
-      )
-      .catch((error) => handleErrors(toast, error));
+  const onSubmit = (data) => {
+    console.log(data);
+
+    onSuccess();
+  };
 
   const schema = yup.object().shape({
     first_name: requiredString,
@@ -80,12 +79,13 @@ export default ({ callback, ...props }: BasicInformationFormProps) => {
   });
 
   const fields = [
-    readOnlyEmailField,
-    [firstNameField, lastNameField],
-    skillLevelField,
-    [primaryLanguageField, null],
-    [cityField, countryField],
-    [timezoneField, null],
+    // @ts-ignore
+    readOnlyEmailField(user.email),
+    [firstNameField(dbUser.first_name), lastNameField(dbUser.last_name)],
+    skillLevelField(dbUser.skill_level),
+    [primaryLanguageField(dbUser.primary_language), null],
+    [cityField(dbUser.city), countryField(dbUser.country)],
+    [timezoneField(dbUser.timezone), null],
   ];
 
   return (

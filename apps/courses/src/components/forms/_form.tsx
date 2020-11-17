@@ -85,7 +85,7 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
     // @ts-ignore
     elem = <FieldArray {...input} control={control} register={register} />;
   } else if (input.type === 'read-only') {
-    elem = <Text>{input.value}</Text>;
+    elem = <Text color="gray.700">{input.defaultValue}</Text>;
   } else if (input.type === 'radio') {
     elem = (
       <RadioGroup {...input} ref={register}>

@@ -69,7 +69,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
     password: validPassword,
   });
 
-  const fields = [emailField, passwordField];
+  const fields = [emailField(), passwordField()];
 
   return (
     <>

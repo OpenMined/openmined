@@ -3,5 +3,6 @@ module.exports = {
     '<rootDir>/apps/courses',
     '<rootDir>/libs/shared/util-page',
     '<rootDir>/apps/firebase-api',
+    '<rootDir>/libs/shared/types',
   ],
 };

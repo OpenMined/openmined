@@ -38,6 +38,9 @@
     },
     "firebase-api": {
       "tags": []
+    },
+    "shared-types": {
+      "tags": []
     }
   }
 }

@@ -20,6 +20,7 @@ import {
   RadioGroup,
   Stack,
   Radio,
+  Flex,
 } from '@chakra-ui/core';
 import { ObjectSchema } from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -87,19 +88,20 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   } else if (input.type === 'read-only') {
     elem = <Text color="gray.700">{input.defaultValue}</Text>;
   } else if (input.type === 'radio') {
+    // TODO: Currently Radios require a double click... why? This should be one click!
     elem = (
-      <RadioGroup {...input} ref={register}>
+      <RadioGroup {...input}>
         <Stack spacing={2} direction="column">
           {options.map((option) => {
             if (typeof option === 'string') {
               return (
-                <Radio key={option} value={option}>
+                <Radio key={option} value={option} ref={register}>
                   {option}
                 </Radio>
               );
             } else {
               return (
-                <Radio key={option.label} value={option.value}>
+                <Radio key={option.label} value={option.value} ref={register}>
                   {option.label}
                 </Radio>
               );
@@ -212,7 +214,7 @@ export default ({
 
   const composeInput = (input, isFirst) => {
     const hasErrors = Object.prototype.hasOwnProperty.call(errors, input.name);
-    const { label } = input;
+    const { label, helper } = input;
 
     return (
       <FormControl
@@ -220,15 +222,19 @@ export default ({
         isInvalid={hasErrors}
         mt={isFirst ? 0 : spacing}
       >
-        {label && (
-          <FormLabel
-            htmlFor={input.name}
-            opacity={label === 'BLANK' ? 0 : 1}
-            display={label === 'BLANK' ? ['none', 'block'] : 'block'}
-          >
-            {label}
-          </FormLabel>
-        )}
+        <Flex align="center" mb={2}>
+          {label && (
+            <FormLabel
+              mb={0}
+              htmlFor={input.name}
+              opacity={label === 'BLANK' ? 0 : 1}
+              display={label === 'BLANK' ? ['none', 'block'] : 'block'}
+            >
+              {label}
+            </FormLabel>
+          )}
+          {helper && helper({ ml: 2, fontSize: 'sm' })}
+        </Flex>
         {createInput(input, register, control)}
         {hasErrors && (
           <FormErrorMessage>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Divider,
@@ -7,6 +7,8 @@ import {
   Text,
   Link,
   BoxProps,
+  useDisclosure,
+  Input,
 } from '@chakra-ui/core';
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
@@ -31,9 +33,16 @@ import {
 
 import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
+import Modal from '../../Modal';
 
 interface SignUpFormProps extends BoxProps {
   callback?: () => void;
+}
+
+interface CredentialProps {
+  credential?: any;
+  email?: string;
+  password?: string;
 }
 
 export default ({ callback, ...props }: SignUpFormProps) => {
@@ -41,13 +50,20 @@ export default ({ callback, ...props }: SignUpFormProps) => {
   const db = useFirestore();
   const toast = useToast();
 
+  // In the event that we already have an account created by email and we try to sign up using Github
+  // We need to ask the user for the password to their account and store these credentials somewhere
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [tempCredentials, setTempCredentials] = useState<CredentialProps>({});
+
   // TODO: Patrick, find a way to centralize this logic since it's done twice in the codebase
-  const provider = new useAuth.GithubAuthProvider();
+  const emailProvider = useAuth.EmailAuthProvider;
+  const githubProvider = new useAuth.GithubAuthProvider();
 
-  provider.addScope('public_repo');
-  provider.addScope('read:user');
-  provider.addScope('user.email');
+  githubProvider.addScope('public_repo');
+  githubProvider.addScope('read:user');
+  githubProvider.addScope('user.email');
 
+  // When we successfully create an account
   const onSuccess = () => {
     toast({
       ...toastConfig,
@@ -56,6 +72,56 @@ export default ({ callback, ...props }: SignUpFormProps) => {
       status: 'success',
     });
     if (callback) callback();
+  };
+
+  // When we successfully link a provider to an existing account
+  const onLinkedAccountSuccess = () => {
+    toast({
+      ...toastConfig,
+      title: 'Accounting link successful',
+      description: 'You can now sign in with either provider.',
+      status: 'success',
+    });
+    if (callback) callback();
+  };
+
+  // Assuming the account already exists, handle merging them with the other provider
+  const handleAccountAlreadyExists = ({
+    credential = null,
+    email = '',
+    password = '',
+  }: CredentialProps) => {
+    // If we aren't given a credential, but are given an email and password, create on using the Firebase EmailAuthProvider
+    if (!credential) credential = emailProvider.credential(email, password);
+
+    // See what sign in methods exist
+    auth.fetchSignInMethodsForEmail(email).then((methods) => {
+      // What's the primary method of signing in?
+      const primaryMethod = methods[0];
+
+      // When finished signing in (below), link the user with their new credential
+      const linkAccount = (user) =>
+        user
+          .linkWithCredential(credential)
+          .then(onLinkedAccountSuccess)
+          .catch((error) => handleErrors(toast, error));
+
+      if (primaryMethod === 'password') {
+        // If the user already has an email account, sign them in and link the account
+        auth
+          .signInWithEmailAndPassword(email, password)
+          .then(({ user }) => linkAccount(user))
+          .catch((error) => handleErrors(toast, error));
+      } else if (primaryMethod === 'github.com') {
+        // If the user already has a Github account, sign them in and link the account
+        auth
+          .signInWithPopup(githubProvider)
+          .then(({ user }) => linkAccount(user))
+          .catch((error) => handleErrors(toast, error));
+      }
+
+      return;
+    });
   };
 
   const onSubmit = ({ email, password, first_name, last_name }) =>
@@ -77,28 +143,58 @@ export default ({ callback, ...props }: SignUpFormProps) => {
           )
           .catch((error) => handleErrors(toast, error))
       )
-      .catch((error) => handleErrors(toast, error));
+      .catch((error) => {
+        // In the event that an account with this email already exists (because they signed up with Github)
+        // Give their account a password and link the Github provider to the new email provider
+        // Otherwise... handleErrors()
+        if (error.code === 'auth/email-already-in-use') {
+          handleAccountAlreadyExists({ email, password });
+        } else {
+          handleErrors(toast, error);
+        }
+      });
 
   const onGithubSubmit = async () => {
     const authUser = await auth
-      .signInWithPopup(provider)
-      .catch((error) => handleErrors(toast, error));
+      .signInWithPopup(githubProvider)
+      .catch((error) => {
+        // In the event that an account with this email already exists (because they signed up with email)
+        // Store the existing credential and email conflict, and then ask the user to input the password for their email account
+        // Otherwise... handleErrors()
+        if (error.code === 'auth/account-exists-with-different-credential') {
+          // Store the pending Github credential and conflicting email
+          setTempCredentials({
+            credential: error.credential,
+            email: error.email,
+            password: null,
+          });
 
-    const splitName = authUser.user.displayName.split(' ');
-    const firstName =
-      splitName.length >= 1 ? splitName[0] : authUser.user.displayName;
-    const lastName = splitName.length >= 2 ? splitName.slice(1).join(' ') : '';
+          // Open the modal to ask for a password
+          onOpen();
+        } else {
+          handleErrors(toast, error);
+        }
+      });
 
-    const databaseUser = db
-      .collection('users')
-      .doc(auth.currentUser.uid)
-      .set({
-        first_name: firstName,
-        last_name: lastName,
-      })
-      .catch((error) => handleErrors(toast, error));
+    // If we're creating an account for the first time, we need to store some information about the user
+    if (authUser) {
+      const splitName = authUser.user.displayName.split(' ');
+      const firstName =
+        splitName.length >= 1 ? splitName[0] : authUser.user.displayName;
+      const lastName =
+        splitName.length >= 2 ? splitName.slice(1).join(' ') : '';
 
-    if (authUser && databaseUser) onSuccess();
+      const databaseUser = db
+        .collection('users')
+        .doc(auth.currentUser.uid)
+        .set({
+          first_name: firstName,
+          last_name: lastName,
+        })
+        .catch((error) => handleErrors(toast, error));
+
+      if (authUser && databaseUser) onSuccess();
+    }
   };
 
   const schema = yup.object().shape({
@@ -116,43 +212,44 @@ export default ({ callback, ...props }: SignUpFormProps) => {
   ];
 
   return (
-    <Form
-      {...props}
-      onSubmit={onSubmit}
-      schema={schema}
-      fields={fields}
-      submit={(isDisabled, isSubmitting) => (
-        <>
-          <Flex align="center" wrap="wrap" mt={6}>
-            <Button
-              mr={4}
-              mt={2}
-              colorScheme="black"
-              type="submit"
-              disabled={isDisabled}
-              isLoading={isSubmitting}
-            >
-              Sign Up
-            </Button>
-            <Button
-              mt={2}
-              onClick={onGithubSubmit}
-              colorScheme="black"
-              isLoading={isSubmitting}
-            >
-              {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
-              Sign Up with Github{' '}
-              <Icon
-                as={FontAwesomeIcon}
-                icon={faGithub}
-                ml={2}
-                boxSize={4}
-                color="white"
-              />
-            </Button>
-          </Flex>
-          {/* TODO: Patrick, uncomment these when these pages exist */}
-          {/* <Divider my={6} />
+    <>
+      <Form
+        {...props}
+        onSubmit={onSubmit}
+        schema={schema}
+        fields={fields}
+        submit={(isDisabled, isSubmitting) => (
+          <>
+            <Flex align="center" wrap="wrap" mt={6}>
+              <Button
+                mr={4}
+                mt={2}
+                colorScheme="black"
+                type="submit"
+                disabled={isDisabled}
+                isLoading={isSubmitting}
+              >
+                Sign Up
+              </Button>
+              <Button
+                mt={2}
+                onClick={onGithubSubmit}
+                colorScheme="black"
+                isLoading={isSubmitting}
+              >
+                {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+                Sign Up with Github{' '}
+                <Icon
+                  as={FontAwesomeIcon}
+                  icon={faGithub}
+                  ml={2}
+                  boxSize={4}
+                  color="white"
+                />
+              </Button>
+            </Flex>
+            {/* TODO: Patrick, uncomment these when these pages exist */}
+            {/* <Divider my={6} />
           <Text fontSize="sm" color="gray.700">
             By signing up you agree to our{' '}
             <Link as={RRDLink} to="/terms">
@@ -164,8 +261,31 @@ export default ({ callback, ...props }: SignUpFormProps) => {
             </Link>
             .
           </Text> */}
-        </>
-      )}
-    />
+          </>
+        )}
+      />
+      <Modal isOpen={isOpen} onClose={onClose} title="Sign In">
+        <Text mb={4}>
+          Apprently you have already created an account with this email address.
+          To continue with linking your Github account, please enter the
+          password for your OpenMined account.
+        </Text>
+        <Input
+          type="password"
+          placeholder="Type your password..."
+          mb={2}
+          onChange={({ target }) =>
+            setTempCredentials({ ...tempCredentials, password: target.value })
+          }
+        />
+        <Button
+          onClick={() => handleAccountAlreadyExists(tempCredentials)}
+          type="submit"
+          colorScheme="blue"
+        >
+          Submit
+        </Button>
+      </Modal>
+    </>
   );
 };

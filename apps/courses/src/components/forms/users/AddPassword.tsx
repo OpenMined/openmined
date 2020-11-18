@@ -10,29 +10,34 @@ import { passwordField, passwordConfirmField } from '../_fields';
 import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
 
-interface ChangePasswordFormProps extends BoxProps {
+interface AddPasswordFormProps extends BoxProps {
   callback?: () => void;
 }
 
-export default ({ callback, ...props }: ChangePasswordFormProps) => {
+export default ({ callback, ...props }: AddPasswordFormProps) => {
   const auth = useAuth();
   const toast = useToast();
+
+  const provider = useAuth.EmailAuthProvider;
 
   const onSuccess = () => {
     toast({
       ...toastConfig,
-      title: 'Password changed',
-      description: 'We have successfully changed your password.',
+      title: 'Password added',
+      description: 'We have successfully added your password.',
       status: 'success',
     });
     if (callback) callback();
   };
 
-  const onSubmit = ({ password }) =>
-    auth.currentUser
-      .updatePassword(password)
+  const onSubmit = ({ password }) => {
+    const credential = provider.credential(auth.currentUser.email, password);
+
+    return auth.currentUser
+      .linkWithCredential(credential)
       .then(onSuccess)
       .catch((error) => handleErrors(toast, error));
+  };
 
   const schema = yup.object().shape({
     password: validPassword,

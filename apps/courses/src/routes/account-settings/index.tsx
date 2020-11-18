@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Tabs,
   TabList,
@@ -11,14 +11,18 @@ import {
   Heading,
   useToken,
 } from '@chakra-ui/core';
+import { useUser } from 'reactfire';
 
 import Page from '@openmined/shared/util-page';
 
+import GridContainer from '../../components/GridContainer';
+
 import BasicInformation from '../../components/forms/users/BasicInformation';
 import ChangePassword from '../../components/forms/users/ChangePassword';
-import LinkedAccounts from '../../components/forms/users/LinkedAccounts';
+import AddPassword from '../../components/forms/users/AddPassword';
+import ManageAccount from '../../components/forms/users/ManageAccount';
 
-import GridContainer from '../../components/GridContainer';
+// TODO: Patrick, add the ability to add, remove, and replace an avatar to BasicInformation (once the profile page is done)
 
 const StickyTabPanel = ({ title, children }) => (
   <Box bg="white" borderRadius="md" border="1px" borderColor="gray.400">
@@ -37,13 +41,22 @@ const StickyTabPanel = ({ title, children }) => (
 );
 
 export default () => {
+  const user = useUser();
+  const [tabIndex, setTabIndex] = useState(0);
   const indigo50 = useToken('colors', 'indigo.50');
 
+  // @ts-ignore
+  const hasPasswordAccount = !!user.providerData.filter(
+    (p) => p.providerId === 'password'
+  ).length;
+
   return (
-    <Page title="Account Settings" style={`body { background: ${indigo50}; }`}>
+    <Page title="Account Settings" body={{ style: `background: ${indigo50};` }}>
       <GridContainer isInitial py={{ base: 8, lg: 16 }}>
         {/* TODO: I'd love to not have to do this, waiting on this issue to be merged: https://github.com/chakra-ui/chakra-ui/issues/2548 */}
         <Tabs
+          index={tabIndex}
+          onChange={(index) => setTabIndex(index)}
           variant="sticky"
           display="flex"
           flexDirection={{ base: 'column', lg: 'row' }}
@@ -54,24 +67,40 @@ export default () => {
             </Text>
             <Divider my={3} />
             <Tab>Basic Information</Tab>
-            <Tab>Change Password</Tab>
-            <Tab>Linked Accounts</Tab>
+            {hasPasswordAccount && <Tab>Change Password</Tab>}
+            {!hasPasswordAccount && <Tab>Add Password</Tab>}
+            <Tab>Manage Account</Tab>
           </TabList>
           {/* TODO: I'd love to not have to do this, waiting on this issue to be merged: https://github.com/chakra-ui/chakra-ui/issues/2548 */}
           <TabPanels width="full">
             <TabPanel>
               <StickyTabPanel title="Basic Information">
-                <BasicInformation />
+                <BasicInformation
+                  onChangeEmail={() => setTabIndex(2)}
+                  onAddPassword={() => setTabIndex(1)}
+                />
               </StickyTabPanel>
             </TabPanel>
+            {hasPasswordAccount && (
+              <TabPanel>
+                <StickyTabPanel title="Change Password">
+                  <ChangePassword />
+                </StickyTabPanel>
+              </TabPanel>
+            )}
+            {!hasPasswordAccount && (
+              <TabPanel>
+                <StickyTabPanel title="Add Password">
+                  <AddPassword callback={() => setTabIndex(0)} />
+                </StickyTabPanel>
+              </TabPanel>
+            )}
             <TabPanel>
-              <StickyTabPanel title="Change Password">
-                <ChangePassword />
-              </StickyTabPanel>
-            </TabPanel>
-            <TabPanel>
-              <StickyTabPanel title="Linked Accounts">
-                <LinkedAccounts />
+              <StickyTabPanel title="Manage Account">
+                <ManageAccount
+                  onAddPassword={() => setTabIndex(1)}
+                  callback={() => setTabIndex(0)}
+                />
               </StickyTabPanel>
             </TabPanel>
           </TabPanels>

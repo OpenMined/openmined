@@ -12,7 +12,7 @@ interface OverrideProps {
   title?: string;
   description?: string;
   noIndex?: boolean;
-  style?: string;
+  body?: any;
 }
 
 export default ({ children, ...overrides }: OverrideProps) => {
@@ -30,6 +30,8 @@ export default ({ children, ...overrides }: OverrideProps) => {
     description = DEFAULT_DESCRIPTION,
     images,
   } = useContext(SEOContext);
+
+  if (!overrides.body) overrides.body = { style: '' };
 
   const manifest = {
     name: name,
@@ -126,7 +128,7 @@ export default ({ children, ...overrides }: OverrideProps) => {
           {overrides.title}
         </title>
 
-        {overrides.style && <style type="text/css">{overrides.style}</style>}
+        {overrides.body && <body {...overrides.body} />}
       </Helmet>
       {children}
     </>

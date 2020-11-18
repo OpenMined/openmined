@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import {
   Box,
   Image,
@@ -8,13 +8,26 @@ import {
   Icon,
   Stack,
   Divider,
+  Avatar,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Text,
+  MenuDivider,
 } from '@chakra-ui/core';
 import { useAuth, useUser } from 'reactfire';
 import { Link as RRDLink } from 'react-router-dom';
 import useToast, { toastConfig } from './Toast';
 import useScrollPosition from '@react-hook/window-scroll';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faBars } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimes,
+  faBars,
+  faUserCircle,
+  faCog,
+  faCommentAlt,
+} from '@fortawesome/free-solid-svg-icons';
 
 import GridContainer from './GridContainer';
 
@@ -24,6 +37,7 @@ import { handleErrors } from '../helpers';
 interface LinkProps {
   title: string;
   type: string;
+  element?: React.ReactNode;
   auth?: boolean;
   unauth?: boolean;
   to?: string;
@@ -49,6 +63,9 @@ const createLinks = (
   return links
     .filter(appropriateLinks)
     .map(({ type, title, auth, unauth, ...link }: LinkProps) => {
+      if (type === 'element')
+        return React.cloneElement(link.element, { key: title });
+
       const as = link.to ? { as: RRDLink } : {};
 
       if (!link.onClick) link.onClick = onClick;
@@ -101,6 +118,10 @@ export default () => {
     else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
   }, [scrollY, isScrolled]);
 
+  const userAvatar = forwardRef((props, ref) => (
+    <Avatar ref={ref} {...props} src={user.photoURL} cursor="pointer" />
+  ));
+
   // TODO: Patrick, these are the links we will have until this website goes live
   let LEFT_LINKS: LinkProps[], RIGHT_LINKS: LinkProps[];
 
@@ -147,21 +168,72 @@ export default () => {
         auth: true,
       },
       {
-        title: 'Logout',
-        type: 'button',
-        onClick: () =>
-          auth
-            .signOut()
-            .then(() =>
-              toast({
-                ...toastConfig,
-                title: 'Sign out successful',
-                description: 'Come back soon!',
-                status: 'success',
-              })
-            )
-            .catch((error) => handleErrors(toast, error)),
+        title: 'User',
+        type: 'element',
         auth: true,
+        element: (
+          <Menu placement="bottom-end">
+            <MenuButton as={userAvatar} />
+            <MenuList>
+              {user && (
+                <MenuItem as={RRDLink} to={`/users/${user.uid}`}>
+                  <Icon
+                    as={FontAwesomeIcon}
+                    icon={faUserCircle}
+                    size="lg"
+                    color="gray.400"
+                    mr={4}
+                  />
+                  <Text color="gray.700">Profile</Text>
+                </MenuItem>
+              )}
+              <MenuItem as={RRDLink} to="/settings">
+                <Icon
+                  as={FontAwesomeIcon}
+                  icon={faCog}
+                  size="lg"
+                  color="gray.400"
+                  mr={4}
+                />
+                <Text color="gray.700">Account Settings</Text>
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem
+                as="a"
+                href="https://discussion.openmined.org"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icon
+                  as={FontAwesomeIcon}
+                  icon={faCommentAlt}
+                  size="lg"
+                  color="gray.400"
+                  mr={4}
+                />
+                <Text color="gray.700">Forum</Text>
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem
+                onClick={() =>
+                  auth
+                    .signOut()
+                    .then(() =>
+                      toast({
+                        ...toastConfig,
+                        title: 'Sign out successful',
+                        description: 'Come back soon!',
+                        status: 'success',
+                      })
+                    )
+                    .catch((error) => handleErrors(toast, error))
+                }
+              >
+                <Text color="gray.700">Logout</Text>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        ),
       },
     ];
   }

@@ -1,3 +1,6 @@
+import React from 'react';
+import { Link } from '@chakra-ui/core';
+
 import { countries, primaryLanguages, skillLevels, timezones } from './_data';
 
 export const firstNameField = (val = null) => ({
@@ -34,21 +37,22 @@ export const passwordField = (val = null) => ({
 
 export const passwordConfirmField = (val = null) => ({
   defaultValue: val,
-  name: 'passwordConfirm',
+  name: 'password_confirm',
   type: 'password',
   placeholder: 'Password confirmation',
 });
 
-export const readOnlyEmailField = (val = null) => ({
+export const readOnlyEmailField = (val = null, helper) => ({
   defaultValue: val,
-  name: 'readOnlyEmail',
+  name: 'read-only-email',
   type: 'read-only',
   label: 'Email Address',
+  helper,
 });
 
 export const skillLevelField = (val = null) => ({
   defaultValue: val,
-  name: 'skillLevel',
+  name: 'skill_level',
   type: 'radio',
   options: skillLevels,
   label: 'Which of the following best describes you?',
@@ -56,7 +60,7 @@ export const skillLevelField = (val = null) => ({
 
 export const primaryLanguageField = (val = null) => ({
   defaultValue: val,
-  name: 'primaryLanguage',
+  name: 'primary_language',
   type: 'select',
   placeholder: 'Select a Language',
   options: primaryLanguages.map((d) => ({ value: d.code, label: d.name })),
@@ -85,6 +89,6 @@ export const timezoneField = (val = null) => ({
   name: 'timezone',
   type: 'select',
   placeholder: 'Select a Timezone',
-  options: timezones.map((d) => ({ value: d.offset, label: d.name })),
+  options: timezones.map((d) => d.name),
   label: 'Timezone',
 });

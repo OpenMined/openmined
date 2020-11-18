@@ -34,11 +34,11 @@ export default ({ callback, ...props }: SignInFormProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // TODO: Patrick, find a way to centralize this logic since it's done twice in the codebase
-  const provider = new useAuth.GithubAuthProvider();
+  const githubProvider = new useAuth.GithubAuthProvider();
 
-  provider.addScope('public_repo');
-  provider.addScope('read:user');
-  provider.addScope('user.email');
+  githubProvider.addScope('public_repo');
+  githubProvider.addScope('read:user');
+  githubProvider.addScope('user.email');
 
   const onSuccess = () => {
     toast({
@@ -58,7 +58,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
 
   const onGithubSubmit = async () => {
     const authUser = await auth
-      .signInWithPopup(provider)
+      .signInWithPopup(githubProvider)
       .catch((error) => handleErrors(toast, error));
 
     if (authUser) onSuccess();

@@ -5,6 +5,35 @@ export default {
         title: 'search',
         description: 'hihih',
     },
+    filters: {
+        skillLevel: {
+            title: 'Skill Level',
+            values: [
+                'Beginner',
+                'Interideate',
+                'Advanced'
+            ]
+        },
+        topic: {
+            title: 'Topic',
+            values: [
+                'Topic one',
+                'Topic two',
+                'Topic three'
+            ]
+        },
+        language: {
+            title: 'Language',
+            values: [
+                'Python',
+                'JavaScript',
+                'Scala',
+                'R',
+                'SQL',
+                'Julia',
+            ]
+        },
+    },
     footer: {
         title: 'About OpenMined',
         description: 'Located at the intersection of privacy & AI, we are an open-source community of over 8000+ researchers, engineers, mentors and enthusiasts committed to making a fairer more prosperous world',

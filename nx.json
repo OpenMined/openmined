@@ -41,6 +41,9 @@
     },
     "shared-types": {
       "tags": []
+    },
+    "sanity-api": {
+      "tags": []
     }
   }
 }

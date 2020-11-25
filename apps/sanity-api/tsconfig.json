@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "files": [],
+  "include": ["../../node_modules/@sanity/types/lib/**/*.ts"],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}

@@ -4,5 +4,6 @@ module.exports = {
     '<rootDir>/libs/shared/util-page',
     '<rootDir>/apps/firebase-api',
     '<rootDir>/libs/shared/types',
+    '<rootDir>/apps/sanity-api',
   ],
 };

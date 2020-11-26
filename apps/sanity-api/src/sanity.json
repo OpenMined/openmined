@@ -1,0 +1,33 @@
+{
+  "root": true,
+  "project": {
+    "name": "Courses"
+  },
+  "api": {
+    "projectId": "rzeg7i8f",
+    "dataset": "production"
+  },
+  "plugins": [
+    "@sanity/base",
+    "@sanity/components",
+    "@sanity/default-layout",
+    "@sanity/default-login",
+    "@sanity/desk-tool",
+    "intl-input"
+  ],
+  "env": {
+    "development": {
+      "plugins": ["@sanity/vision"]
+    }
+  },
+  "parts": [
+    {
+      "name": "part:@sanity/base/schema",
+      "path": "./schemas"
+    },
+    {
+      "name": "part:@sanity/desk-tool/structure",
+      "path": "./desk-structure.ts"
+    }
+  ]
+}

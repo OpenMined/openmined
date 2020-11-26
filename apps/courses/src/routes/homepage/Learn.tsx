@@ -13,12 +13,13 @@ import {
   Button,
   ChakraProps,
 } from '@chakra-ui/core';
+// import { useNavigate } from 'react-router-dom';
+import { useSanity } from '@openmined/shared/data-access-sanity';
 
 import theme from '../../theme';
 import logo from '../../assets/logo.svg';
 import GridContainer from '../../components/GridContainer';
 import Modal from '../../components/Modal';
-import { useNavigate } from 'react-router-dom';
 
 const gradientOverlay: ChakraProps = {
   position: 'relative',
@@ -234,9 +235,29 @@ const Course = ({
   );
 };
 
-export default ({ title, description, courses }) => {
+export default ({ title, description }) => {
+  const { data, loading } = useSanity(
+    `*[_type == "course"] {
+      ...,
+      visual {
+        "default": default.asset -> url,
+        "full": full.asset -> url
+      }
+    }`
+  );
+
+  const order = [
+    'Privacy and Society',
+    'Foundations of Private Computation',
+    'Federated Learning Across Enterprises',
+    'Federated Learning on Mobile',
+  ];
+  const courses = data
+    ? data.sort((a, b) => order.indexOf(a.title) - order.indexOf(b.title))
+    : null;
+
   const [isHovered, setIsHovered] = useState(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [modalContent, setModalContent] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -282,16 +303,18 @@ export default ({ title, description, courses }) => {
             {description}
           </Text>
           <SimpleGrid columns={[1, null, 2, null, 4]} spacing={[4, null, 6]}>
-            {courses.map((course, i) => (
-              <Course
-                key={i}
-                {...course}
-                setIsHovered={setIsHovered}
-                isHovered={isHovered}
-                index={i + 1}
-                onClick={() => launchModal(course)}
-              />
-            ))}
+            {!loading &&
+              courses &&
+              courses.map((course, i) => (
+                <Course
+                  key={i}
+                  {...course}
+                  setIsHovered={setIsHovered}
+                  isHovered={isHovered}
+                  index={i + 1}
+                  onClick={() => launchModal(course)}
+                />
+              ))}
           </SimpleGrid>
         </GridContainer>
       </Box>

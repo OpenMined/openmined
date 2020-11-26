@@ -3,6 +3,7 @@ import React from 'react';
 // @ts-ignore
 import { unstable_createRoot } from 'react-dom';
 import { FirebaseAppProvider } from 'reactfire';
+import { SanityProvider } from '@openmined/shared/data-access-sanity';
 import { HelmetProvider } from 'react-helmet-async';
 import { ChakraProvider } from '@chakra-ui/core';
 import { SEOProvider } from '@openmined/shared/util-page';
@@ -37,6 +38,12 @@ const firebaseConfig =
         measurementId: process.env.NX_FIREBASE_DEV_MEASUREMENT_ID,
       };
 
+const sanityConfig = {
+  projectId: process.env.NX_SANITY_PROJECT_ID,
+  dataset: process.env.NX_SANITY_DATASET,
+  useCdn: true,
+};
+
 const metadata = {
   name: process.env.NX_NAME,
   short_name: process.env.NX_SHORT_NAME,
@@ -53,13 +60,15 @@ const root = document.getElementById('root');
 export const WrappedApp = () => (
   <React.StrictMode>
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <HelmetProvider>
-        <ChakraProvider theme={theme}>
-          <SEOProvider metadata={metadata}>
-            <App />
-          </SEOProvider>
-        </ChakraProvider>
-      </HelmetProvider>
+      <SanityProvider sanityConfig={sanityConfig}>
+        <HelmetProvider>
+          <ChakraProvider theme={theme}>
+            <SEOProvider metadata={metadata}>
+              <App />
+            </SEOProvider>
+          </ChakraProvider>
+        </HelmetProvider>
+      </SanityProvider>
     </FirebaseAppProvider>
   </React.StrictMode>
 );

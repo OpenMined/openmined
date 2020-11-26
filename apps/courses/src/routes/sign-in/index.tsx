@@ -2,13 +2,13 @@ import React from 'react';
 import { Box, Heading, Text, Flex } from '@chakra-ui/core';
 import Page from '@openmined/shared/util-page';
 
-import content from '../../content/homepage';
+import content from '../../content/sign-in';
 import GridContainer from '../../components/GridContainer';
 import Signin from '../../components/forms/users/SignIn';
 import waveform from '../../assets/waveform/waveform-bottom-warm.png';
 
 export default () => {
-  const { title, description } = content.signin;
+  const { title, description } = content;
 
   return (
     <Page title="Sign In">

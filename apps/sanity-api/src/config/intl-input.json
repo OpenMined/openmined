@@ -1,0 +1,21 @@
+{
+  "base": "en-US",
+  "languages": [
+    { "name": "en-US", "title": "English" },
+    { "name": "zh-CN", "title": "Chinese" },
+    { "name": "hi-IN", "title": "Hindi" },
+    { "name": "es-ES", "title": "Spanish" },
+    { "name": "fr-FR", "title": "French" },
+    { "name": "ar-AE", "title": "Arabic" },
+    { "name": "ru-RU", "title": "Russian" },
+    { "name": "pt-BR", "title": "Portuguese" },
+    { "name": "de-DE", "title": "German" },
+    { "name": "ja-JP", "title": "Japanese" },
+    { "name": "tr-TR", "title": "Turkish" },
+    { "name": "ko-KR", "title": "Korean" },
+    { "name": "vi-VN", "title": "Vietnamese" },
+    { "name": "it-IT", "title": "Italian" },
+    { "name": "th-TH", "title": "Thai" },
+    { "name": "fa-IR", "title": "Persian" }
+  ]
+}

@@ -8,15 +8,6 @@ import futureHumanity from '../assets/homepage/future-humanity.png';
 import unGlobal from '../assets/homepage/un-global.png';
 import openmined from '../assets/homepage/openmined.png';
 
-import pasDefault from '../assets/homepage/privacy-and-society-default.svg';
-import pasFull from '../assets/homepage/privacy-and-society-full.svg';
-import pcDefault from '../assets/homepage/private-computation-default.svg';
-import pcFull from '../assets/homepage/private-computation-full.svg';
-import elDefault from '../assets/homepage/enterprise-learning-default.svg';
-import elFull from '../assets/homepage/enterprise-learning-full.svg';
-import mlDefault from '../assets/homepage/mobile-learning-default.svg';
-import mlFull from '../assets/homepage/mobile-learning-full.svg';
-
 import star from '../assets/homepage/star.svg';
 import realWorld from '../assets/homepage/real-world.svg';
 import instructors from '../assets/homepage/instructors.svg';
@@ -74,96 +65,6 @@ export default {
     title: "What You'll Learn",
     description:
       "In this series of courses, you'll learn how privacy is impacting every industry and how to build real-world products with privacy-preserving AI technology.",
-    courses: [
-      {
-        title: 'Privacy and Society',
-        description:
-          "Privacy infrastructure is changing how information is managed in society. In this course, you'll learn how it creates both opportunity and disruption within nearly every corner of society and how you can join this next great wave of innovation.",
-        prerequisites: ['None'],
-        learnHow: [
-          'Understand how privacy is transforming the world',
-          'Learn how privacy-preserving AI can be used in products and services',
-        ],
-        project:
-          'Develop a business proposal or product spec using private AI technology.',
-        color: 'cyan.500',
-        visual: {
-          default: pasDefault,
-          full: pasFull,
-        },
-        cost: 'Free',
-        level: 'Beginner',
-        length: '6 hours',
-      },
-      {
-        title: 'Foundations of Private Computation',
-        description:
-          'Become a data scientist and statistician capable of studying data you do not own and cannot see. Learn every major privacy-preserving technique to an intermediate level, understand how they work together, and how you can use them to safely study data owned by another organization (such as another university, enterprise, or government) without ever seeing the underlying data yourself.',
-        prerequisites: [
-          'Beginner Python, or other programming languages',
-          'Experience with Numpy is helpful',
-        ],
-        learnHow: [
-          'Build privacy-preserving technologies from scratch',
-          'Use federated learning to work with protected data on remote devices',
-          'Understand the math behind encrypted computations',
-          'Use differential privacy budgeting with PyTorch models',
-        ],
-        project:
-          'Train a machine learning model on private data in a one-on-one session with the data owner.',
-        color: 'green.500',
-        visual: {
-          default: pcDefault,
-          full: pcFull,
-        },
-        cost: 'Free',
-        level: 'Intermediate',
-        length: '60 hours',
-      },
-      {
-        title: 'Federated Learning Across Enterprises',
-        description:
-          'Learn how to stand up a private data warehouse for facilitating private data analysis, and learn how to be a user of such a system to analyze sensitive data from multiple institutions at once.',
-        prerequisites: [
-          'Complete the Foundations of Private Computation Course',
-        ],
-        learnHow: [
-          'Share data in a private data warehouse',
-          'Access private data for statistical analysis or training machine learning models',
-        ],
-        project:
-          'Set up a private data warehouse, then train models on private data provided by other students.',
-        color: 'blue.500',
-        visual: {
-          default: elDefault,
-          full: elFull,
-        },
-        cost: 'Free',
-        level: 'Intermediate',
-        length: '40 hours',
-      },
-      {
-        title: 'Federated Learning on Mobile',
-        description:
-          'Learn how to build mobile apps that can train models across millions of devices using federated learning.',
-        prerequisites: [
-          'Complete the Foundations of Private Computation Course',
-        ],
-        learnHow: [
-          'Train AI models across multiple mobile devices using federated learning',
-        ],
-        project:
-          'Build a mobile app that uses federated learning to train a model across devices.',
-        color: 'orange.500',
-        visual: {
-          default: mlDefault,
-          full: mlFull,
-        },
-        cost: 'Free',
-        level: 'Intermediate',
-        length: '40 hours',
-      },
-    ],
   },
   slides: {
     title: 'Learn from the Best Minds in the Industry',

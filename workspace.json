@@ -273,6 +273,29 @@
           }
         }
       }
+    },
+    "shared-data-access-sanity": {
+      "root": "libs/shared/data-access-sanity",
+      "sourceRoot": "libs/shared/data-access-sanity/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/data-access-sanity/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/shared/data-access-sanity/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "files": [],
-  "include": ["../../node_modules/@sanity/types/lib/**/*.ts"],
+  "include": ["../../node_modules/@sanity/base/types/**/*.ts"],
+  "compilerOptions": {
+    "jsx": "react"
+  },
   "references": [
     {
       "path": "./tsconfig.app.json"

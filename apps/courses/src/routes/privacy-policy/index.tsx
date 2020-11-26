@@ -19,6 +19,8 @@ import Page from '@openmined/shared/util-page';
 import content from '../../content/privacy-policy';
 import GridContainer from '../../components/GridContainer';
 
+import { Link, animateScroll as scroll } from 'react-scroll';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import Footer from '../../components/Footer';
@@ -45,17 +47,21 @@ export default () => {
 
   const SIDEBAR_WIDTH = 280;
 
+  const openAccordionItem = (index) => {
+    setSectionIndex([...sectionIndex, index]);
+  };
+
   const toggleAccordionItem = (index) => {
     let isActive = sectionIndex.includes(index);
     if (isActive) {
       setSectionIndex(sectionIndex.filter((i) => i != index));
     } else {
-      setSectionIndex([...sectionIndex, index]);
+      openAccordionItem(index);
     }
   };
 
-  const scrollTop = () =>{
-    window.scrollTo({top: 0, behavior: 'smooth'});
+  const scrollTop = () => {
+    scroll.scrollToTop({ duration: 500, smooth: true });
   };
 
   return (
@@ -76,6 +82,7 @@ export default () => {
                 <Accordion index={sectionIndex} allowMultiple>
                   {sections.map((section, index) => (
                     <AccordionItem
+                      id={section.title.replace(/\s+/g, '-').toLowerCase()}
                       my={8}
                       onClick={() => toggleAccordionItem(index)}
                       key={section.title}
@@ -116,21 +123,27 @@ export default () => {
               <Box ml={8} position="fixed" width={SIDEBAR_WIDTH}>
                 <List marginTop={4} marginBottom={16} spacing={8}>
                   {sections.map((section, index) => (
-                    <ListItem
-                      key={section.title}
-                      onClick={() => toggleAccordionItem(index)}
-                      cursor="pointer"
-                    >
-                      <Flex alignItems="center">
-                        <CircledNumber
-                          backgroundColor="gray.800"
-                          mr="2rem"
-                          color="white"
-                          size="2rem"
-                          text={index + 1}
-                        />
-                        <Text color="gray.700">{section.title}</Text>
-                      </Flex>
+                    <ListItem key={section.title} cursor="pointer">
+                      <Link
+                        to={`accordion-button-${section.title
+                          .replace(/\s+/g, '-')
+                          .toLowerCase()}`}
+                        onClick={() => openAccordionItem(index)}
+                        smooth={true}
+                        offset={-150}
+                        duration={500}
+                      >
+                        <Flex alignItems="center">
+                          <CircledNumber
+                            backgroundColor="gray.800"
+                            mr="2rem"
+                            color="white"
+                            size="2rem"
+                            text={index + 1}
+                          />
+                          <Text color="gray.700">{section.title}</Text>
+                        </Flex>
+                      </Link>
                     </ListItem>
                   ))}
                 </List>
@@ -143,11 +156,13 @@ export default () => {
                 />
                 <Text fontSize="16px">{footer}</Text>
                 <Flex mt={16} mr={4} justify="flex-end">
-                  <Box cursor="pointer" onClick={scrollTop} color="indigo.500" textAlign="center">
-                    <Icon
-                      as={FontAwesomeIcon}
-                      icon={faChevronUp}
-                    />
+                  <Box
+                    cursor="pointer"
+                    onClick={scrollTop}
+                    color="indigo.500"
+                    textAlign="center"
+                  >
+                    <Icon as={FontAwesomeIcon} icon={faChevronUp} />
                     <Text>TOP</Text>
                   </Box>
                 </Flex>

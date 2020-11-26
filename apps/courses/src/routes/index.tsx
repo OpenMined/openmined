@@ -7,6 +7,7 @@ const Signup = lazy(() => import('./sign-up'));
 const Signin = lazy(() => import('./sign-in'));
 const AccountSettings = lazy(() => import('./account-settings'));
 const PrivacyPolicy = lazy(() => import('./privacy-policy'));
+const TermsOfService = lazy(() => import('./terms-of-service'));
 const NoMatch = lazy(() => import('./no-match'));
 
 const AuthRoute = (props) => {
@@ -28,6 +29,7 @@ export default () => (
     <UnauthRoute path="signin" element={<Signin />} />
     <AuthRoute path="settings" element={<AccountSettings />} />
     <UnauthRoute path="privacy-policy" element={<PrivacyPolicy />} />
+    <UnauthRoute path="terms-of-service" element={<TermsOfService />} />
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

@@ -16,7 +16,7 @@ import {
   Icon,
 } from '@chakra-ui/core';
 import Page from '@openmined/shared/util-page';
-import content from '../../content/privacy-policy';
+import content from '../../content/terms-of-service';
 import GridContainer from '../../components/GridContainer';
 
 import { Link, animateScroll as scroll } from 'react-scroll';
@@ -41,7 +41,7 @@ const CircledNumber = ({ active = false, text, ...props }) => (
 export default () => {
   const [sectionIndex, setSectionIndex] = useState([0]);
 
-  const { title, last_updated } = content.heading;
+  const { title, last_updated, disclaimer } = content.heading;
   const { sections } = content;
   const { footer } = content.sidebar;
 
@@ -65,18 +65,21 @@ export default () => {
   };
 
   return (
-    <Page title="Privacy Policy">
+    <Page title="Terms of Service">
       <Box position="relative" pb={[32, null, null, 40, 48]} height="100%">
         <GridContainer isInitial pt={{ lg: 8 }} pb={[16, null, null, 32]}>
-          <Flex direction={['column', null, null, 'row']}>
+          <Flex pr={[0, null, null, 32]} direction={['column', null, null, 'row']}>
             <Box mr={[0, null, null, 16]}>
-              <Box pt={16} mr={[0, null, null, 8]}>
+              <Box pt={16}>
                 <Heading as="h2" size="2xl" mb={4}>
                   {title}
                 </Heading>
                 <Text color="indigo.500" fontSize="md" fontFamily="mono">
                   Last Updated: {last_updated}
                 </Text>
+                <Box mt={8} px={8} py={4} bgColor="indigo.50" color="indigo.500"> 
+                  {disclaimer}
+                </Box>
               </Box>
               <Box pt={8}>
                 <Accordion index={sectionIndex} allowMultiple>

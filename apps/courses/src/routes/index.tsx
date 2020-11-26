@@ -7,6 +7,7 @@ const Signup = lazy(() => import('./sign-up'));
 const Signin = lazy(() => import('./sign-in'));
 const AccountSettings = lazy(() => import('./account-settings'));
 const NoMatch = lazy(() => import('./no-match'));
+const Search = lazy(() => import('./search'));
 
 const AuthRoute = (props) => {
   const user = useUser();
@@ -26,6 +27,7 @@ export default () => (
     <UnauthRoute path="signup" element={<Signup />} />
     <UnauthRoute path="signin" element={<Signin />} />
     <AuthRoute path="settings" element={<AccountSettings />} />
+    <Route path="search" element={<Search />} />
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

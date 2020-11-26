@@ -68,7 +68,7 @@ export default () => {
     <Page title="Privacy Policy">
       <Box position="relative" pb={[32, null, null, 40, 48]} height="100%">
         <GridContainer isInitial pt={{ lg: 8 }} pb={[16, null, null, 32]}>
-          <Flex direction={['column', null, null, 'row']}>
+          <Flex pr={[0, null, null, 32]} direction={['column', null, null, 'row']}>
             <Box mr={[0, null, null, 16]}>
               <Box pt={16} mr={[0, null, null, 8]}>
                 <Heading as="h2" size="2xl" mb={4}>

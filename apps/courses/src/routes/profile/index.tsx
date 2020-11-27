@@ -9,7 +9,6 @@ import {
   Text,
   Link,
   useToken,
-  Button,
   Stack,
   Divider,
 } from '@chakra-ui/core';
@@ -81,7 +80,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
 };
 
 export default () => {
-  const indigo50 = useToken('colors', 'indigo.50');
+  const gray50 = useToken('colors', 'gray.50');
   const user = useUser();
   const db = useFirestore();
   const { uid } = useParams();
@@ -98,7 +97,7 @@ export default () => {
     <Page
       title={name}
       description={dbUser.description}
-      body={{ style: `background: ${indigo50};` }}
+      body={{ style: `background: ${gray50};` }}
     >
       <Box
         position="relative"

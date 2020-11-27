@@ -190,6 +190,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         .set({
           first_name: firstName,
           last_name: lastName,
+          photo_url: authUser.user.photoURL,
         })
         .catch((error) => handleErrors(toast, error));
 

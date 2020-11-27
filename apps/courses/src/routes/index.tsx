@@ -6,6 +6,7 @@ const Homepage = lazy(() => import('./homepage'));
 const Signup = lazy(() => import('./sign-up'));
 const Signin = lazy(() => import('./sign-in'));
 const AccountSettings = lazy(() => import('./account-settings'));
+const Profile = lazy(() => import('./profile'));
 const NoMatch = lazy(() => import('./no-match'));
 
 const AuthRoute = (props) => {
@@ -26,6 +27,10 @@ export default () => (
     <UnauthRoute path="signup" element={<Signup />} />
     <UnauthRoute path="signin" element={<Signin />} />
     <AuthRoute path="settings" element={<AccountSettings />} />
+    <Route path="users/:uid" element={<Profile />} />
+    {/* <Route path="users">
+      <Route path=":uid" element={<Profile />} />
+    </Route> */}
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

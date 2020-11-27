@@ -15,7 +15,7 @@ import {
   Text,
 } from '@chakra-ui/core';
 import * as yup from 'yup';
-import { useAuth, useUser } from 'reactfire';
+import { useAuth, useFirestore, useUser } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
@@ -39,6 +39,7 @@ export default ({
 }: ManageAccountFormProps) => {
   const user = useUser();
   const auth = useAuth();
+  const db = useFirestore();
   const toast = useToast();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -106,13 +107,39 @@ export default ({
   const onLinkGithub = () =>
     auth.currentUser
       .linkWithPopup(githubProvider)
-      .then(() => onLinkSuccess('Github'))
+      .then((authUser) =>
+        db
+          .collection('users')
+          .doc(auth.currentUser.uid)
+          .set(
+            {
+              github: authUser.additionalUserInfo.profile.login,
+              github_access_token: authUser.credential.accessToken,
+            },
+            { merge: true }
+          )
+          .then(() => onLinkSuccess('Github'))
+          .catch((error) => handleErrors(toast, error))
+      )
       .catch((error) => handleErrors(toast, error));
 
   const onUnlinkGithub = () =>
     auth.currentUser
       .unlink('github.com')
-      .then(() => onUnlinkSuccess('Github'))
+      .then(() =>
+        db
+          .collection('users')
+          .doc(auth.currentUser.uid)
+          .set(
+            {
+              github: null,
+              github_access_token: null,
+            },
+            { merge: true }
+          )
+          .then(() => onUnlinkSuccess('Github'))
+          .catch((error) => handleErrors(toast, error))
+      )
       .catch((error) => handleErrors(toast, error));
 
   // TODO: Patrick, we need to make sure this actually deletes all the data associated with the user

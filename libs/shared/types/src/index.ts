@@ -5,6 +5,8 @@ export interface User {
   description?: string;
   website?: string;
   github?: string;
+  github_access_token?: string;
+  twitter?: string;
   skill_level?: string;
   primary_language?: string;
   city?: string;

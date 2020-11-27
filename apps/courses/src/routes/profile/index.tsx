@@ -14,7 +14,7 @@ import {
   Divider,
 } from '@chakra-ui/core';
 import Page from '@openmined/shared/util-page';
-import { useParams, Link as RRDLink } from 'react-router-dom';
+import { useParams, Link as RRDLink, Navigate } from 'react-router-dom';
 import { User } from '@openmined/shared/types';
 import { useUser, useFirestoreDocDataOnce, useFirestore } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,7 +24,7 @@ import {
   faCog,
   faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 import GridContainer from '../../components/GridContainer';
 import waveform from '../../assets/waveform/waveform-top-left-cool.png';
@@ -81,7 +81,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
 };
 
 export default () => {
-  const gray50 = useToken('colors', 'gray.50');
+  const indigo50 = useToken('colors', 'indigo.50');
   const user = useUser();
   const db = useFirestore();
   const { uid } = useParams();
@@ -92,11 +92,13 @@ export default () => {
   const isSameUser = user && uid === user.uid;
   const name = `${dbUser.first_name} ${dbUser.last_name}`;
 
+  if (!Object.keys(dbUser).length) return <Navigate to="/" />;
+
   return (
     <Page
       title={name}
       description={dbUser.description}
-      body={{ style: `background: ${gray50};` }}
+      body={{ style: `background: ${indigo50};` }}
     >
       <Box
         position="relative"
@@ -160,6 +162,13 @@ export default () => {
                     icon={faGithub}
                   />
                 )}
+                {dbUser.twitter && (
+                  <SocialItem
+                    title={`@${dbUser.twitter}`}
+                    href={`https://twitter.com/${dbUser.twitter}`}
+                    icon={faTwitter}
+                  />
+                )}
                 {dbUser.website && (
                   <SocialItem
                     title={dbUser.website}
@@ -185,7 +194,10 @@ export default () => {
                 </Box>
               )}
             </Flex>
-            <Box ml={{ lg: 12 }}>Other stuff</Box>
+            <Box mt={{ base: 8, lg: 0 }} ml={{ lg: 12 }}>
+              Finished courses and certificates go here!
+              {/* TODO: Patrick, we need to put the finished courses here with a link to the certificate ON the card, not as a separate tab like in the designs */}
+            </Box>
           </Flex>
         </GridContainer>
       </Box>

@@ -76,7 +76,7 @@ export default () => {
             <TabPanel>
               <StickyTabPanel title="Basic Information">
                 <BasicInformation
-                  onChangeEmail={() => setTabIndex(2)}
+                  onChangeEmailOrGithub={() => setTabIndex(2)}
                   onAddPassword={() => setTabIndex(1)}
                 />
               </StickyTabPanel>

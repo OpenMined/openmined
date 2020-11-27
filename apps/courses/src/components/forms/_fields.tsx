@@ -1,6 +1,3 @@
-import React from 'react';
-import { Link } from '@chakra-ui/core';
-
 import { countries, primaryLanguages, skillLevels, timezones } from './_data';
 
 export const firstNameField = (val = null) => ({
@@ -48,6 +45,39 @@ export const readOnlyEmailField = (val = null, helper) => ({
   type: 'read-only',
   label: 'Email Address',
   helper,
+});
+
+export const descriptionField = (val = null) => ({
+  defaultValue: val,
+  name: 'description',
+  type: 'text',
+  placeholder: 'Write a brief description about yourself...',
+  label: 'About You',
+});
+
+export const websiteField = (val = null) => ({
+  defaultValue: val,
+  name: 'website',
+  type: 'text',
+  placeholder: 'https://www.example.com',
+  label: 'Website',
+});
+
+export const readOnlyGithubField = (val = null, helper) => ({
+  defaultValue: val,
+  name: 'read-only-github',
+  type: 'read-only',
+  label: 'Github',
+  helper,
+});
+
+export const twitterField = (val = null) => ({
+  defaultValue: val,
+  name: 'twitter',
+  type: 'text',
+  left: '@',
+  placeholder: 'openminedorg',
+  label: 'Twitter',
 });
 
 export const skillLevelField = (val = null) => ({

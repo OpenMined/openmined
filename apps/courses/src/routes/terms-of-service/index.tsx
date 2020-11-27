@@ -12,7 +12,6 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  Circle,
   Icon,
 } from '@chakra-ui/core';
 import Page from '@openmined/shared/util-page';
@@ -24,22 +23,35 @@ import { Link, animateScroll as scroll } from 'react-scroll';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import Footer from '../../components/Footer';
+import CircledNumber from '../../components/CircledNumber';
 
-const CircledNumber = ({ active = false, text, ...props }) => (
-  <Circle
-    {...props}
-    backgroundColor={active ? 'gray.800' : props.backgroundColor}
-    borderColor={active ? 'gray.800' : props.borderColor}
-    color={active ? 'gray.50' : props.color}
-  >
-    <Box as="span" fontFamily="heading" fontWeight="500" fontSize="lg">
-      {text}
-    </Box>
-  </Circle>
+const SectionListItem = ({ content, index, onClick, ...props }) => (
+  <ListItem key={content.title} cursor="pointer" {...props}>
+    <Link
+      to={`accordion-button-${content.title
+        .replace(/\s+/g, '-')
+        .toLowerCase()}`}
+      onClick={() => onClick(index)}
+      smooth={true}
+      offset={-150}
+      duration={500}
+    >
+      <Flex alignItems="center">
+        <CircledNumber
+          backgroundColor="gray.800"
+          mr="2rem"
+          color="white"
+          size="2rem"
+          text={index + 1}
+        />
+        <Text color="gray.700">{content.title}</Text>
+      </Flex>
+    </Link>
+  </ListItem>
 );
 
 export default () => {
-  const [sectionIndex, setSectionIndex] = useState([0]);
+  const [sectionIndexes, setSectionIndexes] = useState([0]);
 
   const { title, last_updated, disclaimer } = content.heading;
   const { sections } = content;
@@ -48,13 +60,13 @@ export default () => {
   const SIDEBAR_WIDTH = 280;
 
   const openAccordionItem = (index) => {
-    setSectionIndex([...sectionIndex, index]);
+    setSectionIndexes([...sectionIndexes, index]);
   };
 
   const toggleAccordionItem = (index) => {
-    let isActive = sectionIndex.includes(index);
+    let isActive = sectionIndexes.includes(index);
     if (isActive) {
-      setSectionIndex(sectionIndex.filter((i) => i != index));
+      setSectionIndexes(sectionIndexes.filter((i) => i != index));
     } else {
       openAccordionItem(index);
     }
@@ -68,7 +80,10 @@ export default () => {
     <Page title="Terms of Service">
       <Box position="relative" pb={[32, null, null, 40, 48]} height="100%">
         <GridContainer isInitial pt={{ lg: 8 }} pb={[16, null, null, 32]}>
-          <Flex pr={[0, null, null, 32]} direction={['column', null, null, 'row']}>
+          <Flex
+            pr={[0, null, null, 32]}
+            direction={['column', null, null, 'row']}
+          >
             <Box mr={[0, null, null, 16]}>
               <Box pt={16} mr={[0, null, null, 8]}>
                 <Heading as="h2" size="2xl" mb={4}>
@@ -77,12 +92,18 @@ export default () => {
                 <Text color="indigo.500" fontSize="md" fontFamily="mono">
                   Last Updated: {last_updated}
                 </Text>
-                <Box mt={8} px={8} py={4} bgColor="indigo.50" color="indigo.500"> 
+                <Box
+                  mt={8}
+                  px={8}
+                  py={4}
+                  bgColor="indigo.50"
+                  color="indigo.500"
+                >
                   {disclaimer}
                 </Box>
               </Box>
               <Box pt={8}>
-                <Accordion index={sectionIndex} allowMultiple>
+                <Accordion index={sectionIndexes} allowMultiple>
                   {sections.map((section, index) => (
                     <AccordionItem
                       id={section.title.replace(/\s+/g, '-').toLowerCase()}
@@ -97,7 +118,7 @@ export default () => {
                           color="gray.600"
                           size="2.5rem"
                           mr="2.5rem"
-                          active={sectionIndex.includes(index)}
+                          active={sectionIndexes.includes(index)}
                           transition=".2s"
                           onClick={() => toggleAccordionItem(index)}
                           text={index + 1}
@@ -125,29 +146,12 @@ export default () => {
               <Divider zIndex={1} position="fixed" orientation="vertical" />
               <Box ml={8} position="fixed" width={SIDEBAR_WIDTH}>
                 <List marginTop={4} marginBottom={16} spacing={8}>
-                  {sections.map((section, index) => (
-                    <ListItem key={section.title} cursor="pointer">
-                      <Link
-                        to={`accordion-button-${section.title
-                          .replace(/\s+/g, '-')
-                          .toLowerCase()}`}
-                        onClick={() => openAccordionItem(index)}
-                        smooth={true}
-                        offset={-150}
-                        duration={500}
-                      >
-                        <Flex alignItems="center">
-                          <CircledNumber
-                            backgroundColor="gray.800"
-                            mr="2rem"
-                            color="white"
-                            size="2rem"
-                            text={index + 1}
-                          />
-                          <Text color="gray.700">{section.title}</Text>
-                        </Flex>
-                      </Link>
-                    </ListItem>
+                  {sections.map((section, i) => (
+                    <SectionListItem
+                      onClick={openAccordionItem}
+                      index={i}
+                      content={section}
+                    />
                   ))}
                 </List>
                 <Divider my={8} />

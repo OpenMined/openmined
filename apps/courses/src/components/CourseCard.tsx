@@ -3,31 +3,14 @@ import { Box, Text, Flex, Image, Heading } from '@chakra-ui/core';
 
 import theme from '../theme';
 
-export default ({
-  title,
-  visual,
-  cost,
-  level,
-  length,
-  setIsHovered,
-  isHovered,
-  index,
-  onClick,
-}) => {
-  const iAmHovered = isHovered === index;
-
+export default ({ content, onClick, ...props }) => {
+  const { title, visual, cost, level, length } = content;
   return (
     <Flex
+      role="group"
       onClick={onClick}
       direction="column"
       justify="space-between"
-      transform={
-        iAmHovered ? 'scale(1.05)' : isHovered ? 'scale(0.95)' : 'none'
-      }
-      style={{
-        filter:
-          !isHovered || (isHovered && !iAmHovered) ? 'grayscale(1)' : 'none',
-      }}
       transitionProperty="transform filter"
       transitionDuration="slow"
       transitionTimingFunction="ease-in-out"
@@ -37,8 +20,7 @@ export default ({
       overflow="hidden"
       borderRadius="md"
       boxShadow="lg"
-      onMouseEnter={() => setIsHovered(index)}
-      onMouseLeave={() => setIsHovered(null)}
+      {...props}
     >
       <Box
         position="absolute"
@@ -50,7 +32,8 @@ export default ({
         transitionProperty="opacity"
         transitionDuration="slow"
         transitionTimingFunction="ease-in-out"
-        opacity={iAmHovered ? 1 : 0}
+        opacity={0}
+        _groupHover={{ opacity: 1 }}
         bg={`linear-gradient(to right, ${theme.colors.black}, ${theme.colors.gray[700]})`}
       />
       <Flex p={6} direction="column" justifyContent="space-between" flex={1}>
@@ -82,7 +65,9 @@ export default ({
               transitionProperty="opacity"
               transitionDuration="slow"
               transitionTimingFunction="ease-in-out"
-              opacity={iAmHovered ? 0 : 1}
+              _groupHover={{
+                opacity: 0,
+              }}
             />
             <Image
               src={visual.full}
@@ -95,7 +80,8 @@ export default ({
               transitionProperty="opacity"
               transitionDuration="slow"
               transitionTimingFunction="ease-in-out"
-              opacity={iAmHovered ? 1 : 0}
+              opacity={0}
+              _groupHover={{ opacity: 1 }}
             />
           </Box>
           <Flex justify="space-between">

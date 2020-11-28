@@ -48,7 +48,7 @@ const App = () => {
         <Header />
         <Routes />
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
-        <Footer/>
+        <Footer />
       </Suspense>
     </Router>
   );

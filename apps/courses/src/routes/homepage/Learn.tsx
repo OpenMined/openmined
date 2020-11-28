@@ -137,6 +137,7 @@ export default ({ title, description }) => {
     }`
   );
 
+
   const order = [
     'Privacy and Society',
     'Foundations of Private Computation',
@@ -199,10 +200,22 @@ export default ({ title, description }) => {
               courses.map((course, i) => (
                 <Course
                   key={i}
-                  {...course}
-                  setIsHovered={setIsHovered}
-                  isHovered={isHovered}
-                  index={i + 1}
+                  content={course}
+                  onMouseEnter={() => setIsHovered(i)}
+                  onMouseLeave={() => setIsHovered(null)}
+                  transform={
+                    isHovered === i
+                      ? 'scale(1.05)'
+                      : isHovered !== null
+                      ? 'scale(0.95)'
+                      : 'none'
+                  }
+                  style={{
+                    filter:
+                      isHovered === null || (isHovered && !(isHovered === i))
+                        ? 'grayscale(1)'
+                        : 'none',
+                  }}
                   onClick={() => launchModal(course)}
                 />
               ))}

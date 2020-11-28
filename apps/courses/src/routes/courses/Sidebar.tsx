@@ -13,6 +13,24 @@ import {
   Box,
 } from '@chakra-ui/core';
 
+const SidebarItem = ({ title, children, ...props }) => {
+  return (
+    <AccordionItem key={title} border={0} {...props}>
+      <AccordionButton
+        borderBottomWidth={2}
+        borderBottomColor="gray.300"
+        borderBottomStyle="solid"
+      >
+        <Box flex="1" textAlign="left" fontSize="xl" fontWeight="bold">
+          {title}
+        </Box>
+        <AccordionIcon />
+      </AccordionButton>
+      <AccordionPanel pb={4}>{children}</AccordionPanel>
+    </AccordionItem>
+  );
+};
+
 export default ({
   skillLevel,
   setSkillLevel,
@@ -23,6 +41,8 @@ export default ({
   numCourses,
   clearFilters,
 }) => {
+  const skillLevelOptions = ['Beginner', 'Intermediate', 'Advanced'];
+
   const filters = [
     {
       title: 'Skill Level',
@@ -67,6 +87,17 @@ export default ({
         </Alert>
       )}
       <Accordion allowMultiple allowToggle>
+        {/* <SidebarItem title="Skill Level">
+          <RadioGroup onChange={setSkillLevel} value={skillLevel}>
+            <Stack>
+              {skillLevelOptions.map((item) => (
+                <Radio key={item} value={item}>
+                  {item}
+                </Radio>
+              ))}
+            </Stack>
+          </RadioGroup>
+        </SidebarItem> */}
         {filters.map((filter) => (
           <AccordionItem key={filter.title} border={0}>
             <AccordionButton

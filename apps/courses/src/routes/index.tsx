@@ -3,10 +3,11 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useUser } from 'reactfire';
 
 const Homepage = lazy(() => import('./homepage'));
-const Signup = lazy(() => import('./sign-up'));
-const Signin = lazy(() => import('./sign-in'));
-const AccountSettings = lazy(() => import('./account-settings'));
-const Profile = lazy(() => import('./profile'));
+const Signup = lazy(() => import('./users/sign-up'));
+const Signin = lazy(() => import('./users/sign-in'));
+const Settings = lazy(() => import('./users/settings'));
+const Profile = lazy(() => import('./users/profile'));
+const CourseOverview = lazy(() => import('./courses/overview'));
 const NoMatch = lazy(() => import('./no-match'));
 
 const AuthRoute = (props) => {
@@ -26,11 +27,14 @@ export default () => (
     <Route path="/" element={<Homepage />} />
     <UnauthRoute path="signup" element={<Signup />} />
     <UnauthRoute path="signin" element={<Signin />} />
-    <AuthRoute path="settings" element={<AccountSettings />} />
-    <Route path="users/:uid" element={<Profile />} />
-    {/* <Route path="users">
+    <Route path="users">
+      <Route path="/" element={<Navigate to="/" />} />
+      <AuthRoute path="settings" element={<Settings />} />
       <Route path=":uid" element={<Profile />} />
-    </Route> */}
+    </Route>
+    <Route path="courses">
+      <Route path=":slug" element={<CourseOverview />} />
+    </Route>
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

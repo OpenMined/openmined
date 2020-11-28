@@ -199,7 +199,7 @@ export default () => {
                   <Text color="gray.700">Profile</Text>
                 </MenuItem>
               )}
-              <MenuItem as={RRDLink} to="/settings">
+              <MenuItem as={RRDLink} to="/users/settings">
                 <Icon
                   as={FontAwesomeIcon}
                   icon={faCog}

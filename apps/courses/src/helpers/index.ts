@@ -35,3 +35,14 @@ export const handleErrors = (toast, error) =>
     description: error.message,
     status: 'error',
   });
+
+export const coursesProjection = `
+{
+  ...,
+  "slug": slug.current,
+  visual {
+    "default": default.asset -> url,
+    "full": full.asset -> url
+  }
+}
+`;

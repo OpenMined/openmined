@@ -20,7 +20,6 @@ import { useSanity } from '@openmined/shared/data-access-sanity';
 
 import CourseCard from '../../components/CourseCard';
 import Sidebar from './Sidebar';
-import Footer from './Footer';
 
 const _courses = [
   {
@@ -159,17 +158,12 @@ export default () => {
   const filterCourses = () => {
     console.log('called everytime any of the filters are changed');
     let filteredCourses = _courses || [];
-    /*
-		These are some dummy filter conditions set for testing various scenarios, like when the filters return an
-		empty array, or some part of it
-		*/
     if (skillLevel === 'Beginner') filteredCourses = [];
     else if (topic === 'Topic One')
       filteredCourses = filteredCourses.slice(0, 2);
     return filteredCourses;
   };
 
-  // re-evaluates when any dependency in the array changes
   const courses = useMemo(filterCourses, [
     skillLevel,
     topic,
@@ -203,7 +197,7 @@ export default () => {
   };
 
   return (
-    <Page title="Search">
+    <Page title="Courses">
       <Box pt={150} px={3} bg="gray.50">
         <Flex justifyContent="space-around" flexDirection={['column', 'row']}>
           <Box w={['100%', '50%', '40%', '30%']} px={[8, 8, 8, 16]}>
@@ -298,9 +292,8 @@ export default () => {
               )}
             </SimpleGrid>
           </Box>
-        </Flex>
+        </Flex> 
       </Box>
-      <Footer />
     </Page>
   );
 };

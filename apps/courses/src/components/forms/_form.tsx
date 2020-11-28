@@ -222,10 +222,11 @@ export default ({
         isInvalid={hasErrors}
         mt={isFirst ? 0 : spacing}
       >
-        <Flex align="center" mb={2}>
+        <Flex align="center" wrap="wrap" mb={2}>
           {label && (
             <FormLabel
               mb={0}
+              mr={6}
               htmlFor={input.name}
               opacity={label === 'BLANK' ? 0 : 1}
               display={label === 'BLANK' ? ['none', 'block'] : 'block'}
@@ -233,7 +234,7 @@ export default ({
               {label}
             </FormLabel>
           )}
-          {helper && helper({ ml: 2, fontSize: 'sm' })}
+          {helper && helper({ fontSize: 'sm' })}
         </Flex>
         {createInput(input, register, control)}
         {hasErrors && (

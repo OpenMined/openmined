@@ -16,7 +16,12 @@ import {
   Text,
   MenuDivider,
 } from '@chakra-ui/core';
-import { useAuth, useUser } from 'reactfire';
+import {
+  useAuth,
+  useFirestore,
+  useUser,
+  useFirestoreDocDataOnce,
+} from 'reactfire';
 import { Link as RRDLink } from 'react-router-dom';
 import useToast, { toastConfig } from './Toast';
 import useScrollPosition from '@react-hook/window-scroll';
@@ -28,6 +33,7 @@ import {
   faCog,
   faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
+import { User } from '@openmined/shared/types';
 
 import GridContainer from './GridContainer';
 
@@ -105,6 +111,7 @@ const createLinks = (
 export default () => {
   const user = useUser();
   const auth = useAuth();
+  const db = useFirestore();
   const toast = useToast();
   const isLoggedIn = !!user;
 
@@ -118,9 +125,14 @@ export default () => {
     else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
   }, [scrollY, isScrolled]);
 
-  const userAvatar = forwardRef((props, ref) => (
-    <Avatar ref={ref} {...props} src={user.photoURL} cursor="pointer" />
-  ));
+  const userAvatar = forwardRef((props, ref) => {
+    const dbUserRef = db.collection('users').doc(user.uid);
+    const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+
+    return (
+      <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
+    );
+  });
 
   // TODO: Patrick, these are the links we will have until this website goes live
   let LEFT_LINKS: LinkProps[], RIGHT_LINKS: LinkProps[];

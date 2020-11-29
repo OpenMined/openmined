@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Box,
-  SimpleGrid,
   Text,
   Button,
   Flex,

@@ -98,9 +98,10 @@ export default ({
       options: ['Python', 'Javascript', 'Scala', 'R', 'SQL', 'Julia'],
     },
   ];
-  
-  const numFilters = filters.filter((filter) => !(filter.value.length===0)).length;
-  
+
+  const numFilters = filters.filter((filter) => !(filter.value.length === 0))
+    .length;
+
   return (
     <>
       {numFilters !== 0 && (

@@ -34,7 +34,7 @@ export default () => (
       <Route path=":uid" element={<Profile />} />
     </Route>
     <Route path="courses">
-      <Route path="/" element={<Courses/>} />
+      <Route path="/" element={<Courses />} />
       <Route path=":slug" element={<CourseOverview />} />
     </Route>
     <Route path="*" element={<NoMatch />} />

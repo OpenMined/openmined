@@ -118,7 +118,7 @@ export default () => {
                 list="courses"
                 borderRight={0}
                 color="gray.800"
-                _placeholder={{ color: "gray.600" }}
+                _placeholder={{ color: 'gray.600' }}
               />
               <InputRightAddon
                 children={<FontAwesomeIcon color={gray600} icon={faSearch} />}

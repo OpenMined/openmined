@@ -28,12 +28,8 @@ node_modules
 .sass-cache
 connect.lock
 coverage
-libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
 typings
-firebase-debug.log
+*.log
 .firebase/
 
 # System Files

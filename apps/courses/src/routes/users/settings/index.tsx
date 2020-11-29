@@ -15,12 +15,12 @@ import { useUser } from 'reactfire';
 
 import Page from '@openmined/shared/util-page';
 
-import GridContainer from '../../components/GridContainer';
+import GridContainer from '../../../components/GridContainer';
 
-import BasicInformation from '../../components/forms/users/BasicInformation';
-import ChangePassword from '../../components/forms/users/ChangePassword';
-import AddPassword from '../../components/forms/users/AddPassword';
-import ManageAccount from '../../components/forms/users/ManageAccount';
+import BasicInformation from '../../../components/forms/users/BasicInformation';
+import ChangePassword from '../../../components/forms/users/ChangePassword';
+import AddPassword from '../../../components/forms/users/AddPassword';
+import ManageAccount from '../../../components/forms/users/ManageAccount';
 
 // TODO: Patrick, add the ability to add, remove, and replace an avatar to BasicInformation (once the profile page is done)
 

@@ -29,7 +29,7 @@ export default ({ ...props }) => {
   return (
     <Box
       position="relative"
-      zIndex={10}
+      zIndex={2}
       bg="gray.900"
       color="white"
       py={8}

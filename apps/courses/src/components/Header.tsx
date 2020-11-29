@@ -199,7 +199,7 @@ export default () => {
                   <Text color="gray.700">Profile</Text>
                 </MenuItem>
               )}
-              <MenuItem as={RRDLink} to="/settings">
+              <MenuItem as={RRDLink} to="/users/settings">
                 <Icon
                   as={FontAwesomeIcon}
                   icon={faCog}
@@ -270,7 +270,7 @@ export default () => {
       transitionTimingFunction="ease-in-out"
       bg={isScrolled ? 'gray.900' : 'white'}
       boxShadow={{ base: 'md', [BREAK]: 'none' }}
-      zIndex={1}
+      zIndex={3}
     >
       <GridContainer>
         <Flex as="nav" align="center" justify="space-between" wrap="wrap">

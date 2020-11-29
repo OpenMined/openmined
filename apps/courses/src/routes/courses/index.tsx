@@ -12,17 +12,23 @@ import {
   TagLabel,
   TagCloseButton,
   Wrap,
+  useToken,
 } from '@chakra-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import Page from '@openmined/shared/util-page';
 import { useSanity } from '@openmined/shared/data-access-sanity';
+import Page from '@openmined/shared/util-page';
 
 import Course from '../../components/CourseCard';
 import Sidebar from './Sidebar';
 
+import { coursesProjection } from '../../helpers';
+import GridContainer from '../../components/GridContainer';
+
 export default () => {
   const TAG_BG_COLOR = 'rgba(0, 162, 183, 0.25)';
+  const gray50 = useToken('colors', 'gray.50');
+  const gray600 = useToken('colors', 'gray.600');
 
   const [skillLevel, setSkillLevel] = useState('');
   const [topics, setTopics] = useState([]);
@@ -31,13 +37,7 @@ export default () => {
   const currKeyword = useRef();
 
   const { data, loading } = useSanity(
-    `*[_type == "course"] {
-      ...,
-      visual {
-        "default": default.asset -> url,
-        "full": full.asset -> url
-      }
-    }`
+    `*[_type == "course"] ${coursesProjection}`
   );
 
   const courseFilter = (course) => {
@@ -45,8 +45,7 @@ export default () => {
       hasTopic = true,
       hasLanguages = true;
 
-    if (skillLevel && course.skillLevel)
-      hasSkillLevel = skillLevel === course.level;
+    if (skillLevel && course.level) hasSkillLevel = skillLevel === course.level;
     if (topics && course.topics)
       hasTopic = topics.some((topic) => course.topics.includes(topic));
     if (languages && course.languages)
@@ -85,8 +84,8 @@ export default () => {
   };
 
   return (
-    <Page title="Courses">
-      <Box pt={150} px={3} bg="gray.50">
+    <Page title="Courses" body={{ style: `background: ${gray50};` }}>
+      <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
         <Flex justifyContent="space-around" flexDirection={['column', 'row']}>
           <Box w={['100%', '50%', '40%', '30%']} px={[8, 8, 8, 16]}>
             <Sidebar
@@ -102,27 +101,28 @@ export default () => {
               }}
             />
           </Box>
-          <Box w={['100%', '70%']} px={[8, 10]}>
+          <Box w={['100%', '70%']} px={[8, 0]}>
             <InputGroup
               w={['100%', '70%']}
-              px={2}
+              px={[2, 0]}
               py={[2, null]}
               mb={4}
               justifyContent={['center', null]}
+              colorScheme="cyan"
+              borderColor="gray.300"
             >
               <Input
                 ref={currKeyword}
                 onKeyUp={setCurrKeyword}
                 placeholder="Search courses"
                 list="courses"
-                borderColor="gray.500"
                 borderRight={0}
-                color="gray.500"
+                color="gray.800"
+                _placeholder={{ color: "gray.600" }}
               />
               <InputRightAddon
-                children={<FontAwesomeIcon icon={faSearch} />}
+                children={<FontAwesomeIcon color={gray600} icon={faSearch} />}
                 bg="transparent"
-                borderColor="gray.500"
                 borderLeft={0}
               />
             </InputGroup>
@@ -180,7 +180,7 @@ export default () => {
             </SimpleGrid>
           </Box>
         </Flex>
-      </Box>
+      </GridContainer>
     </Page>
   );
 };

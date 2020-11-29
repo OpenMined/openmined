@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Text, Flex, Image, Heading } from '@chakra-ui/core';
+import { Link } from 'react-router-dom';
 
 import theme from '../theme';
 
 export default ({ content, onClick, ...props }) => {
-  const { title, visual, cost, level, length } = content;
+  const { title, visual, cost, level, length, slug } = content;
   return (
     <Flex
       role="group"
+      as={Link}
+      to={`/courses/${slug}`}
       onClick={onClick}
       direction="column"
       justify="space-between"

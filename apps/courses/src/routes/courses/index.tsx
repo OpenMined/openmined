@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Flex,
   Box,
@@ -22,11 +22,12 @@ import Course from '../../components/CourseCard';
 import Sidebar from './Sidebar';
 
 export default () => {
+  const TAG_BG_COLOR = 'rgba(0, 162, 183, 0.25)';
+
   const [skillLevel, setSkillLevel] = useState('');
-  const [topic, setTopic] = useState('');
-  const [language, setLanguage] = useState('');
+  const [topics, setTopics] = useState([]);
+  const [languages, setLanguages] = useState([]);
   const [keywords, setKeywords] = useState([]);
-  const [isHovered, setIsHovered] = useState(null);
   const currKeyword = useRef();
 
   const { data, loading } = useSanity(
@@ -39,15 +40,24 @@ export default () => {
     }`
   );
 
-  const courses = data
-    ? data.filter((course) => {
-        return (
-          (skillLevel ? skillLevel === course.level : true) &&
-          (topic ? topic === course.topic : true) &&
-          (language ? language === course.language : true)
-        );
-      })
-    : [];
+  const courseFilter = (course) => {
+    let hasSkillLevel = true,
+      hasTopic = true,
+      hasLanguages = true;
+
+    if (skillLevel && course.skillLevel)
+      hasSkillLevel = skillLevel === course.level;
+    if (topics && course.topics)
+      hasTopic = topics.some((topic) => course.topics.includes(topic));
+    if (languages && course.languages)
+      hasLanguages = languages.some((language) =>
+        course.languages.includes(language)
+      );
+
+    return hasSkillLevel && hasTopic && hasLanguages;
+  };
+
+  const courses = data ? data.filter((course) => courseFilter(course)) : [];
 
   const setCurrKeyword = (e) => {
     if (currKeyword.current === undefined) return;
@@ -70,8 +80,8 @@ export default () => {
   };
   const clearFilters = () => {
     setSkillLevel('');
-    setTopic('');
-    setLanguage('');
+    setTopics([]);
+    setLanguages([]);
   };
 
   return (
@@ -83,10 +93,10 @@ export default () => {
               {...{
                 skillLevel,
                 setSkillLevel,
-                topic,
-                setTopic,
-                language,
-                setLanguage,
+                topics,
+                setTopics,
+                languages,
+                setLanguages,
                 clearFilters,
                 numCourses: courses.length,
               }}
@@ -135,9 +145,11 @@ export default () => {
                       key={keyword}
                       borderRadius="full"
                       variant="solid"
-                      colorScheme="green"
+                      colorScheme="cyan"
+                      bgColor={TAG_BG_COLOR}
+                      color="cyan.800"
                     >
-                      <TagLabel>{keyword}</TagLabel>
+                      <TagLabel opacity={1}>{keyword}</TagLabel>
                       <TagCloseButton onClick={() => removeKeyword(index)} />
                     </Tag>
                   ))}
@@ -163,11 +175,7 @@ export default () => {
               {!loading &&
                 courses &&
                 courses.map((course, i) => (
-                  <Course
-                    key={i}
-                    content={course}
-                    onClick={console.log}
-                  />
+                  <Course key={i} content={course} onClick={console.log} />
                 ))}
             </SimpleGrid>
           </Box>

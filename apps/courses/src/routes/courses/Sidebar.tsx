@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Accordion,
   AccordionItem,
@@ -11,9 +11,20 @@ import {
   Alert,
   Button,
   Box,
+  Text,
+  Checkbox,
+  CheckboxGroup,
+  VStack,
 } from '@chakra-ui/core';
 
-const SidebarItem = ({ title, children, ...props }) => {
+const SidebarItem = ({
+  title,
+  value,
+  setter,
+  options,
+  multiple = false,
+  ...props
+}) => {
   return (
     <AccordionItem key={title} border={0} {...props}>
       <AccordionButton
@@ -26,7 +37,29 @@ const SidebarItem = ({ title, children, ...props }) => {
         </Box>
         <AccordionIcon />
       </AccordionButton>
-      <AccordionPanel pb={4}>{children}</AccordionPanel>
+      <AccordionPanel pb={4}>
+        {multiple ? (
+          <CheckboxGroup colorScheme="cyan" onChange={setter} value={value}>
+            <VStack align="flex-start">
+              {options.map((item) => (
+                <Checkbox key={item} value={item}>
+                  {item}
+                </Checkbox>
+              ))}
+            </VStack>
+          </CheckboxGroup>
+        ) : (
+          <RadioGroup colorScheme="cyan" onChange={setter} value={value}>
+            <Stack>
+              {options.map((item) => (
+                <Radio key={item} value={item}>
+                  {item}
+                </Radio>
+              ))}
+            </Stack>
+          </RadioGroup>
+        )}
+      </AccordionPanel>
     </AccordionItem>
   );
 };
@@ -34,14 +67,14 @@ const SidebarItem = ({ title, children, ...props }) => {
 export default ({
   skillLevel,
   setSkillLevel,
-  topic,
-  setTopic,
-  language,
-  setLanguage,
+  topics,
+  setTopics,
+  languages,
+  setLanguages,
   numCourses,
   clearFilters,
 }) => {
-  const skillLevelOptions = ['Beginner', 'Intermediate', 'Advanced'];
+  const ALERT_BG_COLOR = 'rgba(0, 162, 183, 0.25)';
 
   const filters = [
     {
@@ -52,14 +85,16 @@ export default ({
     },
     {
       title: 'Topic',
-      value: topic,
-      setter: setTopic,
+      multiple: true,
+      value: topics,
+      setter: setTopics,
       options: ['Topic One', 'Topic Two', 'Topic Three'],
     },
     {
       title: 'Language',
-      value: language,
-      setter: setLanguage,
+      multiple: true,
+      value: languages,
+      setter: setLanguages,
       options: ['Python', 'Javascript', 'Scala', 'R', 'SQL', 'Julia'],
     },
   ];
@@ -73,11 +108,17 @@ export default ({
           fontWeight="bold"
           flexDirection="column"
           alignItems="start"
-          mb={8}
+          bgColor={ALERT_BG_COLOR}
+          borderRadius={4}
+          color="cyan.800"
+          mb={4}
         >
-          {numCourses} results
+          <Text mb={4} color="cyan.800">
+            {' '}
+            {numCourses} results
+          </Text>
           <Button
-            colorScheme="teal"
+            color="cyan.800"
             variant="link"
             onClick={clearFilters}
             textDecoration="underline"
@@ -87,41 +128,8 @@ export default ({
         </Alert>
       )}
       <Accordion allowMultiple allowToggle>
-        {/* <SidebarItem title="Skill Level">
-          <RadioGroup onChange={setSkillLevel} value={skillLevel}>
-            <Stack>
-              {skillLevelOptions.map((item) => (
-                <Radio key={item} value={item}>
-                  {item}
-                </Radio>
-              ))}
-            </Stack>
-          </RadioGroup>
-        </SidebarItem> */}
         {filters.map((filter) => (
-          <AccordionItem key={filter.title} border={0}>
-            <AccordionButton
-              borderBottomWidth={2}
-              borderBottomColor="gray.300"
-              borderBottomStyle="solid"
-            >
-              <Box flex="1" textAlign="left" fontSize="xl" fontWeight="bold">
-                {filter.title}
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-            <AccordionPanel pb={4}>
-              <RadioGroup onChange={filter.setter} value={filter.value}>
-                <Stack>
-                  {filter.options.map((item) => (
-                    <Radio key={item} value={item}>
-                      {item}
-                    </Radio>
-                  ))}
-                </Stack>
-              </RadioGroup>
-            </AccordionPanel>
-          </AccordionItem>
+          <SidebarItem key={filter.title} title="Skill Level" {...filter} />
         ))}
       </Accordion>
     </>

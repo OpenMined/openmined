@@ -52,6 +52,7 @@
     "firebase-admin": "^9.3.0",
     "firebase-functions": "^3.11.0",
     "framer-motion": "^2.9.4",
+    "fuse.js": "^6.4.3",
     "history": "^5.0.0",
     "prop-types": "^15.7",
     "react": "^0.0.0-experimental-4ead6b530",

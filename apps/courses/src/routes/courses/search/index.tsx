@@ -71,7 +71,7 @@ export default () => {
 
   useEffect(() => {
     setSearchData(filterData(data));
-  }, [data]);
+  }, [data, filterData]);
 
   const filterData = (data) =>
     data ? data.filter((course) => courseFilter(course)) : [];

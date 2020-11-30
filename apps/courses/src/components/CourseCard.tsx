@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import theme from '../theme';
 
-export default ({ content, onClick, ...props }) => {
+export default ({ content, ...props }) => {
   const { title, visual, cost, level, length, slug } = content;
 
   const absoluteOpacityStyles: ChakraProps = {
@@ -23,7 +23,6 @@ export default ({ content, onClick, ...props }) => {
       role="group"
       as={Link}
       to={`/courses/${slug}`}
-      onClick={onClick}
       direction="column"
       justify="space-between"
       transitionProperty="transform filter"

@@ -7,26 +7,27 @@ import {
   InputRightAddon,
   InputGroup,
   Text,
-  HStack,
   Tag,
   TagLabel,
   TagCloseButton,
   Wrap,
   useToken,
+  Stack,
 } from '@chakra-ui/core';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
 import { useSanity } from '@openmined/shared/data-access-sanity';
 import Page from '@openmined/shared/util-page';
 
-import Course from '../../components/CourseCard';
 import Sidebar from './Sidebar';
 
-import { coursesProjection } from '../../helpers';
 import GridContainer from '../../components/GridContainer';
+import Course from '../../components/CourseCard';
+import { coursesProjection } from '../../helpers';
 
 export default () => {
-  const TAG_BG_COLOR = 'rgba(0, 162, 183, 0.25)';
   const gray50 = useToken('colors', 'gray.50');
   const gray600 = useToken('colors', 'gray.600');
 
@@ -36,22 +37,48 @@ export default () => {
   const [keywords, setKeywords] = useState([]);
   const currKeyword = useRef();
 
+  const filters = [
+    {
+      title: 'Skill Level',
+      value: skillLevel,
+      setter: setSkillLevel,
+      options: ['Beginner', 'Intermediate', 'Advanced'],
+    },
+    {
+      title: 'Topic',
+      multiple: true,
+      value: topics,
+      setter: setTopics,
+      options: ['Topic One', 'Topic Two', 'Topic Three'],
+    },
+    {
+      title: 'Language',
+      multiple: true,
+      value: languages,
+      setter: setLanguages,
+      options: ['Python', 'Javascript', 'Scala', 'R', 'SQL', 'Julia'],
+    },
+  ];
+
   const { data, loading } = useSanity(
     `*[_type == "course"] ${coursesProjection}`
   );
 
   const courseFilter = (course) => {
-    let hasSkillLevel = true,
-      hasTopic = true,
-      hasLanguages = true;
+    const NO_FILTER = true;
 
-    if (skillLevel && course.level) hasSkillLevel = skillLevel === course.level;
-    if (topics && course.topics)
-      hasTopic = topics.some((topic) => course.topics.includes(topic));
-    if (languages && course.languages)
-      hasLanguages = languages.some((language) =>
-        course.languages.includes(language)
-      );
+    const hasSkillLevel =
+      skillLevel && course.level ? skillLevel === course.level : NO_FILTER;
+
+    const hasTopic =
+      topics && course.topics
+        ? topics.some((topic) => course.topics.includes(topic))
+        : NO_FILTER;
+
+    const hasLanguages =
+      languages && course.languages
+        ? languages.some((language) => course.languages.includes(language))
+        : NO_FILTER;
 
     return hasSkillLevel && hasTopic && hasLanguages;
   };
@@ -59,17 +86,22 @@ export default () => {
   const courses = data ? data.filter((course) => courseFilter(course)) : [];
 
   const setCurrKeyword = (e) => {
-    if (currKeyword.current === undefined) return;
+    if (!currKeyword.current) return;
+
     // @ts-ignore (already checked for undefined case)
     const val = currKeyword.current!.value;
+
     if (val === '') return;
+
     if (e.keyCode === 13) {
       if (!keywords.includes(val)) setKeywords([val, ...keywords]);
       // @ts-ignore (already checked for undefined case)
       currKeyword.current.value = '';
+
       return;
     }
   };
+
   const removeKeyword = (keywordIndex) => {
     setKeywords((prev) => {
       const temp = [...prev];
@@ -77,11 +109,14 @@ export default () => {
       return temp;
     });
   };
+
   const clearFilters = () => {
     setSkillLevel('');
     setTopics([]);
     setLanguages([]);
   };
+
+  if (loading) return null;
 
   return (
     <Page title="Courses" body={{ style: `background: ${gray50};` }}>
@@ -89,16 +124,9 @@ export default () => {
         <Flex justifyContent="space-around" flexDirection={['column', 'row']}>
           <Box w={['100%', '50%', '40%', '30%']} px={[8, 8, 8, 16]}>
             <Sidebar
-              {...{
-                skillLevel,
-                setSkillLevel,
-                topics,
-                setTopics,
-                languages,
-                setLanguages,
-                clearFilters,
-                numCourses: courses.length,
-              }}
+              filters={filters}
+              numCourses={courses.length}
+              clearFilters={clearFilters}
             />
           </Box>
           <Box w={['100%', '70%']} px={[8, 0]}>
@@ -117,8 +145,6 @@ export default () => {
                 placeholder="Search courses"
                 list="courses"
                 borderRight={0}
-                color="gray.800"
-                _placeholder={{ color: 'gray.600' }}
               />
               <InputRightAddon
                 children={<FontAwesomeIcon color={gray600} icon={faSearch} />}
@@ -126,27 +152,16 @@ export default () => {
                 borderLeft={0}
               />
             </InputGroup>
-            <datalist id="courses">
-              {courses &&
-                courses.map((course, index) => (
-                  <option
-                    key={index}
-                    style={{ padding: 20 }}
-                    value={course.title}
-                  />
-                ))}
-            </datalist>
             {keywords.length !== 0 && (
-              <HStack px={2} spacing={4}>
+              <Stack direction="row" spacing={4}>
                 <Wrap>
                   {keywords.map((keyword, index) => (
                     <Tag
                       size="lg"
                       key={keyword}
                       borderRadius="full"
-                      variant="solid"
                       colorScheme="cyan"
-                      bgColor={TAG_BG_COLOR}
+                      variant="subtle"
                       color="cyan.800"
                     >
                       <TagLabel opacity={1}>{keyword}</TagLabel>
@@ -154,7 +169,7 @@ export default () => {
                     </Tag>
                   ))}
                 </Wrap>
-              </HStack>
+              </Stack>
             )}
             {courses.length === 0 && (
               <Box py={4}>
@@ -172,10 +187,9 @@ export default () => {
               spacing={[4, null, 6]}
               color="white"
             >
-              {!loading &&
-                courses &&
+              {courses &&
                 courses.map((course, i) => (
-                  <Course key={i} content={course} onClick={console.log} />
+                  <Course key={i} content={course} />
                 ))}
             </SimpleGrid>
           </Box>

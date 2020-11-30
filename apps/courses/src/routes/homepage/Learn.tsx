@@ -23,6 +23,8 @@ export default ({ title, description }) => {
 
   const [isHovered, setIsHovered] = useState(null);
 
+  if (loading) return null;
+  
   return (
     <Box bg="gray.900" color="white" py={[16, null, null, 32]}>
       <GridContainer>
@@ -38,8 +40,7 @@ export default ({ title, description }) => {
           {description}
         </Text>
         <SimpleGrid columns={[1, null, 2, null, 4]} spacing={[4, null, 6]}>
-          {!loading &&
-            courses &&
+          {courses &&
             courses.map((course, i) => (
               <Course
                 key={i}
@@ -59,7 +60,6 @@ export default ({ title, description }) => {
                       ? 'grayscale(1)'
                       : 'none',
                 }}
-                onClick={console.log}
               />
             ))}
         </SimpleGrid>

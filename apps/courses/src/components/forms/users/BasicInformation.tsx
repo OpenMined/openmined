@@ -5,7 +5,12 @@ import { useUser, useFirestore, useFirestoreDocData, useAuth } from 'reactfire';
 import { User } from '@openmined/shared/types';
 
 import Form from '../_form';
-import { requiredString, optionalString, optionalItem } from '../_validation';
+import {
+  requiredString,
+  optionalString,
+  optionalItem,
+  optionalUrl,
+} from '../_validation';
 import {
   readOnlyEmailField,
   firstNameField,
@@ -15,6 +20,10 @@ import {
   cityField,
   countryField,
   timezoneField,
+  descriptionField,
+  websiteField,
+  readOnlyGithubField,
+  twitterField,
 } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
@@ -23,13 +32,13 @@ import { countries, primaryLanguages, skillLevels, timezones } from '../_data';
 
 interface BasicInformationFormProps extends BoxProps {
   callback?: () => void;
-  onChangeEmail: () => void;
+  onChangeEmailOrGithub: () => void;
   onAddPassword: () => void;
 }
 
 export default ({
   callback,
-  onChangeEmail,
+  onChangeEmailOrGithub,
   onAddPassword,
   ...props
 }: BasicInformationFormProps) => {
@@ -80,6 +89,9 @@ export default ({
   const schema = yup.object().shape({
     first_name: requiredString,
     last_name: requiredString,
+    description: optionalString.max(160),
+    website: optionalUrl,
+    twitter: optionalString,
     skill_level: optionalItem(skillLevels),
     primary_language: optionalItem(primaryLanguages.map((d) => d.code)),
     city: optionalString,
@@ -92,11 +104,18 @@ export default ({
     (p) => p.providerId === 'password'
   ).length;
 
+  // @ts-ignore
+  const hasGithubAccount = !!user.providerData.filter(
+    (p) => p.providerId === 'github.com'
+  ).length;
+
   const fields = [
     // @ts-ignore
     readOnlyEmailField(user.email, (props) => (
       <Flex {...props}>
-        {hasPasswordAccount && <Link onClick={onChangeEmail}>Change</Link>}
+        {hasPasswordAccount && (
+          <Link onClick={onChangeEmailOrGithub}>Change</Link>
+        )}
         {!hasPasswordAccount && (
           <Link onClick={onAddPassword}>Add Password</Link>
         )}
@@ -109,6 +128,18 @@ export default ({
       </Flex>
     )),
     [firstNameField(dbUser.first_name), lastNameField(dbUser.last_name)],
+    descriptionField(dbUser.description),
+    [websiteField(dbUser.website), null],
+    [
+      readOnlyGithubField(dbUser.github || 'No Github Linked', (props) =>
+        hasGithubAccount ? null : (
+          <Link {...props} onClick={onChangeEmailOrGithub}>
+            Link Github
+          </Link>
+        )
+      ),
+      twitterField(dbUser.twitter),
+    ],
     skillLevelField(dbUser.skill_level),
     [primaryLanguageField(dbUser.primary_language), null],
     [cityField(dbUser.city), countryField(dbUser.country)],

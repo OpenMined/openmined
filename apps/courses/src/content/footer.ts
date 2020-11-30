@@ -1,57 +1,70 @@
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+
 export default {
   about: {
     title: 'About OpenMined',
-    description: 'Located at the intersection of privacy & AI, we are an open-source community of over 8000+ researchers, engineers, mentors and enthusiasts committed to making a fairer more prosperous world.',
+    description:
+      'Located at the intersection of privacy & AI, we are an open-source community of over 10,000 researchers, engineers, mentors and enthusiasts committed to making a fairer more prosperous world.',
     button: {
       text: 'OpenMined.org',
-      link: 'https://openmined.org'
-    }
+      icon: faArrowRight,
+      link: 'https://openmined.org',
+    },
   },
-  catalog: {
-    title: 'Catalog',
+  courses: {
+    title: 'Courses',
     courses: [
       {
-        name: 'Course Name 1',
-        link: '#'
+        title: 'Privacy and Society',
+        link: '/courses/privacy-and-society',
       },
       {
-        name: 'Course Name 2',
-        link: '#'
+        title: 'Foundations of Private Computation',
+        link:
+          '/courses/foundations-of-private-computation',
       },
       {
-        name: 'Course Name 3',
-        link: '#'
+        title: 'Federated Learning Across Enterprises',
+        link:
+          '/courses/federated-learning-across-enterprises',
       },
       {
-        name: 'Course Name 4',
-        link: '#'
-      }
-    ]
+        title: 'Federated Learning on Mobile',
+        link:
+          '/courses/federated-learning-on-mobile',
+      },
+    ],
   },
   resources: {
     title: 'Resources',
     links: [
       {
-        name: 'Discussion Board',
-        link: '#'
+        title: 'Discussion Board',
+        link: 'https://discussion.openmined.org/',
       },
       {
-        name: 'Slack',
-        link: '#'
+        title: 'Slack',
+        link: 'https://slack.openmined.org/',
       },
       {
-        name: 'GitHub',
-        link: '#'
+        title: 'Github',
+        link: 'https://github.com/OpenMined',
       },
       {
-        name: 'Careers',
-        link: '#'
-      }
-    ]
+        title: 'Careers',
+        link: 'https://placements.openmined.org/',
+      },
+    ],
   },
   bottom: {
-    copyright: 'Copyright info here',
-    terms_and_conditions: 'Terms & Conditions',
-    privacy_policy: 'Privacy Policy'
-  }
-}
+    copyright: `© Copyright ${new Date().getFullYear()} OpenMined`,
+    terms_and_conditions: {
+      title: 'Terms & Conditions',
+      link: '/tos',
+    },
+    privacy_policy: {
+      title: 'Privacy Policy',
+      link: '/policy',
+    },
+  },
+};

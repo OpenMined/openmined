@@ -221,23 +221,25 @@ export default extendTheme({
   },
   components: {
     Accordion: {
-      baseStyle: {
-        button: {
-          fontFamily: 'heading',
-          fontSize: '30px',
-          paddingLeft: 0,
-          marginLeft: 0,
-          borderBottomWidth: '1px',
-          _hover: {
-            backgroundColor: 'initial'
-          }
+      variants: {
+        spaced: {
+          button: {
+            fontFamily: 'heading',
+            fontSize: '30px',
+            paddingLeft: 0,
+            marginLeft: 0,
+            borderBottomWidth: '1px',
+            _hover: {
+              backgroundColor: 'initial',
+            },
+          },
+          container: {
+            border: 'none',
+          },
+          panel: {
+            marginLeft: '4rem',
+          },
         },
-        container: {
-          border: 'none',
-        },
-        panel: {
-          marginLeft: "4rem"
-        }
       },
     },
     Button: {
@@ -301,6 +303,16 @@ export default extendTheme({
         },
         hero: {
           fontSize: ['5xl', null, '6xl', null, 'hero'],
+        },
+      },
+    },
+    Input: {
+      baseStyle: {
+        field: {
+          _placeholder: {
+            color: 'gray.600',
+          },
+          color: 'gray.800',
         },
       },
     },

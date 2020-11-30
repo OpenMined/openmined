@@ -8,6 +8,7 @@ import Routes from './routes';
 import Header from './components/Header';
 import Loading from './components/Loading';
 import Cookies from './components/Cookies';
+import Footer from './components/Footer';
 
 const Analytics = ({ location }) => {
   const analytics = useAnalytics();
@@ -46,6 +47,7 @@ const App = () => {
         {cookiePrefs === 'all' && <Analytics location={location} />}
         <Header />
         <Routes />
+        <Footer />
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
       </Suspense>
     </Router>

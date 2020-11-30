@@ -22,7 +22,6 @@ import { Link, animateScroll as scroll } from 'react-scroll';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
-import Footer from '../../components/Footer';
 import CircledNumber from '../../components/CircledNumber';
 
 const SectionListItem = ({ content, index, onClick, ...props }) => (
@@ -64,9 +63,9 @@ export default () => {
   };
 
   const toggleAccordionItem = (index) => {
-    let isActive = sectionIndexes.includes(index);
+    const isActive = sectionIndexes.includes(index);
     if (isActive) {
-      setSectionIndexes(sectionIndexes.filter((i) => i != index));
+      setSectionIndexes(sectionIndexes.filter((i) => i !== index));
     } else {
       openAccordionItem(index);
     }
@@ -94,7 +93,7 @@ export default () => {
                 </Text>
               </Box>
               <Box pt={8}>
-                <Accordion index={sectionIndexes} allowMultiple>
+                <Accordion variant="spaced" index={sectionIndexes} allowMultiple>
                   {sections.map((section, index) => (
                     <AccordionItem
                       id={section.title.replace(/\s+/g, '-').toLowerCase()}
@@ -134,7 +133,7 @@ export default () => {
               flex={`0 0 ${SIDEBAR_WIDTH}px`}
               display={['none', null, null, 'block']}
             >
-              <Divider zIndex={1} position="fixed" orientation="vertical" />
+              <Divider position="fixed" orientation="vertical" />
               <Box ml={8} position="fixed" width={SIDEBAR_WIDTH}>
                 <List marginTop={4} marginBottom={16} spacing={8}>
                   {sections.map((section, i) => (
@@ -169,7 +168,6 @@ export default () => {
           </Flex>
         </GridContainer>
       </Box>
-      <Footer />
     </Page>
   );
 };

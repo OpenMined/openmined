@@ -17,7 +17,7 @@ const FooterSection = ({ title, children, ...props }) => (
 
 export default (props) => {
   const {
-    catalog,
+    courses,
     resources,
     about: { title, description, button },
     bottom: { copyright, terms_and_conditions, privacy_policy },
@@ -51,13 +51,13 @@ export default (props) => {
               />
             </Button>
           </FooterSection>
-          <FooterSection title={catalog.title}>
+          <FooterSection title={courses.title}>
             <Flex flexDirection="column">
-              {catalog.courses.map(({ title, link }, i) => (
+              {courses.courses.map(({ title, link }, i) => (
                 <Link
                   key={i}
                   href={link}
-                  target="_blank"
+                  target="_self"
                   color="gray.400"
                   _hover={{ color: 'white' }}
                   mt={i === 0 ? 0 : 2}
@@ -78,6 +78,7 @@ export default (props) => {
                   rel="noopener noreferrer"
                   _hover={{ color: 'white' }}
                   mt={i === 0 ? 0 : 2}
+                  isExternal
                 >
                   {title}
                 </Link>

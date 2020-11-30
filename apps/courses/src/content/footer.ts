@@ -60,7 +60,7 @@ export default {
     links: [
       {
         title: 'Terms & Conditions',
-        link: '/tos',
+        link: '/terms',
       },
       {
         title: 'Privacy Policy',

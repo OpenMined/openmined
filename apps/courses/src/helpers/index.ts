@@ -43,6 +43,10 @@ export const coursesProjection = `
   visual {
     "default": default.asset -> url,
     "full": full.asset -> url
+  },
+  learnFrom[] -> {
+    ...,
+    "image": image.asset -> url
   }
 }
 `;

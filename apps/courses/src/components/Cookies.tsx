@@ -30,7 +30,7 @@ export default ({ callback }) => {
   return (
     <Box position="fixed" bottom={0} left={0} width="full" bg="gray.100" p={4}>
       <GridContainer>
-        <Heading as="p" size="md" color="gray.800" mb={2}>
+        <Heading as="p" size="md" mb={2}>
           Let's talk about cookies...
         </Heading>
         <Text

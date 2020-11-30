@@ -30,7 +30,7 @@ import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
   <Flex align="center" {...props}>
-    <Icon as={FontAwesomeIcon} icon={icon} color="gray.800" mr={2} />
+    <Icon as={FontAwesomeIcon} icon={icon} mr={2} />
     <Link
       as="a"
       color="gray.700"
@@ -103,7 +103,7 @@ export default () => {
         position="relative"
         _before={{
           content: '""',
-          position: 'fixed',
+          position: 'absolute',
           top: 0,
           left: 0,
           width: '478px',

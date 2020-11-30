@@ -18,11 +18,30 @@ export const useSanity = (query) => {
 
   const context = useContext(SanityContext);
 
+  const prepareData = (d) => {
+    Object.keys(d).forEach((i) => {
+      const elem = d[i];
+
+      // Make sure we convert all breaking spaces to <br /> tags
+      if (typeof elem === 'string' && elem.includes('\n')) {
+        d[i] = (
+          <span
+            dangerouslySetInnerHTML={{
+              __html: elem.split('\n').join('<br />'),
+            }}
+          />
+        );
+      }
+    });
+
+    return d;
+  };
+
   useEffect(() => {
     context
       .fetch(query)
       .then((d) => {
-        setData(d);
+        setData(prepareData(d));
         setLoading(false);
       })
       .catch((e) => {

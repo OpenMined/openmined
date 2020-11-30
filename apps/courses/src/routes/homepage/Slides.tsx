@@ -23,6 +23,7 @@ import theme from '../../theme';
 import GridContainer from '../../components/GridContainer';
 
 import { useWindowSize } from '../../helpers';
+import { useSanity } from '@openmined/shared/data-access-sanity';
 
 const absolute: CSSProperties = {
   position: 'absolute',
@@ -67,7 +68,30 @@ const ProgressButton = ({ value, direction, onClick }) => (
   </Box>
 );
 
-export default ({ title, description, slides }) => {
+export default (props) => {
+  const { data, loading } = useSanity(`*[_type == "teacher"] {
+    ...,
+    "image": image.asset -> url,
+  }`);
+
+  const order = [
+    'Cynthia Dwork',
+    'Helen Nissenbaum',
+    'Pascal Paillier',
+    'Ilya Mironov',
+    'Dawn Song',
+    'Ramesh Raskar',
+  ];
+  const slides = data
+    ? data.sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name))
+    : null;
+
+  if (loading) return null;
+
+  return <Slides {...props} slides={slides} />;
+};
+
+const Slides = ({ title, description, slides }) => {
   const REFRESH_RATE = 50;
   const SLIDE_DURATION = 5000;
 
@@ -112,7 +136,7 @@ export default ({ title, description, slides }) => {
             height="460px"
             mr={8}
           >
-            {slides.map(({ image, author }, i) => (
+            {slides.map(({ image, name }, i) => (
               <Box key={i} position="absolute" bottom={0} left={0}>
                 <Box
                   display={['none', null, null, 'block']}
@@ -126,7 +150,7 @@ export default ({ title, description, slides }) => {
                 />
                 <Image
                   src={image}
-                  alt={author}
+                  alt={name}
                   opacity={current === i ? 1 : 0}
                   ml={current === i ? 0 : -4}
                   transitionProperty="all"
@@ -170,7 +194,7 @@ export default ({ title, description, slides }) => {
               ))}
             </Box>
             <Box position="relative" height="60px" mb={4}>
-              {slides.map(({ author, credentials }, i) => (
+              {slides.map(({ name, credential }, i) => (
                 <Box
                   key={i}
                   position="absolute"
@@ -182,9 +206,9 @@ export default ({ title, description, slides }) => {
                   transitionTimingFunction="ease-in-out"
                 >
                   <Text color="violet.500" fontWeight="bold" mb={2}>
-                    {author}
+                    {name}
                   </Text>
-                  <Text color="violet.400">{credentials}</Text>
+                  <Text color="violet.400">{credential}</Text>
                 </Box>
               ))}
             </Box>

@@ -1,11 +1,23 @@
 import React from 'react';
-import { Box, Text, Flex, Image, Heading } from '@chakra-ui/core';
+import { Box, Text, Flex, Image, Heading, ChakraProps } from '@chakra-ui/core';
 import { Link } from 'react-router-dom';
 
 import theme from '../theme';
 
 export default ({ content, onClick, ...props }) => {
   const { title, visual, cost, level, length, slug } = content;
+
+  const absoluteOpacityStyles: ChakraProps = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    transitionProperty: 'opacity',
+    transitionDuration: 'slow',
+    transitionTimingFunction: 'ease-in-out',
+  };
+
   return (
     <Flex
       role="group"
@@ -26,15 +38,8 @@ export default ({ content, onClick, ...props }) => {
       {...props}
     >
       <Box
-        position="absolute"
-        top={0}
-        left={0}
-        width="100%"
-        height="100%"
+        {...absoluteOpacityStyles}
         zIndex={-1}
-        transitionProperty="opacity"
-        transitionDuration="slow"
-        transitionTimingFunction="ease-in-out"
         opacity={0}
         _groupHover={{ opacity: 1 }}
         bg={`linear-gradient(to right, ${theme.colors.black}, ${theme.colors.gray[700]})`}
@@ -58,31 +63,17 @@ export default ({ content, onClick, ...props }) => {
             position="relative"
           >
             <Image
+              {...absoluteOpacityStyles}
               src={visual.default}
               alt={title}
-              position="absolute"
-              top={0}
-              left={0}
-              width="100%"
-              height="100%"
-              transitionProperty="opacity"
-              transitionDuration="slow"
-              transitionTimingFunction="ease-in-out"
               _groupHover={{
                 opacity: 0,
               }}
             />
             <Image
+              {...absoluteOpacityStyles}
               src={visual.full}
               alt={title}
-              position="absolute"
-              top={0}
-              left={0}
-              width="100%"
-              height="100%"
-              transitionProperty="opacity"
-              transitionDuration="slow"
-              transitionTimingFunction="ease-in-out"
               opacity={0}
               _groupHover={{ opacity: 1 }}
             />

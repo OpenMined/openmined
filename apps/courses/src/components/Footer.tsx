@@ -32,7 +32,7 @@ export default (props) => {
               {description}
             </Text>
             <Button
-              my={4}
+              mt={4}
               as="a"
               href={button.link}
               target="_blank"
@@ -52,7 +52,7 @@ export default (props) => {
             </Button>
           </FooterSection>
           <Flex direction={['column', null, 'row']} justify="space-between">
-            <FooterSection title={courses.title}>
+            <FooterSection mt={[4, null, null, 0]} title={courses.title}>
               <Flex direction="column">
                 {courses.courses.map(({ title, link }, i) => (
                   <Link
@@ -68,7 +68,7 @@ export default (props) => {
                 ))}
               </Flex>
             </FooterSection>
-            <FooterSection title={resources.title}>
+            <FooterSection mt={[4, null, null, 0]} title={resources.title}>
               <Flex direction="column">
                 {resources.links.map(({ title, link }, i) => (
                   <Link

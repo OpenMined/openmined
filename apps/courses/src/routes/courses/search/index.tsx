@@ -23,9 +23,9 @@ import Page from '@openmined/shared/util-page';
 
 import Sidebar from './Sidebar';
 
-import GridContainer from '../../components/GridContainer';
-import Course from '../../components/CourseCard';
-import { coursesProjection } from '../../helpers';
+import GridContainer from '../../../components/GridContainer';
+import Course from '../../../components/CourseCard';
+import { coursesProjection } from '../../../helpers';
 
 export default () => {
   const gray50 = useToken('colors', 'gray.50');

@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Box,
   Button,
+  Circle,
   Divider,
   Flex,
   Heading,
@@ -20,6 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { coursesProjection } from '../../../helpers';
 import GridContainer from '../../../components/GridContainer';
+import FeaturesOrResources from '../../../components/FeaturesOrResources';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 
 const Detail = ({ title, value }) => (
@@ -34,12 +36,9 @@ const Detail = ({ title, value }) => (
 
 const LearnHow = ({ value }) => (
   <Box>
-    <Icon
-      as={FontAwesomeIcon}
-      icon={faCheckCircle}
-      size="2x"
-      display={{ base: 'none', md: 'block' }}
-    />
+    <Circle bg="white" size={8} display={{ base: 'none', md: 'block' }}>
+      <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+    </Circle>
     <Heading
       as="h3"
       size="md"
@@ -154,7 +153,7 @@ export default () => {
         {!isTakingCourse && (
           <Box bg="gray.200" py={[8, null, null, 12]} my={[8, null, null, 12]}>
             <GridContainer>
-              <Heading as="h2" size="lg" mb={6}>
+              <Heading as="h2" size="lg" mb={8}>
                 Walk away being able to...
               </Heading>
               <SimpleGrid columns={[1, null, 2, 3]} spacing={8}>
@@ -206,6 +205,11 @@ export default () => {
             </Button>
           </Flex>
         )}
+        <Box my={[8, null, null, 12]}>
+          {isTakingCourse && <FeaturesOrResources which="resources" />}
+          {!isTakingCourse && <FeaturesOrResources which="features" />}
+        </Box>
+        {/* TODO: Patrick, add the other courses here */}
       </Box>
     </Page>
   );

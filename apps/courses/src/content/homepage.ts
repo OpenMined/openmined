@@ -8,19 +8,6 @@ import futureHumanity from '../assets/homepage/future-humanity.png';
 import unGlobal from '../assets/homepage/un-global.png';
 import openmined from '../assets/homepage/openmined.png';
 
-import star from '../assets/homepage/star.svg';
-import realWorld from '../assets/homepage/real-world.svg';
-import instructors from '../assets/homepage/instructors.svg';
-import like from '../assets/homepage/like.svg';
-import technicalMentor from '../assets/homepage/technical-mentor.svg';
-
-import cynthia from '../assets/homepage/cynthia-dwork.png';
-import helen from '../assets/homepage/helen-nissenbaum.png';
-import pascal from '../assets/homepage/pascal-paillier.png';
-import ilya from '../assets/homepage/ilya-mironov.png';
-import dawn from '../assets/homepage/dawn-song.png';
-import ramesh from '../assets/homepage/ramesh-raskar.png';
-
 export default {
   hero: {
     title: 'The Private AI Series',
@@ -70,36 +57,6 @@ export default {
     title: 'Learn from the Best Minds in the Industry',
     description:
       "Throughout your journey, you'll hear from a number of interviewed guests including:",
-  },
-  features: {
-    title: 'Course Features',
-    icon: star,
-    list: [
-      {
-        title: 'Real-world Projects',
-        description:
-          'Our projects are designed to test your new skills and show them off to employers',
-        icon: realWorld,
-      },
-      {
-        title: 'Expert Instructors',
-        description:
-          'Our courses are taught by the people building private AI technology',
-        icon: instructors,
-      },
-      {
-        title: 'Supportive Community',
-        description:
-          "You'll join a community of thousands who will support your learning journey",
-        icon: like,
-      },
-      {
-        title: 'Technical Mentorship',
-        description:
-          'Our mentors provide feedback on your projects and help you at every step',
-        icon: technicalMentor,
-      },
-    ],
   },
   signup: {
     title: 'Sign Up Today',

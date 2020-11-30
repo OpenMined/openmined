@@ -11,60 +11,61 @@ export default {
       link: 'https://openmined.org',
     },
   },
-  courses: {
-    title: 'Courses',
-    courses: [
-      {
-        title: 'Privacy and Society',
-        link: '/courses/privacy-and-society',
-      },
-      {
-        title: 'Foundations of Private Computation',
-        link:
-          '/courses/foundations-of-private-computation',
-      },
-      {
-        title: 'Federated Learning Across Enterprises',
-        link:
-          '/courses/federated-learning-across-enterprises',
-      },
-      {
-        title: 'Federated Learning on Mobile',
-        link:
-          '/courses/federated-learning-on-mobile',
-      },
-    ],
-  },
-  resources: {
-    title: 'Resources',
+  links: [
+    {
+      title: 'Courses',
+      links: [
+        {
+          title: 'Privacy and Society',
+          link: '/courses/privacy-and-society',
+        },
+        {
+          title: 'Foundations of Private Computation',
+          link: '/courses/foundations-of-private-computation',
+        },
+        {
+          title: 'Federated Learning Across Enterprises',
+          link: '/courses/federated-learning-across-enterprises',
+        },
+        {
+          title: 'Federated Learning on Mobile',
+          link: '/courses/federated-learning-on-mobile',
+        },
+      ],
+    },
+    {
+      title: 'Resources',
+      links: [
+        {
+          title: 'Discussion Board',
+          link: 'https://discussion.openmined.org/',
+        },
+        {
+          title: 'Slack',
+          link: 'https://slack.openmined.org/',
+        },
+        {
+          title: 'Github',
+          link: 'https://github.com/OpenMined',
+        },
+        {
+          title: 'Careers',
+          link: 'https://placements.openmined.org/',
+        },
+      ],
+    },
+  ],
+  copyright: {
+    title: `© Copyright ${new Date().getFullYear()} OpenMined`,
     links: [
       {
-        title: 'Discussion Board',
-        link: 'https://discussion.openmined.org/',
+        title: 'Terms & Conditions',
+        link: '/tos',
       },
       {
-        title: 'Slack',
-        link: 'https://slack.openmined.org/',
-      },
-      {
-        title: 'Github',
-        link: 'https://github.com/OpenMined',
-      },
-      {
-        title: 'Careers',
-        link: 'https://placements.openmined.org/',
+        title: 'Privacy Policy',
+        link: '/policy',
       },
     ],
-  },
-  bottom: {
-    copyright: `© Copyright ${new Date().getFullYear()} OpenMined`,
-    terms_and_conditions: {
-      title: 'Terms & Conditions',
-      link: '/tos',
-    },
-    privacy_policy: {
-      title: 'Privacy Policy',
-      link: '/policy',
-    },
   },
 };

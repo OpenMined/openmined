@@ -68,7 +68,30 @@ const ProgressButton = ({ value, direction, onClick }) => (
   </Box>
 );
 
-export default ({ title, description, slides }) => {
+export default (props) => {
+  const { data, loading } = useSanity(`*[_type == "teacher"] {
+    ...,
+    "image": image.asset -> url,
+  }`);
+
+  const order = [
+    'Cynthia Dwork',
+    'Helen Nissenbaum',
+    'Pascal Paillier',
+    'Ilya Mironov',
+    'Dawn Song',
+    'Ramesh Raskar',
+  ];
+  const slides = data
+    ? data.sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name))
+    : null;
+
+  if (loading) return null;
+
+  return <Slides {...props} slides={slides} />;
+};
+
+const Slides = ({ title, description, slides }) => {
   const REFRESH_RATE = 50;
   const SLIDE_DURATION = 5000;
 

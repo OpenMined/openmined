@@ -1,22 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Flex,
   Box,
   SimpleGrid,
   Input,
-  InputRightAddon,
-  InputGroup,
   Text,
-  Tag,
-  TagLabel,
-  TagCloseButton,
-  Wrap,
   useToken,
-  Stack,
 } from '@chakra-ui/core';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import Fuse from 'fuse.js';
 
 import { useSanity } from '@openmined/shared/data-access-sanity';
 import Page from '@openmined/shared/util-page';
@@ -29,13 +21,14 @@ import { coursesProjection } from '../../../helpers';
 
 export default () => {
   const gray50 = useToken('colors', 'gray.50');
-  const gray600 = useToken('colors', 'gray.600');
 
+  const FIXED_SIDEBAR_WIDTH = 250;
+  const FIXED_SIDEBAR_MD_WIDTH = 200;
+
+  const [searchData, setSearchData] = useState([]);
   const [skillLevel, setSkillLevel] = useState('');
   const [topics, setTopics] = useState([]);
   const [languages, setLanguages] = useState([]);
-  const [keywords, setKeywords] = useState([]);
-  const [currKeyword, setCurrKeyword] = useState('');
 
   const filters = [
     {
@@ -83,27 +76,31 @@ export default () => {
     return hasSkillLevel && hasTopic && hasLanguages;
   };
 
-  const courses = data ? data.filter((course) => courseFilter(course)) : [];
+  useEffect(() => {
+    setSearchData(filterData(data));
+  }, [data]);
 
-  const addKeyword = (e) => {
-    const keyword = e.target.value;
+  const filterData = (data) =>
+    data ? data.filter((course) => courseFilter(course)) : [];
 
-    if (!keyword || keyword.length === 0) return;
-
-    if (e.keyCode === 13) {
-      if (!keywords.includes(keyword)) {
-        setKeywords([keyword, ...keywords]);
-        setCurrKeyword('');
-      }
+  const searchItem = (query) => {
+    if (!query) {
+      setSearchData(filterData(data));
+      return;
     }
-  };
-
-  const removeKeyword = (keywordIndex) => {
-    setKeywords((prev) => {
-      const temp = [...prev];
-      temp.splice(keywordIndex, 1);
-      return temp;
+    const fuse = new Fuse(filterData(data), {
+      keys: ['title', 'description'],
     });
+    const result = fuse.search(query);
+    const finalResult = [];
+    if (result.length) {
+      result.forEach((item) => {
+        finalResult.push(item.item);
+      });
+      setSearchData(finalResult);
+    } else {
+      setSearchData([]);
+    }
   };
 
   const clearFilters = () => {
@@ -117,75 +114,54 @@ export default () => {
   return (
     <Page title="Courses" body={{ style: `background: ${gray50};` }}>
       <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
-        <Flex justifyContent="space-around" flexDirection={['column', 'row']}>
-          <Box w={['100%', '50%', '40%', '30%']} px={[8, 8, 8, 16]}>
-            <Sidebar
-              filters={filters}
-              numCourses={courses.length}
-              clearFilters={clearFilters}
-            />
-          </Box>
-          <Box w={['100%', '70%']} px={[8, 0]}>
-            <InputGroup
-              w={['100%', '70%']}
-              px={[2, 0]}
-              py={[2, null]}
-              mb={4}
-              justifyContent={['center', null]}
-              colorScheme="cyan"
-              borderColor="gray.300"
+        <Flex
+          justifyContent="space-around"
+          flexDirection={['column', 'column', 'row', 'row']}
+        >
+          <Box w={['100%', null, '40%', '30%']} px={[0, null, 8, 16]}>
+            <Box
+              w={[
+                null,
+                null,
+                FIXED_SIDEBAR_WIDTH,
+                FIXED_SIDEBAR_MD_WIDTH,
+                FIXED_SIDEBAR_WIDTH,
+              ]}
+              position={[null, null, 'fixed']}
             >
-              <Input
-                value={currKeyword}
-                onChange={(e) => setCurrKeyword(e.target.value)}
-                onKeyUp={addKeyword}
-                placeholder="Search courses"
-                list="courses"
-                borderRight={0}
+              <Sidebar
+                filters={filters}
+                numCourses={searchData.length}
+                clearFilters={clearFilters}
               />
-              <InputRightAddon
-                children={<FontAwesomeIcon color={gray600} icon={faSearch} />}
-                bg="transparent"
-                borderLeft={0}
-              />
-            </InputGroup>
-            {keywords.length !== 0 && (
-              <Stack direction="row" spacing={4}>
-                <Wrap>
-                  {keywords.map((keyword, index) => (
-                    <Tag
-                      size="lg"
-                      key={keyword}
-                      borderRadius="full"
-                      colorScheme="cyan"
-                      variant="subtle"
-                      color="cyan.800"
-                    >
-                      <TagLabel opacity={1}>{keyword}</TagLabel>
-                      <TagCloseButton onClick={() => removeKeyword(index)} />
-                    </Tag>
-                  ))}
-                </Wrap>
-              </Stack>
-            )}
-            {courses.length === 0 && (
+            </Box>
+          </Box>
+          <Box w={['100%', null, '60%', '70%']}>
+            <Input
+              w={['100%', null, null, '70%']}
+              placeholder="Start typing something..."
+              onChange={(e) => searchItem(e.target.value)}
+              size="lg"
+              py={[2, null]}
+              my={4}
+            />
+            {searchData.length === 0 && (
               <Box py={4}>
                 <Text fontSize="3xl" px={2} fontWeight="bold">
-                  Sorry there are no results
-                </Text>
-                <Text fontSize="lg" px={2} color="gray.600">
-                  Why dont you try one of these courses to get you started
+                  Sorry, there are no search results for that query
                 </Text>
               </Box>
             )}
             <SimpleGrid
               py={5}
-              columns={[1, null, 1, 2, 3]}
+              columns={[1, null, 1, 2]}
               spacing={[4, null, 6]}
               color="white"
             >
-              {courses &&
-                courses.map((course, i) => <Course key={i} content={course} />)}
+              {searchData &&
+                searchData.map((course, i) => (
+                  <Course key={i} content={course} />
+                ))}
             </SimpleGrid>
           </Box>
         </Flex>

@@ -11,27 +11,27 @@ export default {
       link: 'https://openmined.org',
     },
   },
-  catalog: {
-    title: 'Catalog',
+  courses: {
+    title: 'Courses',
     courses: [
       {
         title: 'Privacy and Society',
-        link: 'https://courses.openmined.org/courses/privacy-and-society',
+        link: '/courses/privacy-and-society',
       },
       {
         title: 'Foundations of Private Computation',
         link:
-          'https://courses.openmined.org/courses/foundations-of-private-computation',
+          '/courses/foundations-of-private-computation',
       },
       {
         title: 'Federated Learning Across Enterprises',
         link:
-          'https://courses.openmined.org/courses/federated-learning-across-enterprises',
+          '/courses/federated-learning-across-enterprises',
       },
       {
         title: 'Federated Learning on Mobile',
         link:
-          'https://courses.openmined.org/courses/federated-learning-on-mobile',
+          '/courses/federated-learning-on-mobile',
       },
     ],
   },
@@ -47,7 +47,7 @@ export default {
         link: 'https://slack.openmined.org/',
       },
       {
-        title: 'GitHub',
+        title: 'Github',
         link: 'https://github.com/OpenMined',
       },
       {

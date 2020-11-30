@@ -7,7 +7,7 @@ import GridContainer from './GridContainer';
 import content from '../content/footer';
 
 const FooterSection = ({ title, children, ...props }) => (
-  <Box {...props}>
+  <Box mr={16} {...props}>
     <Text my={4} color="gray.50" fontFamily="heading" fontSize="20px">
       {title}
     </Text>
@@ -17,14 +17,14 @@ const FooterSection = ({ title, children, ...props }) => (
 
 export default (props) => {
   const {
-    catalog,
+    courses,
     resources,
     about: { title, description, button },
     bottom: { copyright, terms_and_conditions, privacy_policy },
   } = content;
 
   return (
-    <Box position="relative" bg="gray.900" color="white" py={8} {...props}>
+    <Box position="relative" bg="gray.900" color="white" px={[0, null, 8, 16]} py={8} {...props}>
       <GridContainer>
         <Flex direction={['column', null, null, 'row']} justify="space-between">
           <FooterSection width={['100%', null, null, 1 / 2]} title={title}>
@@ -32,7 +32,7 @@ export default (props) => {
               {description}
             </Text>
             <Button
-              my={4}
+              mt={4}
               as="a"
               href={button.link}
               target="_blank"
@@ -51,44 +51,47 @@ export default (props) => {
               />
             </Button>
           </FooterSection>
-          <FooterSection title={catalog.title}>
-            <Flex flexDirection="column">
-              {catalog.courses.map(({ title, link }, i) => (
-                <Link
-                  key={i}
-                  href={link}
-                  target="_blank"
-                  color="gray.400"
-                  _hover={{ color: 'white' }}
-                  mt={i === 0 ? 0 : 2}
-                >
-                  {title}
-                </Link>
-              ))}
-            </Flex>
-          </FooterSection>
-          <FooterSection title={resources.title}>
-            <Flex flexDirection="column">
-              {resources.links.map(({ title, link }, i) => (
-                <Link
-                  key={i}
-                  href={link}
-                  target="_blank"
-                  color="gray.400"
-                  rel="noopener noreferrer"
-                  _hover={{ color: 'white' }}
-                  mt={i === 0 ? 0 : 2}
-                >
-                  {title}
-                </Link>
-              ))}
-            </Flex>
-          </FooterSection>
+          <Flex direction={['column', null, 'row']} justify="space-between">
+            <FooterSection mt={[4, null, null, 0]} title={courses.title}>
+              <Flex direction="column">
+                {courses.courses.map(({ title, link }, i) => (
+                  <Link
+                    key={i}
+                    href={link}
+                    target="_self"
+                    color="gray.400"
+                    _hover={{ color: 'white' }}
+                    mt={i === 0 ? 0 : 2}
+                  >
+                    {title}
+                  </Link>
+                ))}
+              </Flex>
+            </FooterSection>
+            <FooterSection mt={[4, null, null, 0]} title={resources.title}>
+              <Flex direction="column">
+                {resources.links.map(({ title, link }, i) => (
+                  <Link
+                    key={i}
+                    href={link}
+                    target="_blank"
+                    color="gray.400"
+                    rel="noopener noreferrer"
+                    _hover={{ color: 'white' }}
+                    mt={i === 0 ? 0 : 2}
+                    isExternal
+                  >
+                    {title}
+                  </Link>
+                ))}
+              </Flex>
+            </FooterSection>
+          </Flex>
         </Flex>
         <Flex
           direction={['column', null, null, 'row']}
           pt={16}
-          justifyContent="space-between"
+          justify="space-between"
         >
           <Text fontSize="sm" color="gray.600">
             {copyright}

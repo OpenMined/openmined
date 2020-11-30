@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Text, Button, Flex, Divider, Link } from '@chakra-ui/core';
+import { Box, Text, Button, Flex, Divider, Link, Icon } from '@chakra-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from './GridContainer';
 
@@ -23,14 +24,7 @@ export default (props) => {
   } = content;
 
   return (
-    <Box
-      position="relative"
-      zIndex={2}
-      bg="gray.900"
-      color="white"
-      py={8}
-      {...props}
-    >
+    <Box position="relative" bg="gray.900" color="white" py={8} {...props}>
       <GridContainer>
         <Flex direction={['column', null, null, 'row']} justify="space-between">
           <FooterSection width={['100%', null, null, 1 / 2]} title={title}>
@@ -44,14 +38,22 @@ export default (props) => {
               target="_blank"
               color="gray.200"
               bgColor="gray.800"
+              colorScheme="black"
               boxShadow="0px 4px 16px rgba(0, 0, 0, 0.3)"
             >
-              {button.text}
+              {button.text}{' '}
+              <Icon
+                color="gray.200"
+                as={FontAwesomeIcon}
+                icon={button.icon}
+                ml={2}
+                boxSize={4}
+              />
             </Button>
           </FooterSection>
           <FooterSection title={catalog.title}>
             <Flex flexDirection="column">
-              {catalog.courses.map(({ name, link }, i) => (
+              {catalog.courses.map(({ title, link }, i) => (
                 <Link
                   key={i}
                   href={link}
@@ -60,14 +62,14 @@ export default (props) => {
                   _hover={{ color: 'white' }}
                   mt={i === 0 ? 0 : 2}
                 >
-                  {name}
+                  {title}
                 </Link>
               ))}
             </Flex>
           </FooterSection>
           <FooterSection title={resources.title}>
             <Flex flexDirection="column">
-              {resources.links.map(({ name, link }, i) => (
+              {resources.links.map(({ title, link }, i) => (
                 <Link
                   key={i}
                   href={link}
@@ -77,7 +79,7 @@ export default (props) => {
                   _hover={{ color: 'white' }}
                   mt={i === 0 ? 0 : 2}
                 >
-                  {name}
+                  {title}
                 </Link>
               ))}
             </Flex>
@@ -98,7 +100,7 @@ export default (props) => {
               color="gray.600"
               href={terms_and_conditions.link}
             >
-              {terms_and_conditions.name}
+              {terms_and_conditions.title}
             </Link>
             <Divider orientation="vertical" mx={[2, null, null, 4]} />
             <Link
@@ -107,7 +109,7 @@ export default (props) => {
               color="gray.600"
               href={privacy_policy.link}
             >
-              {privacy_policy.name}
+              {privacy_policy.title}
             </Link>
           </Flex>
         </Flex>

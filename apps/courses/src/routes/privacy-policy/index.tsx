@@ -142,6 +142,7 @@ export default () => {
                 <List marginTop={4} marginBottom={16} spacing={8}>
                   {sections.map((section, i) => (
                     <SectionListItem
+                      key={i}
                       onClick={openAccordionItem}
                       index={i}
                       content={section}

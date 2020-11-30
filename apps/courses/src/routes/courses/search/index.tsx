@@ -68,13 +68,13 @@ export default () => {
 
     return hasSkillLevel && hasTopic && hasLanguages;
   };
+  
+  const filterData = (data) =>
+    data ? data.filter((course) => courseFilter(course)) : [];
 
   useEffect(() => {
     setSearchData(filterData(data));
-  }, [data, filterData]);
-
-  const filterData = (data) =>
-    data ? data.filter((course) => courseFilter(course)) : [];
+  }, [data, filterData]);  
 
   const searchItem = (query) => {
     if (!query) {

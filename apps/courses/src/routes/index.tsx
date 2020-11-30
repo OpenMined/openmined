@@ -40,7 +40,7 @@ export default () => (
       <Route path=":slug" element={<CourseOverview />} />
     </Route>
     <Route path="policy" element={<PrivacyPolicy />} />
-    <Route path="tos" element={<TermsOfService />} />
+    <Route path="terms" element={<TermsOfService />} />
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

@@ -141,9 +141,6 @@ export default () => {
               w={['100%', null, null, '70%']}
               placeholder="Start typing something..."
               onChange={(e) => searchItem(e.target.value)}
-              borderColor="gray.300"
-              borderWidth={2}
-              list="courses"
               size="lg"
               py={[2, null]}
               my={4}

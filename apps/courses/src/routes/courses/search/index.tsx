@@ -4,14 +4,10 @@ import {
   Box,
   SimpleGrid,
   Input,
-  InputRightAddon,
-  InputGroup,
   Text,
   useToken,
 } from '@chakra-ui/core';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Fuse from 'fuse.js';
 
 import { useSanity } from '@openmined/shared/data-access-sanity';
@@ -25,7 +21,6 @@ import { coursesProjection } from '../../../helpers';
 
 export default () => {
   const gray50 = useToken('colors', 'gray.50');
-  const gray600 = useToken('colors', 'gray.600');
 
   const FIXED_SIDEBAR_WIDTH = 250;
   const FIXED_SIDEBAR_MD_WIDTH = 200;
@@ -34,7 +29,6 @@ export default () => {
   const [skillLevel, setSkillLevel] = useState('');
   const [topics, setTopics] = useState([]);
   const [languages, setLanguages] = useState([]);
-  const [search, setSearch] = useState([]);
 
   const filters = [
     {
@@ -95,7 +89,7 @@ export default () => {
       return;
     }
     const fuse = new Fuse(filterData(data), {
-      keys: ['title', 'description' ],
+      keys: ['title', 'description'],
     });
     const result = fuse.search(query);
     const finalResult = [];
@@ -143,28 +137,17 @@ export default () => {
             </Box>
           </Box>
           <Box w={['100%', null, '60%', '70%']}>
-            <InputGroup
-              role="group"
+            <Input
               w={['100%', null, null, '70%']}
+              placeholder="Start typing something..."
+              onChange={(e) => searchItem(e.target.value)}
+              borderColor="gray.300"
+              borderWidth={2}
+              list="courses"
+              size="lg"
               py={[2, null]}
               my={4}
-              justifyContent={['center', null]}
-              colorScheme="cyan"
-              borderColor="gray.300"
-              size="lg"
-            >
-              <Input
-                onChange={(e) => searchItem(e.target.value)}
-                placeholder="Search courses"
-                list="courses"
-                borderRight={0}
-              />
-              <InputRightAddon
-                children={<FontAwesomeIcon color={gray600} icon={faSearch} />}
-                bg="transparent"
-                borderLeft={0}
-              />
-            </InputGroup>
+            />
             {searchData.length === 0 && (
               <Box py={4}>
                 <Text fontSize="3xl" px={2} fontWeight="bold">

@@ -34,6 +34,9 @@ const buttonColors = (c) => {
 export default extendTheme({
   styles: {
     global: {
+      'html, body': {
+        color: 'gray.800',
+      },
       '*:focus': {
         outline: 'none !important',
         boxShadow: 'none !important',

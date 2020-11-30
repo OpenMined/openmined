@@ -86,6 +86,11 @@ export default {
       type: 'string',
     },
     {
+      title: 'Certification',
+      name: 'certification',
+      type: 'string',
+    },
+    {
       title: 'Lessons',
       name: 'lessons',
       type: 'array',

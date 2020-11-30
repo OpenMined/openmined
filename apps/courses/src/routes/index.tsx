@@ -35,12 +35,12 @@ export default () => (
       <AuthRoute path="settings" element={<Settings />} />
       <Route path=":uid" element={<Profile />} />
     </Route>
-    <Route path="policy" element={<PrivacyPolicy />} />
-    <Route path="tos" element={<TermsOfService />} />
     <Route path="courses">
       <Route path="/" element={<CoursesSearch />} />
       <Route path=":slug" element={<CourseOverview />} />
     </Route>
+    <Route path="policy" element={<PrivacyPolicy />} />
+    <Route path="tos" element={<TermsOfService />} />
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

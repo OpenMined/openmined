@@ -25,7 +25,7 @@ import { faChevronUp, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import CircledNumber from '../../components/CircledNumber';
 
 const SectionListItem = ({ content, index, onClick, ...props }) => (
-  <ListItem key={content.title} cursor="pointer" {...props}>
+  <ListItem cursor="pointer" {...props}>
     <Link
       to={`accordion-button-${content.title
         .replace(/\s+/g, '-')
@@ -142,7 +142,7 @@ export default () => {
                 <List marginTop={4} marginBottom={16} spacing={8}>
                   {sections.map((section, i) => (
                     <SectionListItem
-                      key={i}
+                      key={section.title}
                       onClick={openAccordionItem}
                       index={i}
                       content={section}

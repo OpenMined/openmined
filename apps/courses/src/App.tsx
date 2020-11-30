@@ -47,8 +47,8 @@ const App = () => {
         {cookiePrefs === 'all' && <Analytics location={location} />}
         <Header />
         <Routes />
-        {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
         <Footer />
+        {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
       </Suspense>
     </Router>
   );

@@ -24,7 +24,7 @@ export default ({ title, description }) => {
   const [isHovered, setIsHovered] = useState(null);
 
   if (loading) return null;
-  
+
   return (
     <Box bg="gray.900" color="white" py={[16, null, null, 32]}>
       <GridContainer>

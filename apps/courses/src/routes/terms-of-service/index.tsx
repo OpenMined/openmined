@@ -102,7 +102,11 @@ export default () => {
                 </Box>
               </Box>
               <Box pt={8}>
-                <Accordion variant="spaced" index={sectionIndexes} allowMultiple>
+                <Accordion
+                  variant="spaced"
+                  index={sectionIndexes}
+                  allowMultiple
+                >
                   {sections.map((section, index) => (
                     <AccordionItem
                       id={section.title.replace(/\s+/g, '-').toLowerCase()}

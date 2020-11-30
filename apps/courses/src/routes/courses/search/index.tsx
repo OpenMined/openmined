@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Flex,
-  Box,
-  SimpleGrid,
-  Input,
-  Text,
-  useToken,
-} from '@chakra-ui/core';
+import { Flex, Box, SimpleGrid, Input, Text, useToken } from '@chakra-ui/core';
 
 import Fuse from 'fuse.js';
 

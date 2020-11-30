@@ -20,18 +20,15 @@ export default {
       },
       {
         title: 'Foundations of Private Computation',
-        link:
-          '/courses/foundations-of-private-computation',
+        link: '/courses/foundations-of-private-computation',
       },
       {
         title: 'Federated Learning Across Enterprises',
-        link:
-          '/courses/federated-learning-across-enterprises',
+        link: '/courses/federated-learning-across-enterprises',
       },
       {
         title: 'Federated Learning on Mobile',
-        link:
-          '/courses/federated-learning-on-mobile',
+        link: '/courses/federated-learning-on-mobile',
       },
     ],
   },

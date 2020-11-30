@@ -26,6 +26,7 @@ export default {
     },
   ],
   sidebar: {
-    footer: 'Not seeing an answer to your specific question? Go to our discussion board to get extra assistance.'
-  }
+    footer:
+      'Not seeing an answer to your specific question? Go to our discussion board to get extra assistance.',
+  },
 };

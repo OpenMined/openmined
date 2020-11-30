@@ -24,7 +24,14 @@ export default (props) => {
   } = content;
 
   return (
-    <Box position="relative" bg="gray.900" color="white" px={[0, null, 8, 16]} py={8} {...props}>
+    <Box
+      position="relative"
+      bg="gray.900"
+      color="white"
+      px={[0, null, 8, 16]}
+      py={8}
+      {...props}
+    >
       <GridContainer>
         <Flex direction={['column', null, null, 'row']} justify="space-between">
           <FooterSection width={['100%', null, null, 1 / 2]} title={title}>

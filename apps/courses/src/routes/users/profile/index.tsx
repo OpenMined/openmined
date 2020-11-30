@@ -25,8 +25,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
-import GridContainer from '../../components/GridContainer';
-import waveform from '../../assets/waveform/waveform-top-left-cool.png';
+import GridContainer from '../../../components/GridContainer';
+import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
   <Flex align="center" {...props}>
@@ -125,7 +125,7 @@ export default () => {
             >
               <Avatar src={dbUser.photo_url} size="2xl" mb={4}>
                 {isSameUser && (
-                  <RRDLink to="/settings">
+                  <RRDLink to="/users/settings">
                     <AvatarBadge
                       bg="gray.800"
                       border={0}
@@ -182,7 +182,7 @@ export default () => {
                   <LinkItem
                     icon={faCog}
                     title="Account Settings"
-                    link="/settings"
+                    link="/users/settings"
                     mb={2}
                   />
                   <LinkItem

@@ -2,10 +2,10 @@ import React from 'react';
 import { Box, Heading, Text, SimpleGrid } from '@chakra-ui/core';
 import Page from '@openmined/shared/util-page';
 
-import content from '../../content/sign-up';
-import GridContainer from '../../components/GridContainer';
-import Signup from '../../components/forms/users/SignUp';
-import waveform from '../../assets/waveform/waveform-rainbow.png';
+import content from '../../../content/sign-up';
+import GridContainer from '../../../components/GridContainer';
+import Signup from '../../../components/forms/users/SignUp';
+import waveform from '../../../assets/waveform/waveform-rainbow.png';
 
 export default () => {
   const { title, description } = content;

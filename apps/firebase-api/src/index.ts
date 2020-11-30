@@ -3,6 +3,8 @@
 
 import * as functions from 'firebase-functions';
 
+// import ssr from './app/ssr';
+
 exports.createUser = functions
   .region('europe-west1')
   .firestore.document('users/{userId}')
@@ -16,3 +18,5 @@ exports.createUser = functions
 
     // perform desired operations ...
   });
+
+// exports.ssr = functions.region('europe-west1').https.onRequest(ssr);

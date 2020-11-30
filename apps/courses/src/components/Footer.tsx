@@ -1,29 +1,26 @@
 import React from 'react';
-import {
-  Box,
-  Text,
-  Button,
-  Flex,
-  Divider,
-  Link,
-} from '@chakra-ui/core';
+import { Box, Text, Button, Flex, Divider, Link } from '@chakra-ui/core';
+
 import GridContainer from './GridContainer';
+
 import content from '../content/footer';
 
-const FooterSection = ({ title, children, ...props }) => {
-  return (
-    <Box {...props}>
-      <Text my={4} color="gray.50" fontFamily="heading" fontSize="20px">
-        {title}
-      </Text>
-      {children}
-    </Box>
-  );
-};
+const FooterSection = ({ title, children, ...props }) => (
+  <Box {...props}>
+    <Text my={4} color="gray.50" fontFamily="heading" fontSize="20px">
+      {title}
+    </Text>
+    {children}
+  </Box>
+);
 
-export default ({ ...props }) => {
-  const { about, catalog, resources, bottom } = content;
-  const { copyright, terms_and_conditions, privacy_policy } = bottom;
+export default (props) => {
+  const {
+    catalog,
+    resources,
+    about: { title, description, button },
+    bottom: { copyright, terms_and_conditions, privacy_policy },
+  } = content;
 
   return (
     <Box
@@ -35,27 +32,21 @@ export default ({ ...props }) => {
       {...props}
     >
       <GridContainer>
-        <Flex
-          direction={['column', null, null, 'row']}
-          justifyContent="space-between"
-        >
-          <FooterSection
-            width={['100%', null, null, 1 / 2]}
-            title={about.title}
-          >
+        <Flex direction={['column', null, null, 'row']} justify="space-between">
+          <FooterSection width={['100%', null, null, 1 / 2]} title={title}>
             <Text color="gray.400" my={4}>
-              {about.description}
+              {description}
             </Text>
             <Button
               my={4}
               as="a"
-              href={about.button.link}
+              href={button.link}
               target="_blank"
               color="gray.200"
               bgColor="gray.800"
               boxShadow="0px 4px 16px rgba(0, 0, 0, 0.3)"
             >
-              {about.button.text}
+              {button.text}
             </Button>
           </FooterSection>
           <FooterSection title={catalog.title}>

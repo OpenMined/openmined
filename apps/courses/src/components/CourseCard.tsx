@@ -66,9 +66,7 @@ export default ({ content, onClick, ...props }) => {
               {...absoluteOpacityStyles}
               src={visual.default}
               alt={title}
-              _groupHover={{
-                opacity: 0,
-              }}
+              _groupHover={{ opacity: 0 }}
             />
             <Image
               {...absoluteOpacityStyles}

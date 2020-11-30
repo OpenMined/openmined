@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Flex,
   Box,
@@ -35,7 +35,7 @@ export default () => {
   const [topics, setTopics] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [keywords, setKeywords] = useState([]);
-  const currKeyword = useRef();
+  const [currKeyword, setCurrKeyword] = useState('');
 
   const filters = [
     {
@@ -85,27 +85,23 @@ export default () => {
 
   const courses = data ? data.filter((course) => courseFilter(course)) : [];
 
-  const setCurrKeyword = (e) => {
-    if (!currKeyword.current) return;
+  const addKeyword = (e) => {
+    const keyword = e.target.value;
 
-    // @ts-ignore (already checked for undefined case)
-    const val = currKeyword.current!.value;
-
-    if (val === '') return;
+    if (!keyword || keyword.length === 0) return;
 
     if (e.keyCode === 13) {
-      if (!keywords.includes(val)) setKeywords([val, ...keywords]);
-      // @ts-ignore (already checked for undefined case)
-      currKeyword.current.value = '';
-
-      return;
+      if (!keywords.includes(keyword)) {
+        setKeywords([keyword, ...keywords]);
+        setCurrKeyword('');
+      }
     }
   };
 
   const removeKeyword = (keywordIndex) => {
     setKeywords((prev) => {
       const temp = [...prev];
-      temp.splice(keywordIndex, keywordIndex + 1);
+      temp.splice(keywordIndex, 1);
       return temp;
     });
   };
@@ -140,8 +136,9 @@ export default () => {
               borderColor="gray.300"
             >
               <Input
-                ref={currKeyword}
-                onKeyUp={setCurrKeyword}
+                value={currKeyword}
+                onChange={(e) => setCurrKeyword(e.target.value)}
+                onKeyUp={addKeyword}
                 placeholder="Search courses"
                 list="courses"
                 borderRight={0}
@@ -188,9 +185,7 @@ export default () => {
               color="white"
             >
               {courses &&
-                courses.map((course, i) => (
-                  <Course key={i} content={course} />
-                ))}
+                courses.map((course, i) => <Course key={i} content={course} />)}
             </SimpleGrid>
           </Box>
         </Flex>

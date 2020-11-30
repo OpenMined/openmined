@@ -70,39 +70,6 @@ export default {
     title: 'Learn from the Best Minds in the Industry',
     description:
       "Throughout your journey, you'll hear from a number of interviewed guests including:",
-    slides: [
-      {
-        image: cynthia,
-        author: 'Cynthia Dwork',
-        credentials: 'Author of Differential Privacy - Harvard',
-      },
-      {
-        image: helen,
-        author: 'Helen Nissenbaum',
-        credentials:
-          'Professor at Cornell Tech - Author of Contextual Integrity',
-      },
-      {
-        image: pascal,
-        author: 'Pascal Paillier',
-        credentials: 'Author of Paillier Encryption - Zama',
-      },
-      {
-        image: ilya,
-        author: 'Ilya Mironov',
-        credentials: 'Author of Renyi Differential Privacy - FAIR',
-      },
-      {
-        image: dawn,
-        author: 'Dawn Song',
-        credentials: 'Leader of Keystone - UC Berkeley',
-      },
-      {
-        image: ramesh,
-        author: 'Ramesh Raskar',
-        credentials: 'Co-Author of SplitNN - MIT',
-      },
-    ],
   },
   features: {
     title: 'Course Features',

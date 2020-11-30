@@ -6,6 +6,7 @@ import {
   Flex,
   Heading,
   Icon,
+  Image,
   ListItem,
   SimpleGrid,
   Text,
@@ -51,6 +52,18 @@ const LearnHow = ({ value }) => (
   </Box>
 );
 
+const LearnFrom = ({ image, name, credential }) => (
+  <Flex direction="column" align="center" textAlign="center">
+    <Box w={240} h={240} mb={4}>
+      <Image src={image} alt={name} w="100%" h="100%" objectFit="cover" />
+    </Box>
+    <Heading as="h3" size="md" mb={2}>
+      {name}
+    </Heading>
+    <Text color="gray.700">{credential}</Text>
+  </Flex>
+);
+
 export default () => {
   const { slug } = useParams();
   const { data, loading } = useSanity(
@@ -71,6 +84,7 @@ export default () => {
     level,
     length,
     certification,
+    learnFrom,
   } = data;
 
   return (
@@ -79,7 +93,7 @@ export default () => {
         position="relative"
         _before={{
           content: '""',
-          position: 'fixed',
+          position: 'absolute',
           top: 0,
           left: 0,
           width: '478px',
@@ -125,18 +139,20 @@ export default () => {
                 ))}
               </UnorderedList>
               {/* TODO: Patrick, this should actually start the course */}
-              <Button
-                colorScheme="blue"
-                size="lg"
-                onClick={() => console.log('TRY THE COURSE')}
-              >
-                Start Course
-              </Button>
+              {!isTakingCourse && (
+                <Button
+                  colorScheme="blue"
+                  size="lg"
+                  onClick={() => console.log('TRY THE COURSE')}
+                >
+                  Start Course
+                </Button>
+              )}
             </Box>
           </Flex>
         </GridContainer>
         {!isTakingCourse && (
-          <Box bg="gray.200" py={[8, null, null, 12]}>
+          <Box bg="gray.200" py={[8, null, null, 12]} my={[8, null, null, 12]}>
             <GridContainer>
               <Heading as="h2" size="lg" mb={6}>
                 Walk away being able to...
@@ -167,12 +183,28 @@ export default () => {
           </Flex>
         </GridContainer>
         {!isTakingCourse && (
-          <GridContainer>
+          <GridContainer my={[8, null, null, 12]}>
             <Heading as="h2" size="lg" mb={8} textAlign="center">
               Who You'll Learn From
             </Heading>
-            {/* TODO: Patrick, remember to put the people in the schema and then make a relationship with courses */}
+            <SimpleGrid columns={[1, null, 2, 3]} spacing={8}>
+              {learnFrom.map((l) => (
+                <LearnFrom {...l} key={l.name} />
+              ))}
+            </SimpleGrid>
           </GridContainer>
+        )}
+        {/* TODO: Patrick, this should actually start the course */}
+        {!isTakingCourse && (
+          <Flex justify="center">
+            <Button
+              colorScheme="black"
+              size="lg"
+              onClick={() => console.log('TRY THE COURSE')}
+            >
+              Start Course
+            </Button>
+          </Flex>
         )}
       </Box>
     </Page>

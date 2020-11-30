@@ -91,6 +91,12 @@ export default {
       type: 'string',
     },
     {
+      title: 'Learn From',
+      name: 'learnFrom',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'teacher' }] }],
+    },
+    {
       title: 'Lessons',
       name: 'lessons',
       type: 'array',

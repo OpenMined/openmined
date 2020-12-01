@@ -7,6 +7,7 @@ import {
   ListItem,
   Divider,
   Flex,
+  Circle,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -14,15 +15,32 @@ import {
   AccordionIcon,
   Icon,
 } from '@chakra-ui/core';
-import Page from '@openmined/shared/util-page';
-import content from '../../content/terms-of-service';
-import GridContainer from '../../components/GridContainer';
 
-import { Link, animateScroll as scroll } from 'react-scroll';
-
+import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
-import CircledNumber from '../../components/CircledNumber';
+import { Link, animateScroll as scroll } from 'react-scroll';
+
+import Page from '@openmined/shared/util-page';
+
+import GridContainer from '../../components/GridContainer';
+import policyContent from '../../content/privacy-policy';
+import termsContent from '../../content/terms-of-service';
+
+import { SIDEBAR_WIDTH } from '../../helpers';
+
+const CircledNumber = ({ active = false, text, ...props }) => (
+  <Circle
+    {...props}
+    backgroundColor={active ? 'gray.800' : props.backgroundColor}
+    borderColor={active ? 'gray.800' : props.borderColor}
+    color={active ? 'gray.50' : props.color}
+  >
+    <Box as="span" fontFamily="heading" fontWeight="500" fontSize="lg">
+      {text}
+    </Box>
+  </Circle>
+);
 
 const SectionListItem = ({ content, index, onClick, ...props }) => (
   <ListItem cursor="pointer" {...props}>
@@ -51,12 +69,17 @@ const SectionListItem = ({ content, index, onClick, ...props }) => (
 
 export default () => {
   const [sectionIndexes, setSectionIndexes] = useState([0]);
+  const location = useLocation();
 
-  const { title, last_updated, disclaimer } = content.heading;
-  const { sections } = content;
-  const { footer } = content.sidebar;
+  const isPolicy = location.pathname === '/policy';
 
-  const SIDEBAR_WIDTH = 280;
+  const {
+    heading: { title, last_updated },
+    sidebar: { footer },
+    sections,
+  } = isPolicy ? policyContent : termsContent;
+
+  const disclaimer = !isPolicy ? termsContent.heading.disclaimer : undefined;
 
   const openAccordionItem = (index) => {
     setSectionIndexes([...sectionIndexes, index]);
@@ -64,6 +87,7 @@ export default () => {
 
   const toggleAccordionItem = (index) => {
     const isActive = sectionIndexes.includes(index);
+
     if (isActive) {
       setSectionIndexes(sectionIndexes.filter((i) => i !== index));
     } else {
@@ -77,29 +101,31 @@ export default () => {
 
   return (
     <Page title="Terms of Service">
-      <Box position="relative" pb={[32, null, null, 40, 48]} height="100%">
-        <GridContainer isInitial pt={{ lg: 8 }} pb={[16, null, null, 32]}>
+      <Box position="relative" height="100%" pt={[8, null, null, 16]} pb={16}>
+        <GridContainer isInitial pt={{ lg: 8 }} >
           <Flex
-            pr={[0, null, null, 32]}
+            pr={[0, null, null, 24]}
             direction={['column', null, null, 'row']}
           >
             <Box mr={[0, null, null, 16]}>
-              <Box pt={16} mr={[0, null, null, 8]}>
+              <Box mr={[0, null, null, 8]}>
                 <Heading as="h2" size="2xl" mb={4}>
                   {title}
                 </Heading>
                 <Text color="indigo.500" fontSize="md" fontFamily="mono">
                   Last Updated: {last_updated}
                 </Text>
-                <Box
-                  mt={8}
-                  px={8}
-                  py={4}
-                  bgColor="indigo.50"
-                  color="indigo.500"
-                >
-                  {disclaimer}
-                </Box>
+                {disclaimer && (
+                  <Box
+                    mt={8}
+                    px={8}
+                    py={4}
+                    bgColor="indigo.50"
+                    color="indigo.500"
+                  >
+                    {disclaimer}
+                  </Box>
+                )}
               </Box>
               <Box pt={8}>
                 <Accordion
@@ -148,7 +174,7 @@ export default () => {
             >
               <Divider position="fixed" orientation="vertical" />
               <Box ml={8} position="fixed" width={SIDEBAR_WIDTH}>
-                <List marginTop={4} marginBottom={16} spacing={8}>
+                <List mt={4} mb={16} spacing={8}>
                   {sections.map((section, i) => (
                     <SectionListItem
                       key={section.title}
@@ -174,7 +200,7 @@ export default () => {
                     textAlign="center"
                   >
                     <Icon as={FontAwesomeIcon} icon={faChevronUp} />
-                    <Text>TOP</Text>
+                    <Text textTransform="uppercase">Top</Text>
                   </Box>
                 </Flex>
               </Box>

@@ -9,8 +9,7 @@ const Settings = lazy(() => import('./users/settings'));
 const Profile = lazy(() => import('./users/profile'));
 const CourseOverview = lazy(() => import('./courses/overview'));
 const CoursesSearch = lazy(() => import('./courses/search'));
-const PrivacyPolicy = lazy(() => import('./privacy-policy'));
-const TermsOfService = lazy(() => import('./terms-of-service'));
+const PolicyAndTerms = lazy(() => import('./policy-and-terms'));
 const NoMatch = lazy(() => import('./no-match'));
 
 const AuthRoute = (props) => {
@@ -39,8 +38,8 @@ export default () => (
       <Route path="/" element={<CoursesSearch />} />
       <Route path=":slug" element={<CourseOverview />} />
     </Route>
-    <Route path="policy" element={<PrivacyPolicy />} />
-    <Route path="terms" element={<TermsOfService />} />
+    <Route path="policy" element={<PolicyAndTerms />} />
+    <Route path="terms" element={<PolicyAndTerms />} />
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

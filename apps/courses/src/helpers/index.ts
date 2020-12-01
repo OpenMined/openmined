@@ -50,3 +50,5 @@ export const coursesProjection = `
   }
 }
 `;
+
+export const SIDEBAR_WIDTH = 280;

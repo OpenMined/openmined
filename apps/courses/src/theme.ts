@@ -240,7 +240,7 @@ export default extendTheme({
             border: 'none',
           },
           panel: {
-            marginLeft: '4rem',
+            marginLeft: 16,
           },
         },
       },

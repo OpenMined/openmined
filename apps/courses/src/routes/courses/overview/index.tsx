@@ -102,12 +102,12 @@ export default () => {
       <Box bg="gray.200" p={8}>
         <Text mb={4}>{description}</Text>
         <List spacing={2}>
-          {concepts.map(({ name, isComplete }) => (
-            <ListItem key={name}>
+          {concepts.map(({ title, isComplete }, index) => (
+            <ListItem key={index}>
               {/* TODO: Patrick, make the complete icons work */}
               {isComplete && <ListIcon as={CompleteConcept} />}
               {!isComplete && <ListIcon as={IncompleteConcept} />}
-              {name}
+              {title}
             </ListItem>
           ))}
         </List>
@@ -116,8 +116,8 @@ export default () => {
     );
   };
 
-  const lessons = data.lessons.map(({ name, description, concepts }) => ({
-    title: name,
+  const lessons = data.lessons.map(({ title, description, concepts }) => ({
+    title,
     content: prepareLessonContent(description, concepts),
   }));
 

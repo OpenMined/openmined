@@ -223,28 +223,6 @@ export default extendTheme({
     header: '4.5rem',
   },
   components: {
-    Accordion: {
-      variants: {
-        spaced: {
-          button: {
-            fontFamily: 'heading',
-            fontSize: '30px',
-            paddingLeft: 0,
-            marginLeft: 0,
-            borderBottomWidth: '1px',
-            _hover: {
-              backgroundColor: 'initial',
-            },
-          },
-          container: {
-            border: 'none',
-          },
-          panel: {
-            marginLeft: 16,
-          },
-        },
-      },
-    },
     Button: {
       baseStyle: {
         fontFamily: 'heading',

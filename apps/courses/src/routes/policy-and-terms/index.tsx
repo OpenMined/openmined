@@ -36,13 +36,9 @@ const SectionListItem = ({ content, index, onClick, ...props }) => (
       duration={500}
     >
       <Flex alignItems="center">
-        <CircledNumber
-          backgroundColor="gray.800"
-          mr={4}
-          color="white"
-          size="2rem"
-          text={index + 1}
-        />
+        <CircledNumber mr={4} size="2rem" isActive>
+          {index + 1}
+        </CircledNumber>
         <Text color="gray.700">{content.title}</Text>
       </Flex>
     </Link>
@@ -74,11 +70,8 @@ export default () => {
   const toggleAccordionItem = (index) => {
     const isActive = sectionIndexes.includes(index);
 
-    if (isActive) {
-      setSectionIndexes(sectionIndexes.filter((i) => i !== index));
-    } else {
-      openAccordionItem(index);
-    }
+    if (isActive) setSectionIndexes(sectionIndexes.filter((i) => i !== index));
+    else openAccordionItem(index);
   };
 
   const scrollTop = () => scroll.scrollToTop({ duration: 500, smooth: true });

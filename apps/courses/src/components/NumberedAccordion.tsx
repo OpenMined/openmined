@@ -11,56 +11,67 @@ import {
   Heading,
 } from '@chakra-ui/core';
 
-export const CircledNumber = ({ active = false, text, ...props }) => (
-  <Circle
-    {...props}
-    backgroundColor={active ? 'gray.800' : props.backgroundColor}
-    borderColor={active ? 'gray.800' : props.borderColor}
-    color={active ? 'gray.50' : props.color}
-  >
-    <Box as="span" fontFamily="heading" fontWeight="500" fontSize="lg">
-      {text}
-    </Box>
-  </Circle>
-);
+export const CircledNumber = ({ isActive = false, children, ...props }) => {
+  const circleProps = isActive
+    ? {
+        bg: 'gray.800',
+        borderColor: 'gray.800',
+        color: 'gray.50',
+      }
+    : {
+        bg: 'white',
+        borderColor: 'gray.600',
+        color: 'gray.600',
+      };
+
+  return (
+    <Circle
+      border="2px"
+      cursor="pointer"
+      textAlign="center"
+      transitionDuration="normal"
+      transitionTimingFunction="ease-in-out"
+      {...circleProps}
+      {...props}
+    >
+      <Heading as="span" fontSize="lg">
+        {children}
+      </Heading>
+    </Circle>
+  );
+};
 
 export default ({ indexes, onToggleItem, sections, ...props }) => (
   <Accordion index={indexes} allowMultiple {...props}>
     {sections.map(({ title, content, ...section }, index) => (
       <AccordionItem
         border="0px"
-        my={8}
-        onClick={() => onToggleItem(index)}
+        mt={index === 0 ? 0 : 8}
         key={index}
         {...section}
       >
-        {console.log(section)}
-        <Flex alignItems="center">
+        <Flex alignItems="center" onClick={() => onToggleItem(index)}>
           <CircledNumber
-            textAlign="center"
-            border="3px solid"
-            color="gray.600"
+            mr={6}
             size="2.5rem"
-            mr="2.5rem"
-            active={indexes.includes(index)}
-            transition=".2s"
-            onClick={() => onToggleItem(index)}
-            text={index + 1}
-          />
+            isActive={indexes.includes(index)}
+          >
+            {index + 1}
+          </CircledNumber>
           <AccordionButton
             pl={0}
             borderBottomWidth="1px"
             _hover={{ backgroundColor: 'initial' }}
           >
-            <Box flex="1" textAlign="left">
-              <Heading size="lg" as="h3">
-                {title}
-              </Heading>
-            </Box>
+            <Heading size="lg" as="h3" flex="1" textAlign="left">
+              {title}
+            </Heading>
             <AccordionIcon fontSize="1.5rem" />
           </AccordionButton>
         </Flex>
-        <AccordionPanel ml={16}>{content}</AccordionPanel>
+        <AccordionPanel ml={12} mt={4}>
+          {content}
+        </AccordionPanel>
       </AccordionItem>
     ))}
   </Accordion>

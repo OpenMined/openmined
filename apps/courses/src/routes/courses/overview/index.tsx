@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -21,6 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { coursesProjection } from '../../../helpers';
 import GridContainer from '../../../components/GridContainer';
+import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 
@@ -69,7 +70,31 @@ export default () => {
     `*[_type == "course" && slug.current == "${slug}"] ${coursesProjection}[0]`
   );
 
+  const [indexes, setIndexes] = useState([]);
+
   if (loading) return null;
+
+  const toggleAccordionItem = (index) => {
+    const isActive = indexes.includes(index);
+
+    if (isActive) setIndexes(indexes.filter((i) => i !== index));
+    else setIndexes([...indexes, index]);
+  };
+
+  const lessons = [
+    {
+      title: 'Hello world',
+      content: 'Just a thought!',
+    },
+    {
+      title: 'Hello world',
+      content: 'Just a thought!',
+    },
+    {
+      title: 'Hello world',
+      content: 'Just a thought!',
+    },
+  ];
 
   // TODO: Patrick, fill this variable in with the appropriate value
   const isTakingCourse = false;
@@ -178,7 +203,13 @@ export default () => {
               Below you will find the entire course syllabus organized by
               lessons and concepts.
             </Text>
-            {/* TODO: Patrick, put the syllabus here */}
+            <NumberedAccordion
+              width="full"
+              mt={8}
+              indexes={indexes}
+              onToggleItem={toggleAccordionItem}
+              sections={lessons}
+            />
           </Flex>
         </GridContainer>
         {!isTakingCourse && (

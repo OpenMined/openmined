@@ -8,7 +8,7 @@ import Course from '../../components/CourseCard';
 
 export default ({ title, description }) => {
   const { data, loading } = useSanity(
-    `*[_type == "course"] ${coursesProjection}`
+    `*[_type == "course"] ${coursesProjection()}`
   );
 
   const order = [

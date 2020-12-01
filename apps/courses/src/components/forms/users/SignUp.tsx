@@ -178,7 +178,6 @@ export default ({ callback, ...props }: SignUpFormProps) => {
 
     // If we're creating an account for the first time, we need to store some information about the user
     if (authUser) {
-      console.log(authUser);
       const splitName = authUser.user.displayName.split(' ');
       const firstName =
         splitName.length >= 1 ? splitName[0] : authUser.user.displayName;

@@ -36,7 +36,7 @@ export const handleErrors = (toast, error) =>
     status: 'error',
   });
 
-export const coursesProjection = `
+export const coursesProjection = (lessons = false, concepts = false) => `
 {
   ...,
   "slug": slug.current,
@@ -47,6 +47,13 @@ export const coursesProjection = `
   learnFrom[] -> {
     ...,
     "image": image.asset -> url
+  },
+  ${
+    lessons &&
+    `lessons[] -> {
+      ...,
+      ${concepts ? `concepts[] ->` : ''}
+    }`
   }
 }
 `;

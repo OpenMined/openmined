@@ -97,8 +97,9 @@ export default () => {
                     mt={8}
                     px={8}
                     py={4}
-                    bgColor="indigo.50"
+                    bg="indigo.50"
                     color="indigo.500"
+                    borderRadius="md"
                   >
                     {disclaimer}
                   </Box>

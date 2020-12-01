@@ -28,6 +28,7 @@ export const CircledNumber = ({ isActive = false, children, ...props }) => {
     <Circle
       border="2px"
       cursor="pointer"
+      userSelect="none"
       textAlign="center"
       transitionDuration="normal"
       transitionTimingFunction="ease-in-out"
@@ -59,7 +60,7 @@ export default ({ indexes, onToggleItem, sections, ...props }) => (
             {index + 1}
           </CircledNumber>
           <AccordionButton
-            pl={0}
+            px={0}
             borderBottomWidth="1px"
             _hover={{ backgroundColor: 'initial' }}
           >
@@ -69,7 +70,7 @@ export default ({ indexes, onToggleItem, sections, ...props }) => (
             <AccordionIcon fontSize="1.5rem" />
           </AccordionButton>
         </Flex>
-        <AccordionPanel ml={12} mt={4}>
+        <AccordionPanel ml={4} pl={12} pr={0} pt={4}>
           {content}
         </AccordionPanel>
       </AccordionItem>

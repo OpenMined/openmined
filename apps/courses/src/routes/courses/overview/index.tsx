@@ -8,6 +8,8 @@ import {
   Heading,
   Icon,
   Image,
+  List,
+  ListIcon,
   ListItem,
   SimpleGrid,
   Text,
@@ -17,6 +19,7 @@ import { useParams } from 'react-router-dom';
 import Page from '@openmined/shared/util-page';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { coursesProjection } from '../../../helpers';
@@ -67,7 +70,10 @@ const LearnFrom = ({ image, name, credential }) => (
 export default () => {
   const { slug } = useParams();
   const { data, loading } = useSanity(
-    `*[_type == "course" && slug.current == "${slug}"] ${coursesProjection}[0]`
+    `*[_type == "course" && slug.current == "${slug}"] ${coursesProjection(
+      true,
+      true
+    )}[0]`
   );
 
   const [indexes, setIndexes] = useState([]);
@@ -81,20 +87,39 @@ export default () => {
     else setIndexes([...indexes, index]);
   };
 
-  const lessons = [
-    {
-      title: 'Hello world',
-      content: 'Just a thought!',
-    },
-    {
-      title: 'Hello world',
-      content: 'Just a thought!',
-    },
-    {
-      title: 'Hello world',
-      content: 'Just a thought!',
-    },
-  ];
+  const prepareLessonContent = (description, concepts) => {
+    const iconProps = {
+      as: FontAwesomeIcon,
+      size: 'lg',
+      mr: 2,
+      color: 'gray.600',
+    };
+
+    const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
+    const CompleteConcept = () => <Icon {...iconProps} icon={faCheckCircle} />;
+
+    return (
+      <Box bg="gray.200" p={8}>
+        <Text mb={4}>{description}</Text>
+        <List spacing={2}>
+          {concepts.map(({ name, isComplete }) => (
+            <ListItem key={name}>
+              {/* TODO: Patrick, make the complete icons work */}
+              {isComplete && <ListIcon as={CompleteConcept} />}
+              {!isComplete && <ListIcon as={IncompleteConcept} />}
+              {name}
+            </ListItem>
+          ))}
+        </List>
+        {/* TODO: Patrick, put the link to the course in here */}
+      </Box>
+    );
+  };
+
+  const lessons = data.lessons.map(({ name, description, concepts }) => ({
+    title: name,
+    content: prepareLessonContent(description, concepts),
+  }));
 
   // TODO: Patrick, fill this variable in with the appropriate value
   const isTakingCourse = false;
@@ -203,6 +228,8 @@ export default () => {
               Below you will find the entire course syllabus organized by
               lessons and concepts.
             </Text>
+            {/* TODO: Patrick, add the hand icon for either the current lesson the user is on, or the first lesson */}
+            {/* TODO: Patrick, have the defaultly opened indexes to be either the current lesson the user is on, or the first lesson */}
             <NumberedAccordion
               width="full"
               mt={8}

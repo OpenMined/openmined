@@ -7,13 +7,11 @@ import {
   ListItem,
   Divider,
   Flex,
-  Circle,
   Icon,
 } from '@chakra-ui/core';
 import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
-import { Link, animateScroll as scroll } from 'react-scroll';
 import Page from '@openmined/shared/util-page';
 
 import { SIDEBAR_WIDTH } from '../../helpers';
@@ -24,26 +22,35 @@ import GridContainer from '../../components/GridContainer';
 import policy from '../../content/privacy-policy';
 import terms from '../../content/terms-of-service';
 
-const SectionListItem = ({ content, index, onClick, ...props }) => (
-  <ListItem cursor="pointer" {...props}>
-    <Link
-      to={`accordion-button-${content.title
-        .replace(/\s+/g, '-')
-        .toLowerCase()}`}
-      onClick={() => onClick(index)}
-      smooth={true}
-      offset={-150}
-      duration={500}
-    >
+const SectionListItem = ({ content, index, ...props }) => {
+  const handleClick = () => {
+    props.onClick(index);
+
+    const element = document.querySelectorAll('.chakra-accordion__item')[index];
+
+    const offset = 80;
+    const bodyRect = document.body.getBoundingClientRect().top;
+    const elementRect = element.getBoundingClientRect().top;
+    const elementPosition = elementRect - bodyRect;
+    const offsetPosition = elementPosition - offset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth',
+    });
+  };
+
+  return (
+    <ListItem cursor="pointer" {...props} onClick={handleClick}>
       <Flex alignItems="center">
         <CircledNumber mr={4} size="2rem" isActive>
           {index + 1}
         </CircledNumber>
         <Text color="gray.700">{content.title}</Text>
       </Flex>
-    </Link>
-  </ListItem>
-);
+    </ListItem>
+  );
+};
 
 export default () => {
   const location = useLocation();
@@ -51,17 +58,11 @@ export default () => {
 
   const {
     heading: { title, last_updated },
-    sidebar: { footer },
+    sidebar: { discussion },
     sections,
   } = isPolicy ? policy : terms;
 
   const [sectionIndexes, setSectionIndexes] = useState([0]);
-
-  // TODO: Hericles, we may not need this when you remove react-scroll
-  const sectionsWithIds = sections.map((s) => ({
-    ...s,
-    id: s.title.replace(/\s+/g, '-').toLowerCase(),
-  }));
 
   const disclaimer = !isPolicy ? terms.heading.disclaimer : undefined;
 
@@ -73,8 +74,6 @@ export default () => {
     if (isActive) setSectionIndexes(sectionIndexes.filter((i) => i !== index));
     else openAccordionItem(index);
   };
-
-  const scrollTop = () => scroll.scrollToTop({ duration: 500, smooth: true });
 
   return (
     <Page title="Terms of Service">
@@ -109,7 +108,7 @@ export default () => {
                 <NumberedAccordion
                   indexes={sectionIndexes}
                   onToggleItem={toggleAccordionItem}
-                  sections={sectionsWithIds}
+                  sections={sections}
                 />
               </Box>
             </Box>
@@ -137,11 +136,13 @@ export default () => {
                   size="2x"
                   mb={2}
                 />
-                <Text fontSize="16px">{footer}</Text>
+                {discussion}
                 <Flex mt={16} mr={4} justify="flex-end">
                   <Box
                     cursor="pointer"
-                    onClick={scrollTop}
+                    onClick={() =>
+                      window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }
                     color="indigo.500"
                     textAlign="center"
                   >

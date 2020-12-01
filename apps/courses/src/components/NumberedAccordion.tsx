@@ -6,7 +6,6 @@ import {
   AccordionItem,
   AccordionPanel,
   Circle,
-  Box,
   Flex,
   Heading,
 } from '@chakra-ui/core';

@@ -1,3 +1,6 @@
+import React from 'react';
+import { Text, Link } from '@chakra-ui/core';
+
 export default {
   heading: {
     title: 'Courses.OpenMined Privacy Policy',
@@ -26,7 +29,22 @@ export default {
     },
   ],
   sidebar: {
-    footer:
-      'Not seeing an answer to your specific question? Go to our discussion board to get extra assistance.',
+    discussion: (
+      <Text>
+        Not seeing an answer to your specific question? Go to our{' '}
+        <Link
+          color="indigo.500"
+          _hover={{ color: 'indigo.700' }}
+          textDecoration="underline"
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://discussions.openmined.org"
+          as="a"
+        >
+          discussion board
+        </Link>{' '}
+        to get extra assistance.
+      </Text>
+    ),
   },
 };

@@ -2,13 +2,22 @@ import React, { useState } from 'react';
 import { Box, Heading, Text, SimpleGrid } from '@chakra-ui/core';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 
-import { coursesProjection } from '../../helpers';
 import GridContainer from '../../components/GridContainer';
 import Course from '../../components/CourseCard';
 
 export default ({ title, description }) => {
   const { data, loading } = useSanity(
-    `*[_type == "course"] ${coursesProjection()}`
+    `*[_type == "course"] {
+      title,
+      level,
+      length,
+      cost,
+      "slug": slug.current,
+      visual {
+        "default": default.asset -> url,
+        "full": full.asset -> url
+      },
+    }`
   );
 
   const order = [

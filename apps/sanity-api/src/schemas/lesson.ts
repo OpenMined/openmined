@@ -15,6 +15,17 @@ export default {
       type: 'text',
     },
     {
+      title: 'Learn How',
+      name: 'learnHow',
+      type: 'array',
+      of: [{ type: 'string' }],
+    },
+    {
+      title: 'Length',
+      name: 'length',
+      type: 'string',
+    },
+    {
       title: 'Resources',
       name: 'resources',
       type: 'array',
@@ -35,6 +46,12 @@ export default {
           ],
         },
       ],
+    },
+    {
+      title: 'Learn From',
+      name: 'learnFrom',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'teacher' }] }],
     },
     {
       title: 'Concepts',

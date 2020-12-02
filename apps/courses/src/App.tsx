@@ -9,6 +9,7 @@ import Header from './components/Header';
 import Loading from './components/Loading';
 import Cookies from './components/Cookies';
 import Footer from './components/Footer';
+import { Box } from '@chakra-ui/core';
 
 const Analytics = ({ location }) => {
   const analytics = useAnalytics();
@@ -41,13 +42,21 @@ const App = () => {
     setCookiePrefs(preference);
   };
 
+  // If we're inside the course, don't show the <Header /> at all
+  // Instead, we'll show the <CourseHeader />
+  const isInsideCourse =
+    location.pathname.includes('/courses') &&
+    location.pathname.split('/').length > 3;
+
   return (
     <Router action={action} location={location} navigator={history}>
       <Suspense fallback={<Loading />}>
         {cookiePrefs === 'all' && <Analytics location={location} />}
-        <Header />
-        <Routes />
-        <Footer />
+        {!isInsideCourse && <Header />}
+        <Box minHeight="100vh" display="grid" gridTemplateRows="1fr auto">
+          <Routes />
+          <Footer />
+        </Box>
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
       </Suspense>
     </Router>

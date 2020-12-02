@@ -107,39 +107,55 @@ export default ({
   const onLinkGithub = () =>
     auth.currentUser
       .linkWithPopup(githubProvider)
-      .then((authUser) =>
-        db
-          .collection('users')
-          .doc(auth.currentUser.uid)
-          .set(
-            {
-              github: authUser.additionalUserInfo.profile.login,
-              github_access_token: authUser.credential.accessToken,
-            },
-            { merge: true }
-          )
+      .then((authUser) => {
+        const batch = db.batch();
+        const userDoc = db.collection('users').doc(auth.currentUser.uid);
+        const userPrivateDoc = userDoc
+          .collection('private')
+          .doc(auth.currentUser.uid);
+
+        batch.set(
+          userDoc,
+          { github: authUser.additionalUserInfo.profile.login },
+          { merge: true }
+        );
+
+        batch.set(
+          userPrivateDoc,
+          { github_access_token: authUser.credential.accessToken },
+          { merge: true }
+        );
+
+        batch
+          .commit()
           .then(() => onLinkSuccess('Github'))
-          .catch((error) => handleErrors(toast, error))
-      )
+          .catch((error) => handleErrors(toast, error));
+      })
       .catch((error) => handleErrors(toast, error));
 
   const onUnlinkGithub = () =>
     auth.currentUser
       .unlink('github.com')
-      .then(() =>
-        db
-          .collection('users')
-          .doc(auth.currentUser.uid)
-          .set(
-            {
-              github: null,
-              github_access_token: null,
-            },
-            { merge: true }
-          )
+      .then(() => {
+        const batch = db.batch();
+        const userDoc = db.collection('users').doc(auth.currentUser.uid);
+        const userPrivateDoc = userDoc
+          .collection('private')
+          .doc(auth.currentUser.uid);
+
+        batch.set(userDoc, { github: null }, { merge: true });
+
+        batch.set(
+          userPrivateDoc,
+          { github_access_token: null },
+          { merge: true }
+        );
+
+        batch
+          .commit()
           .then(() => onUnlinkSuccess('Github'))
-          .catch((error) => handleErrors(toast, error))
-      )
+          .catch((error) => handleErrors(toast, error));
+      })
       .catch((error) => handleErrors(toast, error));
 
   // TODO: Patrick, we need to make sure this actually deletes all the data associated with the user

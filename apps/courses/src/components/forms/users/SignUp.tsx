@@ -184,22 +184,30 @@ export default ({ callback, ...props }: SignUpFormProps) => {
       const lastName =
         splitName.length >= 2 ? splitName.slice(1).join(' ') : '';
 
-      const databaseUser = db
-        .collection('users')
-        .doc(auth.currentUser.uid)
-        .set({
-          first_name: firstName,
-          last_name: lastName,
-          photo_url: authUser.user.photoURL,
-          description: authUser.additionalUserInfo.profile.bio,
-          github: authUser.additionalUserInfo.profile.login,
-          github_access_token: authUser.credential.accessToken,
-          twitter: authUser.additionalUserInfo.profile.twitter_username,
-          website: authUser.additionalUserInfo.profile.blog,
-        })
-        .catch((error) => handleErrors(toast, error));
+      const batch = db.batch();
+      const userDoc = db.collection('users').doc(auth.currentUser.uid);
+      const userPrivateDoc = userDoc
+        .collection('private')
+        .doc(auth.currentUser.uid);
 
-      if (authUser && databaseUser) onSuccess();
+      batch.set(userDoc, {
+        first_name: firstName,
+        last_name: lastName,
+        photo_url: authUser.user.photoURL,
+        description: authUser.additionalUserInfo.profile.bio,
+        github: authUser.additionalUserInfo.profile.login,
+        twitter: authUser.additionalUserInfo.profile.twitter_username,
+        website: authUser.additionalUserInfo.profile.blog,
+      });
+
+      batch.set(userPrivateDoc, {
+        github_access_token: authUser.credential.accessToken,
+      });
+
+      batch
+        .commit()
+        .then(() => onSuccess())
+        .catch((error) => handleErrors(toast, error));
     }
   };
 

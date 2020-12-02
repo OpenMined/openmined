@@ -220,7 +220,7 @@ export default extendTheme({
     taller: '2',
   },
   space: {
-    header: '4.5rem',
+    header: '5rem',
   },
   components: {
     Button: {

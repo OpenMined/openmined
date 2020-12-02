@@ -15,14 +15,13 @@ import {
   Text,
   UnorderedList,
 } from '@chakra-ui/core';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Page from '@openmined/shared/util-page';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { coursesProjection } from '../../../helpers';
 import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
@@ -70,10 +69,26 @@ const LearnFrom = ({ image, name, credential }) => (
 export default () => {
   const { course } = useParams();
   const { data, loading } = useSanity(
-    `*[_type == "course" && slug.current == "${course}"] ${coursesProjection(
-      true,
-      true
-    )}[0]`
+    `*[_type == "course" && slug.current == "${course}"] {
+      ...,
+      "slug": slug.current,
+      visual {
+        "default": default.asset -> url,
+        "full": full.asset -> url
+      },
+      learnFrom[] -> {
+        ...,
+        "image": image.asset -> url
+      },
+      lessons[] -> {
+        _id,
+        title,
+        description,
+        concepts[] -> {
+          title
+        }
+      }
+    }[0]`
   );
 
   const [indexes, setIndexes] = useState([]);
@@ -191,12 +206,12 @@ export default () => {
                   <ListItem key={p}>{p}</ListItem>
                 ))}
               </UnorderedList>
-              {/* TODO: Patrick, this should actually start the course */}
               {!isTakingCourse && (
                 <Button
                   colorScheme="blue"
                   size="lg"
-                  onClick={() => console.log('TRY THE COURSE')}
+                  as={Link}
+                  to={`/courses/${course}/${data.lessons[0]._id}`}
                 >
                   Start Course
                 </Button>
@@ -257,13 +272,13 @@ export default () => {
             </SimpleGrid>
           </GridContainer>
         )}
-        {/* TODO: Patrick, this should actually start the course */}
         {!isTakingCourse && (
           <Flex justify="center">
             <Button
               colorScheme="black"
               size="lg"
-              onClick={() => console.log('TRY THE COURSE')}
+              as={Link}
+              to={`/courses/${course}/${data.lessons[0]._id}`}
             >
               Start Course
             </Button>

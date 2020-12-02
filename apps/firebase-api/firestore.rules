@@ -7,8 +7,23 @@ service cloud.firestore {
     }
 
     match /users/{user} {
+      function isSameUser() {
+        return isLoggedIn() && request.auth.uid == user;
+      }
+
       allow read;
-      allow write: if isLoggedIn() && request.auth.uid == user;
+      allow write: if isSameUser()
+
+      match /private/{privateUserVar} {
+        allow read, write: if isSameUser()
+      }
+
+      match /courses/{course} {
+        allow read, write: if isSameUser()
+        // TODO: User should not be able to modify certain fields
+        // - They can't change the started_at date once it's set
+        // - They can't change the completed_at date once it's set
+      }
     }
 
     match /{document=**} {

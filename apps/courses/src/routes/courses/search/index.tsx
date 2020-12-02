@@ -10,7 +10,6 @@ import Sidebar from './Sidebar';
 
 import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
-import { coursesProjection } from '../../../helpers';
 
 export default () => {
   const gray50 = useToken('colors', 'gray.50');
@@ -47,7 +46,18 @@ export default () => {
   ];
 
   const { data, loading } = useSanity(
-    `*[_type == "course"] ${coursesProjection()}`
+    `*[_type == "course"] {
+      title,
+      description,
+      level,
+      length,
+      cost,
+      "slug": slug.current,
+      visual {
+        "default": default.asset -> url,
+        "full": full.asset -> url
+      },
+    }`
   );
 
   const courseFilter = (course) => {

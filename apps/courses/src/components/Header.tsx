@@ -270,7 +270,7 @@ export default () => {
       transitionTimingFunction="ease-in-out"
       bg={isScrolled ? 'gray.900' : 'white'}
       boxShadow={{ base: 'md', [BREAK]: 'none' }}
-      zIndex={1}
+      zIndex={10}
     >
       <GridContainer>
         <Flex as="nav" align="center" justify="space-between" wrap="wrap">

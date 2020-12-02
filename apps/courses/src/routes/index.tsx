@@ -10,6 +10,7 @@ const Profile = lazy(() => import('./users/profile'));
 const CourseOverview = lazy(() => import('./courses/overview'));
 const CoursesSearch = lazy(() => import('./courses/search'));
 const PolicyAndTerms = lazy(() => import('./policy-and-terms'));
+const MyCourses = lazy(() => import('./courses/my'));
 const NoMatch = lazy(() => import('./no-match'));
 
 const AuthRoute = (props) => {
@@ -40,6 +41,7 @@ export default () => (
     </Route>
     <Route path="policy" element={<PolicyAndTerms />} />
     <Route path="terms" element={<PolicyAndTerms />} />
+    <AuthRoute path="my-courses" element={<MyCourses />} />
     <Route path="*" element={<NoMatch />} />
   </Routes>
 );

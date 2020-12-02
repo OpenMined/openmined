@@ -7,8 +7,11 @@ const Signup = lazy(() => import('./users/sign-up'));
 const Signin = lazy(() => import('./users/sign-in'));
 const Settings = lazy(() => import('./users/settings'));
 const Profile = lazy(() => import('./users/profile'));
-const CourseOverview = lazy(() => import('./courses/overview'));
 const CoursesSearch = lazy(() => import('./courses/search'));
+const CourseOverview = lazy(() => import('./courses/overview'));
+const CourseProject = lazy(() => import('./courses/project'));
+const CourseLesson = lazy(() => import('./courses/lesson'));
+const CourseConcept = lazy(() => import('./courses/concept'));
 const PolicyAndTerms = lazy(() => import('./policy-and-terms'));
 const NoMatch = lazy(() => import('./no-match'));
 
@@ -36,7 +39,14 @@ export default () => (
     </Route>
     <Route path="courses">
       <Route path="/" element={<CoursesSearch />} />
-      <Route path=":slug" element={<CourseOverview />} />
+      <Route path=":course">
+        <Route path="/" element={<CourseOverview />} />
+        <AuthRoute path="project" element={<CourseProject />} />
+        <AuthRoute path=":lesson">
+          <AuthRoute path="/" element={<CourseLesson />} />
+          <AuthRoute path=":concept" element={<CourseConcept />} />
+        </AuthRoute>
+      </Route>
     </Route>
     <Route path="policy" element={<PolicyAndTerms />} />
     <Route path="terms" element={<PolicyAndTerms />} />

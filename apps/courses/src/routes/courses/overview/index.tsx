@@ -68,9 +68,9 @@ const LearnFrom = ({ image, name, credential }) => (
 );
 
 export default () => {
-  const { slug } = useParams();
+  const { course } = useParams();
   const { data, loading } = useSanity(
-    `*[_type == "course" && slug.current == "${slug}"] ${coursesProjection(
+    `*[_type == "course" && slug.current == "${course}"] ${coursesProjection(
       true,
       true
     )}[0]`
@@ -95,7 +95,9 @@ export default () => {
       color: 'gray.600',
     };
 
+    // @ts-ignore
     const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
+    // @ts-ignore
     const CompleteConcept = () => <Icon {...iconProps} icon={faCheckCircle} />;
 
     return (
@@ -116,10 +118,12 @@ export default () => {
     );
   };
 
-  const lessons = data.lessons.map(({ title, description, concepts }) => ({
-    title,
-    content: prepareLessonContent(description, concepts),
-  }));
+  const lessons = data.lessons
+    ? data.lessons.map(({ title, description, concepts }) => ({
+        title,
+        content: prepareLessonContent(description, concepts),
+      }))
+    : [];
 
   // TODO: Patrick, fill this variable in with the appropriate value
   const isTakingCourse = false;
@@ -200,7 +204,7 @@ export default () => {
             </Box>
           </Flex>
         </GridContainer>
-        {!isTakingCourse && (
+        {!isTakingCourse && learnHow && (
           <Box bg="gray.200" py={[8, null, null, 12]} my={[8, null, null, 12]}>
             <GridContainer>
               <Heading as="h2" size="lg" mb={8}>
@@ -214,32 +218,34 @@ export default () => {
             </GridContainer>
           </Box>
         )}
-        <GridContainer my={[8, null, null, 12]}>
-          <Flex
-            width={{ lg: '80%' }}
-            mx="auto"
-            direction="column"
-            align="center"
-          >
-            <Heading as="h2" size="lg" mb={4}>
-              What You'll Learn
-            </Heading>
-            <Text color="gray.700">
-              Below you will find the entire course syllabus organized by
-              lessons and concepts.
-            </Text>
-            {/* TODO: Patrick, add the hand icon for either the current lesson the user is on, or the first lesson */}
-            {/* TODO: Patrick, have the defaultly opened indexes to be either the current lesson the user is on, or the first lesson */}
-            <NumberedAccordion
-              width="full"
-              mt={8}
-              indexes={indexes}
-              onToggleItem={toggleAccordionItem}
-              sections={lessons}
-            />
-          </Flex>
-        </GridContainer>
-        {!isTakingCourse && (
+        {lessons.length !== 0 && (
+          <GridContainer my={[8, null, null, 12]}>
+            <Flex
+              width={{ lg: '80%' }}
+              mx="auto"
+              direction="column"
+              align="center"
+            >
+              <Heading as="h2" size="lg" mb={4}>
+                What You'll Learn
+              </Heading>
+              <Text color="gray.700">
+                Below you will find the entire course syllabus organized by
+                lessons and concepts.
+              </Text>
+              {/* TODO: Patrick, add the hand icon for either the current lesson the user is on, or the first lesson */}
+              {/* TODO: Patrick, have the defaultly opened indexes to be either the current lesson the user is on, or the first lesson */}
+              <NumberedAccordion
+                width="full"
+                mt={8}
+                indexes={indexes}
+                onToggleItem={toggleAccordionItem}
+                sections={lessons}
+              />
+            </Flex>
+          </GridContainer>
+        )}
+        {!isTakingCourse && learnFrom && (
           <GridContainer my={[8, null, null, 12]}>
             <Heading as="h2" size="lg" mb={8} textAlign="center">
               Who You'll Learn From

@@ -239,7 +239,7 @@ export default ({ lessonNum, title, course, leftDrawerSections }) => {
     >
       <GridContainer>
         <Flex as="nav" align="center" justify="space-between">
-          <Box width={{ base: 6, [BREAK]: 1 / 3 }}>
+          <Box width={{ base: 6, [BREAK]: 1 / 4 }}>
             {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
             <Icon
               as={FontAwesomeIcon}
@@ -249,7 +249,7 @@ export default ({ lessonNum, title, course, leftDrawerSections }) => {
             />
           </Box>
           <Heading
-            width={{ base: 'full', [BREAK]: 1 / 3 }}
+            width={{ base: 'full', [BREAK]: 1 / 2 }}
             mx={4}
             textAlign="center"
             as="span"
@@ -259,7 +259,7 @@ export default ({ lessonNum, title, course, leftDrawerSections }) => {
             Lesson {lessonNum}: {title}
           </Heading>
           <Stack
-            width={1 / 3}
+            width={1 / 4}
             justify="flex-end"
             align="center"
             direction="row"

@@ -20,6 +20,7 @@ export default () => {
   const serverTimestamp = useFirestore.FieldValue.serverTimestamp();
 
   useEffect(() => {
+    // TODO: Able to outsource this to a function now
     const hasStartedCourse = Object.keys(dbCourse).length !== 0;
     const hasStartedLesson =
       hasStartedCourse && dbCourse.lessons && dbCourse.lessons[lesson];
@@ -60,6 +61,7 @@ export default () => {
   // TODO: Allow for videos to be made big if they're the first item in the content
   // TODO: Allow for inline quizzes
   // TODO: Make sure that they cannot begin a concept if they haven't completed the previous concepts (unless it's the first)
+  // TODO: Make sure that they cannot begin a concept if they haven't completed the previous lessons (unless it's the first)
 
   return (
     <Page title={`${lesson} - ${concept}`}>

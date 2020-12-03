@@ -49,7 +49,7 @@ export default () => {
 
   const { course, lesson } = useParams();
   const { data, loading } = useSanity(
-    `*[_type == "lesson" && slug._id == "${lesson}"] {
+    `*[_type == "lesson" && _id == "${lesson}"] {
       ...,
       learnFrom[] -> {
         ...,
@@ -61,10 +61,7 @@ export default () => {
         title,
         "lessons": lessons[] -> {
           _id,
-          title,
-          "concepts": concepts[] -> {
-            _id, title
-          }
+          title
         }
       }
     }[0]`

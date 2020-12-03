@@ -13,6 +13,8 @@ import {
   Text,
   MenuDivider,
   Heading,
+  Image,
+  useDisclosure,
 } from '@chakra-ui/core';
 import {
   useAuth,
@@ -21,19 +23,25 @@ import {
   useFirestoreDocDataOnce,
 } from 'reactfire';
 import { Link as RRDLink } from 'react-router-dom';
-import useToast, { toastConfig } from './Toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars,
   faUserCircle,
   faCog,
   faCommentAlt,
+  faHome,
+  faLink,
+  faSignOutAlt,
+  faUserGraduate,
 } from '@fortawesome/free-solid-svg-icons';
 import { User } from '@openmined/shared/types';
 
+import useToast, { toastConfig } from './Toast';
 import GridContainer from './GridContainer';
+import CourseDrawer from './CourseDrawer';
 
 import { handleErrors } from '../helpers';
+import logo from '../assets/logo.svg';
 
 interface LinkProps {
   title: string;
@@ -77,7 +85,7 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
 
 // TODO: Patrick, how much of this logic CAN and SHOULD we share with the original header?
 
-export default ({ setDrawerOpen, isDrawerOpen, title }) => {
+export default ({ lessonNum, title, course, leftDrawerSections }) => {
   const user = useUser();
   const auth = useAuth();
   const db = useFirestore();
@@ -92,6 +100,55 @@ export default ({ setDrawerOpen, isDrawerOpen, title }) => {
     );
   });
 
+  const {
+    isOpen: isLeftDrawerOpen,
+    onOpen: onLeftDrawerOpen,
+    onClose: onLeftDrawerClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: isRightDrawerOpen,
+    onOpen: onRightDrawerOpen,
+    onClose: onRightDrawerClose,
+  } = useDisclosure();
+
+  const menuLinks = [
+    {
+      title: 'Profile',
+      link: `/users/${user.uid}`,
+      icon: faUserCircle,
+    },
+    {
+      title: 'Account Settings',
+      link: '/users/settings',
+      icon: faCog,
+    },
+    {
+      title: 'Forum',
+      link: 'https://discussion.openmined.org',
+      icon: faCommentAlt,
+    },
+    {
+      type: 'divider',
+    },
+    {
+      title: 'Logout',
+      icon: faSignOutAlt,
+      onClick: () =>
+        auth
+          .signOut()
+          .then(() =>
+            toast({
+              ...toastConfig,
+              title: 'Sign out successful',
+              description: 'Come back soon!',
+              status: 'success',
+            })
+          )
+          .catch((error) => handleErrors(toast, error)),
+    },
+  ];
+
   const RIGHT_LINKS: LinkProps[] = [
     {
       title: 'My Courses',
@@ -105,67 +162,69 @@ export default ({ setDrawerOpen, isDrawerOpen, title }) => {
         <Menu placement="bottom-end">
           <MenuButton as={userAvatar} />
           <MenuList>
-            {user && (
-              <MenuItem as={RRDLink} to={`/users/${user.uid}`}>
-                <Icon
-                  as={FontAwesomeIcon}
-                  icon={faUserCircle}
-                  size="lg"
-                  color="gray.400"
-                  mr={4}
-                />
-                <Text color="gray.700">Profile</Text>
-              </MenuItem>
-            )}
-            <MenuItem as={RRDLink} to="/users/settings">
-              <Icon
-                as={FontAwesomeIcon}
-                icon={faCog}
-                size="lg"
-                color="gray.400"
-                mr={4}
-              />
-              <Text color="gray.700">Account Settings</Text>
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
-              as="a"
-              href="https://discussion.openmined.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon
-                as={FontAwesomeIcon}
-                icon={faCommentAlt}
-                size="lg"
-                color="gray.400"
-                mr={4}
-              />
-              <Text color="gray.700">Forum</Text>
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
-              onClick={() =>
-                auth
-                  .signOut()
-                  .then(() =>
-                    toast({
-                      ...toastConfig,
-                      title: 'Sign out successful',
-                      description: 'Come back soon!',
-                      status: 'success',
-                    })
-                  )
-                  .catch((error) => handleErrors(toast, error))
+            {menuLinks.map(
+              ({ type, link = '', onClick, title, icon }, index) => {
+                if (type === 'divider') return <MenuDivider key={index} />;
+
+                const isExternal =
+                  link.includes('http://') || link.includes('https://');
+
+                const linkProps = isExternal
+                  ? {
+                      as: 'a',
+                      href: link,
+                      target: '_blank',
+                      rel: 'noopener noreferrer',
+                    }
+                  : {
+                      as: RRDLink,
+                      to: link,
+                    };
+
+                return (
+                  <MenuItem
+                    key={index}
+                    {...linkProps}
+                    onClick={() => {
+                      if (onClick) onClick();
+                    }}
+                  >
+                    {icon && (
+                      <Icon
+                        as={FontAwesomeIcon}
+                        icon={icon}
+                        size="lg"
+                        color="gray.400"
+                        mr={4}
+                      />
+                    )}
+                    <Text color="gray.700">{title}</Text>
+                  </MenuItem>
+                );
               }
-            >
-              <Text color="gray.700">Logout</Text>
-            </MenuItem>
+            )}
           </MenuList>
         </Menu>
       ),
     },
   ];
+
+  const rightDrawerSections = [
+    {
+      title: 'Links',
+      icon: faLink,
+      fields: [
+        {
+          title: 'My Courses',
+          link: '/my-courses',
+          icon: faUserGraduate,
+        },
+        ...menuLinks,
+      ],
+    },
+  ];
+
+  const BREAK = 'md';
 
   return (
     <Box
@@ -173,25 +232,31 @@ export default ({ setDrawerOpen, isDrawerOpen, title }) => {
       width="100%"
       top={0}
       left={0}
-      py={4}
+      py={{ base: 6, [BREAK]: 4 }}
       bg="gray.900"
       boxShadow="md"
       zIndex={2}
     >
       <GridContainer>
         <Flex as="nav" align="center" justify="space-between">
-          <Box width={1 / 3} onClick={() => setDrawerOpen(!isDrawerOpen)}>
+          <Box width={{ base: 6, [BREAK]: 1 / 3 }}>
             {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
-            <Icon as={FontAwesomeIcon} icon={faBars} color="white" />
+            <Icon
+              as={FontAwesomeIcon}
+              icon={faBars}
+              color="white"
+              onClick={isLeftDrawerOpen ? onLeftDrawerClose : onLeftDrawerOpen}
+            />
           </Box>
           <Heading
-            width={1 / 3}
+            width={{ base: 'full', [BREAK]: 1 / 3 }}
+            mx={4}
             textAlign="center"
             as="span"
             size="md"
             color="white"
           >
-            {title}
+            Lesson {lessonNum}: {title}
           </Heading>
           <Stack
             width={1 / 3}
@@ -199,11 +264,69 @@ export default ({ setDrawerOpen, isDrawerOpen, title }) => {
             align="center"
             direction="row"
             spacing={4}
+            display={{ base: 'none', [BREAK]: 'flex' }}
           >
-            {createLinks(RIGHT_LINKS, () => setDrawerOpen(false))}
+            {createLinks(RIGHT_LINKS, onRightDrawerClose)}
           </Stack>
+          <Flex
+            width={6}
+            justify="flex-end"
+            display={{ base: 'flex', [BREAK]: 'none' }}
+          >
+            <Icon
+              as={FontAwesomeIcon}
+              icon={faHome}
+              size="lg"
+              color="white"
+              onClick={
+                isRightDrawerOpen ? onRightDrawerClose : onRightDrawerOpen
+              }
+            />
+          </Flex>
         </Flex>
       </GridContainer>
+      <CourseDrawer
+        isOpen={isLeftDrawerOpen}
+        onOpen={onLeftDrawerOpen}
+        onClose={onLeftDrawerClose}
+        header={
+          <>
+            <Text color="gray.400" mb={1}>
+              Lesson {lessonNum}
+            </Text>
+            <Heading as="span" size="lg" display="block" mb={3}>
+              {title}
+            </Heading>
+            <Link
+              as={RRDLink}
+              to={`/courses/${course}`}
+              textDecoration="underline"
+              color="magenta.200"
+              _hover={{ color: 'magenta.400' }}
+            >
+              View Full Syllabus
+            </Link>
+          </>
+        }
+        content={leftDrawerSections}
+      />
+      <CourseDrawer
+        isOpen={isRightDrawerOpen}
+        onOpen={onRightDrawerOpen}
+        onClose={onRightDrawerClose}
+        placement="right"
+        header={
+          <RRDLink to="/" onClick={onRightDrawerClose}>
+            <Image
+              src={logo}
+              alt="OpenMined Courses"
+              width={[160, null, 200]}
+              style={{ filter: 'invert(1) brightness(2)' }}
+            />
+          </RRDLink>
+        }
+        content={rightDrawerSections}
+      />
     </Box>
   );
 };

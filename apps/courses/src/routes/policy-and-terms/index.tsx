@@ -62,9 +62,9 @@ export default () => {
     sections,
   } = isPolicy ? policy : terms;
 
-  const [sectionIndexes, setSectionIndexes] = useState([0]);
-
   const disclaimer = !isPolicy ? terms.heading.disclaimer : undefined;
+
+  const [sectionIndexes, setSectionIndexes] = useState([0]);
 
   const openAccordionItem = (index) =>
     setSectionIndexes([...sectionIndexes, index]);

@@ -30,7 +30,7 @@ import {
   hasStartedLesson,
   isLessonAvailable,
   getLastCompletedLesson,
-} from '../../../helpers';
+} from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import CourseHeader from '../../../components/CourseHeader';
 

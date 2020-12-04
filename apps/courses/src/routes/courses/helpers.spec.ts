@@ -15,7 +15,7 @@ import {
   doesConceptExist,
   isConceptAvailable,
   getLastCompletedConcept,
-} from './index';
+} from './_helpers';
 
 describe('course helpers', () => {
   it('empty user has not started or completed course', () => {

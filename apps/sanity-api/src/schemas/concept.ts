@@ -100,6 +100,23 @@ export default {
           type: 'image',
         },
         {
+          title: 'Quiz',
+          name: 'quiz',
+          type: 'object',
+          fields: [{ title: 'Quiz', name: 'quiz', type: 'quiz' }],
+          preview: {
+            select: {
+              subtitle: 'quiz',
+            },
+            prepare: ({ subtitle }) => ({
+              title: 'Quiz',
+              subtitle: `${subtitle.length} question${
+                subtitle.length === 1 ? '' : 's'
+              }`,
+            }),
+          },
+        },
+        {
           title: 'Tasks',
           name: 'tasks',
           type: 'object',

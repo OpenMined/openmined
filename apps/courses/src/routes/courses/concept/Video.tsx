@@ -4,6 +4,7 @@ import { Box, Heading, Text, Divider as ChakraDivider } from '@chakra-ui/core';
 import Content from './blocks';
 
 import GridContainer from '../../../components/GridContainer';
+import Video from './blocks/Video';
 
 export default ({
   data,
@@ -45,9 +46,13 @@ export default ({
     }
   }, [numCompletedQuizzes, numberOfQuizzesOnConcept, setCompletedQuizzes]);
 
+  const videoContent = content[0];
+  const allButVideoContent = content.slice(1);
+
   return (
     <Box bg="gray.800">
       <GridContainer pt="header" pb="header">
+        <Video {...videoContent} />
         <Box bg="white" px={8} pt={[8, null, null, 16]} pb={16}>
           <Box maxW={600} mx="auto">
             <Text color="gray.700" mb={2}>
@@ -61,7 +66,7 @@ export default ({
             </Heading>
             <ChakraDivider my={6} />
             <Content
-              content={content}
+              content={allButVideoContent}
               course={course}
               lesson={lesson}
               concept={concept}

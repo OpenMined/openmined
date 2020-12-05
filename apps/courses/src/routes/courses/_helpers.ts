@@ -1,36 +1,31 @@
-import { faBookOpen, faLink } from '@fortawesome/free-solid-svg-icons';
+// Course permissions
+export const hasStartedCourse = (u) =>
+  Object.keys(u).length !== 0 && !!u.started_at;
+export const hasCompletedCourse = (u) =>
+  hasStartedCourse(u) && !!u.completed_at;
 
-// Permissions functions
-export const hasStartedCourse = (userCourseObj) =>
-  Object.keys(userCourseObj).length !== 0 && userCourseObj.started_at;
-export const hasCompletedCourse = (userCourseObj) =>
-  hasStartedCourse(userCourseObj) && userCourseObj.completed_at;
+// Lesson permissions
+export const getLessonIndex = (ls, l) => ls.findIndex(({ _id }) => _id === l);
+export const getLessonNumber = (ls, l) => getLessonIndex(ls, l) + 1;
+export const hasStartedLesson = (u, l) =>
+  hasStartedCourse(u) &&
+  !!u.lessons &&
+  !!u.lessons[l] &&
+  !!u.lessons[l].started_at;
+export const hasCompletedLesson = (u, l) =>
+  hasStartedLesson(u, l) && !!u.lessons[l].completed_at;
+export const doesLessonExist = (ls, l) => getLessonIndex(ls, l) !== -1;
+export const isLessonAvailable = (u, ls, l) => {
+  if (!doesLessonExist(ls, l)) return false;
 
-export const getLessonIndex = (lessons, lesson) =>
-  lessons.findIndex(({ _id }) => _id === lesson);
-export const getLessonNumber = (lessons, lesson) =>
-  getLessonIndex(lessons, lesson) + 1;
-export const hasStartedLesson = (userCourseObj, lesson) =>
-  hasStartedCourse(userCourseObj) &&
-  userCourseObj.lessons &&
-  userCourseObj.lessons[lesson] &&
-  userCourseObj.lessons[lesson].started_at;
-export const hasCompletedLesson = (userCourseObj, lesson) =>
-  hasStartedLesson(userCourseObj, lesson) &&
-  userCourseObj.lessons[lesson].completed_at;
-export const doesLessonExist = (lessons, lesson) =>
-  getLessonIndex(lessons, lesson) !== -1;
-export const isLessonAvailable = (userCourseObj, lessons, lesson) => {
-  if (!doesLessonExist(lessons, lesson)) return false;
-
-  const indexOfLesson = getLessonIndex(lessons, lesson);
+  const indexOfLesson = getLessonIndex(ls, l);
 
   let hasCompletedPreviousLessons = true;
 
   for (let i = 0; i < indexOfLesson; i++) {
-    const currentLesson = lessons[i]._id;
+    const currentLesson = ls[i]._id;
 
-    if (!hasCompletedLesson(userCourseObj, currentLesson)) {
+    if (!hasCompletedLesson(u, currentLesson)) {
       hasCompletedPreviousLessons = false;
       break;
     }
@@ -38,55 +33,51 @@ export const isLessonAvailable = (userCourseObj, lessons, lesson) => {
 
   return hasCompletedPreviousLessons;
 };
-export const getLastCompletedLesson = (userCourseObj, lessons) => {
+export const getLastCompletedLesson = (u, ls) => {
   let lastCompletedLesson;
 
-  for (let i = 0; i < lessons.length; i++) {
-    const currentLesson = lessons[i]._id;
+  for (let i = 0; i < ls.length; i++) {
+    const currentLesson = ls[i]._id;
 
-    if (hasCompletedLesson(userCourseObj, currentLesson)) {
+    if (hasCompletedLesson(u, currentLesson)) {
       lastCompletedLesson = currentLesson;
     } else {
       break;
     }
   }
 
-  if (!lastCompletedLesson) return { lesson: lessons[0]._id };
+  if (!lastCompletedLesson) return { lesson: ls[0]._id };
 
   return { lesson: lastCompletedLesson };
 };
 
-export const getConceptIndex = (lessons, lesson, concept) =>
-  lessons[getLessonIndex(lessons, lesson)].concepts.findIndex(
-    ({ _id }) => _id === concept
-  );
-export const getConceptNumber = (lessons, lesson, concept) =>
-  getConceptIndex(lessons, lesson, concept) + 1;
-export const hasStartedConcept = (userCourseObj, lesson, concept) =>
-  hasStartedLesson(userCourseObj, lesson) &&
-  userCourseObj.lessons[lesson].concepts &&
-  userCourseObj.lessons[lesson].concepts[concept] &&
-  userCourseObj.lessons[lesson].concepts[concept].started_at;
-export const hasCompletedConcept = (userCourseObj, lesson, concept) =>
-  hasStartedConcept(userCourseObj, lesson, concept) &&
-  userCourseObj.lessons[lesson].concepts[concept].completed_at;
-export const doesConceptExist = (lessons, lesson, concept) =>
-  doesLessonExist(lessons, lesson) &&
-  getConceptIndex(lessons, lesson, concept) !== -1;
-export const isConceptAvailable = (userCourseObj, lessons, lesson, concept) => {
-  if (!doesConceptExist(lessons, lesson, concept)) return false;
-  if (!isLessonAvailable(userCourseObj, lessons, lesson)) return false;
+// Concept permissions
+export const getConceptIndex = (ls, l, c) =>
+  ls[getLessonIndex(ls, l)].concepts.findIndex(({ _id }) => _id === c);
+export const getConceptNumber = (ls, l, c) => getConceptIndex(ls, l, c) + 1;
+export const hasStartedConcept = (u, l, c) =>
+  hasStartedLesson(u, l) &&
+  !!u.lessons[l].concepts &&
+  !!u.lessons[l].concepts[c] &&
+  !!u.lessons[l].concepts[c].started_at;
+export const hasCompletedConcept = (u, l, c) =>
+  hasStartedConcept(u, l, c) && !!u.lessons[l].concepts[c].completed_at;
+export const doesConceptExist = (ls, l, c) =>
+  doesLessonExist(ls, l) && getConceptIndex(ls, l, c) !== -1;
+export const isConceptAvailable = (u, ls, l, c) => {
+  if (!doesConceptExist(ls, l, c)) return false;
+  if (!isLessonAvailable(u, ls, l)) return false;
 
-  const indexOfLesson = getLessonIndex(lessons, lesson);
-  const indexOfConcept = getConceptIndex(lessons, lesson, concept);
-  const currentLesson = lessons[indexOfLesson];
+  const indexOfLesson = getLessonIndex(ls, l);
+  const indexOfConcept = getConceptIndex(ls, l, c);
+  const currentLesson = ls[indexOfLesson];
 
   let hasCompletedPreviousConcepts = true;
 
   for (let i = 0; i < indexOfConcept; i++) {
     const currentConcept = currentLesson.concepts[i]._id;
 
-    if (!hasCompletedConcept(userCourseObj, lesson, currentConcept)) {
+    if (!hasCompletedConcept(u, l, currentConcept)) {
       hasCompletedPreviousConcepts = false;
       break;
     }
@@ -94,18 +85,16 @@ export const isConceptAvailable = (userCourseObj, lessons, lesson, concept) => {
 
   return hasCompletedPreviousConcepts;
 };
-export const getLastCompletedConcept = (userCourseObj, lessons) => {
+export const getLastCompletedConcept = (u, ls) => {
   let lastCompletedLesson, lastCompletedConcept;
 
-  for (let i = 0; i < lessons.length; i++) {
-    const currentLesson = lessons[i];
+  for (let i = 0; i < ls.length; i++) {
+    const currentLesson = ls[i];
 
     for (let j = 0; j < Object.keys(currentLesson).length; j++) {
       const currentConcept = currentLesson.concepts[j]._id;
 
-      if (
-        hasCompletedConcept(userCourseObj, currentLesson._id, currentConcept)
-      ) {
+      if (hasCompletedConcept(u, currentLesson._id, currentConcept)) {
         lastCompletedLesson = currentLesson._id;
         lastCompletedConcept = currentConcept;
       } else {
@@ -117,10 +106,10 @@ export const getLastCompletedConcept = (userCourseObj, lessons) => {
   if (lastCompletedLesson && !lastCompletedConcept) {
     return {
       lesson: lastCompletedLesson,
-      concept: lessons[lastCompletedLesson].concepts[0]._id,
+      concept: ls[lastCompletedLesson].concepts[0]._id,
     };
   } else if (!lastCompletedLesson && !lastCompletedConcept) {
-    return { lesson: lessons[0]._id, concept: lessons[0].concepts[0]._id };
+    return { lesson: ls[0]._id, concept: ls[0].concepts[0]._id };
   }
 
   return { lesson: lastCompletedLesson, concept: lastCompletedConcept };

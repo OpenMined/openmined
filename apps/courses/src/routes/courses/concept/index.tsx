@@ -6,12 +6,14 @@ import { faBookOpen, faLink } from '@fortawesome/free-solid-svg-icons';
 import Page from '@openmined/shared/util-page';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 
+import Video from './Video';
 import Concept from './Concept';
 
 import {
   getConceptIndex,
   getLessonIndex,
   hasCompletedConcept,
+  hasCompletedLesson,
   hasStartedConcept,
   hasStartedCourse,
   hasStartedLesson,
@@ -56,12 +58,12 @@ export default () => {
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
   const serverTimestamp = useFirestore.FieldValue.serverTimestamp();
 
+  const isCourseStarted = hasStartedCourse(dbCourse);
+  const isLessonStarted = hasStartedLesson(dbCourse, lesson);
+  const isConceptStarted = hasStartedConcept(dbCourse, lesson, concept);
+
   // Update the DB that the user has started the course, lesson, and/or concept
   useEffect(() => {
-    const isCourseStarted = hasStartedCourse(dbCourse);
-    const isLessonStarted = hasStartedLesson(dbCourse, lesson);
-    const isConceptStarted = hasStartedConcept(dbCourse, lesson, concept);
-
     // If we haven't started the course, lesson, or concept
     if (!isCourseStarted || !isLessonStarted || !isConceptStarted) {
       const data = dbCourse;
@@ -94,7 +96,18 @@ export default () => {
         .doc(course)
         .set(data, { merge: true });
     }
-  }, [user.uid, db, dbCourse, serverTimestamp, course, lesson, concept]);
+  }, [
+    user.uid,
+    db,
+    dbCourse,
+    serverTimestamp,
+    course,
+    lesson,
+    concept,
+    isCourseStarted,
+    isLessonStarted,
+    isConceptStarted,
+  ]);
 
   // We need to track the user's scroll progress, as well as whether or not they've hit the bottom at least once
   const scrollY = useScrollPosition();
@@ -142,7 +155,7 @@ export default () => {
   const onCompleteConcept = () =>
     new Promise((resolve, reject) => {
       // If we haven't already completed this concept...
-      if (!dbCourse.lessons[lesson].concepts[concept].completed_at) {
+      if (!hasCompletedConcept(dbCourse, lesson, concept)) {
         // Tell the DB we've done so
         db.collection('users')
           .doc(user.uid)
@@ -157,6 +170,34 @@ export default () => {
                       completed_at: serverTimestamp,
                     },
                   },
+                },
+              },
+            },
+            { merge: true }
+          )
+          .then(resolve)
+          .catch(reject);
+      } else {
+        resolve();
+      }
+    });
+
+  // Create a function that is triggered when the lesson is completed
+  // This is triggered by clicking the "Next" button in the <ConceptFooter />
+  const onCompleteLesson = () =>
+    new Promise((resolve, reject) => {
+      // If we haven't already completed this lesson...
+      if (!hasCompletedLesson(dbCourse, lesson)) {
+        // Tell the DB we've done so
+        db.collection('users')
+          .doc(user.uid)
+          .collection('courses')
+          .doc(course)
+          .set(
+            {
+              lessons: {
+                [lesson]: {
+                  completed_at: serverTimestamp,
                 },
               },
             },
@@ -219,12 +260,16 @@ export default () => {
     },
   ];
 
-  // TODO: Video concept
+  // TODO: WE'RE NOT DOING QUIZ PAGES FOR THE MVP, GET RID OF SOME STUFF
+  // TODO: Redo the logic for completing a lesson to go to the lesson completion page instead of to the next lesson
+  // TODO: Convert the drawer on both the lesson and the concept pages to only render a list of concepts instead of a list of lessons
+  // TODO: The links to the concepts in the drawer don't work and it's not updated when you advance a lesson (this is probably related to the same window.location.href issue you "fixed")
+  // TODO: On the course overview page, make sure the "walk away being able to" items have images for icons instead of Font Awesome icons
+  // TODO: On the course overview page, make sure to have the project show up at the end in the syllabus
+  // TODO: The quiz should only support correct answers from the first one you choose
   // TODO: Quiz concept, they can only go at the end of lessons (add "quiz" as a field to the lesson in the CMS)
   // TODO: How to complete a concept?
-  //  - Video should not require anything.
   //  - Quiz pages should require attempting all questions.
-  //  - Normal pages should require attempting all questions and scrolling to the bottom of the concept at least once.
   // TODO: Test responsiveness
   // TODO: Make sure that they cannot begin a concept if they haven't completed the previous concepts (unless it's the first)
   // TODO: Make sure that they cannot begin a concept if they haven't completed the previous lessons (unless it's the first)
@@ -237,10 +282,18 @@ export default () => {
 
   // If the first content piece is a video
   if (firstContentPiece === 'video') {
-    console.log('DO VIDEO LAYOUT');
-
     // Render the full-width video layout
-    ConceptType = <div>Video Layout</div>;
+    ConceptType = (
+      <Video
+        data={data}
+        dbCourse={dbCourse}
+        course={course}
+        lesson={lesson}
+        concept={concept}
+        conceptNum={conceptNum}
+        setCompletedQuizzes={setHasCompletedAllQuizzes}
+      />
+    );
   }
 
   // Otherwise, if the first content piece is a quiz
@@ -270,9 +323,16 @@ export default () => {
   const prevConceptId =
     conceptIndex - 1 < 0 ? '' : concepts[conceptIndex - 1]._id;
   const nextLessonId =
-    lessonIndex + 1 > lessons.length ? '' : lessons[lessonIndex + 1]._id;
+    lessonNum + 1 > lessons.length ? '' : lessons[lessonIndex + 1]._id;
   const nextConceptId =
-    conceptIndex + 1 > concepts.length ? '' : concepts[conceptIndex + 1]._id;
+    conceptNum + 1 > concepts.length ? '' : concepts[conceptIndex + 1]._id;
+
+  const isNextAvailable =
+    (firstContentPiece !== 'video' &&
+      hasScrolledToBottom &&
+      hasCompletedAllQuizzes) ||
+    (firstContentPiece === 'video' && hasCompletedAllQuizzes) ||
+    hasCompletedConcept(dbCourse, lesson, concept);
 
   return (
     <Page title={`${lessonTitle} - ${title}`}>
@@ -288,11 +348,7 @@ export default () => {
           current={conceptNum}
           total={concepts.length}
           isBackAvailable={conceptNum > 1}
-          isNextAvailable={
-            firstContentPiece !== 'video' &&
-            hasScrolledToBottom &&
-            hasCompletedAllQuizzes
-          }
+          isNextAvailable={isNextAvailable}
           backLink={`/courses/${course}/${lesson}/${prevConceptId}`}
           nextLink={
             conceptNum === concepts.length
@@ -300,6 +356,7 @@ export default () => {
               : `/courses/${course}/${lesson}/${nextConceptId}`
           }
           onCompleteConcept={onCompleteConcept}
+          onCompleteLesson={onCompleteLesson}
           scrollProgress={scrollProgress}
           onProvideFeedback={onProvideFeedback}
         />

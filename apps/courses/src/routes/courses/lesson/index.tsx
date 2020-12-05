@@ -1,5 +1,5 @@
-import React from 'react';
-import { useParams, Link as RRDLink, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import {
   faBookOpen,
@@ -44,39 +44,10 @@ const Detail = ({ title, value }) => (
   </Flex>
 );
 
-export default () => {
+const Lesson = ({ dbCourse, data, course, lesson }) => {
+  const navigate = useNavigate();
+
   const SIDEBAR_WIDTH = 360;
-
-  const { course, lesson } = useParams();
-  const { data, loading } = useSanity(
-    `*[_type == "lesson" && _id == "${lesson}"] {
-      ...,
-      learnFrom[] -> {
-        ...,
-        "image": image.asset -> url
-      },
-      "firstConcept": concepts[0]._ref,
-      "concepts": count(concepts),
-      "course": *[_type == "course" && references(^._id) ][0] {
-        title,
-        "lessons": lessons[] -> {
-          _id,
-          title
-        }
-      }
-    }[0]`
-  );
-
-  const user = useUser();
-  const db = useFirestore();
-  const dbCourseRef = db
-    .collection('users')
-    .doc(user.uid)
-    .collection('courses')
-    .doc(course);
-  const dbCourse = useFirestoreDocDataOnce(dbCourseRef);
-
-  if (loading) return null;
 
   const {
     course: { title: courseTitle, lessons },
@@ -118,11 +89,13 @@ export default () => {
     },
   ];
 
-  if (!isLessonAvailable(dbCourse, lessons, lesson)) {
-    const lastCompletedLesson = getLastCompletedLesson(dbCourse, lessons);
+  useEffect(() => {
+    if (!isLessonAvailable(dbCourse, lessons, lesson)) {
+      const lastCompletedLesson = getLastCompletedLesson(dbCourse, lessons);
 
-    return <Navigate to={`/courses/${course}/${lastCompletedLesson.lesson}`} />;
-  }
+      navigate(`/courses/${course}/${lastCompletedLesson.lesson}`);
+    }
+  }, [navigate, dbCourse, lessons, course, lesson]);
 
   return (
     <Page title={`${courseTitle} - ${title}`} description={description}>
@@ -255,5 +228,42 @@ export default () => {
         </Flex>
       </GridContainer>
     </Page>
+  );
+};
+
+export default () => {
+  const { course, lesson } = useParams();
+  const { data, loading } = useSanity(
+    `*[_type == "lesson" && _id == "${lesson}"] {
+      ...,
+      learnFrom[] -> {
+        ...,
+        "image": image.asset -> url
+      },
+      "firstConcept": concepts[0]._ref,
+      "concepts": count(concepts),
+      "course": *[_type == "course" && references(^._id) ][0] {
+        title,
+        "lessons": lessons[] -> {
+          _id,
+          title
+        }
+      }
+    }[0]`
+  );
+
+  const user = useUser();
+  const db = useFirestore();
+  const dbCourseRef = db
+    .collection('users')
+    .doc(user.uid)
+    .collection('courses')
+    .doc(course);
+  const dbCourse = useFirestoreDocDataOnce(dbCourseRef);
+
+  if (loading) return null;
+
+  return (
+    <Lesson dbCourse={dbCourse} data={data} course={course} lesson={lesson} />
   );
 };

@@ -222,7 +222,7 @@ export default () => {
         {!isTakingCourse && learnHow && (
           <Box bg="gray.200" py={[8, null, null, 12]} my={[8, null, null, 12]}>
             <GridContainer>
-              <Heading as="h2" size="lg" mb={8}>
+              <Heading as="h2" size="xl" mb={8}>
                 Walk away being able to...
               </Heading>
               <SimpleGrid columns={[1, null, 2, 3]} spacing={8}>
@@ -241,7 +241,7 @@ export default () => {
               direction="column"
               align="center"
             >
-              <Heading as="h2" size="lg" mb={4}>
+              <Heading as="h2" size="xl" mb={4}>
                 What You'll Learn
               </Heading>
               <Text color="gray.700">
@@ -262,7 +262,7 @@ export default () => {
         )}
         {!isTakingCourse && learnFrom && (
           <GridContainer my={[8, null, null, 12]}>
-            <Heading as="h2" size="lg" mb={8} textAlign="center">
+            <Heading as="h2" size="xl" mb={8} textAlign="center">
               Who You'll Learn From
             </Heading>
             <SimpleGrid columns={[1, null, 2, 3]} spacing={8}>

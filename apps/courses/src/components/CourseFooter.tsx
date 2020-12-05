@@ -38,6 +38,7 @@ export default ({
   isNextAvailable,
   nextLink,
   onCompleteConcept,
+  onCompleteLesson,
   scrollProgress,
   onProvideFeedback,
 }) => {
@@ -170,8 +171,11 @@ export default ({
           <Flex width={1 / 3} justify="center">
             <Flex align="center">
               <Button
-                as={RRDLink}
-                to={backLink}
+                onClick={() => {
+                  navigate(backLink);
+
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 colorScheme={isBackAvailable ? 'magenta' : 'black'}
                 disabled={!isBackAvailable}
               >
@@ -182,9 +186,26 @@ export default ({
               </Text>
               <Button
                 onClick={() => {
-                  onCompleteConcept().then(() => {
-                    navigate(nextLink);
-                  });
+                  if (current !== total) {
+                    onCompleteConcept().then(() => {
+                      navigate(nextLink);
+
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                  } else {
+                    onCompleteConcept().then(() => {
+                      onCompleteLesson().then(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                        setTimeout(() => {
+                          // NOTE: We are replacing the URL here because we need to refresh the dbCourses variable that's on the lesson page
+                          // Otherwise, it will redirect us back to the lesson we just completed (because of a permission race condition)
+                          // The simplest solution was just to force a page reload at the new URL
+                          window.location.href = nextLink;
+                        }, 500);
+                      });
+                    });
+                  }
                 }}
                 colorScheme={isNextAvailable ? 'magenta' : 'black'}
                 disabled={!isNextAvailable}

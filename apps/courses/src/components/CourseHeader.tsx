@@ -244,6 +244,7 @@ export default ({ lessonNum, title, course, leftDrawerSections }) => {
             as={FontAwesomeIcon}
             icon={faBars}
             color="white"
+            cursor="pointer"
             onClick={isLeftDrawerOpen ? onLeftDrawerClose : onLeftDrawerOpen}
           />
         </Box>
@@ -262,7 +263,7 @@ export default ({ lessonNum, title, course, leftDrawerSections }) => {
           justify="flex-end"
           align="center"
           direction="row"
-          spacing={4}
+          spacing={6}
           display={{ base: 'none', [BREAK]: 'flex' }}
         >
           {createLinks(RIGHT_LINKS, onRightDrawerClose)}

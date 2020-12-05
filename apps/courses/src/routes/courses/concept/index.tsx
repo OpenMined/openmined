@@ -1,303 +1,26 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
-import {
-  AspectRatio,
-  Box,
-  Checkbox,
-  Divider,
-  Flex,
-  Heading,
-  Icon,
-  Image,
-  Stack,
-  Text,
-  useClipboard,
-} from '@chakra-ui/core';
-import Prism from 'prismjs';
-import { faBookOpen, faCopy, faLink } from '@fortawesome/free-solid-svg-icons';
+import useScrollPosition from '@react-hook/window-scroll';
+import { faBookOpen, faLink } from '@fortawesome/free-solid-svg-icons';
 import Page from '@openmined/shared/util-page';
-import {
-  useSanity,
-  useSanityImage,
-  RichText,
-} from '@openmined/shared/data-access-sanity';
+import { useSanity } from '@openmined/shared/data-access-sanity';
+
+import Concept from './Concept';
 
 import {
-  getConceptNumber,
-  getLessonNumber,
+  getConceptIndex,
+  getLessonIndex,
   hasCompletedConcept,
   hasStartedConcept,
   hasStartedCourse,
   hasStartedLesson,
 } from '../_helpers';
-import GridContainer from '../../../components/GridContainer';
 import CourseHeader from '../../../components/CourseHeader';
-import useToast, { toastConfig } from '../../../components/Toast';
-
-// Plugins
-import 'prismjs/plugins/line-numbers/prism-line-numbers';
-import 'prismjs/plugins/line-numbers/prism-line-numbers.css';
-
-// Languages
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-c';
-import 'prismjs/components/prism-clojure';
-import 'prismjs/components/prism-cpp';
-import 'prismjs/components/prism-css';
-import 'prismjs/components/prism-docker';
-import 'prismjs/components/prism-go';
-import 'prismjs/components/prism-graphql';
-import 'prismjs/components/prism-java';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-json';
-import 'prismjs/components/prism-julia';
-import 'prismjs/components/prism-kotlin';
-import 'prismjs/components/prism-markdown';
-import 'prismjs/components/prism-markup';
-import 'prismjs/components/prism-objectivec';
-import 'prismjs/components/prism-protobuf';
-import 'prismjs/components/prism-python';
-import 'prismjs/components/prism-r';
-import 'prismjs/components/prism-jsx';
-import 'prismjs/components/prism-tsx';
-import 'prismjs/components/prism-ruby';
-import 'prismjs/components/prism-rust';
-import 'prismjs/components/prism-sql';
-import 'prismjs/components/prism-swift';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-wasm';
-import 'prismjs/components/prism-yaml';
-
-// Theme
-import 'prismjs/themes/prism.css';
-import 'prismjs/themes/prism-tomorrow.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-const CONTENT_SPACING = 8;
-
-const ContentCode = ({ code, language }) => {
-  const ref = useRef();
-  const { onCopy } = useClipboard(code);
-  const toast = useToast();
-
-  useEffect(() => {
-    if (ref && ref.current) {
-      Prism.highlightElement(ref.current);
-    }
-  }, []);
-
-  return (
-    <Box position="relative">
-      <Icon
-        as={FontAwesomeIcon}
-        icon={faCopy}
-        size="lg"
-        color="whiteAlpha.500"
-        _hover={{ color: 'white' }}
-        transitionProperty="color"
-        transitionDuration="slow"
-        transitionTimingFunction="ease-in-out"
-        position="absolute"
-        top={4}
-        right={4}
-        zIndex={1}
-        cursor="pointer"
-        onClick={() => {
-          onCopy();
-
-          toast({
-            ...toastConfig,
-            title: 'Code copied',
-            description: 'Put that code to good use!',
-            status: 'success',
-          });
-        }}
-      />
-      <pre className="line-numbers show-language">
-        <code ref={ref} className={`language-${language}`}>
-          {code}
-        </code>
-      </pre>
-    </Box>
-  );
-};
-
-const ContentText = ({ richText }) => (
-  <Box my={CONTENT_SPACING}>
-    <RichText content={richText} />
-  </Box>
-);
-
-const ContentDivider = () => <Divider />;
-
-const ContentFormula = ({ math }) => {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    // @ts-ignore We import this in the HTML file
-    katex.render(String.raw`${math}`, ref.current, {
-      throwOnError: false,
-    });
-  }, [math]);
-
-  return (
-    <Flex justify="center" my={CONTENT_SPACING}>
-      <Text ref={ref}>{math}</Text>
-    </Flex>
-  );
-};
-
-const ContentImage = (image) => {
-  const img = useSanityImage(image);
-
-  return (
-    <Flex justify="center" my={CONTENT_SPACING}>
-      <Image src={img.url()} maxW={600} />
-    </Flex>
-  );
-};
-
-const ContentQuiz = ({ quiz }) => {
-  console.log('QUIZ', quiz);
-
-  return null;
-};
-
-const ContentTasks = ({ tasks }) => (
-  <Flex justify="center" my={CONTENT_SPACING}>
-    <Stack spacing={4}>
-      {tasks.map((t, i) => (
-        <Checkbox
-          key={i}
-          spacing={4}
-          colorScheme="magenta"
-          alignItems="baseline"
-        >
-          <Flex>
-            <Text mr={4}>{i + 1}.</Text>
-            <Text>{t}</Text>
-          </Flex>
-        </Checkbox>
-      ))}
-    </Stack>
-  </Flex>
-);
-
-const ContentVideo = ({ video }) => (
-  <Flex justify="center" my={CONTENT_SPACING}>
-    <AspectRatio width="100%" ratio={16 / 9}>
-      <Box
-        as="iframe"
-        title="OpenMined Courses"
-        src={`https://www.youtube.com/embed/${video}?modestbranding=1&rel=0`}
-        allowFullScreen
-      />
-    </AspectRatio>
-  </Flex>
-);
-
-const Concept = ({ data, dbCourse, course, lesson, concept }) => {
-  const {
-    concept: { title, content },
-    concepts,
-    course: { title: courseTitle, lessons },
-    resources,
-    title: lessonTitle,
-  } = data;
-
-  const lessonNum = getLessonNumber(lessons, lesson);
-  const conceptNum = getConceptNumber(lessons, lesson, concept);
-
-  const leftDrawerSections = [
-    {
-      title: 'Concepts',
-      icon: faBookOpen,
-      fields: concepts.map(({ _id, title }, index) => {
-        let status = 'unavailable';
-
-        if (hasStartedConcept(dbCourse, lesson, _id)) {
-          if (hasCompletedConcept(dbCourse, lesson, _id)) status = 'completed';
-          else status = 'available';
-        } else if (index === 0) status = 'available';
-
-        return {
-          status,
-          title,
-          link: status !== 'unavailable' ? `/courses/${course}/${_id}` : null,
-        };
-      }),
-    },
-    {
-      title: 'Resources',
-      icon: faLink,
-      fields: resources ? resources : [],
-    },
-  ];
-
-  // TODO: Inline quiz
-  // TODO: Footer (including feedback, get help, and read tracking)
-  // TODO: How to complete a concept? Video should not require anything. Quiz pages should require attempting all questions. Normal pages should require attempting all questions and scrolling to the bottom of the concept at least once.
-  // TODO: Allow for videos to be made big if they're the first item in the content
-  // TODO: Do a refactor to ensure that this file is much smaller and more readable
-  // TODO: Consider doing a skinned version of the video player
-  // TODO: Quiz pages should also be a concept-type of page, they can only go at the end of lessons (add "quiz" as a field to the lesson in the CMS)
-  // TODO: Should track quiz progress in backend
-  // TODO: Make sure that they cannot begin a concept if they haven't completed the previous concepts (unless it's the first)
-  // TODO: Make sure that they cannot begin a concept if they haven't completed the previous lessons (unless it's the first)
-
-  return (
-    <Page title={`${lessonTitle} - ${title}`}>
-      <CourseHeader
-        lessonNum={lessonNum}
-        title={title}
-        course={course}
-        leftDrawerSections={leftDrawerSections}
-      />
-      <Box bg="gray.800">
-        <GridContainer pt="header" height="100%">
-          <Box bg="white" height="100%" px={8} pt={[8, null, null, 16]} pb={16}>
-            <Box maxW={600} mx="auto">
-              <Text color="gray.700" mb={2}>
-                <Text fontWeight="bold" as="span">
-                  {lessonTitle}
-                </Text>{' '}
-                | Concept {conceptNum}
-              </Text>
-              <Heading as="h1" size="xl">
-                {title}
-              </Heading>
-              <Divider my={6} />
-              {content.map(({ _type, ...item }, i) => {
-                if (_type === 'code') {
-                  return <ContentCode key={i} {...item} />;
-                } else if (_type === 'richText') {
-                  return <ContentText key={i} {...item} />;
-                } else if (_type === 'divider') {
-                  return <ContentDivider key={i} {...item} />;
-                } else if (_type === 'math') {
-                  return <ContentFormula key={i} {...item} />;
-                } else if (_type === 'image') {
-                  return <ContentImage key={i} {...item} />;
-                } else if (_type === 'quiz') {
-                  return <ContentQuiz key={i} {...item} />;
-                } else if (_type === 'tasks') {
-                  return <ContentTasks key={i} {...item} />;
-                } else if (_type === 'video') {
-                  return <ContentVideo key={i} {...item} />;
-                }
-
-                return null;
-              })}
-            </Box>
-          </Box>
-        </GridContainer>
-      </Box>
-    </Page>
-  );
-};
+import CourseFooter from '../../../components/CourseFooter';
 
 export default () => {
+  // Get our data from the CMS
   const { course, lesson, concept } = useParams();
   const { data, loading } = useSanity(
     `*[_type == "lesson" && _id == "${lesson}"] {
@@ -319,6 +42,7 @@ export default () => {
     }[0]`
   );
 
+  // Get the current user and the course object (dbCourse) for this particular course
   const user = useUser();
   const db = useFirestore();
   const dbCourseRef = db
@@ -328,8 +52,11 @@ export default () => {
     .doc(course);
   const dbCourse = useFirestoreDocDataOnce(dbCourseRef);
 
+  // Also store a reference to the server timestamp (we'll use this later to mark start and completion time)
+  // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
   const serverTimestamp = useFirestore.FieldValue.serverTimestamp();
 
+  // Update the DB that the user has started the course, lesson, and/or concept
   useEffect(() => {
     const isCourseStarted = hasStartedCourse(dbCourse);
     const isLessonStarted = hasStartedLesson(dbCourse, lesson);
@@ -339,22 +66,28 @@ export default () => {
     if (!isCourseStarted || !isLessonStarted || !isConceptStarted) {
       const data = dbCourse;
 
+      // Append the course data structure
       if (!isCourseStarted) {
         data.started_at = serverTimestamp;
         data.lessons = {};
       }
+
+      // Then the lesson data structure inside that
       if (!isLessonStarted) {
         data.lessons[lesson] = {
           started_at: serverTimestamp,
           concepts: {},
         };
       }
+
+      // Then the concept data structure inside that
       if (!isConceptStarted) {
         data.lessons[lesson].concepts[concept] = {
           started_at: serverTimestamp,
         };
       }
 
+      // When the object is constructed, store it!
       db.collection('users')
         .doc(user.uid)
         .collection('courses')
@@ -363,27 +96,214 @@ export default () => {
     }
   }, [user.uid, db, dbCourse, serverTimestamp, course, lesson, concept]);
 
+  // We need to track the user's scroll progress, as well as whether or not they've hit the bottom at least once
+  const scrollY = useScrollPosition();
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+
+  // This is the logic to track their scroll progress and so on
+  useEffect(() => {
+    const conceptHeight =
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight;
+    const progress = (scrollY / conceptHeight) * 100;
+
+    setScrollProgress(progress > 100 ? 100 : progress);
+
+    if (scrollProgress === 100 && !hasScrolledToBottom) {
+      setHasScrolledToBottom(true);
+    }
+  }, [scrollY, scrollProgress, hasScrolledToBottom]);
+
+  // We also need to track if the user has completed all quizzes for this concept
+  const [hasCompletedAllQuizzes, setHasCompletedAllQuizzes] = useState(false);
+
+  // If the data from the CMS is still loading, render nothing
+  // Note that this has to be the FINAL side effect (after all useState and useEffect calls)
   if (loading) return null;
 
+  // Destructure our data object for easier use
+  const {
+    concept: { title },
+    concepts,
+    course: { lessons },
+    resources,
+    title: lessonTitle,
+  } = data;
+
+  // Get the current lesson and concept indexes, and their non-zero numbers
+  const lessonIndex = getLessonIndex(lessons, lesson);
+  const lessonNum = lessonIndex + 1;
+  const conceptIndex = getConceptIndex(lessons, lesson, concept);
+  const conceptNum = conceptIndex + 1;
+
+  // Create a function that is triggered when the concept is completed
+  // This is triggered by clicking the "Next" button in the <ConceptFooter />
+  const onCompleteConcept = () =>
+    new Promise((resolve, reject) => {
+      // If we haven't already completed this concept...
+      if (!dbCourse.lessons[lesson].concepts[concept].completed_at) {
+        // Tell the DB we've done so
+        db.collection('users')
+          .doc(user.uid)
+          .collection('courses')
+          .doc(course)
+          .set(
+            {
+              lessons: {
+                [lesson]: {
+                  concepts: {
+                    [concept]: {
+                      completed_at: serverTimestamp,
+                    },
+                  },
+                },
+              },
+            },
+            { merge: true }
+          )
+          .then(resolve)
+          .catch(reject);
+      } else {
+        resolve();
+      }
+    });
+
+  // We need a function to be able to provide feedback for this concept
+  const onProvideFeedback = (value, feedback = null) =>
+    db
+      .collection('users')
+      .doc(user.uid)
+      .collection('feedback')
+      .doc(concept)
+      .set(
+        {
+          value,
+          feedback,
+          type: 'concept',
+        },
+        { merge: true }
+      );
+
+  // Set up the content for the left-side drawer in the <ConceptHeader />
+  const leftDrawerSections = [
+    {
+      title: 'Concepts',
+      icon: faBookOpen,
+      fields: concepts.map(({ _id, title }, index) => {
+        // Default concept status is "unavailable"
+        let status = 'unavailable';
+
+        // If they've started the concept
+        if (hasStartedConcept(dbCourse, lesson, _id)) {
+          // And they've also completed it
+          if (hasCompletedConcept(dbCourse, lesson, _id)) status = 'completed';
+          // Otherwise, it must be available
+          else status = 'available';
+        }
+
+        // On the other hand, perhaps it's the first concept, in which casee it's definitely available
+        else if (index === 0) status = 'available';
+
+        return {
+          status,
+          title,
+          link: status !== 'unavailable' ? `/courses/${course}/${_id}` : null,
+        };
+      }),
+    },
+    {
+      title: 'Resources',
+      icon: faLink,
+      fields: resources ? resources : [],
+    },
+  ];
+
+  // TODO: Video concept
+  // TODO: Quiz concept, they can only go at the end of lessons (add "quiz" as a field to the lesson in the CMS)
+  // TODO: How to complete a concept?
+  //  - Video should not require anything.
+  //  - Quiz pages should require attempting all questions.
+  //  - Normal pages should require attempting all questions and scrolling to the bottom of the concept at least once.
+  // TODO: Test responsiveness
+  // TODO: Make sure that they cannot begin a concept if they haven't completed the previous concepts (unless it's the first)
+  // TODO: Make sure that they cannot begin a concept if they haven't completed the previous lessons (unless it's the first)
+
+  // Given the content we need to render... what's the type of the first piece?
   const firstContentPiece = data.concept.content[0]._type;
 
+  // Create a variable to store the concept component we need to render
+  let ConceptType;
+
+  // If the first content piece is a video
   if (firstContentPiece === 'video') {
     console.log('DO VIDEO LAYOUT');
 
-    return <div>Video Layout</div>;
-  } else if (firstContentPiece === 'quiz') {
-    console.log('DO QUIZ LAYOUT');
-
-    return <div>Quiz Layout</div>;
+    // Render the full-width video layout
+    ConceptType = <div>Video Layout</div>;
   }
 
+  // Otherwise, if the first content piece is a quiz
+  else if (firstContentPiece === 'quiz') {
+    console.log('DO QUIZ LAYOUT');
+
+    // Render the full-size quiz layout
+    ConceptType = <div>Quiz Layout</div>;
+  }
+
+  // Otherwise, render the default <Concept /> component
+  else {
+    ConceptType = (
+      <Concept
+        data={data}
+        dbCourse={dbCourse}
+        course={course}
+        lesson={lesson}
+        concept={concept}
+        conceptNum={conceptNum}
+        setCompletedQuizzes={setHasCompletedAllQuizzes}
+      />
+    );
+  }
+
+  // We need to store the previous concept id, next lesson id, and the next concept id to know where to link
+  const prevConceptId =
+    conceptIndex - 1 < 0 ? '' : concepts[conceptIndex - 1]._id;
+  const nextLessonId =
+    lessonIndex + 1 > lessons.length ? '' : lessons[lessonIndex + 1]._id;
+  const nextConceptId =
+    conceptIndex + 1 > concepts.length ? '' : concepts[conceptIndex + 1]._id;
+
   return (
-    <Concept
-      data={data}
-      dbCourse={dbCourse}
-      course={course}
-      lesson={lesson}
-      concept={concept}
-    />
+    <Page title={`${lessonTitle} - ${title}`}>
+      <CourseHeader
+        lessonNum={lessonNum}
+        title={title}
+        course={course}
+        leftDrawerSections={leftDrawerSections}
+      />
+      {ConceptType}
+      {firstContentPiece !== 'quiz' && (
+        <CourseFooter
+          current={conceptNum}
+          total={concepts.length}
+          isBackAvailable={conceptNum > 1}
+          isNextAvailable={
+            firstContentPiece !== 'video' &&
+            hasScrolledToBottom &&
+            hasCompletedAllQuizzes
+          }
+          backLink={`/courses/${course}/${lesson}/${prevConceptId}`}
+          nextLink={
+            conceptNum === concepts.length
+              ? `/courses/${course}/${nextLessonId}`
+              : `/courses/${course}/${lesson}/${nextConceptId}`
+          }
+          onCompleteConcept={onCompleteConcept}
+          scrollProgress={scrollProgress}
+          onProvideFeedback={onProvideFeedback}
+        />
+      )}
+    </Page>
   );
 };

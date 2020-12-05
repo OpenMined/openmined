@@ -48,14 +48,24 @@ const App = () => {
     location.pathname.includes('/courses') &&
     location.pathname.split('/').length > 3;
 
+  // More specifically, if we're inside the concept, we don't render the default <Footer />
+  // Instead, we'll show the <CourseFooter />
+  const isInsideConcept =
+    location.pathname.includes('/courses') &&
+    location.pathname.split('/').length > 4;
+
   return (
     <Router action={action} location={location} navigator={history}>
       <Suspense fallback={<Loading />}>
         {cookiePrefs === 'all' && <Analytics location={location} />}
         {!isInsideCourse && <Header />}
-        <Box minHeight="100vh" display="grid" gridTemplateRows="1fr auto">
+        <Box
+          minHeight="100vh"
+          display="grid"
+          gridTemplateRows={isInsideConcept ? '1fr' : '1fr auto'}
+        >
           <Routes />
-          <Footer />
+          {!isInsideConcept && <Footer />}
         </Box>
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
       </Suspense>

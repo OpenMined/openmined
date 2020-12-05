@@ -37,7 +37,6 @@ import {
 import { User } from '@openmined/shared/types';
 
 import useToast, { toastConfig } from './Toast';
-import GridContainer from './GridContainer';
 import CourseDrawer from './CourseDrawer';
 
 import { handleErrors } from '../helpers';
@@ -232,59 +231,56 @@ export default ({ lessonNum, title, course, leftDrawerSections }) => {
       width="100%"
       top={0}
       left={0}
+      px={8}
       py={{ base: 6, [BREAK]: 4 }}
       bg="gray.900"
       boxShadow="md"
       zIndex={2}
     >
-      <GridContainer>
-        <Flex as="nav" align="center" justify="space-between">
-          <Box width={{ base: 6, [BREAK]: 1 / 4 }}>
-            {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
-            <Icon
-              as={FontAwesomeIcon}
-              icon={faBars}
-              color="white"
-              onClick={isLeftDrawerOpen ? onLeftDrawerClose : onLeftDrawerOpen}
-            />
-          </Box>
-          <Heading
-            width={{ base: 'full', [BREAK]: 1 / 2 }}
-            mx={4}
-            textAlign="center"
-            as="span"
-            size="md"
+      <Flex as="nav" align="center" justify="space-between">
+        <Box width={{ base: 6, [BREAK]: 1 / 4 }}>
+          {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+          <Icon
+            as={FontAwesomeIcon}
+            icon={faBars}
             color="white"
-          >
-            Lesson {lessonNum}: {title}
-          </Heading>
-          <Stack
-            width={1 / 4}
-            justify="flex-end"
-            align="center"
-            direction="row"
-            spacing={4}
-            display={{ base: 'none', [BREAK]: 'flex' }}
-          >
-            {createLinks(RIGHT_LINKS, onRightDrawerClose)}
-          </Stack>
-          <Flex
-            width={6}
-            justify="flex-end"
-            display={{ base: 'flex', [BREAK]: 'none' }}
-          >
-            <Icon
-              as={FontAwesomeIcon}
-              icon={faHome}
-              size="lg"
-              color="white"
-              onClick={
-                isRightDrawerOpen ? onRightDrawerClose : onRightDrawerOpen
-              }
-            />
-          </Flex>
+            onClick={isLeftDrawerOpen ? onLeftDrawerClose : onLeftDrawerOpen}
+          />
+        </Box>
+        <Heading
+          width={{ base: 'full', [BREAK]: 1 / 2 }}
+          mx={4}
+          textAlign="center"
+          as="span"
+          size="md"
+          color="white"
+        >
+          Lesson {lessonNum}: {title}
+        </Heading>
+        <Stack
+          width={1 / 4}
+          justify="flex-end"
+          align="center"
+          direction="row"
+          spacing={4}
+          display={{ base: 'none', [BREAK]: 'flex' }}
+        >
+          {createLinks(RIGHT_LINKS, onRightDrawerClose)}
+        </Stack>
+        <Flex
+          width={6}
+          justify="flex-end"
+          display={{ base: 'flex', [BREAK]: 'none' }}
+        >
+          <Icon
+            as={FontAwesomeIcon}
+            icon={faHome}
+            size="lg"
+            color="white"
+            onClick={isRightDrawerOpen ? onRightDrawerClose : onRightDrawerOpen}
+          />
         </Flex>
-      </GridContainer>
+      </Flex>
       <CourseDrawer
         isOpen={isLeftDrawerOpen}
         onOpen={onLeftDrawerOpen}

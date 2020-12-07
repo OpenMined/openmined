@@ -11,6 +11,7 @@ const CoursesSearch = lazy(() => import('./courses/search'));
 const CourseOverview = lazy(() => import('./courses/overview'));
 const CourseProject = lazy(() => import('./courses/project'));
 const CourseLesson = lazy(() => import('./courses/lesson'));
+const CourseLessonComplete = lazy(() => import('./courses/lesson-complete'));
 const CourseConcept = lazy(() => import('./courses/concept'));
 const PolicyAndTerms = lazy(() => import('./policy-and-terms'));
 const NoMatch = lazy(() => import('./no-match'));
@@ -44,6 +45,7 @@ export default () => (
         <AuthRoute path="project" element={<CourseProject />} />
         <AuthRoute path=":lesson">
           <AuthRoute path="/" element={<CourseLesson />} />
+          <AuthRoute path="complete" element={<CourseLessonComplete />} />
           <AuthRoute path=":concept" element={<CourseConcept />} />
         </AuthRoute>
       </Route>

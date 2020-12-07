@@ -66,12 +66,12 @@ const submittedAnswerProps = {
   align: 'flex-start',
 };
 
-const CorrectAnswer = ({ setCurrentAnswer, index, value, explanation }) => (
+const CorrectAnswer = ({ setCurrentSelection, index, value, explanation }) => (
   <Flex
     bg="teal.50"
     {...submittedAnswerProps}
     borderColor="teal.500"
-    onClick={() => setCurrentAnswer(index)}
+    onClick={() => setCurrentSelection(index)}
   >
     <Image
       src="https://emojis.slackmojis.com/emojis/images/1531847402/4229/blob-clap.gif?1531847402"
@@ -89,12 +89,17 @@ const CorrectAnswer = ({ setCurrentAnswer, index, value, explanation }) => (
   </Flex>
 );
 
-const IncorrectAnswer = ({ setCurrentAnswer, index, value, explanation }) => (
+const IncorrectAnswer = ({
+  setCurrentSelection,
+  index,
+  value,
+  explanation,
+}) => (
   <Flex
     bg="red.50"
     {...submittedAnswerProps}
     borderColor="red.300"
-    onClick={() => setCurrentAnswer(index)}
+    onClick={() => setCurrentSelection(index)}
   >
     <Icon
       as={FontAwesomeIcon}
@@ -113,11 +118,13 @@ const IncorrectAnswer = ({ setCurrentAnswer, index, value, explanation }) => (
 );
 
 const UnansweredAnswer = ({
-  setCurrentAnswer,
   index,
   value,
   correct,
+  setCurrentSelection,
   setCorrectAnswers,
+  setHasAttemptedQuestion,
+  hasAttemptedQuestion,
   correctAnswers,
 }) => {
   const [isHovering, setIsHovering] = useState(false);
@@ -133,10 +140,13 @@ const UnansweredAnswer = ({
       borderRadius="md"
       cursor="pointer"
       onClick={() => {
-        setCurrentAnswer(index);
+        setCurrentSelection(index);
         setIsHovering(false);
 
-        if (correct) setCorrectAnswers(correctAnswers + 1);
+        if (correct && !hasAttemptedQuestion)
+          setCorrectAnswers(correctAnswers + 1);
+
+        setHasAttemptedQuestion(true);
       }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
@@ -157,97 +167,104 @@ const QuizCard = ({
   question,
   answers,
   index,
-  currentQuestion,
-  currentAnswer,
-  setCurrentAnswer,
-  setCurrentQuestion,
-  setCorrectAnswers,
+  currentSelection,
   correctAnswers,
+  currentQuestion,
+  setCurrentSelection,
+  setCorrectAnswers,
+  setCurrentQuestion,
   setIsFinished,
   onFinish,
   total,
-}) => (
-  <Box
-    bg="gray.100"
-    borderRadius="md"
-    p={8}
-    display={currentQuestion === index ? 'block' : 'none'}
-  >
-    <Text mb={4}>{question}</Text>
-    <Stack spacing={2}>
-      {answers.map(({ value, explanation, correct }, answerIndex) => {
-        if (
-          currentQuestion === index &&
-          currentAnswer === answerIndex &&
-          correct
-        ) {
-          return (
-            <CorrectAnswer
-              key={answerIndex}
-              setCurrentAnswer={setCurrentAnswer}
-              index={answerIndex}
-              value={value}
-              explanation={explanation}
-            />
-          );
-        } else if (
-          currentQuestion === index &&
-          currentAnswer === answerIndex &&
-          !correct
-        ) {
-          return (
-            <IncorrectAnswer
-              key={answerIndex}
-              setCurrentAnswer={setCurrentAnswer}
-              index={answerIndex}
-              value={value}
-              explanation={explanation}
-            />
-          );
-        }
+}) => {
+  const [hasAttemptedQuestion, setHasAttemptedQuestion] = useState(false);
 
-        return (
-          <UnansweredAnswer
-            key={answerIndex}
-            setCurrentAnswer={setCurrentAnswer}
-            index={answerIndex}
-            value={value}
-            correct={correct}
-            setCorrectAnswers={setCorrectAnswers}
-            correctAnswers={correctAnswers}
-          />
-        );
-      })}
-    </Stack>
-    {currentAnswer !== null && (
-      <Flex justify="flex-end" mt={4}>
-        <Flex
-          align="center"
-          color="gray.700"
-          _hover={{ color: 'gray.800' }}
-          transitionProperty="color"
-          transitionDuration="slow"
-          transitionTimingFunction="ease-in-out"
-          cursor="pointer"
-          onClick={() => {
-            if (currentQuestion + 1 >= total) {
-              setIsFinished(true);
-              onFinish();
-            } else {
-              setCurrentAnswer(null);
-              setCurrentQuestion(currentQuestion + 1);
-            }
-          }}
-        >
-          <Text fontWeight="bold" mr={2}>
-            {currentQuestion + 1 >= total ? 'Finish' : 'Next'}
-          </Text>
-          <Icon as={FontAwesomeIcon} icon={faArrowRight} size="1x" />
+  return (
+    <Box
+      bg="gray.100"
+      borderRadius="md"
+      p={8}
+      display={currentQuestion === index ? 'block' : 'none'}
+    >
+      <Text mb={4}>{question}</Text>
+      <Stack spacing={2}>
+        {answers.map(({ value, explanation, correct }, answerIndex) => {
+          if (
+            currentQuestion === index &&
+            currentSelection === answerIndex &&
+            correct
+          ) {
+            return (
+              <CorrectAnswer
+                key={answerIndex}
+                setCurrentSelection={setCurrentSelection}
+                index={answerIndex}
+                value={value}
+                explanation={explanation}
+              />
+            );
+          } else if (
+            currentQuestion === index &&
+            currentSelection === answerIndex &&
+            !correct
+          ) {
+            return (
+              <IncorrectAnswer
+                key={answerIndex}
+                setCurrentSelection={setCurrentSelection}
+                index={answerIndex}
+                value={value}
+                explanation={explanation}
+              />
+            );
+          }
+
+          return (
+            <UnansweredAnswer
+              key={answerIndex}
+              index={answerIndex}
+              value={value}
+              correct={correct}
+              setCorrectAnswers={setCorrectAnswers}
+              setCurrentSelection={setCurrentSelection}
+              setHasAttemptedQuestion={setHasAttemptedQuestion}
+              hasAttemptedQuestion={hasAttemptedQuestion}
+              correctAnswers={correctAnswers}
+            />
+          );
+        })}
+      </Stack>
+      {currentSelection !== null && (
+        <Flex justify="flex-end" mt={4}>
+          <Flex
+            align="center"
+            color="gray.700"
+            _hover={{ color: 'gray.800' }}
+            transitionProperty="color"
+            transitionDuration="slow"
+            transitionTimingFunction="ease-in-out"
+            cursor="pointer"
+            onClick={() => {
+              if (currentQuestion + 1 >= total) {
+                setIsFinished(true);
+                onFinish();
+              } else {
+                setCurrentSelection(null);
+                setCurrentQuestion(currentQuestion + 1);
+                setHasAttemptedQuestion(false);
+              }
+            }}
+          >
+            <Text fontWeight="bold" mr={2}>
+              {currentQuestion + 1 >= total ? 'Finish' : 'Next'}
+            </Text>
+            <Icon as={FontAwesomeIcon} icon={faArrowRight} size="1x" />
+          </Flex>
         </Flex>
-      </Flex>
-    )}
-  </Box>
-);
+      )}
+    </Box>
+  );
+};
 
 export default ({
   quiz,
@@ -260,7 +277,7 @@ export default ({
   onComplete,
 }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [currentAnswer, setCurrentAnswer] = useState(null);
+  const [currentSelection, setCurrentSelection] = useState(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
@@ -339,12 +356,12 @@ export default ({
             question={question}
             answers={answers}
             index={questionIndex}
-            currentQuestion={currentQuestion}
-            currentAnswer={currentAnswer}
-            setCurrentAnswer={setCurrentAnswer}
-            setCurrentQuestion={setCurrentQuestion}
-            setCorrectAnswers={setCorrectAnswers}
+            currentSelection={currentSelection}
             correctAnswers={correctAnswers}
+            currentQuestion={currentQuestion}
+            setCurrentSelection={setCurrentSelection}
+            setCorrectAnswers={setCorrectAnswers}
+            setCurrentQuestion={setCurrentQuestion}
             setIsFinished={setIsFinished}
             onFinish={onFinish}
             total={quiz.length}

@@ -38,7 +38,6 @@ export default ({
   isNextAvailable,
   nextLink,
   onCompleteConcept,
-  onCompleteLesson,
   scrollProgress,
   onProvideFeedback,
 }) => {
@@ -186,26 +185,11 @@ export default ({
               </Text>
               <Button
                 onClick={() => {
-                  if (current !== total) {
-                    onCompleteConcept().then(() => {
-                      navigate(nextLink);
+                  onCompleteConcept().then(() => {
+                    navigate(nextLink);
 
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    });
-                  } else {
-                    onCompleteConcept().then(() => {
-                      onCompleteLesson().then(() => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                        setTimeout(() => {
-                          // NOTE: We are replacing the URL here because we need to refresh the dbCourses variable that's on the lesson page
-                          // Otherwise, it will redirect us back to the lesson we just completed (because of a permission race condition)
-                          // The simplest solution was just to force a page reload at the new URL
-                          window.location.href = nextLink;
-                        }, 500);
-                      });
-                    });
-                  }
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  });
                 }}
                 colorScheme={isNextAvailable ? 'magenta' : 'black'}
                 disabled={!isNextAvailable}

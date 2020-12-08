@@ -100,7 +100,7 @@ const Lesson = ({ dbCourse, data, course, lesson }) => {
   return (
     <Page title={`${courseTitle} - ${title}`} description={description}>
       <CourseHeader
-        lessonNum={lessonNum}
+        subtitle={`Lesson ${lessonNum}`}
         title={title}
         course={course}
         leftDrawerSections={leftDrawerSections}

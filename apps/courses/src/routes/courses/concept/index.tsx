@@ -272,7 +272,7 @@ const Concept = ({ dbCourse, data, user, db, ts, course, lesson, concept }) => {
     <Page title={`${lessonTitle} - ${title}`}>
       <Box bg="gray.800">
         <CourseHeader
-          lessonNum={lessonNum}
+          subtitle={`Lesson ${lessonNum}`}
           title={title}
           course={course}
           leftDrawerSections={leftDrawerSections}

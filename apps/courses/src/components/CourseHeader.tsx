@@ -84,7 +84,14 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
 
 // TODO: Patrick, how much of this logic CAN and SHOULD we share with the original header?
 
-export default ({ lessonNum, title, course, leftDrawerSections }) => {
+export default ({
+  subtitle,
+  title,
+  course,
+  leftDrawerSections,
+  noShadow,
+  noTitle,
+}) => {
   const user = useUser();
   const auth = useAuth();
   const db = useFirestore();
@@ -234,7 +241,7 @@ export default ({ lessonNum, title, course, leftDrawerSections }) => {
       px={8}
       py={{ base: 6, [BREAK]: 4 }}
       bg="gray.900"
-      boxShadow="md"
+      boxShadow={noShadow ? null : 'md'}
       zIndex={2}
     >
       <Flex as="nav" align="center" justify="space-between">
@@ -256,7 +263,11 @@ export default ({ lessonNum, title, course, leftDrawerSections }) => {
           size="md"
           color="white"
         >
-          Lesson {lessonNum}: {title}
+          {!noTitle && (
+            <>
+              {subtitle}: {title}
+            </>
+          )}
         </Heading>
         <Stack
           width={1 / 4}
@@ -289,7 +300,7 @@ export default ({ lessonNum, title, course, leftDrawerSections }) => {
         header={
           <>
             <Text color="gray.400" mb={1}>
-              Lesson {lessonNum}
+              {subtitle}
             </Text>
             <Heading as="span" size="lg" display="block" mb={3}>
               {title}

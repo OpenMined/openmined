@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
+import { Box } from '@chakra-ui/core';
 import useScrollPosition from '@react-hook/window-scroll';
 import { faBookOpen, faLink } from '@fortawesome/free-solid-svg-icons';
 import Page from '@openmined/shared/util-page';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 
-import Video from './Video';
-import Main from './Main';
+import CourseContent from './content';
 
 import {
   getConceptIndex,
@@ -22,7 +22,7 @@ import {
 import CourseHeader from '../../../components/CourseHeader';
 import CourseFooter from '../../../components/CourseFooter';
 
-const Concept = ({ dbCourse, data, user, db, course, lesson, concept }) => {
+const Concept = ({ dbCourse, data, user, db, ts, course, lesson, concept }) => {
   // Destructure our data object for easier use
   const {
     concept: { title },
@@ -32,27 +32,28 @@ const Concept = ({ dbCourse, data, user, db, course, lesson, concept }) => {
     title: lessonTitle,
   } = data;
 
+  // *-----*
+  // PERMISSIONS LOGIC: We need to either update the DB of their progress or navigate them away.
+  // *-----*
+
+  // Have the ability to navigate away if the concept is unavailable
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isConceptAvailable(dbCourse, lessons, lesson, concept)) {
-      const lastCompletedConcept = getLastCompletedConcept(dbCourse, lessons);
-
-      navigate(
-        `/courses/${course}/${lastCompletedConcept.lesson}/${lastCompletedConcept.concept}`
-      );
-    }
-  }, [navigate, dbCourse, lessons, course, lesson, concept]);
-
+  // Track whether or not the concept is available, as well as whether or not the DB has already been updated with the user's progress
+  const [isAvailable, setIsAvailable] = useState(null);
   const [hasUpdatedDbCourse, setHasUpdatedDbCourse] = useState(false);
 
-  // Also store a reference to the server timestamp (we'll use this later to mark start and completion time)
-  // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
-  const serverTimestamp = useFirestore.FieldValue.serverTimestamp();
-
-  // Update the DB that the user has started the course, lesson, and/or concept
+  // First, we want to check if the course is even available to this user (given their progress)
   useEffect(() => {
-    if (!hasUpdatedDbCourse) {
+    if (isAvailable === null) {
+      setIsAvailable(isConceptAvailable(dbCourse, lessons, lesson, concept));
+    }
+  }, [dbCourse, lessons, lesson, concept, isAvailable]);
+
+  // Based on whether or not it's available, and whether or not we've already told the DB we've started this course, lesson, and/or concept...
+  useEffect(() => {
+    // Update the DB that the user has started the course, lesson, and/or concept
+    if (isAvailable && isAvailable !== null && !hasUpdatedDbCourse) {
       const isCourseStarted = hasStartedCourse(dbCourse);
       const isLessonStarted = hasStartedLesson(dbCourse, lesson);
       const isConceptStarted = hasStartedConcept(dbCourse, lesson, concept);
@@ -63,14 +64,14 @@ const Concept = ({ dbCourse, data, user, db, course, lesson, concept }) => {
 
         // Append the course data structure
         if (!isCourseStarted) {
-          data.started_at = serverTimestamp;
+          data.started_at = ts;
           data.lessons = {};
         }
 
         // Then the lesson data structure inside that
         if (!isLessonStarted) {
           data.lessons[lesson] = {
-            started_at: serverTimestamp,
+            started_at: ts,
             concepts: {},
           };
         }
@@ -78,7 +79,7 @@ const Concept = ({ dbCourse, data, user, db, course, lesson, concept }) => {
         // Then the concept data structure inside that
         if (!isConceptStarted) {
           data.lessons[lesson].concepts[concept] = {
-            started_at: serverTimestamp,
+            started_at: ts,
           };
         }
 
@@ -92,16 +93,32 @@ const Concept = ({ dbCourse, data, user, db, course, lesson, concept }) => {
         setHasUpdatedDbCourse(true);
       }
     }
+
+    // Alternatively, if it's not available, let's redirect them back to their last completed lesson and concept
+    else if (!isAvailable && isAvailable !== null) {
+      const lastCompletedConcept = getLastCompletedConcept(dbCourse, lessons);
+
+      navigate(
+        `/courses/${course}/${lastCompletedConcept.lesson}/${lastCompletedConcept.concept}`
+      );
+    }
   }, [
     user.uid,
     db,
     dbCourse,
-    serverTimestamp,
+    ts,
+    isAvailable,
     course,
+    lessons,
     lesson,
     concept,
     hasUpdatedDbCourse,
+    navigate,
   ]);
+
+  // *-----*
+  // COMPONENT LOGIC: Assuming all that permissions logic is done...
+  // *-----*
 
   // We need to track the user's scroll progress, as well as whether or not they've hit the bottom at least once
   const scrollY = useScrollPosition();
@@ -148,7 +165,7 @@ const Concept = ({ dbCourse, data, user, db, course, lesson, concept }) => {
                 [lesson]: {
                   concepts: {
                     [concept]: {
-                      completed_at: serverTimestamp,
+                      completed_at: ts,
                     },
                   },
                 },
@@ -216,66 +233,71 @@ const Concept = ({ dbCourse, data, user, db, course, lesson, concept }) => {
     },
   ];
 
-  // TODO: On the course overview page, make sure the "walk away being able to" items have images for icons instead of Font Awesome icons
-  // TODO: On the course overview page, make sure to have the project show up at the end in the syllabus
-  // TODO: Test responsiveness
-  // TODO: The redirect I have above (line 37-ish) actually will still add "started_at" to the next course while it redirects
-  // Clean up this file and test everything again - it's a damn mess.
-
   // Given the content we need to render... what's the type of the first piece?
   const firstContentPiece = data.concept.content[0]._type;
-
-  // Create a variable to store the concept component we need to render
-  // If the first content piece is a video, render it full-size... otherwise, render the default concept
-  const ConceptType = firstContentPiece === 'video' ? Video : Main;
 
   // We need to store the previous concept id and the next concept id to know where to link
   const prevConceptId =
     conceptIndex - 1 < 0 ? '' : concepts[conceptIndex - 1]._id;
   const nextConceptId =
-    conceptNum + 1 > concepts.length ? '' : concepts[conceptIndex + 1]._id;
+    conceptNum === concepts.length
+      ? 'complete'
+      : concepts[conceptIndex + 1]._id;
 
-  const isNextAvailable =
-    (firstContentPiece !== 'video' &&
-      hasScrolledToBottom &&
-      hasCompletedAllQuizzes) ||
-    (firstContentPiece === 'video' && hasCompletedAllQuizzes) ||
-    hasCompletedConcept(dbCourse, lesson, concept);
+  // Determine whether the next concept should be available or not to the user
+  const [isNextAvailable, setIsNextAvailable] = useState(false);
+
+  useEffect(() => {
+    const should =
+      (firstContentPiece !== 'video' &&
+        hasScrolledToBottom &&
+        hasCompletedAllQuizzes) ||
+      (firstContentPiece === 'video' && hasCompletedAllQuizzes) ||
+      hasCompletedConcept(dbCourse, lesson, concept);
+
+    if (should && !isNextAvailable) {
+      setIsNextAvailable(should);
+    }
+  }, [
+    dbCourse,
+    lesson,
+    concept,
+    isNextAvailable,
+    firstContentPiece,
+    hasCompletedAllQuizzes,
+    hasScrolledToBottom,
+  ]);
 
   return (
     <Page title={`${lessonTitle} - ${title}`}>
-      <CourseHeader
-        lessonNum={lessonNum}
-        title={title}
-        course={course}
-        leftDrawerSections={leftDrawerSections}
-      />
-      <ConceptType
-        data={data}
-        dbCourse={dbCourse}
-        course={course}
-        lesson={lesson}
-        concept={concept}
-        conceptNum={conceptNum}
-        setCompletedQuizzes={setHasCompletedAllQuizzes}
-      />
-      {firstContentPiece !== 'quiz' && (
+      <Box bg="gray.800">
+        <CourseHeader
+          lessonNum={lessonNum}
+          title={title}
+          course={course}
+          leftDrawerSections={leftDrawerSections}
+        />
+        <CourseContent
+          data={data}
+          dbCourse={dbCourse}
+          course={course}
+          lesson={lesson}
+          concept={concept}
+          conceptNum={conceptNum}
+          setCompletedQuizzes={setHasCompletedAllQuizzes}
+        />
         <CourseFooter
           current={conceptNum}
           total={concepts.length}
           scrollProgress={scrollProgress}
-          isBackAvailable={conceptNum > 1}
+          isBackAvailable={conceptIndex > 0}
           isNextAvailable={isNextAvailable}
           backLink={`/courses/${course}/${lesson}/${prevConceptId}`}
-          nextLink={
-            conceptNum === concepts.length
-              ? `/courses/${course}/${lesson}/complete`
-              : `/courses/${course}/${lesson}/${nextConceptId}`
-          }
+          nextLink={`/courses/${course}/${lesson}/${nextConceptId}`}
           onCompleteConcept={onCompleteConcept}
           onProvideFeedback={onProvideFeedback}
         />
-      )}
+      </Box>
     </Page>
   );
 };
@@ -313,8 +335,11 @@ export default () => {
     .doc(course);
   const dbCourse = useFirestoreDocData(dbCourseRef);
 
+  // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
+  // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
+  const serverTimestamp = useFirestore.FieldValue.serverTimestamp();
+
   // If the data from the CMS is still loading, render nothing
-  // Note that this has to be the FINAL side effect (after all useState and useEffect calls)
   if (loading) return null;
 
   return (
@@ -323,6 +348,7 @@ export default () => {
       data={data}
       user={user}
       db={db}
+      ts={serverTimestamp}
       course={course}
       lesson={lesson}
       concept={concept}

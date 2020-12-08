@@ -88,7 +88,7 @@ export const isConceptAvailable = (u, ls, l, c) => {
 export const getLastCompletedConcept = (u, ls) => {
   let lastCompletedLesson, lastCompletedConcept;
 
-  for (let i = 0; i < ls.length; i++) {
+  lessonLoop: for (let i = 0; i < ls.length; i++) {
     const currentLesson = ls[i];
 
     for (let j = 0; j < Object.keys(currentLesson).length; j++) {
@@ -98,7 +98,7 @@ export const getLastCompletedConcept = (u, ls) => {
         lastCompletedLesson = currentLesson._id;
         lastCompletedConcept = currentConcept;
       } else {
-        break;
+        break lessonLoop;
       }
     }
   }

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link as RRDLink, useNavigate } from 'react-router-dom';
-import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
+import React from 'react';
+import { useParams, Link as RRDLink } from 'react-router-dom';
+import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import {
   faBookOpen,
   faCheckCircle,
@@ -27,9 +27,9 @@ import Page from '@openmined/shared/util-page';
 import {
   getLessonNumber,
   hasCompletedLesson,
+  hasStartedCourse,
   hasStartedLesson,
-  isLessonAvailable,
-  getLastCompletedLesson,
+  usePageAvailabilityRedirect,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import CourseHeader from '../../../components/CourseHeader';
@@ -44,7 +44,7 @@ const Detail = ({ title, value }) => (
   </Flex>
 );
 
-const Lesson = ({ dbCourse, data, course, lesson }) => {
+const Lesson = ({ dbCourse, data, user, db, ts, course, lesson }) => {
   const {
     course: { title: courseTitle, lessons },
     title,
@@ -54,34 +54,15 @@ const Lesson = ({ dbCourse, data, course, lesson }) => {
     learnFrom,
     learnHow,
     length,
-    concepts,
+    conceptsCount,
   } = data;
 
   // *-----*
   // PERMISSIONS LOGIC: We need to check if they're allowed to view this lesson or navigate them away.
   // *-----*
 
-  // Have the ability to navigate away if the lesson is unavailable
-  const navigate = useNavigate();
-
-  // Track whether or not the lesson is available, as well as whether or not the DB has already been updated with the user's progress
-  const [isAvailable, setIsAvailable] = useState(null);
-
-  // First, we want to check if the course is even available to this user (given their progress)
-  useEffect(() => {
-    if (isAvailable === null) {
-      setIsAvailable(isLessonAvailable(dbCourse, lessons, lesson));
-    }
-  }, [dbCourse, lessons, lesson, isAvailable]);
-
-  // If it's not available, let's redirect them back to their last completed lesson
-  useEffect(() => {
-    if (!isAvailable && isAvailable !== null) {
-      const lastCompletedLesson = getLastCompletedLesson(dbCourse, lessons);
-
-      navigate(`/courses/${course}/${lastCompletedLesson.lesson}`);
-    }
-  }, [course, dbCourse, isAvailable, lessons, navigate]);
+  // Check whether or not we're able to see this page
+  usePageAvailabilityRedirect(dbCourse, lessons, course, lesson);
 
   // *-----*
   // COMPONENT LOGIC: Assuming all that permissions logic is done...
@@ -120,6 +101,37 @@ const Lesson = ({ dbCourse, data, course, lesson }) => {
     },
   ];
 
+  const onLessonStart = () => {
+    const isCourseStarted = hasStartedCourse(dbCourse);
+    const isLessonStarted = hasStartedLesson(dbCourse, lesson);
+
+    const data = dbCourse;
+
+    // Append the course data structure
+    if (!isCourseStarted) {
+      data.started_at = ts();
+      data.lessons = {};
+    }
+
+    // Then the lesson data structure inside that
+    if (!isLessonStarted) {
+      data.lessons[lesson] = {
+        started_at: ts(),
+        concepts: {},
+      };
+    }
+
+    // When the object is constructed, store it!
+    db.collection('users')
+      .doc(user.uid)
+      .collection('courses')
+      .doc(course)
+      .set(data, { merge: true })
+      .then(() => {
+        window.location.href = `/courses/${course}/${lesson}/${firstConcept}`;
+      });
+  };
+
   return (
     <Page title={`${courseTitle} - ${title}`} description={description}>
       <CourseHeader
@@ -139,8 +151,8 @@ const Lesson = ({ dbCourse, data, course, lesson }) => {
             mt={{ base: 8, lg: 0 }}
           >
             {length && <Detail title="Length" value={length} />}
-            {concepts && (
-              <Detail title="Concepts" value={`${concepts} concepts`} />
+            {conceptsCount && (
+              <Detail title="Concepts" value={`${conceptsCount} concepts`} />
             )}
             {lessons && (
               <Detail
@@ -240,11 +252,7 @@ const Lesson = ({ dbCourse, data, course, lesson }) => {
                 </UnorderedList>
               </>
             )}
-            <Button
-              as={RRDLink}
-              to={`/courses/${course}/${lesson}/${firstConcept}`}
-              colorScheme="magenta"
-            >
+            <Button onClick={onLessonStart} colorScheme="magenta">
               Begin Lesson
             </Button>
           </Box>
@@ -264,12 +272,13 @@ export default () => {
         "image": image.asset -> url
       },
       "firstConcept": concepts[0]._ref,
-      "concepts": count(concepts),
+      "conceptsCount": count(concepts),
       "course": *[_type == "course" && references(^._id) ][0] {
         title,
         "lessons": lessons[] -> {
           _id,
-          title
+          title,
+          "concepts": concepts[] -> { _id }
         }
       }
     }[0]`
@@ -282,11 +291,23 @@ export default () => {
     .doc(user.uid)
     .collection('courses')
     .doc(course);
-  const dbCourse = useFirestoreDocData(dbCourseRef);
+  const dbCourse = useFirestoreDocDataOnce(dbCourseRef);
+
+  // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
+  // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
+  const serverTimestamp = useFirestore.FieldValue.serverTimestamp;
 
   if (loading) return null;
 
   return (
-    <Lesson dbCourse={dbCourse} data={data} course={course} lesson={lesson} />
+    <Lesson
+      dbCourse={dbCourse}
+      data={data}
+      user={user}
+      db={db}
+      ts={serverTimestamp}
+      course={course}
+      lesson={lesson}
+    />
   );
 };

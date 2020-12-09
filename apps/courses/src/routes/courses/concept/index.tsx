@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
+import { useParams } from 'react-router-dom';
+import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import { Box } from '@chakra-ui/core';
 import useScrollPosition from '@react-hook/window-scroll';
 import { faBookOpen, faLink } from '@fortawesome/free-solid-svg-icons';
@@ -11,13 +11,10 @@ import CourseContent from './content';
 
 import {
   getConceptIndex,
-  getLastCompletedConcept,
   getLessonIndex,
   hasCompletedConcept,
   hasStartedConcept,
-  hasStartedCourse,
-  hasStartedLesson,
-  isConceptAvailable,
+  usePageAvailabilityRedirect,
 } from '../_helpers';
 import CourseHeader from '../../../components/CourseHeader';
 import CourseFooter from '../../../components/CourseFooter';
@@ -36,52 +33,26 @@ const Concept = ({ dbCourse, data, user, db, ts, course, lesson, concept }) => {
   // PERMISSIONS LOGIC: We need to either update the DB of their progress or navigate them away.
   // *-----*
 
-  // Have the ability to navigate away if the concept is unavailable
-  const navigate = useNavigate();
+  // Check whether or not we're able to see this page
+  const status = usePageAvailabilityRedirect(
+    dbCourse,
+    lessons,
+    course,
+    lesson,
+    concept
+  );
 
-  // Track whether or not the concept is available, as well as whether or not the DB has already been updated with the user's progress
-  const [isAvailable, setIsAvailable] = useState(null);
-  const [hasUpdatedDbCourse, setHasUpdatedDbCourse] = useState(false);
-
-  // First, we want to check if the course is even available to this user (given their progress)
   useEffect(() => {
-    if (isAvailable === null) {
-      setIsAvailable(isConceptAvailable(dbCourse, lessons, lesson, concept));
-    }
-  }, [dbCourse, lessons, lesson, concept, isAvailable]);
-
-  // Based on whether or not it's available, and whether or not we've already told the DB we've started this course, lesson, and/or concept...
-  useEffect(() => {
-    // Update the DB that the user has started the course, lesson, and/or concept
-    if (isAvailable && isAvailable !== null && !hasUpdatedDbCourse) {
-      const isCourseStarted = hasStartedCourse(dbCourse);
-      const isLessonStarted = hasStartedLesson(dbCourse, lesson);
-      const isConceptStarted = hasStartedConcept(dbCourse, lesson, concept);
-
-      // If we haven't started the course, lesson, or concept
-      if (!isCourseStarted || !isLessonStarted || !isConceptStarted) {
+    // Assuming this page is available to the user, update the DB to start the course, lesson, and/or concept
+    if (status === 'available') {
+      // If we haven't started the concept
+      if (!hasStartedConcept(dbCourse, lesson, concept)) {
         const data = dbCourse;
 
-        // Append the course data structure
-        if (!isCourseStarted) {
-          data.started_at = ts();
-          data.lessons = {};
-        }
-
-        // Then the lesson data structure inside that
-        if (!isLessonStarted) {
-          data.lessons[lesson] = {
-            started_at: ts(),
-            concepts: {},
-          };
-        }
-
         // Then the concept data structure inside that
-        if (!isConceptStarted) {
-          data.lessons[lesson].concepts[concept] = {
-            started_at: ts(),
-          };
-        }
+        data.lessons[lesson].concepts[concept] = {
+          started_at: ts(),
+        };
 
         // When the object is constructed, store it!
         db.collection('users')
@@ -89,32 +60,9 @@ const Concept = ({ dbCourse, data, user, db, ts, course, lesson, concept }) => {
           .collection('courses')
           .doc(course)
           .set(data, { merge: true });
-
-        setHasUpdatedDbCourse(true);
       }
     }
-
-    // Alternatively, if it's not available, let's redirect them back to their last completed lesson and concept
-    else if (!isAvailable && isAvailable !== null) {
-      const lastCompletedConcept = getLastCompletedConcept(dbCourse, lessons);
-
-      navigate(
-        `/courses/${course}/${lastCompletedConcept.lesson}/${lastCompletedConcept.concept}`
-      );
-    }
-  }, [
-    user.uid,
-    db,
-    dbCourse,
-    ts,
-    isAvailable,
-    course,
-    lessons,
-    lesson,
-    concept,
-    hasUpdatedDbCourse,
-    navigate,
-  ]);
+  }, [user.uid, db, dbCourse, ts, course, lessons, lesson, concept, status]);
 
   // *-----*
   // COMPONENT LOGIC: Assuming all that permissions logic is done...
@@ -334,7 +282,7 @@ export default () => {
     .doc(user.uid)
     .collection('courses')
     .doc(course);
-  const dbCourse = useFirestoreDocData(dbCourseRef);
+  const dbCourse = useFirestoreDocDataOnce(dbCourseRef);
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import {
   Box,
   Button,
@@ -26,10 +26,10 @@ import { useSanity } from '@openmined/shared/data-access-sanity';
 import Page from '@openmined/shared/util-page';
 
 import {
-  getLastCompletedConcept,
   getLessonIndex,
   hasCompletedLesson,
   hasStartedLesson,
+  usePageAvailabilityRedirect,
 } from '../_helpers';
 import useToast, { toastConfig } from '../../../components/Toast';
 import CourseHeader from '../../../components/CourseHeader';
@@ -60,53 +60,23 @@ const LessonComplete = ({ dbCourse, data, user, db, ts, course, lesson }) => {
   // PERMISSIONS LOGIC: We need to check if they're allowed to view this lesson completion page or navigate them away.
   // *-----*
 
-  // Get the current lesson index
-  const lessonIndex = getLessonIndex(lessons, lesson);
-
-  // Have the ability to navigate away if the lesson is unavailable
-  const navigate = useNavigate();
-
-  // Track whether or not the lesson is available, as well as whether or not the DB has already been updated with the user's progress
-  const [isAvailable, setIsAvailable] = useState(null);
-
-  // First, we want to check if the course is even available to this user (given their progress)
-  useEffect(() => {
-    if (isAvailable === null) {
-      const lastCompletedConcept = getLastCompletedConcept(dbCourse, lessons);
-      const lastConceptId =
-        lessons[lessonIndex].concepts[lessons[lessonIndex].concepts.length - 1]
-          ._id;
-      const isAvailableStatus =
-        lastCompletedConcept.lesson === lesson &&
-        lastCompletedConcept.concept === lastConceptId;
-
-      setIsAvailable(isAvailableStatus);
-    }
-  }, [dbCourse, lessons, lesson, lessonIndex, isAvailable]);
-
-  // If it's not available, let's redirect them back to their last completed concept
-  useEffect(() => {
-    if (!isAvailable && isAvailable !== null) {
-      const lastCompletedConcept = getLastCompletedConcept(dbCourse, lessons);
-
-      navigate(
-        `/courses/${course}/${lastCompletedConcept.lesson}/${lastCompletedConcept.concept}`
-      );
-    }
-  }, [course, dbCourse, isAvailable, lessons, navigate]);
+  // Check whether or not we're able to see this page
+  usePageAvailabilityRedirect(dbCourse, lessons, course, lesson, 'complete');
 
   // *-----*
   // COMPONENT LOGIC: Assuming all that permissions logic is done...
   // *-----*
 
+  // Be able to push a toast message
   const toast = useToast();
 
+  // Allow this component to capture the user's feedback
   const [isFeedbackActive, setFeedbackActive] = useState(false);
   const [vote, setVote] = useState(null);
   const [feedback, setFeedback] = useState('');
 
-  // Get the current lesson number, and their non-zero numbers
-  // Also get the next lesson
+  // Get the current lesson index, the lesson number, and (if applicable) the next lesson or final project
+  const lessonIndex = getLessonIndex(lessons, lesson);
   const lessonNum = lessonIndex + 1;
   const nextLesson =
     lessons.length > lessonNum ? lessons[lessonNum] : 'project';
@@ -247,15 +217,13 @@ const LessonComplete = ({ dbCourse, data, user, db, ts, course, lesson }) => {
                 mb={12}
                 colorScheme="magenta"
                 onClick={() =>
-                  onCompleteLesson().then(() =>
-                    navigate(
-                      `/courses/${course}/${
-                        typeof nextLesson === 'string'
-                          ? nextLesson
-                          : nextLesson._id
-                      }`
-                    )
-                  )
+                  onCompleteLesson().then(() => {
+                    window.location.href = `/courses/${course}/${
+                      typeof nextLesson === 'string'
+                        ? nextLesson
+                        : nextLesson._id
+                    }`;
+                  })
                 }
               >
                 Continue
@@ -390,7 +358,7 @@ export default () => {
     .doc(user.uid)
     .collection('courses')
     .doc(course);
-  const dbCourse = useFirestoreDocData(dbCourseRef);
+  const dbCourse = useFirestoreDocDataOnce(dbCourseRef);
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference

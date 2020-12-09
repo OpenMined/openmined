@@ -1,23 +1,11 @@
 import React from 'react';
-import { useParams, Link as RRDLink, Navigate } from 'react-router-dom';
-import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
-import {
-  faBookOpen,
-  faCheckCircle,
-  faCommentAlt,
-  faExternalLinkAlt,
-  faLink,
-  faLock,
-  faLockOpen,
-  faPen,
-} from '@fortawesome/free-solid-svg-icons';
+import { useParams, Link as RRDLink } from 'react-router-dom';
 import {
   Accordion,
   AccordionButton,
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Avatar,
   Badge,
   Box,
   Button,
@@ -31,12 +19,18 @@ import {
   UnorderedList,
 } from '@chakra-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCheckCircle,
+  faCommentAlt,
+  faLock,
+  faLockOpen,
+  faPen,
+} from '@fortawesome/free-solid-svg-icons';
+import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
 import Page from '@openmined/shared/util-page';
 
 import GridContainer from '../../../components/GridContainer';
 import CourseHeader from '../../../components/CourseHeader';
-import Detail from '../../../components/Detail';
-import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
 
 const content = {
   course_name: 'Privacy & Society',
@@ -102,23 +96,23 @@ const content = {
   ],
 };
 
+const Detail = ({ title, value }) => (
+  <Flex align="center" mb={4}>
+    <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+    <Box ml={4}>
+      <Text fontWeight="bold">{title}</Text>
+      <Text color="gray.700">{value}</Text>
+    </Box>
+  </Flex>
+);
+
 const ProjectStatusBadge = ({ status }) => {
   const statuses = {
-    not_started: {
-      title: 'Not Started',
-    },
-    in_review: {
-      title: 'In Review',
-    },
-    in_progress: {
-      title: 'In Progress',
-    },
-    complete: {
-      title: 'Complete',
-    },
-    failed: {
-      title: 'Failed',
-    },
+    not_started: { title: 'Not Started' },
+    in_review: { title: 'In Review' },
+    in_progress: { title: 'In Progress' },
+    complete: { title: 'Complete' },
+    failed: { title: 'Failed' },
   };
 
   return (
@@ -291,7 +285,6 @@ export default () => {
               <>
                 <Divider my={6} />
                 {resources.map(({ title, link, icon }, index) => {
-
                   const linkProps = {
                     as: 'a',
                     href: link,

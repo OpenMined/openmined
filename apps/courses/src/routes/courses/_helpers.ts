@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 // Course permissions
 export const hasStartedCourse = (u) =>
   Object.keys(u).length !== 0 && !!u.started_at;
@@ -15,41 +17,6 @@ export const hasStartedLesson = (u, l) =>
 export const hasCompletedLesson = (u, l) =>
   hasStartedLesson(u, l) && !!u.lessons[l].completed_at;
 export const doesLessonExist = (ls, l) => getLessonIndex(ls, l) !== -1;
-export const isLessonAvailable = (u, ls, l) => {
-  if (!doesLessonExist(ls, l)) return false;
-
-  const indexOfLesson = getLessonIndex(ls, l);
-
-  let hasCompletedPreviousLessons = true;
-
-  for (let i = 0; i < indexOfLesson; i++) {
-    const currentLesson = ls[i]._id;
-
-    if (!hasCompletedLesson(u, currentLesson)) {
-      hasCompletedPreviousLessons = false;
-      break;
-    }
-  }
-
-  return hasCompletedPreviousLessons;
-};
-export const getLastCompletedLesson = (u, ls) => {
-  let lastCompletedLesson;
-
-  for (let i = 0; i < ls.length - 1; i++) {
-    const currentLesson = ls[i]._id;
-
-    if (hasCompletedLesson(u, currentLesson)) {
-      lastCompletedLesson = currentLesson;
-    } else {
-      break;
-    }
-  }
-
-  if (!lastCompletedLesson) return { lesson: ls[0]._id };
-
-  return { lesson: lastCompletedLesson };
-};
 
 // Concept permissions
 export const getConceptIndex = (ls, l, c) =>
@@ -64,53 +31,81 @@ export const hasCompletedConcept = (u, l, c) =>
   hasStartedConcept(u, l, c) && !!u.lessons[l].concepts[c].completed_at;
 export const doesConceptExist = (ls, l, c) =>
   doesLessonExist(ls, l) && getConceptIndex(ls, l, c) !== -1;
-export const isConceptAvailable = (u, ls, l, c) => {
-  if (!doesConceptExist(ls, l, c)) return false;
-  if (!isLessonAvailable(u, ls, l)) return false;
 
-  const indexOfLesson = getLessonIndex(ls, l);
-  const indexOfConcept = getConceptIndex(ls, l, c);
-  const currentLesson = ls[indexOfLesson];
+// Page change
+export const getNextAvailablePage = (u, ls) => {
+  // If we haven't started the course at all, send them to the first lesson initiation page
+  if (!hasStartedCourse(u)) return { lesson: ls[0]._id, concept: null };
 
-  let hasCompletedPreviousConcepts = true;
-
-  for (let i = 0; i < indexOfConcept; i++) {
-    const currentConcept = currentLesson.concepts[i]._id;
-
-    if (!hasCompletedConcept(u, l, currentConcept)) {
-      hasCompletedPreviousConcepts = false;
-      break;
-    }
-  }
-
-  return hasCompletedPreviousConcepts;
-};
-export const getLastCompletedConcept = (u, ls) => {
-  let lastCompletedLesson, lastCompletedConcept;
-
-  lessonLoop: for (let i = 0; i < ls.length; i++) {
+  for (let i = 0; i < ls.length; i++) {
     const currentLesson = ls[i];
 
-    for (let j = 0; j < Object.keys(currentLesson).length - 1; j++) {
+    for (let j = 0; j < currentLesson.concepts.length; j++) {
       const currentConcept = currentLesson.concepts[j]._id;
 
-      if (hasCompletedConcept(u, currentLesson._id, currentConcept)) {
-        lastCompletedLesson = currentLesson._id;
-        lastCompletedConcept = currentConcept;
-      } else {
-        break lessonLoop;
+      if (!hasCompletedConcept(u, currentLesson._id, currentConcept)) {
+        return { lesson: currentLesson._id, concept: currentConcept };
       }
+    }
+
+    // If we got here, then all concepts in that lesson have been completed
+    // However, we should quickly check if there's another lesson available - if there is...
+    if (ls[i + 1]) {
+      const nextLessonId = ls[i + 1]._id;
+
+      // If they haven't completed this lesson and they also haven't started the next lesson
+      // Send them to the completion page
+      if (
+        !hasCompletedLesson(u, currentLesson._id) &&
+        !hasStartedLesson(u, nextLessonId)
+      ) {
+        return { lesson: currentLesson._id, concept: 'complete' };
+      }
+
+      // If they have completed this lesson, but they haven't started the next one
+      // Send them to the next lesson
+      else if (
+        hasCompletedLesson(u, currentLesson._id) &&
+        !hasStartedLesson(u, nextLessonId)
+      ) {
+        return { lesson: nextLessonId, concept: null };
+      }
+    }
+
+    // Otherwise, there are no more remaining lessons...
+    // Send them to the project
+    else {
+      return { lesson: 'project', concept: null };
     }
   }
 
-  if (lastCompletedLesson && !lastCompletedConcept) {
-    return {
-      lesson: lastCompletedLesson,
-      concept: ls[lastCompletedLesson].concepts[0]._id,
-    };
-  } else if (!lastCompletedLesson && !lastCompletedConcept) {
-    return { lesson: ls[0]._id, concept: ls[0].concepts[0]._id };
-  }
+  // Something went wrong...
+  return null;
+};
 
-  return { lesson: lastCompletedLesson, concept: lastCompletedConcept };
+export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
+  // Set up a status state variable
+  const [status, setStatus] = useState('loading');
+
+  // Get the suggested page
+  const suggestedPage = getNextAvailablePage(user, ls);
+
+  useEffect(() => {
+    // If the suggested lesson and concept are same as the ones we passed, then we're right where we're supposed to be!
+    if (suggestedPage.lesson === l && suggestedPage.concept === c) {
+      setStatus('available');
+    }
+
+    // Otherwise, we need to redirect the user where they're supposed to be
+    else {
+      setStatus('redirecting');
+
+      let url = `/courses/${course}/${suggestedPage.lesson}`;
+      if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
+
+      window.location.href = url;
+    }
+  }, [course, l, c, suggestedPage]);
+
+  return status;
 };

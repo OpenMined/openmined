@@ -268,8 +268,9 @@
         "deploy": {
           "builder": "@nrwl/workspace:run-commands",
           "options": {
-            "commands": ["sanity deploy ./dist/apps/sanity-api"],
-            "cwd": "apps/sanity-api/src"
+            "commands": ["sanity deploy ../../../dist/apps/sanity-api"],
+            "cwd": "apps/sanity-api/src",
+            "parallel": false
           }
         }
       }

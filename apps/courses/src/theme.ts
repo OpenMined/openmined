@@ -31,6 +31,8 @@ const buttonColors = (c) => {
   return { regularFill, hoverFill, activeFill, color };
 };
 
+const mono = `"Fira Code", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`;
+
 export default extendTheme({
   styles: {
     global: {
@@ -49,6 +51,11 @@ export default extendTheme({
         borderColor: '#9D9D9D !important',
         opacity: 1,
       },
+      'pre, code': {
+        textShadow: 'none !important',
+        fontFamily: `${mono} !important`,
+      },
+      'code .token': { background: 'none !important' },
     },
   },
   colors: {
@@ -188,7 +195,7 @@ export default extendTheme({
   fonts: {
     heading: `"Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
     body: `"Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
-    mono: `"Fira Code", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`,
+    mono,
   },
   fontSizes: {
     xs: '0.75rem',
@@ -226,8 +233,7 @@ export default extendTheme({
     Accordion: {
       variants: {
         boxed: (props) => {
-          
-          const { colorScheme: c } = props
+          const { colorScheme: c } = props;
 
           return {
             container: {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as RRDLink, useNavigate } from 'react-router-dom';
+import { Link as RRDLink } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -210,41 +210,35 @@ const Controls = ({
   current,
   total,
   onCompleteConcept,
-}) => {
-  const navigate = useNavigate();
-
-  return (
-    <Flex align="center">
-      <Button
-        onClick={() => {
-          navigate(backLink);
-
+}) => (
+  <Flex align="center">
+    <Button
+      onClick={() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.location.href = backLink;
+      }}
+      colorScheme={isBackAvailable ? 'magenta' : 'black'}
+      disabled={!isBackAvailable}
+    >
+      Back
+    </Button>
+    <Text mx={[6, null, 8, 12]} color="gray.400">
+      {current} of {total}
+    </Text>
+    <Button
+      onClick={() => {
+        onCompleteConcept().then(() => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        colorScheme={isBackAvailable ? 'magenta' : 'black'}
-        disabled={!isBackAvailable}
-      >
-        Back
-      </Button>
-      <Text mx={[6, null, 8, 12]} color="gray.400">
-        {current} of {total}
-      </Text>
-      <Button
-        onClick={() => {
-          onCompleteConcept().then(() => {
-            navigate(nextLink);
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          });
-        }}
-        colorScheme={isNextAvailable ? 'magenta' : 'black'}
-        disabled={!isNextAvailable}
-      >
-        Next
-      </Button>
-    </Flex>
-  );
-};
+          window.location.href = nextLink;
+        });
+      }}
+      colorScheme={isNextAvailable ? 'magenta' : 'black'}
+      disabled={!isNextAvailable}
+    >
+      Next
+    </Button>
+  </Flex>
+);
 
 export default ({
   current,

@@ -73,5 +73,7 @@ export const WrappedApp = () => (
   </React.StrictMode>
 );
 
-// Experimental concurrence mode in React
-unstable_createRoot(root).render(<WrappedApp />);
+if (process.env.NODE_ENV !== 'test') {
+  // Experimental concurrence mode in React
+  unstable_createRoot(root).render(<WrappedApp />);
+}

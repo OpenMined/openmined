@@ -64,14 +64,14 @@ const Concept = ({ dbCourse, data, user, db, ts, course, lesson, concept }) => {
 
         // Append the course data structure
         if (!isCourseStarted) {
-          data.started_at = ts;
+          data.started_at = ts();
           data.lessons = {};
         }
 
         // Then the lesson data structure inside that
         if (!isLessonStarted) {
           data.lessons[lesson] = {
-            started_at: ts,
+            started_at: ts(),
             concepts: {},
           };
         }
@@ -79,7 +79,7 @@ const Concept = ({ dbCourse, data, user, db, ts, course, lesson, concept }) => {
         // Then the concept data structure inside that
         if (!isConceptStarted) {
           data.lessons[lesson].concepts[concept] = {
-            started_at: ts,
+            started_at: ts(),
           };
         }
 
@@ -130,7 +130,8 @@ const Concept = ({ dbCourse, data, user, db, ts, course, lesson, concept }) => {
     const conceptHeight =
       document.documentElement.scrollHeight -
       document.documentElement.clientHeight;
-    const progress = (scrollY / conceptHeight) * 100;
+    const progress =
+      conceptHeight <= 0 ? 100 : (scrollY / conceptHeight) * 100 || 0;
 
     setScrollProgress(progress > 100 ? 100 : progress);
 
@@ -165,7 +166,7 @@ const Concept = ({ dbCourse, data, user, db, ts, course, lesson, concept }) => {
                 [lesson]: {
                   concepts: {
                     [concept]: {
-                      completed_at: ts,
+                      completed_at: ts(),
                     },
                   },
                 },
@@ -337,7 +338,7 @@ export default () => {
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
-  const serverTimestamp = useFirestore.FieldValue.serverTimestamp();
+  const serverTimestamp = useFirestore.FieldValue.serverTimestamp;
 
   // If the data from the CMS is still loading, render nothing
   if (loading) return null;

@@ -214,7 +214,6 @@ const Controls = ({
   <Flex align="center">
     <Button
       onClick={() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
         window.location.href = backLink;
       }}
       colorScheme={isBackAvailable ? 'magenta' : 'black'}
@@ -228,7 +227,6 @@ const Controls = ({
     <Button
       onClick={() => {
         onCompleteConcept().then(() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
           window.location.href = nextLink;
         });
       }}

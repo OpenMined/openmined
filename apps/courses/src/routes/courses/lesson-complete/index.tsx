@@ -21,6 +21,7 @@ import {
   faCheckCircle,
   faCommentAlt,
   faLink,
+  faShapes,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 import Page from '@openmined/shared/util-page';
@@ -201,7 +202,9 @@ const LessonComplete = ({ dbCourse, data, user, db, ts, course, lesson }) => {
               >
                 <Icon
                   as={FontAwesomeIcon}
-                  icon={faArrowRight}
+                  icon={
+                    typeof nextLesson === 'string' ? faShapes : faArrowRight
+                  }
                   color="orange.200"
                   size="lg"
                   mr={6}

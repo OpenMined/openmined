@@ -541,6 +541,98 @@ describe('page helpers', () => {
     expect(result.concept).toBe(null);
   });
 
+  it('user will be appropriately directed to the final lesson completion page', () => {
+    const lessons = [
+      {
+        _id: '1st-lesson',
+        concepts: [
+          { _id: '1st-concept' },
+          { _id: '2nd-concept' },
+          { _id: '3rd-concept' },
+        ],
+      },
+      {
+        _id: '2nd-lesson',
+        concepts: [
+          { _id: '1st-concept' },
+          { _id: '2nd-concept' },
+          { _id: '3rd-concept' },
+        ],
+      },
+      {
+        _id: '3rd-lesson',
+        concepts: [
+          { _id: '1st-concept' },
+          { _id: '2nd-concept' },
+          { _id: '3rd-concept' },
+        ],
+      },
+    ];
+    const user = {
+      started_at: Date.now(),
+      lessons: {
+        '1st-lesson': {
+          started_at: Date.now(),
+          completed_at: Date.now(),
+          concepts: {
+            '1st-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+            '2nd-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+            '3rd-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+          },
+        },
+        '2nd-lesson': {
+          started_at: Date.now(),
+          completed_at: Date.now(),
+          concepts: {
+            '1st-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+            '2nd-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+            '3rd-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+          },
+        },
+        '3rd-lesson': {
+          started_at: Date.now(),
+          concepts: {
+            '1st-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+            '2nd-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+            '3rd-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+          },
+        },
+      },
+    };
+
+    const result = getNextAvailablePage(user, lessons);
+
+    expect(result.lesson).toBe('3rd-lesson');
+    expect(result.concept).toBe('complete');
+  });
+
   it('user will be appropriately directed to the project page', () => {
     const lessons = [
       {

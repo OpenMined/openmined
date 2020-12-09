@@ -73,8 +73,13 @@ export const getNextAvailablePage = (u, ls) => {
     }
 
     // Otherwise, there are no more remaining lessons...
-    // Send them to the project
     else {
+      // Check to make sure they've marked the last lesson as complete
+      if (!hasCompletedLesson(u, currentLesson._id)) {
+        return { lesson: currentLesson._id, concept: 'complete' };
+      }
+
+      // If they have, send them to the project
       return { lesson: 'project', concept: null };
     }
   }
@@ -83,29 +88,68 @@ export const getNextAvailablePage = (u, ls) => {
   return null;
 };
 
+const checkForPrevious = (user, ls, l, c) => {
+  // Are we on a project page, and has the last lesson been completed?
+  if (l === 'project' && hasCompletedLesson(user, ls[ls.length - 1]._id)) {
+    return true;
+  }
+
+  // Or, we're not on a project page
+  else if (l !== 'project') {
+    // Are we on a lesson page, and has the current lesson been completed?
+    if (c === null && hasCompletedLesson(user, l)) {
+      return true;
+    }
+
+    const clc = ls[getLessonIndex(ls, l)].concepts; // "Current lesson concepts"
+    const lastConceptComplete = hasCompletedConcept(
+      user,
+      l,
+      clc[clc.length - 1]._id
+    );
+
+    // Are we on a lesson completion page, and has the last concept of the current lesson been completed?
+    if (c === 'complete' && lastConceptComplete) {
+      return true;
+    }
+
+    // Are we on a concept page, and has the concept been completed?
+    if (c !== null && c !== 'complete' && hasCompletedConcept(user, l, c)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
   // Set up a status state variable
-  const [status, setStatus] = useState('loading');
-
-  // Get the suggested page
-  const suggestedPage = getNextAvailablePage(user, ls);
+  const [status, setStatus] = useState(
+    checkForPrevious(user, ls, l, c) ? 'available' : 'loading'
+  );
 
   useEffect(() => {
-    // If the suggested lesson and concept are same as the ones we passed, then we're right where we're supposed to be!
-    if (suggestedPage.lesson === l && suggestedPage.concept === c) {
-      setStatus('available');
+    // If we're still in the "loading" state
+    if (status === 'loading') {
+      // Get the suggested page
+      const suggestedPage = getNextAvailablePage(user, ls);
+
+      // If the suggested lesson and concept are same as the ones we passed, then we're right where we're supposed to be!
+      if (suggestedPage.lesson === l && suggestedPage.concept === c) {
+        setStatus('available');
+      }
+
+      // Otherwise, we need to redirect the user where they're supposed to be
+      else {
+        setStatus('redirecting');
+
+        let url = `/courses/${course}/${suggestedPage.lesson}`;
+        if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
+
+        // window.location.href = url;
+      }
     }
-
-    // Otherwise, we need to redirect the user where they're supposed to be
-    else {
-      setStatus('redirecting');
-
-      let url = `/courses/${course}/${suggestedPage.lesson}`;
-      if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
-
-      window.location.href = url;
-    }
-  }, [course, l, c, suggestedPage]);
+  }, [user, ls, course, l, c, status]);
 
   return status;
 };

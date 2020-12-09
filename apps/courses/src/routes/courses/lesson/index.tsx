@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link as RRDLink, useNavigate } from 'react-router-dom';
-import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
+import { useFirestore, useFirestoreDocData, useUser } from 'reactfire';
 import {
   faBookOpen,
   faCheckCircle,
@@ -45,10 +45,6 @@ const Detail = ({ title, value }) => (
 );
 
 const Lesson = ({ dbCourse, data, course, lesson }) => {
-  const navigate = useNavigate();
-
-  const SIDEBAR_WIDTH = 360;
-
   const {
     course: { title: courseTitle, lessons },
     title,
@@ -61,8 +57,43 @@ const Lesson = ({ dbCourse, data, course, lesson }) => {
     concepts,
   } = data;
 
+  // *-----*
+  // PERMISSIONS LOGIC: We need to check if they're allowed to view this lesson or navigate them away.
+  // *-----*
+
+  // Have the ability to navigate away if the lesson is unavailable
+  const navigate = useNavigate();
+
+  // Track whether or not the lesson is available, as well as whether or not the DB has already been updated with the user's progress
+  const [isAvailable, setIsAvailable] = useState(null);
+
+  // First, we want to check if the course is even available to this user (given their progress)
+  useEffect(() => {
+    if (isAvailable === null) {
+      setIsAvailable(isLessonAvailable(dbCourse, lessons, lesson));
+    }
+  }, [dbCourse, lessons, lesson, isAvailable]);
+
+  // If it's not available, let's redirect them back to their last completed lesson
+  useEffect(() => {
+    if (!isAvailable && isAvailable !== null) {
+      const lastCompletedLesson = getLastCompletedLesson(dbCourse, lessons);
+
+      navigate(`/courses/${course}/${lastCompletedLesson.lesson}`);
+    }
+  }, [course, dbCourse, isAvailable, lessons, navigate]);
+
+  // *-----*
+  // COMPONENT LOGIC: Assuming all that permissions logic is done...
+  // *-----*
+
+  // Set the width of the sidebar
+  const SIDEBAR_WIDTH = 360;
+
+  // Get the lesson's number
   const lessonNum = getLessonNumber(lessons, lesson);
 
+  // Define the left-side drawer sections for the <CourseHeader />
   const leftDrawerSections = [
     {
       title: 'Lessons',
@@ -88,14 +119,6 @@ const Lesson = ({ dbCourse, data, course, lesson }) => {
       fields: resources ? resources : [],
     },
   ];
-
-  useEffect(() => {
-    if (!isLessonAvailable(dbCourse, lessons, lesson)) {
-      const lastCompletedLesson = getLastCompletedLesson(dbCourse, lessons);
-
-      navigate(`/courses/${course}/${lastCompletedLesson.lesson}`);
-    }
-  }, [navigate, dbCourse, lessons, course, lesson]);
 
   return (
     <Page title={`${courseTitle} - ${title}`} description={description}>
@@ -259,7 +282,7 @@ export default () => {
     .doc(user.uid)
     .collection('courses')
     .doc(course);
-  const dbCourse = useFirestoreDocDataOnce(dbCourseRef);
+  const dbCourse = useFirestoreDocData(dbCourseRef);
 
   if (loading) return null;
 

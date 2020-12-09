@@ -88,6 +88,7 @@ const Feedback = ({
             placeholder="Type whatever you'd like..."
             onChange={({ target }) => setFeedback(target.value)}
             resize="none"
+            variant="filled"
             mb={1}
           />
           <Flex justify="flex-end">
@@ -300,7 +301,6 @@ export default ({
               backLink={backLink}
               isNextAvailable={isNextAvailable}
               nextLink={nextLink}
-              setHelpOpen={setHelpOpen}
               current={current}
               total={total}
               onCompleteConcept={onCompleteConcept}

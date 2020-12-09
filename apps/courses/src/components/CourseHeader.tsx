@@ -89,8 +89,8 @@ export default ({
   title,
   course,
   leftDrawerSections,
-  noShadow,
-  noTitle,
+  noShadow = false,
+  noTitle = false,
 }) => {
   const user = useUser();
   const auth = useAuth();

@@ -31,8 +31,6 @@ const buttonColors = (c) => {
   return { regularFill, hoverFill, activeFill, color };
 };
 
-const mono = `"Fira Code", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`;
-
 export default extendTheme({
   styles: {
     global: {
@@ -43,11 +41,6 @@ export default extendTheme({
         outline: 'none !important',
         boxShadow: 'none !important',
       },
-      'pre, code': {
-        textShadow: 'none !important',
-        fontFamily: `${mono} !important`,
-      },
-      'code .token': { background: 'none !important' },
       '.chakra-progress[variant="controlled-motion"] .chakra-progress__indicator': {
         transition: 'none',
       },
@@ -195,7 +188,7 @@ export default extendTheme({
   fonts: {
     heading: `"Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
     body: `"Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
-    mono,
+    mono: `"Fira Code", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`,
   },
   fontSizes: {
     xs: '0.75rem',
@@ -230,6 +223,48 @@ export default extendTheme({
     header: '5rem',
   },
   components: {
+    Accordion: {
+      variants: {
+        boxed: (props) => {
+          
+          const { colorScheme: c } = props
+
+          return {
+            container: {
+              border: 'none',
+              my: 4,
+            },
+            button: {
+              px: 6,
+              py: 4,
+              borderRadius: 'md',
+              borderColor: `${c}.50`,
+              color: `${c}.500`,
+              fontFamily: 'heading',
+              backgroundColor: `${c}.50`,
+              _hover: {
+                backgroundColor: `${c}.50`,
+              },
+              _disabled: {
+                backgroundColor: 'gray.200',
+                color: 'gray.500',
+                opacity: 1,
+              },
+              _expanded: {
+                borderBottomRadius: 0,
+              },
+            },
+            panel: {
+              py: 6,
+              px: 8,
+              borderWidth: 1,
+              borderColor: `${c}.50`,
+              borderBottomRadius: 5,
+            },
+          };
+        },
+      },
+    },
     Button: {
       baseStyle: {
         fontFamily: 'heading',

@@ -10,6 +10,7 @@ const Profile = lazy(() => import('./users/profile'));
 const CoursesSearch = lazy(() => import('./courses/search'));
 const CourseOverview = lazy(() => import('./courses/overview'));
 const CourseProject = lazy(() => import('./courses/project'));
+const ProjectPart = lazy(() => import('./courses/project/part'));
 const CourseLesson = lazy(() => import('./courses/lesson'));
 const CourseLessonComplete = lazy(() => import('./courses/lesson-complete'));
 const CourseConcept = lazy(() => import('./courses/concept'));
@@ -42,7 +43,10 @@ export default () => (
       <Route path="/" element={<CoursesSearch />} />
       <Route path=":course">
         <Route path="/" element={<CourseOverview />} />
-        <AuthRoute path="project" element={<CourseProject />} />
+        <AuthRoute path="project">
+          <AuthRoute path="/" element={<CourseProject />} />
+          <AuthRoute path=":part" element={<ProjectPart />}/>
+        </AuthRoute>
         <AuthRoute path=":lesson">
           <AuthRoute path="/" element={<CourseLesson />} />
           <AuthRoute path="complete" element={<CourseLessonComplete />} />

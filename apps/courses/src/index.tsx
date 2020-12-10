@@ -39,8 +39,8 @@ const firebaseConfig =
       };
 
 const sanityConfig = {
-  projectId: process.env.NX_SANITY_PROJECT_ID,
-  dataset: process.env.NX_SANITY_DATASET,
+  projectId: process.env.NX_SANITY_COURSES_PROJECT_ID,
+  dataset: process.env.NX_SANITY_COURSES_DATASET,
   useCdn: true,
 };
 

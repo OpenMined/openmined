@@ -146,7 +146,7 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
         let url = `/courses/${course}/${suggestedPage.lesson}`;
         if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
 
-        // window.location.href = url;
+        window.location.href = url;
       }
     }
   }, [user, ls, course, l, c, status]);

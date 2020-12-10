@@ -25,11 +25,18 @@ const Content = ({
 }) =>
   content.map(({ _type, ...item }, i) => {
     if (_type === 'code') {
-      return <Code key={i} spacing={SPACING} {...item} />;
+      return (
+        <Code
+          key={i}
+          spacing={SPACING}
+          language={item.language}
+          code={item.code}
+        />
+      );
     } else if (_type === 'divider') {
       return <Divider key={i} spacing={SPACING} {...item} />;
     } else if (_type === 'math') {
-      return <Formula key={i} spacing={SPACING} {...item} />;
+      return <Formula key={i} spacing={SPACING} math={item.math} />;
     } else if (_type === 'image') {
       return <Image key={i} spacing={SPACING} {...item} />;
     } else if (_type === 'quiz') {
@@ -37,7 +44,7 @@ const Content = ({
         <Quiz
           key={i}
           spacing={SPACING}
-          {...item}
+          quiz={item.quiz}
           course={course}
           lesson={lesson}
           concept={concept}
@@ -47,11 +54,11 @@ const Content = ({
         />
       );
     } else if (_type === 'tasks') {
-      return <Tasks key={i} spacing={SPACING} {...item} />;
+      return <Tasks key={i} spacing={SPACING} tasks={item.tasks} />;
     } else if (_type === 'richText') {
-      return <RichText key={i} spacing={SPACING} {...item} />;
+      return <RichText key={i} spacing={SPACING} richText={item.richText} />;
     } else if (_type === 'video') {
-      return <Video key={i} spacing={SPACING} {...item} />;
+      return <Video key={i} spacing={SPACING} video={item.video} />;
     }
 
     return null;

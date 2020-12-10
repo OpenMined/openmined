@@ -15,6 +15,7 @@ import {
   Heading,
   Image,
   useDisclosure,
+  AvatarProps,
 } from '@chakra-ui/core';
 import {
   useAuth,
@@ -41,11 +42,12 @@ import CourseDrawer from './CourseDrawer';
 
 import { handleErrors } from '../helpers';
 import logo from '../assets/logo.svg';
+import firebaseUser from '../interfaces/firebaseUser';
 
 interface LinkProps {
   title: string;
   type: string;
-  element?: React.ReactNode;
+  element?: React.ReactElement;
   auth?: boolean;
   unauth?: boolean;
   to?: string;
@@ -92,19 +94,21 @@ export default ({
   noShadow = false,
   noTitle = false,
 }) => {
-  const user = useUser();
+  const user = useUser<firebaseUser>();
   const auth = useAuth();
   const db = useFirestore();
   const toast = useToast();
 
-  const userAvatar = forwardRef((props, ref) => {
-    const dbUserRef = db.collection('users').doc(user.uid);
-    const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+  const userAvatar = forwardRef(
+    (props: AvatarProps, ref: React.RefObject<HTMLSpanElement>) => {
+      const dbUserRef = db.collection('users').doc(user.uid);
+      const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
 
-    return (
-      <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
-    );
-  });
+      return (
+        <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
+      );
+    }
+  );
 
   const {
     isOpen: isLeftDrawerOpen,

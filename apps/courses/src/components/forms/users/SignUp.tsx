@@ -30,6 +30,7 @@ import {
   passwordField,
   passwordConfirmField,
 } from '../_fields';
+import firebaseUserCredentialInterface from '../../../interfaces/firebaseUserCredential';
 
 import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
@@ -155,7 +156,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
       });
 
   const onGithubSubmit = async () => {
-    const authUser = await auth
+    const authUser = (await auth
       .signInWithPopup(githubProvider)
       .catch((error) => {
         // In the event that an account with this email already exists (because they signed up with email)
@@ -174,7 +175,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         } else {
           handleErrors(toast, error);
         }
-      });
+      })) as firebaseUserCredentialInterface;
 
     // If we're creating an account for the first time, we need to store some information about the user
     if (authUser) {

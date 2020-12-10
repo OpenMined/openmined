@@ -8,6 +8,7 @@ import Page from '@openmined/shared/util-page';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 
 import CourseContent from './content';
+import firebaseUser from '../../../interfaces/firebaseUser';
 
 import {
   getConceptIndex,
@@ -275,7 +276,7 @@ export default () => {
   );
 
   // Get the current user and the course object (dbCourse) for this particular course
-  const user = useUser();
+  const user = useUser<firebaseUser>();
   const db = useFirestore();
   const dbCourseRef = db
     .collection('users')

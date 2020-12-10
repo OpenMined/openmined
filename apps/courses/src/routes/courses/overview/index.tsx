@@ -26,6 +26,7 @@ import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
+import IconPropsWithSize from '../../../interfaces/iconProps';
 
 // TODO: On the course overview page, make sure the "walk away being able to" items have images for icons instead of Font Awesome icons
 // TODO: On the course overview page, make sure to have the project show up at the end in the syllabus
@@ -106,7 +107,7 @@ export default () => {
   };
 
   const prepareLessonContent = (description, concepts) => {
-    const iconProps = {
+    const iconProps: IconPropsWithSize = {
       as: FontAwesomeIcon,
       size: 'lg',
       mr: 2,

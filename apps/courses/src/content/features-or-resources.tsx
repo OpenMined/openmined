@@ -13,8 +13,9 @@ import realWorld from '../assets/homepage/real-world.svg';
 import instructors from '../assets/homepage/instructors.svg';
 import like from '../assets/homepage/like.svg';
 import technicalMentor from '../assets/homepage/technical-mentor.svg';
+import featuresOrResources from '../interfaces/featuresOrResources';
 
-export const features = {
+export const features: featuresOrResources = {
   title: 'Course Features',
   icon: star,
   list: [
@@ -45,7 +46,7 @@ export const features = {
   ],
 };
 
-export const resources = {
+export const resources: featuresOrResources = {
   title: 'Community Resources',
   icon: star,
   list: [

@@ -19,6 +19,7 @@ import { useAuth, useFirestore, useUser } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import firebaseUserCredentialInterface from '../../../interfaces/firebaseUserCredential';
 
 import Form from '../_form';
 import { validEmail } from '../_validation';
@@ -107,7 +108,7 @@ export default ({
   const onLinkGithub = () =>
     auth.currentUser
       .linkWithPopup(githubProvider)
-      .then((authUser) => {
+      .then((authUser: firebaseUserCredentialInterface) => {
         const batch = db.batch();
         const userDoc = db.collection('users').doc(auth.currentUser.uid);
         const userPrivateDoc = userDoc

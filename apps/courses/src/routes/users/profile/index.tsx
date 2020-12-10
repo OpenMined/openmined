@@ -26,6 +26,7 @@ import {
 import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 import GridContainer from '../../../components/GridContainer';
+import firebaseUser from '../../../interfaces/firebaseUser';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
@@ -81,7 +82,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
 
 export default () => {
   const gray50 = useToken('colors', 'gray.50');
-  const user = useUser();
+  const user = useUser<firebaseUser>();
   const db = useFirestore();
   const { uid } = useParams();
 

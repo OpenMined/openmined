@@ -33,6 +33,7 @@ import {
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import CourseHeader from '../../../components/CourseHeader';
+import firebaseUser from '../../../interfaces/firebaseUser';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
@@ -284,7 +285,7 @@ export default () => {
     }[0]`
   );
 
-  const user = useUser();
+  const user = useUser<firebaseUser>();
   const db = useFirestore();
   const dbCourseRef = db
     .collection('users')

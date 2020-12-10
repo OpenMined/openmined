@@ -15,6 +15,7 @@ import {
   MenuItem,
   Text,
   MenuDivider,
+  AvatarProps,
 } from '@chakra-ui/core';
 import {
   useAuth,
@@ -36,6 +37,7 @@ import {
 import { User } from '@openmined/shared/types';
 
 import GridContainer from './GridContainer';
+import firebaseUser from '../interfaces/firebaseUser';
 
 import logo from '../assets/logo.svg';
 import { handleErrors } from '../helpers';
@@ -43,7 +45,7 @@ import { handleErrors } from '../helpers';
 interface LinkProps {
   title: string;
   type: string;
-  element?: React.ReactNode;
+  element?: React.ReactElement;
   auth?: boolean;
   unauth?: boolean;
   to?: string;
@@ -109,7 +111,7 @@ const createLinks = (
 };
 
 export default () => {
-  const user = useUser();
+  const user = useUser<firebaseUser>();
   const auth = useAuth();
   const db = useFirestore();
   const toast = useToast();
@@ -125,14 +127,16 @@ export default () => {
     else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
   }, [scrollY, isScrolled]);
 
-  const userAvatar = forwardRef((props, ref) => {
-    const dbUserRef = db.collection('users').doc(user.uid);
-    const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+  const userAvatar = forwardRef(
+    (props: AvatarProps, ref: React.RefObject<HTMLSpanElement>) => {
+      const dbUserRef = db.collection('users').doc(user.uid);
+      const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
 
-    return (
-      <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
-    );
-  });
+      return (
+        <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
+      );
+    }
+  );
 
   // TODO: Patrick, these are the links we will have until this website goes live
   let LEFT_LINKS: LinkProps[], RIGHT_LINKS: LinkProps[];

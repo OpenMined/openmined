@@ -65,7 +65,7 @@ export default ({ which }) => {
         </Box>
         <SimpleGrid columns={[1, null, 2]} spacing={[8, null, null, 16]}>
           {list.map((item, i) => (
-            <Feature key={i} {...item} />
+            <Feature key={i} link={undefined} {...item} />
           ))}
         </SimpleGrid>
       </SimpleGrid>

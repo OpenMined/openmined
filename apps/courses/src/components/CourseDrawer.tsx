@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as RRDLink } from 'react-router-dom';
+import { Link as RRDLink, LinkProps } from 'react-router-dom';
 import {
   Accordion,
   AccordionButton,
@@ -100,7 +100,15 @@ const DrawerItem = ({
                 </Link>
               );
             } else {
-              const linkProps = link
+              const linkProps: {
+                as?: React.ForwardRefExoticComponent<
+                  LinkProps & React.RefAttributes<HTMLAnchorElement>
+                >;
+                to?: string;
+                onClick?: any;
+                userSelect?: 'none';
+                color?: string;
+              } = link
                 ? {
                     as: RRDLink,
                     to: link,

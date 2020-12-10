@@ -25,6 +25,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 import Page from '@openmined/shared/util-page';
+import firebaseUser from '../../../interfaces/firebaseUser';
 
 import {
   getLessonIndex,
@@ -354,7 +355,7 @@ export default () => {
   );
 
   // Get the current user and the course object (dbCourse) for this particular course
-  const user = useUser();
+  const user = useUser<firebaseUser>();
   const db = useFirestore();
   const dbCourseRef = db
     .collection('users')

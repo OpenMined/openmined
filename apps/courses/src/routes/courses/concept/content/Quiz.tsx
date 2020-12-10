@@ -13,6 +13,7 @@ import { useFirestore, useUser } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons';
+import firebaseUser from '../../../../interfaces/firebaseUser';
 
 const FinishedBox = ({ correct, total }) => (
   <Box bg="gray.100" borderRadius="md" p={8}>
@@ -281,7 +282,7 @@ export default ({
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  const user = useUser();
+  const user = useUser<firebaseUser>();
   const db = useFirestore();
 
   const arrayUnion = useFirestore.FieldValue.arrayUnion;

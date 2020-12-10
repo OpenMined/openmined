@@ -1,11 +1,6 @@
 import React from 'react';
-import { useParams, Link as RRDLink } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Badge,
   Box,
   Button,
@@ -22,15 +17,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
   faCommentAlt,
-  faLock,
-  faLockOpen,
   faPen,
 } from '@fortawesome/free-solid-svg-icons';
-import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
 import Page from '@openmined/shared/util-page';
 
 import GridContainer from '../../../components/GridContainer';
 import CourseHeader from '../../../components/CourseHeader';
+import StatusAccordion from '../../../components/StatusAccordion';
 
 const content = {
   course_name: 'Privacy & Society',
@@ -128,66 +121,6 @@ const ProjectStatusBadge = ({ status }) => {
   );
 };
 
-const ProjectPart = ({ content, course, project_part, ...props }) => {
-  const { title, status, description, attempts, max_attempts } = content;
-
-  const statuses = {
-    locked: {
-      icon: faLock,
-      color: 'gray',
-    },
-    unlocked: {
-      icon: faLockOpen,
-      color: 'magenta',
-    },
-    passed: {
-      icon: faCheckCircle,
-      color: 'green',
-    },
-    failed: {
-      icon: faTimesCircle,
-      color: 'red',
-    },
-  };
-
-  const { icon, color } = statuses[status];
-
-  const accordionButtonProps = {
-    bgColor: `${color}.50`,
-    color: `${color}.500`,
-    _hover: {
-      bgColor: `${color}.50`,
-    },
-  };
-
-  return (
-    <AccordionItem isDisabled={status === 'locked'} {...props}>
-      <AccordionButton {...accordionButtonProps}>
-        <Box flex="1" textAlign="left">
-          <Icon size="lg" mr={2} as={FontAwesomeIcon} icon={icon} />
-          {title}
-        </Box>
-        <AccordionIcon />
-      </AccordionButton>
-      <AccordionPanel borderColor={`${color}.50`} color="gray.700" pb={4}>
-        <Box {...props}>
-          <Text>{description}</Text>
-        </Box>
-        <Flex mt={8} align="center">
-          <Button
-            as={RRDLink}
-            to={`/courses/${course}/project/${project_part}`}
-            colorScheme="black"
-          >
-            Begin
-          </Button>
-          <Text ml={4} as="i">{`${attempts}/${max_attempts} attempts`}</Text>
-        </Flex>
-      </AccordionPanel>
-    </AccordionItem>
-  );
-};
-
 export default () => {
   const SIDEBAR_WIDTH = 360;
 
@@ -208,8 +141,7 @@ export default () => {
   } = content;
 
   return (
-    <Page title={'Title'}>
-      {/* @ts-ignore */}
+    <Page title={title} description={description}>
       <CourseHeader
         subtitle="Project"
         title={title}
@@ -243,21 +175,7 @@ export default () => {
                 <ListItem key={goal}>{goal}</ListItem>
               ))}
             </UnorderedList>
-            <Accordion
-              colorScheme="magenta"
-              variant="boxed"
-              allowMultiple
-              mt={8}
-            >
-              {parts.map((part) => (
-                <ProjectPart
-                  course={course}
-                  project_part="part-01"
-                  key={part.title}
-                  content={part}
-                />
-              ))}
-            </Accordion>
+            <StatusAccordion course={course} parts={parts} />
             <Button mt={4} disabled colorScheme="magenta">
               Finish
             </Button>

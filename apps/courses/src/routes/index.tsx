@@ -7,13 +7,7 @@ const Signup = lazy(() => import('./users/sign-up'));
 const Signin = lazy(() => import('./users/sign-in'));
 const Settings = lazy(() => import('./users/settings'));
 const Profile = lazy(() => import('./users/profile'));
-const CoursesSearch = lazy(() => import('./courses/search'));
-const CourseOverview = lazy(() => import('./courses/overview'));
-const CourseProject = lazy(() => import('./courses/project'));
-const ProjectPart = lazy(() => import('./courses/project/part'));
-const CourseLesson = lazy(() => import('./courses/lesson'));
-const CourseLessonComplete = lazy(() => import('./courses/lesson-complete'));
-const CourseConcept = lazy(() => import('./courses/concept'));
+const CoursePage = lazy(() => import('./courses'));
 const PolicyAndTerms = lazy(() => import('./policy-and-terms'));
 const NoMatch = lazy(() => import('./no-match'));
 
@@ -40,17 +34,17 @@ export default () => (
       <Route path=":uid" element={<Profile />} />
     </Route>
     <Route path="courses">
-      <Route path="/" element={<CoursesSearch />} />
+      <Route path="/" element={<CoursePage which="search" />} />
       <Route path=":course">
-        <Route path="/" element={<CourseOverview />} />
-        <AuthRoute path="project">
-          <AuthRoute path="/" element={<CourseProject />} />
-          <AuthRoute path=":part" element={<ProjectPart />}/>
-        </AuthRoute>
+        <Route path="/" element={<CoursePage which="overview" />} />
+        <AuthRoute path="project" element={<CoursePage which="project" />} />
         <AuthRoute path=":lesson">
-          <AuthRoute path="/" element={<CourseLesson />} />
-          <AuthRoute path="complete" element={<CourseLessonComplete />} />
-          <AuthRoute path=":concept" element={<CourseConcept />} />
+          <AuthRoute path="/" element={<CoursePage which="lesson" />} />
+          <AuthRoute
+            path="complete"
+            element={<CoursePage which="lesson-complete" />}
+          />
+          <AuthRoute path=":concept" element={<CoursePage which="concept" />} />
         </AuthRoute>
       </Route>
     </Route>

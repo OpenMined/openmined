@@ -15,9 +15,8 @@ import {
   Text,
   UnorderedList,
 } from '@chakra-ui/core';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Page from '@openmined/shared/util-page';
-import { useSanity } from '@openmined/shared/data-access-sanity';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -69,34 +68,8 @@ const LearnFrom = ({ image, name, credential }) => (
   </Flex>
 );
 
-export default () => {
-  const { course } = useParams();
-  const { data, loading } = useSanity(
-    `*[_type == "course" && slug.current == "${course}"] {
-      ...,
-      "slug": slug.current,
-      visual {
-        "default": default.asset -> url,
-        "full": full.asset -> url
-      },
-      learnFrom[] -> {
-        ...,
-        "image": image.asset -> url
-      },
-      lessons[] -> {
-        _id,
-        title,
-        description,
-        concepts[] -> {
-          title
-        }
-      }
-    }[0]`
-  );
-
+export default ({ course, page }) => {
   const [indexes, setIndexes] = useState([]);
-
-  if (loading) return null;
 
   const toggleAccordionItem = (index) => {
     const isActive = indexes.includes(index);
@@ -136,16 +109,6 @@ export default () => {
     );
   };
 
-  const lessons = data.lessons
-    ? data.lessons.map(({ title, description, concepts }) => ({
-        title,
-        content: prepareLessonContent(description, concepts),
-      }))
-    : [];
-
-  // TODO: Patrick, fill this variable in with the appropriate value
-  const isTakingCourse = false;
-
   const {
     title,
     description,
@@ -156,10 +119,22 @@ export default () => {
     length,
     certification,
     learnFrom,
-  } = data;
+  } = page;
+
+  const lessons = page.lessons
+    ? page.lessons.map(({ title, description, concepts }) => ({
+        title,
+        content: prepareLessonContent(description, concepts),
+      }))
+    : [];
+
+  const courseStartLink = `/courses/${course}/${page.lessons[0]._id}`;
+
+  // TODO: Patrick, fill this variable in with the appropriate value
+  const isTakingCourse = false;
 
   return (
-    <Page title={data.title} description={data.description}>
+    <Page title={title} description={description}>
       <Box
         position="relative"
         _before={{
@@ -214,7 +189,7 @@ export default () => {
                   colorScheme="blue"
                   size="lg"
                   as={Link}
-                  to={`/courses/${course}/${data.lessons[0]._id}`}
+                  to={courseStartLink}
                 >
                   Start Course
                 </Button>
@@ -281,7 +256,7 @@ export default () => {
               colorScheme="black"
               size="lg"
               as={Link}
-              to={`/courses/${course}/${data.lessons[0]._id}`}
+              to={courseStartLink}
             >
               Start Course
             </Button>

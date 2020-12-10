@@ -23,14 +23,12 @@ import {
   faLink,
   faShapes,
 } from '@fortawesome/free-solid-svg-icons';
-import { useSanity } from '@openmined/shared/data-access-sanity';
 import Page from '@openmined/shared/util-page';
 
 import {
   getLessonIndex,
   hasCompletedLesson,
   hasStartedLesson,
-  usePageAvailabilityRedirect,
 } from '../_helpers';
 import useToast, { toastConfig } from '../../../components/Toast';
 import CourseHeader from '../../../components/CourseHeader';
@@ -48,25 +46,15 @@ const DetailLink = ({ icon, children, ...props }) => (
   </Box>
 );
 
-const LessonComplete = ({ dbCourse, data, user, db, ts, course, lesson }) => {
-  // Destructure our data object for easier use
+export default ({ progress, page, user, ts, course, lesson }) => {
+  const db = useFirestore();
+
   const {
     course: { lessons },
     resources,
     title,
     description,
-  } = data;
-
-  // *-----*
-  // PERMISSIONS LOGIC: We need to check if they're allowed to view this lesson completion page or navigate them away.
-  // *-----*
-
-  // Check whether or not we're able to see this page
-  usePageAvailabilityRedirect(dbCourse, lessons, course, lesson, 'complete');
-
-  // *-----*
-  // COMPONENT LOGIC: Assuming all that permissions logic is done...
-  // *-----*
+  } = page;
 
   // Be able to push a toast message
   const toast = useToast();
@@ -87,7 +75,7 @@ const LessonComplete = ({ dbCourse, data, user, db, ts, course, lesson }) => {
   const onCompleteLesson = () =>
     new Promise((resolve, reject) => {
       // If we haven't already completed this lesson...
-      if (!hasCompletedLesson(dbCourse, lesson)) {
+      if (!hasCompletedLesson(progress, lesson)) {
         // Tell the DB we've done so
         db.collection('users')
           .doc(user.uid)
@@ -128,8 +116,8 @@ const LessonComplete = ({ dbCourse, data, user, db, ts, course, lesson }) => {
       fields: lessons.map(({ _id, title }, index) => {
         let status = 'unavailable';
 
-        if (hasStartedLesson(dbCourse, _id)) {
-          if (hasCompletedLesson(dbCourse, _id)) status = 'completed';
+        if (hasStartedLesson(progress, _id)) {
+          if (hasCompletedLesson(progress, _id)) status = 'completed';
           else status = 'available';
         } else if (index === 0) status = 'available';
 
@@ -331,54 +319,5 @@ const LessonComplete = ({ dbCourse, data, user, db, ts, course, lesson }) => {
         </GridContainer>
       </Box>
     </Page>
-  );
-};
-
-export default () => {
-  // Get our data from the CMS
-  const { course, lesson } = useParams();
-  const { data, loading } = useSanity(
-    `*[_type == "lesson" && _id == "${lesson}"] {
-      title,
-      description,
-      resources,
-      "course": *[_type == "course" && references(^._id)][0] {
-        title,
-        "lessons": lessons[] -> {
-          _id,
-          title,
-          "concepts": concepts[] -> { _id }
-        }
-      }
-    }[0]`
-  );
-
-  // Get the current user and the course object (dbCourse) for this particular course
-  const user = useUser();
-  const db = useFirestore();
-  const dbCourseRef = db
-    .collection('users')
-    .doc(user.uid)
-    .collection('courses')
-    .doc(course);
-  const dbCourse = useFirestoreDocDataOnce(dbCourseRef);
-
-  // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
-  // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
-  const serverTimestamp = useFirestore.FieldValue.serverTimestamp;
-
-  // If the data from the CMS is still loading, render nothing
-  if (loading) return null;
-
-  return (
-    <LessonComplete
-      dbCourse={dbCourse}
-      data={data}
-      user={user}
-      db={db}
-      ts={serverTimestamp}
-      course={course}
-      lesson={lesson}
-    />
   );
 };

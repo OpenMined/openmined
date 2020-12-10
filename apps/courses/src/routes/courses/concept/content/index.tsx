@@ -19,7 +19,7 @@ const Content = ({
   course,
   lesson,
   concept,
-  dbCourse,
+  progress,
   onQuizComplete,
   numQuizzesOnConcept,
 }) =>
@@ -41,7 +41,7 @@ const Content = ({
           course={course}
           lesson={lesson}
           concept={concept}
-          dbCourse={dbCourse}
+          progress={progress}
           numQuizzes={numQuizzesOnConcept}
           onComplete={onQuizComplete}
         />
@@ -58,19 +58,18 @@ const Content = ({
   });
 
 export default ({
-  data,
-  dbCourse,
+  page,
+  progress,
   course,
   lesson,
   concept,
   conceptNum,
   setCompletedQuizzes,
 }) => {
-  // Destructure the data for easier access
   const {
     concept: { title, content },
     title: lessonTitle,
-  } = data;
+  } = page;
 
   // We need to track how many quizzes have been completed by the user
   const [numQuizzesOnConcept, setNumQuizzesOnConcept] = useState(null);
@@ -130,7 +129,7 @@ export default ({
             course={course}
             lesson={lesson}
             concept={concept}
-            dbCourse={dbCourse}
+            progress={progress}
             onQuizComplete={onQuizComplete}
             numQuizzesOnConcept={numQuizzesOnConcept}
           />

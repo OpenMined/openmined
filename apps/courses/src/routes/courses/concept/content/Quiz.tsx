@@ -271,7 +271,7 @@ export default ({
   course,
   lesson,
   concept,
-  dbCourse,
+  progress,
   numQuizzes,
   spacing,
   onComplete,
@@ -289,8 +289,8 @@ export default ({
   const onFinish = () => {
     onComplete();
 
-    const numQuizzesInDb = dbCourse.lessons[lesson].concepts[concept].quizzes
-      ? dbCourse.lessons[lesson].concepts[concept].quizzes.length
+    const numQuizzesInDb = progress.lessons[lesson].concepts[concept].quizzes
+      ? progress.lessons[lesson].concepts[concept].quizzes.length
       : 0;
 
     if (numQuizzesInDb < numQuizzes) {

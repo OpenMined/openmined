@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Box, SimpleGrid, Input, Text, useToken } from '@chakra-ui/core';
-
 import Fuse from 'fuse.js';
-
-import { useSanity } from '@openmined/shared/data-access-sanity';
 import Page from '@openmined/shared/util-page';
 
 import Sidebar from './Sidebar';
@@ -11,7 +8,7 @@ import Sidebar from './Sidebar';
 import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
 
-export default () => {
+export default ({ page }) => {
   const gray50 = useToken('colors', 'gray.50');
 
   const FIXED_SIDEBAR_WIDTH = 250;
@@ -45,21 +42,6 @@ export default () => {
     },
   ];
 
-  const { data, loading } = useSanity(
-    `*[_type == "course"] {
-      title,
-      description,
-      level,
-      length,
-      cost,
-      "slug": slug.current,
-      visual {
-        "default": default.asset -> url,
-        "full": full.asset -> url
-      },
-    }`
-  );
-
   const courseFilter = (course) => {
     const NO_FILTER = true;
 
@@ -83,15 +65,15 @@ export default () => {
     data ? data.filter((course) => courseFilter(course)) : [];
 
   useEffect(() => {
-    setSearchData(filterData(data));
-  }, [data, filterData]);
+    setSearchData(filterData(page));
+  }, [page, filterData]);
 
   const searchItem = (query) => {
     if (!query) {
-      setSearchData(filterData(data));
+      setSearchData(filterData(page));
       return;
     }
-    const fuse = new Fuse(filterData(data), {
+    const fuse = new Fuse(filterData(page), {
       keys: ['title', 'description'],
     });
     const result = fuse.search(query);
@@ -111,8 +93,6 @@ export default () => {
     setTopics([]);
     setLanguages([]);
   };
-
-  if (loading) return null;
 
   return (
     <Page title="Courses" body={{ style: `background: ${gray50};` }}>

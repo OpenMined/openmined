@@ -1,6 +1,6 @@
 import React from 'react';
-import { useParams, Link as RRDLink } from 'react-router-dom';
-import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
+import { Link as RRDLink } from 'react-router-dom';
+import { useFirestore } from 'reactfire';
 import {
   faBookOpen,
   faCheckCircle,
@@ -21,7 +21,6 @@ import {
   UnorderedList,
 } from '@chakra-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useSanity } from '@openmined/shared/data-access-sanity';
 import Page from '@openmined/shared/util-page';
 
 import {
@@ -29,7 +28,6 @@ import {
   hasCompletedLesson,
   hasStartedCourse,
   hasStartedLesson,
-  usePageAvailabilityRedirect,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import CourseHeader from '../../../components/CourseHeader';
@@ -44,7 +42,9 @@ const Detail = ({ title, value }) => (
   </Flex>
 );
 
-const Lesson = ({ dbCourse, data, user, db, ts, course, lesson }) => {
+export default ({ page, progress, user, ts, course, lesson }) => {
+  const db = useFirestore();
+
   const {
     course: { title: courseTitle, lessons },
     title,
@@ -55,18 +55,7 @@ const Lesson = ({ dbCourse, data, user, db, ts, course, lesson }) => {
     learnHow,
     length,
     conceptsCount,
-  } = data;
-
-  // *-----*
-  // PERMISSIONS LOGIC: We need to check if they're allowed to view this lesson or navigate them away.
-  // *-----*
-
-  // Check whether or not we're able to see this page
-  usePageAvailabilityRedirect(dbCourse, lessons, course, lesson);
-
-  // *-----*
-  // COMPONENT LOGIC: Assuming all that permissions logic is done...
-  // *-----*
+  } = page;
 
   // Set the width of the sidebar
   const SIDEBAR_WIDTH = 360;
@@ -82,8 +71,8 @@ const Lesson = ({ dbCourse, data, user, db, ts, course, lesson }) => {
       fields: lessons.map(({ _id, title }, index) => {
         let status = 'unavailable';
 
-        if (hasStartedLesson(dbCourse, _id)) {
-          if (hasCompletedLesson(dbCourse, _id)) status = 'completed';
+        if (hasStartedLesson(progress, _id)) {
+          if (hasCompletedLesson(progress, _id)) status = 'completed';
           else status = 'available';
         } else if (index === 0) status = 'available';
 
@@ -102,10 +91,10 @@ const Lesson = ({ dbCourse, data, user, db, ts, course, lesson }) => {
   ];
 
   const onLessonStart = () => {
-    const isCourseStarted = hasStartedCourse(dbCourse);
-    const isLessonStarted = hasStartedLesson(dbCourse, lesson);
+    const isCourseStarted = hasStartedCourse(progress);
+    const isLessonStarted = hasStartedLesson(progress, lesson);
 
-    const data = dbCourse;
+    const data = progress;
 
     // Append the course data structure
     if (!isCourseStarted) {
@@ -259,55 +248,5 @@ const Lesson = ({ dbCourse, data, user, db, ts, course, lesson }) => {
         </Flex>
       </GridContainer>
     </Page>
-  );
-};
-
-export default () => {
-  const { course, lesson } = useParams();
-  const { data, loading } = useSanity(
-    `*[_type == "lesson" && _id == "${lesson}"] {
-      ...,
-      learnFrom[] -> {
-        ...,
-        "image": image.asset -> url
-      },
-      "firstConcept": concepts[0]._ref,
-      "conceptsCount": count(concepts),
-      "course": *[_type == "course" && references(^._id) ][0] {
-        title,
-        "lessons": lessons[] -> {
-          _id,
-          title,
-          "concepts": concepts[] -> { _id }
-        }
-      }
-    }[0]`
-  );
-
-  const user = useUser();
-  const db = useFirestore();
-  const dbCourseRef = db
-    .collection('users')
-    .doc(user.uid)
-    .collection('courses')
-    .doc(course);
-  const dbCourse = useFirestoreDocDataOnce(dbCourseRef);
-
-  // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
-  // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
-  const serverTimestamp = useFirestore.FieldValue.serverTimestamp;
-
-  if (loading) return null;
-
-  return (
-    <Lesson
-      dbCourse={dbCourse}
-      data={data}
-      user={user}
-      db={db}
-      ts={serverTimestamp}
-      course={course}
-      lesson={lesson}
-    />
   );
 };

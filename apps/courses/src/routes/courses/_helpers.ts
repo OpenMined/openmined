@@ -125,7 +125,7 @@ const checkForPrevious = (user, ls, l, c) => {
 export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
   // Set up a status state variable
   const [status, setStatus] = useState(
-    checkForPrevious(user, ls, l, c) ? 'available' : 'loading'
+    checkForPrevious(user, ls, l, c) ? 'previous' : 'loading'
   );
 
   useEffect(() => {

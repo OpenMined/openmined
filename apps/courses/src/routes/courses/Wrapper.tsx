@@ -13,47 +13,54 @@ import {
 
 const genDrawerSections = (
   { type, data },
-  resources = [],
+  resources,
   progress,
   course,
   lesson
-) => [
-  {
-    title: type === 'lessons' ? 'Lessons' : 'Concepts',
-    icon: faBookOpen,
-    fields: data.map(({ _id, title }, index) => {
-      let status = 'unavailable';
+) => {
+  const sections = [
+    {
+      title: type === 'lessons' ? 'Lessons' : 'Concepts',
+      icon: faBookOpen,
+      fields: data.map(({ _id, title }, index) => {
+        let status = 'unavailable';
 
-      if (type === 'lessons') {
-        if (hasCompletedLesson(progress, _id)) {
-          status = 'completed';
-        } else if (hasStartedLesson(progress, _id) || index === 0) {
-          status = 'available';
+        if (type === 'lessons') {
+          if (hasCompletedLesson(progress, _id)) {
+            status = 'completed';
+          } else if (hasStartedLesson(progress, _id) || index === 0) {
+            status = 'available';
+          }
+        } else if (type === 'concepts') {
+          if (hasCompletedConcept(progress, lesson, _id)) {
+            status = 'completed';
+          } else if (hasStartedConcept(progress, lesson, _id) || index === 0) {
+            status = 'available';
+          }
         }
-      } else if (type === 'concepts') {
-        if (hasCompletedConcept(progress, lesson, _id)) {
-          status = 'completed';
-        } else if (hasStartedConcept(progress, lesson, _id) || index === 0) {
-          status = 'available';
-        }
-      }
 
-      const link =
-        status !== 'unavailable'
-          ? type === 'lessons'
-            ? `/courses/${course}/${_id}`
-            : `/courses/${course}/${lesson}/${_id}`
-          : null;
+        const link =
+          status !== 'unavailable'
+            ? type === 'lessons'
+              ? `/courses/${course}/${_id}`
+              : `/courses/${course}/${lesson}/${_id}`
+            : null;
 
-      return { status, title, link };
-    }),
-  },
-  {
-    title: 'Resources',
-    icon: faLink,
-    fields: resources,
-  },
-];
+        return { status, title, link };
+      }),
+    },
+  ];
+
+  if (resources) {
+    sections.push({
+      title: 'Resources',
+      icon: faLink,
+      fields: resources,
+    });
+  }
+
+  return sections;
+};
 
 export default ({ page, header, footer, children }) => {
   const leftDrawerSections =

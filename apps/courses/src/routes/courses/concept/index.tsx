@@ -4,13 +4,13 @@ import { Box } from '@chakra-ui/core';
 import useScrollPosition from '@react-hook/window-scroll';
 
 import CourseContent from './content';
+import CourseFooter from './Footer';
 
 import {
   getConceptIndex,
   hasCompletedConcept,
   hasStartedConcept,
 } from '../_helpers';
-import CourseFooter from './Footer';
 
 export default ({ progress, page, user, ts, course, lesson, concept }) => {
   const db = useFirestore();

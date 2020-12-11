@@ -44,11 +44,6 @@ export default {
       of: [{ type: 'string' }],
     },
     {
-      title: 'Project',
-      name: 'project',
-      type: 'string',
-    },
-    {
       title: 'Color',
       name: 'color',
       type: 'string',
@@ -101,6 +96,87 @@ export default {
       name: 'lessons',
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'lesson' }] }],
+    },
+    {
+      title: 'Project',
+      name: 'project',
+      type: 'object',
+      fields: [
+        {
+          title: 'Title',
+          name: 'title',
+          type: 'string',
+        },
+        {
+          title: 'Description',
+          name: 'description',
+          type: 'text',
+        },
+        {
+          title: 'Goals',
+          name: 'goals',
+          type: 'array',
+          of: [{ type: 'string' }],
+        },
+        {
+          title: 'Needs',
+          name: 'needs',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                {
+                  title: 'Title',
+                  name: 'title',
+                  type: 'string',
+                },
+                {
+                  title: 'Link',
+                  description: 'This is optional',
+                  name: 'link',
+                  type: 'url',
+                },
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Parts',
+          name: 'parts',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                {
+                  title: 'Title',
+                  name: 'title',
+                  type: 'string',
+                },
+                {
+                  title: 'Description',
+                  name: 'description',
+                  type: 'text',
+                },
+                {
+                  title: 'Submission',
+                  name: 'submission',
+                  type: 'string',
+                  options: {
+                    list: [{ title: 'Rich Text', value: 'text' }],
+                  },
+                },
+                {
+                  title: 'Content',
+                  name: 'content',
+                  type: 'content',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
   ],
 };

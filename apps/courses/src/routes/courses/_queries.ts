@@ -36,9 +36,8 @@ export const overview = ({ course }) => `
 
 export const project = ({ course }) => `
 *[_type == "course" && slug.current == "${course}"] {
-  title,
-  description,
-  "lessons": lessons[] -> {
+  ...,
+  lessons[] -> {
     _id,
     title,
     "concepts": concepts[] -> { _id }

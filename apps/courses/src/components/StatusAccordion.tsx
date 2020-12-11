@@ -20,9 +20,9 @@ import {
 import { faTimesCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default ({ parts, course }) => (
+export default ({ content }) => (
   <Accordion colorScheme="magenta" variant="boxed" allowMultiple mt={8}>
-    {parts.map((part) => {
+    {content.map((part) => {
       const {
         title,
         status,
@@ -79,13 +79,7 @@ export default ({ parts, course }) => (
               <Text>{description}</Text>
             </Box>
             <Flex mt={8} align="center">
-              <Button
-                as={Link}
-                to={`/courses/${course}/project`}
-                colorScheme="black"
-              >
-                Begin
-              </Button>
+              <Button colorScheme="black">Begin</Button>
               <Text
                 ml={4}
                 as="i"

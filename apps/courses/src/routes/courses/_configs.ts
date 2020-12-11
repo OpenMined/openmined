@@ -19,7 +19,7 @@ export const overview = ({ page }) => ({
 
 export const project = ({ page, course, lesson, progress }) => ({
   page: {
-    title: `${page.course.title} - ${page.title}`,
+    title: `${page.title} - Final Project`,
     description: page.description,
   },
   header: {
@@ -29,9 +29,8 @@ export const project = ({ page, course, lesson, progress }) => ({
     lesson: lesson,
     sections: {
       type: 'lessons',
-      data: page.course.lessons,
+      data: page.lessons,
     },
-    resources: page.resources,
     progress: progress,
   },
 });
@@ -57,7 +56,7 @@ export const lesson = ({ page, course, lesson, progress }) => ({
 
 export const lessonComplete = ({ page, course, lesson, progress }) => ({
   page: {
-    title: page.title,
+    title: `${page.title} - Complete`,
     description: page.description,
   },
   header: {

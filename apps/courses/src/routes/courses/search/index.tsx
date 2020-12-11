@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Box, SimpleGrid, Input, Text, useToken } from '@chakra-ui/core';
+import { Flex, Box, SimpleGrid, Input, Text } from '@chakra-ui/core';
 import Fuse from 'fuse.js';
-import Page from '@openmined/shared/util-page';
 
 import Sidebar from './Sidebar';
 
@@ -9,8 +8,6 @@ import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
 
 export default ({ page }) => {
-  const gray50 = useToken('colors', 'gray.50');
-
   const FIXED_SIDEBAR_WIDTH = 250;
   const FIXED_SIDEBAR_MD_WIDTH = 200;
 
@@ -95,60 +92,58 @@ export default ({ page }) => {
   };
 
   return (
-    <Page title="Courses" body={{ style: `background: ${gray50};` }}>
-      <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
-        <Flex
-          justifyContent="space-around"
-          flexDirection={['column', 'column', 'row', 'row']}
-        >
-          <Box w={['100%', null, '40%', '30%']} px={[0, null, 8, 16]}>
-            <Box
-              w={[
-                null,
-                null,
-                FIXED_SIDEBAR_WIDTH,
-                FIXED_SIDEBAR_MD_WIDTH,
-                FIXED_SIDEBAR_WIDTH,
-              ]}
-              position={[null, null, 'fixed']}
-            >
-              <Sidebar
-                filters={filters}
-                numCourses={searchData.length}
-                clearFilters={clearFilters}
-              />
-            </Box>
-          </Box>
-          <Box w={['100%', null, '60%', '70%']}>
-            <Input
-              w={['100%', null, null, '70%']}
-              placeholder="Start typing something..."
-              onChange={(e) => searchItem(e.target.value)}
-              size="lg"
-              py={[2, null]}
-              my={4}
+    <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
+      <Flex
+        justifyContent="space-around"
+        flexDirection={['column', 'column', 'row', 'row']}
+      >
+        <Box w={['100%', null, '40%', '30%']} px={[0, null, 8, 16]}>
+          <Box
+            w={[
+              null,
+              null,
+              FIXED_SIDEBAR_WIDTH,
+              FIXED_SIDEBAR_MD_WIDTH,
+              FIXED_SIDEBAR_WIDTH,
+            ]}
+            position={[null, null, 'fixed']}
+          >
+            <Sidebar
+              filters={filters}
+              numCourses={searchData.length}
+              clearFilters={clearFilters}
             />
-            {searchData.length === 0 && (
-              <Box py={4}>
-                <Text fontSize="3xl" px={2} fontWeight="bold">
-                  Sorry, there are no search results for that query
-                </Text>
-              </Box>
-            )}
-            <SimpleGrid
-              py={5}
-              columns={[1, null, 1, 2]}
-              spacing={[4, null, 6]}
-              color="white"
-            >
-              {searchData &&
-                searchData.map((course, i) => (
-                  <Course key={i} content={course} />
-                ))}
-            </SimpleGrid>
           </Box>
-        </Flex>
-      </GridContainer>
-    </Page>
+        </Box>
+        <Box w={['100%', null, '60%', '70%']}>
+          <Input
+            w={['100%', null, null, '70%']}
+            placeholder="Start typing something..."
+            onChange={(e) => searchItem(e.target.value)}
+            size="lg"
+            py={[2, null]}
+            my={4}
+          />
+          {searchData.length === 0 && (
+            <Box py={4}>
+              <Text fontSize="3xl" px={2} fontWeight="bold">
+                Sorry, there are no search results for that query
+              </Text>
+            </Box>
+          )}
+          <SimpleGrid
+            py={5}
+            columns={[1, null, 1, 2]}
+            spacing={[4, null, 6]}
+            color="white"
+          >
+            {searchData &&
+              searchData.map((course, i) => (
+                <Course key={i} content={course} />
+              ))}
+          </SimpleGrid>
+        </Box>
+      </Flex>
+    </GridContainer>
   );
 };

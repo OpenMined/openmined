@@ -42,7 +42,7 @@ export default () => (
           <AuthRoute path="/" element={<CoursePage which="lesson" />} />
           <AuthRoute
             path="complete"
-            element={<CoursePage which="lesson-complete" />}
+            element={<CoursePage which="lessonComplete" />}
           />
           <AuthRoute path=":concept" element={<CoursePage which="concept" />} />
         </AuthRoute>

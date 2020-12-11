@@ -4,6 +4,11 @@ import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 
 import { usePageAvailabilityRedirect } from './_helpers';
+import * as queries from './_queries';
+import * as configs from './_configs';
+
+import CourseWrap from './Wrapper';
+
 import Loading from '../../components/Loading';
 
 const CourseSearch = lazy(() => import('./search'));
@@ -13,113 +18,15 @@ const CourseLesson = lazy(() => import('./lesson'));
 const CourseLessonComplete = lazy(() => import('./lesson-complete'));
 const CourseConcept = lazy(() => import('./concept'));
 
-// TODO: Do header and footer for some pages
-// TODO: Some pages require elements to wrap the header, content, and footer... figure this out
-// TODO: Just do the fucking project page already... then try the next steps
-// TODO: Consider not using the firestore doc once and instead use realtime (just double check to make sure concept is okay)
-// TODO: Then try navigate everywhere
-
 // What component do we render given what page is specified in the main routes file?
 const pages = {
   search: CourseSearch,
   overview: CourseOverview,
   project: CourseProject,
   lesson: CourseLesson,
-  'lesson-complete': CourseLessonComplete,
+  lessonComplete: CourseLessonComplete,
   concept: CourseConcept,
 };
-
-// What query do we give to the Sanity CMS to supply the properly data for this page?
-const queries = (params) => ({
-  search: `*[_type == "course"] {
-    title,
-    description,
-    level,
-    length,
-    cost,
-    "slug": slug.current,
-    visual {
-      "default": default.asset -> url,
-      "full": full.asset -> url
-    },
-  }`,
-  overview: `*[_type == "course" && slug.current == "${params.course}"] {
-    ...,
-    "slug": slug.current,
-    visual {
-      "default": default.asset -> url,
-      "full": full.asset -> url
-    },
-    learnFrom[] -> {
-      ...,
-      "image": image.asset -> url
-    },
-    lessons[] -> {
-      _id,
-      title,
-      description,
-      concepts[] -> {
-        title
-      }
-    }
-  }[0]`,
-  project: `*[_type == "course" && slug.current == "${params.course}"] {
-    title,
-    description,
-    "lessons": lessons[] -> {
-      _id,
-      title,
-      "concepts": concepts[] -> { _id }
-    }
-  }[0]`,
-  lesson: `*[_type == "lesson" && _id == "${params.lesson}"] {
-    ...,
-    learnFrom[] -> {
-      ...,
-      "image": image.asset -> url
-    },
-    "firstConcept": concepts[0]._ref,
-    "conceptsCount": count(concepts),
-    "course": *[_type == "course" && references(^._id) ][0] {
-      title,
-      "lessons": lessons[] -> {
-        _id,
-        title,
-        "concepts": concepts[] -> { _id }
-      }
-    }
-  }[0]`,
-  'lesson-complete': `*[_type == "lesson" && _id == "${params.lesson}"] {
-    title,
-    description,
-    resources,
-    "course": *[_type == "course" && references(^._id)][0] {
-      title,
-      "lessons": lessons[] -> {
-        _id,
-        title,
-        "concepts": concepts[] -> { _id }
-      }
-    }
-  }[0]`,
-  concept: `*[_type == "lesson" && _id == "${params.lesson}"] {
-    title,
-    resources,
-    "concept": *[_type == "concept" && _id == "${params.concept}"][0],
-    "concepts": concepts[] -> {
-      _id,
-      title
-    },
-    "course": *[_type == "course" && references(^._id)][0] {
-      title,
-      "lessons": lessons[] -> {
-        _id,
-        title,
-        "concepts": concepts[] -> { _id }
-      }
-    }
-  }[0]`,
-});
 
 const PermissionsGate = ({ children, progress, which, page, ...params }) => {
   // Check whether or not we're able to see this page
@@ -160,7 +67,7 @@ export default ({ which }) => {
 
   // Create variables to store the page to render and the query we'll make to Sanity
   const CoursePage = pages[which];
-  const query = queries(params)[which];
+  const query = queries[which](params);
 
   // Define what pages do not need the permissions check
   const permissionlessPages = ['search', 'overview'];
@@ -181,13 +88,24 @@ export default ({ which }) => {
   // If we're still waiting on the CMS, render the loader
   if (loading) return <Loading />;
 
+  // Prepare the configuration we'll send to the wrapper
+  const config = configs[which](props);
+
   // If the page being requested doesn't require the permission gate, render the component directly
-  if (permissionlessPages.includes(which)) return <CoursePage {...props} />;
+  if (permissionlessPages.includes(which)) {
+    return (
+      <CourseWrap {...config}>
+        <CoursePage {...props} />
+      </CourseWrap>
+    );
+  }
 
   // When ready, pass our component as a child of the permissions page
   return (
     <PermissionsGate {...props}>
-      <CoursePage {...props} />
+      <CourseWrap {...config}>
+        <CoursePage {...props} />
+      </CourseWrap>
     </PermissionsGate>
   );
 };

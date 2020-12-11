@@ -36,11 +36,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { User } from '@openmined/shared/types';
 
-import useToast, { toastConfig } from './Toast';
-import CourseDrawer from './CourseDrawer';
+import CourseDrawer from './Drawer';
 
-import { handleErrors } from '../helpers';
-import logo from '../assets/logo.svg';
+import useToast, { toastConfig } from '../../components/Toast';
+import { handleErrors } from '../../helpers';
+import logo from '../../assets/logo.svg';
 
 interface LinkProps {
   title: string;

@@ -21,8 +21,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Page from '@openmined/shared/util-page';
 
+import CourseHeader from '../Header';
+
 import GridContainer from '../../../components/GridContainer';
-import CourseHeader from '../../../components/CourseHeader';
 import StatusAccordion from '../../../components/StatusAccordion';
 
 const content = {
@@ -121,7 +122,8 @@ const ProjectStatusBadge = ({ status }) => {
   );
 };
 
-export default () => {
+export default (props) => {
+  console.log('PROEJCT', props);
   const SIDEBAR_WIDTH = 360;
 
   const { course } = useParams();

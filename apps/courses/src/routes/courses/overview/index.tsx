@@ -16,7 +16,6 @@ import {
   UnorderedList,
 } from '@chakra-ui/core';
 import { Link } from 'react-router-dom';
-import Page from '@openmined/shared/util-page';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -134,7 +133,7 @@ export default ({ course, page }) => {
   const isTakingCourse = false;
 
   return (
-    <Page title={title} description={description}>
+    <>
       <Box
         position="relative"
         _before={{
@@ -268,6 +267,6 @@ export default ({ course, page }) => {
         </Box>
         {/* TODO: Patrick, add the other courses here */}
       </Box>
-    </Page>
+    </>
   );
 };

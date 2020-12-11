@@ -2,29 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useFirestore } from 'reactfire';
 import { Box } from '@chakra-ui/core';
 import useScrollPosition from '@react-hook/window-scroll';
-import { faBookOpen, faLink } from '@fortawesome/free-solid-svg-icons';
-import Page from '@openmined/shared/util-page';
 
 import CourseContent from './content';
 
 import {
   getConceptIndex,
-  getLessonIndex,
   hasCompletedConcept,
   hasStartedConcept,
 } from '../_helpers';
-import CourseHeader from '../../../components/CourseHeader';
-import CourseFooter from '../../../components/CourseFooter';
+import CourseFooter from './Footer';
 
 export default ({ progress, page, user, ts, course, lesson, concept }) => {
   const db = useFirestore();
 
   const {
-    concept: { title },
     concepts,
     course: { lessons },
-    resources,
-    title: lessonTitle,
   } = page;
 
   useEffect(() => {
@@ -69,9 +62,7 @@ export default ({ progress, page, user, ts, course, lesson, concept }) => {
   // We also need to track if the user has completed all quizzes for this concept
   const [hasCompletedAllQuizzes, setHasCompletedAllQuizzes] = useState(false);
 
-  // Get the current lesson and concept indexes, and their non-zero numbers
-  const lessonIndex = getLessonIndex(lessons, lesson);
-  const lessonNum = lessonIndex + 1;
+  // Get the current concept index and its non-zero numbers
   const conceptIndex = getConceptIndex(lessons, lesson, concept);
   const conceptNum = conceptIndex + 1;
 
@@ -123,43 +114,6 @@ export default ({ progress, page, user, ts, course, lesson, concept }) => {
         { merge: true }
       );
 
-  // Set up the content for the left-side drawer in the <ConceptHeader />
-  const leftDrawerSections = [
-    {
-      title: 'Concepts',
-      icon: faBookOpen,
-      fields: concepts.map(({ _id, title }, index) => {
-        // Default concept status is "unavailable"
-        let status = 'unavailable';
-
-        // If they've started the concept
-        if (hasStartedConcept(progress, lesson, _id)) {
-          // And they've also completed it
-          if (hasCompletedConcept(progress, lesson, _id)) status = 'completed';
-          // Otherwise, it must be available
-          else status = 'available';
-        }
-
-        // On the other hand, perhaps it's the first concept, in which casee it's definitely available
-        else if (index === 0) status = 'available';
-
-        return {
-          status,
-          title,
-          link:
-            status !== 'unavailable'
-              ? `/courses/${course}/${lesson}/${_id}`
-              : null,
-        };
-      }),
-    },
-    {
-      title: 'Resources',
-      icon: faLink,
-      fields: resources ? resources : [],
-    },
-  ];
-
   // Given the content we need to render... what's the type of the first piece?
   const firstContentPiece = page.concept.content[0]._type;
 
@@ -196,14 +150,8 @@ export default ({ progress, page, user, ts, course, lesson, concept }) => {
   ]);
 
   return (
-    <Page title={`${lessonTitle} - ${title}`}>
+    <>
       <Box bg="gray.800">
-        <CourseHeader
-          subtitle={`Lesson ${lessonNum}`}
-          title={title}
-          course={course}
-          leftDrawerSections={leftDrawerSections}
-        />
         <CourseContent
           page={page}
           progress={progress}
@@ -213,18 +161,18 @@ export default ({ progress, page, user, ts, course, lesson, concept }) => {
           conceptNum={conceptNum}
           setCompletedQuizzes={setHasCompletedAllQuizzes}
         />
-        <CourseFooter
-          current={conceptNum}
-          total={concepts.length}
-          scrollProgress={scrollProgress}
-          isBackAvailable={conceptIndex > 0}
-          isNextAvailable={isNextAvailable}
-          backLink={`/courses/${course}/${lesson}/${prevConceptId}`}
-          nextLink={`/courses/${course}/${lesson}/${nextConceptId}`}
-          onCompleteConcept={onCompleteConcept}
-          onProvideFeedback={onProvideFeedback}
-        />
       </Box>
-    </Page>
+      <CourseFooter
+        current={conceptNum}
+        total={concepts.length}
+        scrollProgress={scrollProgress}
+        isBackAvailable={conceptIndex > 0}
+        isNextAvailable={isNextAvailable}
+        backLink={`/courses/${course}/${lesson}/${prevConceptId}`}
+        nextLink={`/courses/${course}/${lesson}/${nextConceptId}`}
+        onCompleteConcept={onCompleteConcept}
+        onProvideFeedback={onProvideFeedback}
+      />
+    </>
   );
 };

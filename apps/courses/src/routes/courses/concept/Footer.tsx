@@ -28,7 +28,7 @@ import {
   faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
-import useToast, { toastConfig } from './Toast';
+import useToast, { toastConfig } from '../../../components/Toast';
 
 const BREAK = 'md';
 

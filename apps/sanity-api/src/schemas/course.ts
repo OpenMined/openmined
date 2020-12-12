@@ -168,8 +168,13 @@ export default {
                   },
                 },
                 {
-                  title: 'Content',
-                  name: 'content',
+                  title: 'Instructions',
+                  name: 'instructions',
+                  type: 'content',
+                },
+                {
+                  title: 'Rubric',
+                  name: 'rubric',
                   type: 'content',
                 },
               ],

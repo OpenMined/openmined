@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Badge,
   Box,
   Button,
   Divider,
@@ -9,6 +8,8 @@ import {
   Icon,
   Link,
   ListItem,
+  Tag,
+  TagLabel,
   Text,
   UnorderedList,
 } from '@chakra-ui/core';
@@ -19,48 +20,19 @@ import {
   faCheckCircle,
   faCommentAlt,
   faListUl,
+  faMinusCircle,
+  faTimesCircle,
   faShapes,
 } from '@fortawesome/free-solid-svg-icons';
 
-import GridContainer from '../../../components/GridContainer';
-import StatusAccordion from '../../../components/StatusAccordion';
+import ProjectAccordion from './ProjectAccordion';
 
-/*
-parts: [
-  {
-    title: 'Extremely hard part',
-    status: 'failed',
-    description:
-      'Some may say that white tastes better but wheat is healthier. It is up to you to decide. In this section you’ll write up a proposal on what your preferred bread is and why.',
-    attempts: 2,
-    max_attempts: 2,
-  },
-  {
-    title: "Click 'n pass",
-    status: 'passed',
-    description:
-      'Some may say that white tastes better but wheat is healthier. It is up to you to decide. In this section you’ll write up a proposal on what your preferred bread is and why.',
-    attempts: 1,
-    max_attempts: 2,
-  },
-  {
-    title: 'Choose Your Bread',
-    status: 'unlocked',
-    description:
-      'Some may say that white tastes better but wheat is healthier. It is up to you to decide. In this section you’ll write up a proposal on what your preferred bread is and why.',
-    attempts: 0,
-    max_attempts: 2,
-  },
-  {
-    title: 'Locked Part of Project',
-    status: 'locked',
-    description:
-      'Step instruction will be written here. Step instruction will be written here. Step instruction will be written here. Link to template.',
-    attempts: 0,
-    max_attempts: 2,
-  },
-],
-*/
+import {
+  getProjectPartStatus,
+  getProjectStatus,
+  hasAttemptedProjectPart,
+} from '../_helpers';
+import GridContainer from '../../../components/GridContainer';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
@@ -72,6 +44,44 @@ const Detail = ({ title, value }) => (
   </Flex>
 );
 
+const prepAccordionAndStatus = (progress, parts) => {
+  const content = parts.map((part) => ({
+    ...part,
+    status: getProjectPartStatus(progress, part._key),
+    attempts: hasAttemptedProjectPart(progress, part._key)
+      ? progress.project.parts[part._key].attempts
+      : [],
+  }));
+
+  return { content, status: getProjectStatus(progress, parts) };
+};
+
+const getStatusStyles = (status) => {
+  if (status === 'not-started') {
+    return {
+      text: 'Not Started',
+    };
+  } else if (status === 'in-progress') {
+    return {
+      text: 'In Progress',
+      icon: faMinusCircle,
+      colorScheme: 'cyan',
+    };
+  } else if (status === 'passed') {
+    return {
+      text: 'Passed',
+      icon: faCheckCircle,
+      colorScheme: 'green',
+    };
+  } else if (status === 'failed') {
+    return {
+      text: 'Failed',
+      icon: faTimesCircle,
+      colorScheme: 'magenta',
+    };
+  }
+};
+
 // TODO: Remember to revisit the header title and such once you get the CMS plugged in
 // TODO: Do a project-wide search for the original project string field and see where it was used (replace with project.title)
 // TODO: Do the course completion page
@@ -79,16 +89,13 @@ const Detail = ({ title, value }) => (
 // TODO: Create a sidebar component for use on a few pages
 // TODO: Create a link props method to determine internal vs. external links
 
-export default ({ course, page, progress, ...props }) => {
-  const SIDEBAR_WIDTH = 360;
+export default ({ course, page, progress }) => {
+  const [submissionView, setSubmissionView] = useState(false);
 
-  const {
-    title: courseTitle,
-    project: { title, description, goals, needs, parts },
-    level,
-    length,
-    certification,
-  } = page;
+  // TODO: Patrick, fill this in...
+  if (submissionView) return null;
+
+  const SIDEBAR_WIDTH = 360;
 
   const resources = [
     {
@@ -108,8 +115,20 @@ export default ({ course, page, progress, ...props }) => {
     },
   ];
 
-  // TODO: Patrick, fill this in
-  const status = 'Not Started';
+  const {
+    title: courseTitle,
+    project: { title, description, goals, needs, parts },
+    level,
+    length,
+    certification,
+  } = page;
+
+  const { content, status } = prepAccordionAndStatus(progress, parts);
+  const {
+    icon: statusIcon,
+    text: statusText,
+    ...statusStyles
+  } = getStatusStyles(status);
 
   return (
     <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
@@ -134,15 +153,12 @@ export default ({ course, page, progress, ...props }) => {
               {title}
             </Heading>
           </Box>
-          <Badge
-            px={3}
-            py={1}
-            textTransform="none"
-            fontSize="sm"
-            borderRadius="md"
-          >
-            {status}
-          </Badge>
+          <Tag {...statusStyles}>
+            {statusIcon && (
+              <Icon as={FontAwesomeIcon} icon={statusIcon} mr={2} />
+            )}
+            <TagLabel fontWeight="bold">{statusText}</TagLabel>
+          </Tag>
           <Divider my={6} />
           <Text color="gray.700" mb={6}>
             {description}
@@ -155,7 +171,11 @@ export default ({ course, page, progress, ...props }) => {
               <ListItem key={goal}>{goal}</ListItem>
             ))}
           </UnorderedList>
-          {/* <StatusAccordion content={parts} /> */}
+          <ProjectAccordion
+            content={content}
+            mb={6}
+            setSubmissionView={setSubmissionView}
+          />
           <Button disabled colorScheme="black">
             Finish
           </Button>

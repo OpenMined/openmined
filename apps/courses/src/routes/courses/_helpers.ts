@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 
+// TODO: Make all of these tests written in the order in which they're supposed to appear
+// TODO: And likewise, ensure that they must build on each other (i.e. to test the completion of a lesson, you must test the completion of all previous concepts and lessons)
+
 // Course permissions
 export const hasStartedCourse = (u) =>
   Object.keys(u).length !== 0 && !!u.started_at;
@@ -9,6 +12,7 @@ export const hasCompletedCourse = (u) =>
 // Lesson permissions
 export const getLessonIndex = (ls, l) => ls.findIndex(({ _id }) => _id === l);
 export const getLessonNumber = (ls, l) => getLessonIndex(ls, l) + 1;
+export const doesLessonExist = (ls, l) => getLessonIndex(ls, l) !== -1;
 export const hasStartedLesson = (u, l) =>
   hasStartedCourse(u) &&
   !!u.lessons &&
@@ -16,12 +20,13 @@ export const hasStartedLesson = (u, l) =>
   !!u.lessons[l].started_at;
 export const hasCompletedLesson = (u, l) =>
   hasStartedLesson(u, l) && !!u.lessons[l].completed_at;
-export const doesLessonExist = (ls, l) => getLessonIndex(ls, l) !== -1;
 
 // Concept permissions
 export const getConceptIndex = (ls, l, c) =>
   ls[getLessonIndex(ls, l)].concepts.findIndex(({ _id }) => _id === c);
 export const getConceptNumber = (ls, l, c) => getConceptIndex(ls, l, c) + 1;
+export const doesConceptExist = (ls, l, c) =>
+  doesLessonExist(ls, l) && getConceptIndex(ls, l, c) !== -1;
 export const hasStartedConcept = (u, l, c) =>
   hasStartedLesson(u, l) &&
   !!u.lessons[l].concepts &&
@@ -29,8 +34,122 @@ export const hasStartedConcept = (u, l, c) =>
   !!u.lessons[l].concepts[c].started_at;
 export const hasCompletedConcept = (u, l, c) =>
   hasStartedConcept(u, l, c) && !!u.lessons[l].concepts[c].completed_at;
-export const doesConceptExist = (ls, l, c) =>
-  doesLessonExist(ls, l) && getConceptIndex(ls, l, c) !== -1;
+
+// Project permissions
+export const getProjectPartIndex = (pjs, p) =>
+  pjs.findIndex(({ _key }) => _key === p);
+export const getProjectPartNumber = (pjs, p) => getProjectPartIndex(pjs, p) + 1;
+export const doesProjectPartExist = (pjs, p) =>
+  getProjectPartIndex(pjs, p) !== -1;
+export const hasStartedProject = (u) =>
+  hasStartedCourse(u) && !!u.project && !!u.project.started_at;
+export const hasCompletedProject = (u) =>
+  hasStartedProject(u) && !!u.project.completed_at;
+
+// Project part permissions
+export const PROJECT_PART_SUBMISSIONS = 3;
+export const hasStartedProjectPart = (u, p) =>
+  hasStartedProject(u) &&
+  !!u.project.parts[p] &&
+  !!u.project.parts[p].started_at;
+export const hasCompletedProjectPart = (u, p) =>
+  hasStartedProjectPart(u, p) && !!u.project.parts[p].completed_at;
+export const hasAttemptedProjectPart = (u, p) =>
+  hasStartedProjectPart(u, p) &&
+  !!u.project.parts[p].attempts &&
+  u.project.parts[p].attempts.length > 0;
+export const hasReceivedProjectPartFeedback = (u, p) =>
+  hasAttemptedProjectPart(u, p) &&
+  !!u.project.parts[p].feedback &&
+  u.project.parts[p].feedback.length > 0;
+export const hasRemainingProjectPartAttempts = (u, p) =>
+  hasReceivedProjectPartFeedback(u, p) &&
+  u.project.parts[p].feedback.length < PROJECT_PART_SUBMISSIONS;
+export const hasReceivedPassingProjectPartFeedback = (u, p) => {
+  if (!hasReceivedProjectPartFeedback(u, p)) return false;
+
+  for (let i = 0; i < u.project.parts[p].feedback.length; i++) {
+    const currentFeedback = u.project.parts[p].feedback[i];
+
+    if (currentFeedback.status === 'passed' && currentFeedback.passed_at) {
+      return true;
+    }
+  }
+
+  return false;
+};
+export const hasReceivedFailingProjectPartFeedback = (u, p) => {
+  if (!hasReceivedProjectPartFeedback(u, p)) return false;
+
+  for (let i = 0; i < u.project.parts[p].feedback.length; i++) {
+    const currentFeedback = u.project.parts[p].feedback[i];
+
+    if (currentFeedback.status === 'failed' && currentFeedback.failed_at) {
+      return true;
+    }
+  }
+
+  return false;
+};
+export const getProjectPartStatus = (u, p) => {
+  // If they have received feedback on the project part, and they passed...
+  if (hasReceivedPassingProjectPartFeedback(u, p)) {
+    return 'passed';
+  }
+
+  // If they have received feedback on the project part, and they they failed, but have remaining attempts...
+  else if (
+    hasReceivedFailingProjectPartFeedback(u, p) &&
+    hasRemainingProjectPartAttempts(u, p)
+  ) {
+    return 'failed-but-pending';
+  }
+
+  // If they have received feedback on the project part, and they they failed, and they don't have any remaining attempts...
+  else if (
+    hasReceivedFailingProjectPartFeedback(u, p) &&
+    !hasRemainingProjectPartAttempts(u, p)
+  ) {
+    return 'failed';
+  }
+
+  // If they have attempted the project part, but haven't received feedback on it...
+  else if (
+    hasAttemptedProjectPart(u, p) &&
+    !hasReceivedProjectPartFeedback(u, p)
+  ) {
+    return 'attempted';
+  }
+
+  // If they have started the project part, but they have not completed it...
+  else if (hasStartedProjectPart(u, p) && !hasCompletedProjectPart(u, p)) {
+    return 'in-progress';
+  }
+
+  return 'not-started';
+};
+export const getProjectStatus = (u, ps) => {
+  const progress = [];
+
+  for (let i = 0; i < ps.length; i++) {
+    const status = getProjectPartStatus(u, ps[i]._key);
+
+    if (status === 'passed') progress.push('passed');
+    else if (status === 'failed') progress.push('failed');
+    else if (status !== 'not-started') progress.push('in-progress');
+    else progress.push('not-started');
+  }
+
+  if (progress.every((i) => i === 'passed')) {
+    return 'passed';
+  } else if (progress.every((i) => i === 'not-started')) {
+    return 'not-started';
+  } else if (progress.some((i) => i === 'failed')) {
+    return 'failed';
+  }
+
+  return 'in-progress';
+};
 
 // Page change
 export const getNextAvailablePage = (u, ls) => {

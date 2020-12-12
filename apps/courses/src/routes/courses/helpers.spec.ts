@@ -1,16 +1,30 @@
 import {
   hasStartedCourse,
   hasCompletedCourse,
-  hasStartedLesson,
-  hasCompletedLesson,
   getLessonIndex,
   getLessonNumber,
   doesLessonExist,
+  hasStartedLesson,
+  hasCompletedLesson,
   getConceptIndex,
   getConceptNumber,
+  doesConceptExist,
   hasStartedConcept,
   hasCompletedConcept,
-  doesConceptExist,
+  getProjectPartIndex,
+  getProjectPartNumber,
+  doesProjectPartExist,
+  hasStartedProject,
+  hasCompletedProject,
+  hasStartedProjectPart,
+  hasCompletedProjectPart,
+  hasAttemptedProjectPart,
+  hasReceivedProjectPartFeedback,
+  hasRemainingProjectPartAttempts,
+  hasReceivedPassingProjectPartFeedback,
+  hasReceivedFailingProjectPartFeedback,
+  getProjectPartStatus,
+  getProjectStatus,
   getNextAvailablePage,
 } from './_helpers';
 
@@ -42,6 +56,619 @@ describe('course helpers', () => {
   });
 });
 
+describe('project helpers', () => {
+  it('can get correct project part index', () => {
+    const part = '2nd-project-part';
+    const projects = [
+      { _key: '1st-project-part' },
+      { _key: part },
+      { _key: '3rd-project-part' },
+    ];
+
+    expect(getProjectPartIndex(projects, part)).toBe(1);
+  });
+
+  it('can get correct project part number', () => {
+    const part = '2nd-project-part';
+    const projects = [
+      { _key: '1st-project-part' },
+      { _key: part },
+      { _key: '3rd-project-part' },
+    ];
+
+    expect(getProjectPartNumber(projects, part)).toBe(2);
+  });
+
+  it('user can only access project parts that exist', () => {
+    const projects = [
+      { _key: '1st-project-part' },
+      { _key: '2nd-project-part' },
+      { _key: '3rd-project-part' },
+    ];
+
+    expect(doesProjectPartExist(projects, '1st-project-part')).toBeTruthy();
+    expect(doesProjectPartExist(projects, '2nd-project-part')).toBeTruthy();
+    expect(doesProjectPartExist(projects, '3rd-project-part')).toBeTruthy();
+    expect(doesProjectPartExist(projects, '4th-project-part')).toBeFalsy();
+  });
+
+  it('empty user has not started or completed project', () => {
+    const user = {};
+
+    expect(hasStartedProject(user)).toBeFalsy();
+    expect(hasCompletedProject(user)).toBeFalsy();
+  });
+
+  it('user has started project', () => {
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+      },
+    };
+
+    expect(hasStartedProject(user)).toBeTruthy();
+    expect(hasCompletedProject(user)).toBeFalsy();
+  });
+
+  it('user has completed project', () => {
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        completed_at: Date.now(),
+      },
+    };
+
+    expect(hasStartedProject(user)).toBeTruthy();
+    expect(hasCompletedProject(user)).toBeTruthy();
+  });
+
+  it('empty user has not started or completed project part', () => {
+    const part = '1st-project-part';
+    const user = {};
+
+    expect(hasStartedProjectPart(user, part)).toBeFalsy();
+    expect(hasCompletedProjectPart(user, part)).toBeFalsy();
+  });
+
+  it('user has started project part', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+          },
+        },
+      },
+    };
+
+    expect(hasStartedProjectPart(user, part)).toBeTruthy();
+    expect(hasCompletedProjectPart(user, part)).toBeFalsy();
+  });
+
+  it('user has completed project part', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              { status: 'failed', failed_at: Date.now() },
+              { status: 'passed', passed_at: Date.now() },
+            ],
+            completed_at: Date.now(),
+          },
+        },
+      },
+    };
+
+    expect(hasStartedProjectPart(user, part)).toBeTruthy();
+    expect(hasCompletedProjectPart(user, part)).toBeTruthy();
+  });
+
+  it('user has attempted project part', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+            attempts: [{ submitted_at: Date.now() }],
+          },
+        },
+      },
+    };
+
+    expect(hasAttemptedProjectPart(user, part)).toBeTruthy();
+  });
+
+  it('user has received project part feedback', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+            attempts: [{ submitted_at: Date.now() }],
+            feedback: [
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(hasReceivedProjectPartFeedback(user, part)).toBeTruthy();
+    expect(
+      hasReceivedProjectPartFeedback(user, '2nd-project-part')
+    ).toBeFalsy();
+  });
+
+  it('user has remaining project part attempts', () => {
+    const firstPart = '1st-project-part';
+    const secondPart = '2nd-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [firstPart]: {
+            started_at: Date.now(),
+            attempts: [{ submitted_at: Date.now() }],
+            feedback: [
+              {
+                status: 'passed',
+                passed_at: Date.now(),
+              },
+            ],
+          },
+          [secondPart]: {
+            started_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(hasRemainingProjectPartAttempts(user, firstPart)).toBeTruthy();
+    expect(hasRemainingProjectPartAttempts(user, secondPart)).toBeFalsy();
+  });
+
+  it('user has received passing project part feedback', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+              {
+                status: 'passed',
+                passed_at: Date.now(),
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(hasReceivedPassingProjectPartFeedback(user, part)).toBeTruthy();
+    expect(
+      hasReceivedPassingProjectPartFeedback(user, '2nd-project-part')
+    ).toBeFalsy();
+  });
+
+  it('user has received failing project part feedback', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+              {
+                status: 'passed',
+                passed_at: Date.now(),
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(hasReceivedFailingProjectPartFeedback(user, part)).toBeTruthy();
+    expect(
+      hasReceivedFailingProjectPartFeedback(user, '2nd-project-part')
+    ).toBeFalsy();
+  });
+
+  it('user has not started the project part', () => {
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          '1st-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+          },
+        },
+      },
+    };
+
+    expect(getProjectPartStatus(user, '2nd-project-part')).toBe('not-started');
+  });
+
+  it('user has an in-progress project part', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+          },
+        },
+      },
+    };
+
+    expect(getProjectPartStatus(user, part)).toBe('in-progress');
+  });
+
+  it('user has attempted a project part', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+            attempts: [{ submitted_at: Date.now() }],
+          },
+        },
+      },
+    };
+
+    expect(getProjectPartStatus(user, part)).toBe('attempted');
+  });
+
+  it('user has failed a project part', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(getProjectPartStatus(user, part)).toBe('failed');
+  });
+
+  it('user has failed a project part, but has more attempts', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(getProjectPartStatus(user, part)).toBe('failed-but-pending');
+  });
+
+  it('user has passed a project part', () => {
+    const part = '1st-project-part';
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          [part]: {
+            started_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              {
+                status: 'failed',
+                failed_at: Date.now(),
+              },
+              {
+                status: 'passed',
+                passed_at: Date.now(),
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(getProjectPartStatus(user, part)).toBe('passed');
+  });
+
+  it('user has not started a project', () => {
+    const parts = [
+      { _key: '1st-project-part' },
+      { _key: '2nd-project-part' },
+      { _key: '3rd-project-part' },
+    ];
+    const user = {
+      started_at: Date.now(),
+    };
+
+    expect(getProjectStatus(user, parts)).toBe('not-started');
+  });
+
+  it('user has an in progress a project', () => {
+    const parts = [
+      { _key: '1st-project-part' },
+      { _key: '2nd-project-part' },
+      { _key: '3rd-project-part' },
+    ];
+    const user1 = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          '1st-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+            attempts: [{ submitted_at: Date.now() }],
+            feedback: [{ status: 'passed', passed_at: Date.now() }],
+          },
+          '2nd-project-part': {
+            started_at: Date.now(),
+          },
+        },
+      },
+    };
+    const user2 = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          '1st-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+            attempts: [{ submitted_at: Date.now() }],
+            feedback: [{ status: 'passed', passed_at: Date.now() }],
+          },
+          '2nd-project-part': {
+            started_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              { status: 'failed', failed_at: Date.now() },
+              { status: 'failed', failed_at: Date.now() },
+            ],
+          },
+        },
+      },
+    };
+    const user3 = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          '1st-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+            attempts: [{ submitted_at: Date.now() }],
+            feedback: [{ status: 'passed', passed_at: Date.now() }],
+          },
+          '2nd-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              { status: 'failed', failed_at: Date.now() },
+              { status: 'passed', passed_at: Date.now() },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(getProjectStatus(user1, parts)).toBe('in-progress');
+    expect(getProjectStatus(user2, parts)).toBe('in-progress');
+    expect(getProjectStatus(user3, parts)).toBe('in-progress');
+  });
+
+  it('user has a passed a project', () => {
+    const parts = [
+      { _key: '1st-project-part' },
+      { _key: '2nd-project-part' },
+      { _key: '3rd-project-part' },
+    ];
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          '1st-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+            attempts: [{ submitted_at: Date.now() }],
+            feedback: [{ status: 'passed', passed_at: Date.now() }],
+          },
+          '2nd-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              { status: 'failed', failed_at: Date.now() },
+              { status: 'passed', passed_at: Date.now() },
+            ],
+          },
+          '3rd-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              { status: 'failed', failed_at: Date.now() },
+              { status: 'failed', failed_at: Date.now() },
+              { status: 'passed', passed_at: Date.now() },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(getProjectStatus(user, parts)).toBe('passed');
+  });
+
+  it('user has a failed a project', () => {
+    const parts = [
+      { _key: '1st-project-part' },
+      { _key: '2nd-project-part' },
+      { _key: '3rd-project-part' },
+    ];
+    const user = {
+      started_at: Date.now(),
+      project: {
+        started_at: Date.now(),
+        parts: {
+          '1st-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+            attempts: [{ submitted_at: Date.now() }],
+            feedback: [{ status: 'passed', passed_at: Date.now() }],
+          },
+          '2nd-project-part': {
+            started_at: Date.now(),
+            attempts: [
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+              { submitted_at: Date.now() },
+            ],
+            feedback: [
+              { status: 'failed', failed_at: Date.now() },
+              { status: 'failed', failed_at: Date.now() },
+              { status: 'failed', failed_at: Date.now() },
+            ],
+          },
+        },
+      },
+    };
+
+    expect(getProjectStatus(user, parts)).toBe('failed');
+  });
+});
+
 describe('lesson helpers', () => {
   it('can get correct lesson index', () => {
     const lesson = '2nd-lesson';
@@ -63,6 +690,19 @@ describe('lesson helpers', () => {
     ];
 
     expect(getLessonNumber(lessons, lesson)).toBe(2);
+  });
+
+  it('user can only access lessons that exist', () => {
+    const lessons = [
+      { _id: '1st-lesson' },
+      { _id: '2nd-lesson' },
+      { _id: '3rd-lesson' },
+    ];
+
+    expect(doesLessonExist(lessons, '1st-lesson')).toBeTruthy();
+    expect(doesLessonExist(lessons, '2nd-lesson')).toBeTruthy();
+    expect(doesLessonExist(lessons, '3rd-lesson')).toBeTruthy();
+    expect(doesLessonExist(lessons, '4th-lesson')).toBeFalsy();
   });
 
   it('empty user has not started or completed lesson', () => {
@@ -102,19 +742,6 @@ describe('lesson helpers', () => {
 
     expect(hasStartedLesson(user, lesson)).toBeTruthy();
     expect(hasCompletedLesson(user, lesson)).toBeTruthy();
-  });
-
-  it('user can only access lessons that exist', () => {
-    const lessons = [
-      { _id: '1st-lesson' },
-      { _id: '2nd-lesson' },
-      { _id: '3rd-lesson' },
-    ];
-
-    expect(doesLessonExist(lessons, '1st-lesson')).toBeTruthy();
-    expect(doesLessonExist(lessons, '2nd-lesson')).toBeTruthy();
-    expect(doesLessonExist(lessons, '3rd-lesson')).toBeTruthy();
-    expect(doesLessonExist(lessons, '4th-lesson')).toBeFalsy();
   });
 });
 
@@ -185,6 +812,55 @@ describe('concept helpers', () => {
     expect(getConceptNumber(lessons, lesson, concept)).toBe(2);
   });
 
+  it('user can only access lessons that exist', () => {
+    const lessons = [
+      {
+        _id: '1st-lesson',
+        concepts: [
+          { _id: '1st-concept' },
+          { _id: '2nd-concept' },
+          { _id: '3rd-concept' },
+        ],
+      },
+      {
+        _id: '2nd-lesson',
+        concepts: [
+          { _id: '1st-concept' },
+          { _id: '2nd-concept' },
+          { _id: '3rd-concept' },
+        ],
+      },
+      {
+        _id: '3rd-lesson',
+        concepts: [
+          { _id: '1st-concept' },
+          { _id: '2nd-concept' },
+          { _id: '3rd-concept' },
+        ],
+      },
+    ];
+
+    expect(doesConceptExist(lessons, '1st-lesson', '1st-concept')).toBeTruthy();
+    expect(doesConceptExist(lessons, '1st-lesson', '2nd-concept')).toBeTruthy();
+    expect(doesConceptExist(lessons, '1st-lesson', '3rd-concept')).toBeTruthy();
+    expect(doesConceptExist(lessons, '1st-lesson', '4th-concept')).toBeFalsy();
+
+    expect(doesConceptExist(lessons, '2nd-lesson', '1st-concept')).toBeTruthy();
+    expect(doesConceptExist(lessons, '2nd-lesson', '2nd-concept')).toBeTruthy();
+    expect(doesConceptExist(lessons, '2nd-lesson', '3rd-concept')).toBeTruthy();
+    expect(doesConceptExist(lessons, '2nd-lesson', '4th-concept')).toBeFalsy();
+
+    expect(doesConceptExist(lessons, '3rd-lesson', '1st-concept')).toBeTruthy();
+    expect(doesConceptExist(lessons, '3rd-lesson', '2nd-concept')).toBeTruthy();
+    expect(doesConceptExist(lessons, '3rd-lesson', '3rd-concept')).toBeTruthy();
+    expect(doesConceptExist(lessons, '3rd-lesson', '4th-concept')).toBeFalsy();
+
+    expect(doesConceptExist(lessons, '4th-lesson', '1st-concept')).toBeFalsy();
+    expect(doesConceptExist(lessons, '4th-lesson', '2nd-concept')).toBeFalsy();
+    expect(doesConceptExist(lessons, '4th-lesson', '3rd-concept')).toBeFalsy();
+    expect(doesConceptExist(lessons, '4th-lesson', '4th-concept')).toBeFalsy();
+  });
+
   it('empty user has not started or completed concept', () => {
     const lesson = 'privacy-and-security';
     const concept = 'some-concept';
@@ -235,55 +911,6 @@ describe('concept helpers', () => {
 
     expect(hasStartedConcept(user, lesson, concept)).toBeTruthy();
     expect(hasCompletedConcept(user, lesson, concept)).toBeTruthy();
-  });
-
-  it('user can only access lessons that exist', () => {
-    const lessons = [
-      {
-        _id: '1st-lesson',
-        concepts: [
-          { _id: '1st-concept' },
-          { _id: '2nd-concept' },
-          { _id: '3rd-concept' },
-        ],
-      },
-      {
-        _id: '2nd-lesson',
-        concepts: [
-          { _id: '1st-concept' },
-          { _id: '2nd-concept' },
-          { _id: '3rd-concept' },
-        ],
-      },
-      {
-        _id: '3rd-lesson',
-        concepts: [
-          { _id: '1st-concept' },
-          { _id: '2nd-concept' },
-          { _id: '3rd-concept' },
-        ],
-      },
-    ];
-
-    expect(doesConceptExist(lessons, '1st-lesson', '1st-concept')).toBeTruthy();
-    expect(doesConceptExist(lessons, '1st-lesson', '2nd-concept')).toBeTruthy();
-    expect(doesConceptExist(lessons, '1st-lesson', '3rd-concept')).toBeTruthy();
-    expect(doesConceptExist(lessons, '1st-lesson', '4th-concept')).toBeFalsy();
-
-    expect(doesConceptExist(lessons, '2nd-lesson', '1st-concept')).toBeTruthy();
-    expect(doesConceptExist(lessons, '2nd-lesson', '2nd-concept')).toBeTruthy();
-    expect(doesConceptExist(lessons, '2nd-lesson', '3rd-concept')).toBeTruthy();
-    expect(doesConceptExist(lessons, '2nd-lesson', '4th-concept')).toBeFalsy();
-
-    expect(doesConceptExist(lessons, '3rd-lesson', '1st-concept')).toBeTruthy();
-    expect(doesConceptExist(lessons, '3rd-lesson', '2nd-concept')).toBeTruthy();
-    expect(doesConceptExist(lessons, '3rd-lesson', '3rd-concept')).toBeTruthy();
-    expect(doesConceptExist(lessons, '3rd-lesson', '4th-concept')).toBeFalsy();
-
-    expect(doesConceptExist(lessons, '4th-lesson', '1st-concept')).toBeFalsy();
-    expect(doesConceptExist(lessons, '4th-lesson', '2nd-concept')).toBeFalsy();
-    expect(doesConceptExist(lessons, '4th-lesson', '3rd-concept')).toBeFalsy();
-    expect(doesConceptExist(lessons, '4th-lesson', '4th-concept')).toBeFalsy();
   });
 });
 

@@ -31,8 +31,11 @@ import {
   getProjectPartStatus,
   getProjectStatus,
   hasAttemptedProjectPart,
+  hasStartedProject,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
+import { useFirestore } from 'reactfire';
+import SubmissionView from './SubmissionView';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
@@ -89,11 +92,28 @@ const getStatusStyles = (status) => {
 // TODO: Create a sidebar component for use on a few pages
 // TODO: Create a link props method to determine internal vs. external links
 
-export default ({ course, page, progress }) => {
-  const [submissionView, setSubmissionView] = useState(false);
+export default ({ course, page, progress, user, ts }) => {
+  const db = useFirestore();
 
-  // TODO: Patrick, fill this in...
-  if (submissionView) return null;
+  const {
+    title: courseTitle,
+    project: { title, description, goals, needs, parts },
+    level,
+    length,
+    certification,
+  } = page;
+
+  const [submissionView, setSubmissionView] = useState(null);
+
+  if (submissionView) {
+    return (
+      <SubmissionView
+        projectTitle={title}
+        part={parts[parts.findIndex((p) => p._key === submissionView)]}
+        setSubmissionView={setSubmissionView}
+      />
+    );
+  }
 
   const SIDEBAR_WIDTH = 360;
 
@@ -115,20 +135,34 @@ export default ({ course, page, progress }) => {
     },
   ];
 
-  const {
-    title: courseTitle,
-    project: { title, description, goals, needs, parts },
-    level,
-    length,
-    certification,
-  } = page;
-
   const { content, status } = prepAccordionAndStatus(progress, parts);
   const {
     icon: statusIcon,
     text: statusText,
     ...statusStyles
   } = getStatusStyles(status);
+
+  const onBeginProjectPart = (part) => {
+    const data = {};
+
+    if (!hasStartedProject(progress)) {
+      data.project = {
+        started_at: ts(),
+        parts: {},
+      };
+    }
+
+    data.project.parts[part] = {
+      started_at: ts(),
+    };
+
+    return db
+      .collection('users')
+      .doc(user.uid)
+      .collection('courses')
+      .doc(course)
+      .set(data, { merge: true });
+  };
 
   return (
     <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
@@ -175,6 +209,7 @@ export default ({ course, page, progress }) => {
             content={content}
             mb={6}
             setSubmissionView={setSubmissionView}
+            onBeginProjectPart={onBeginProjectPart}
           />
           <Button disabled colorScheme="black">
             Finish

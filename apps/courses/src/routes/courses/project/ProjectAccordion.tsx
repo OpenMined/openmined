@@ -126,10 +126,7 @@ const AttemptedView = ({
       const iconColor = passed ? 'green.400' : 'magenta.400';
 
       return (
-        <Flex
-          {...props}
-          onClick={() => viewPastSubmission({ index, status, attempt })}
-        >
+        <Flex {...props} onClick={viewPastSubmission}>
           <Flex align="center">
             <Icon
               as={FontAwesomeIcon}
@@ -153,7 +150,12 @@ const AttemptedView = ({
   </Box>
 );
 
-export default ({ content, setSubmissionView, ...props }) => {
+export default ({
+  content,
+  setSubmissionView,
+  onBeginProjectPart,
+  ...props
+}) => {
   const [indexes, setIndexes] = useState(getDefaultOpenedTab(content));
 
   const openIndex = (index) => {
@@ -189,7 +191,7 @@ export default ({ content, setSubmissionView, ...props }) => {
 
   return (
     <Accordion index={indexes} {...props}>
-      {content.map(({ title, description, status, attempts }, index) => {
+      {content.map(({ _key, title, description, status, attempts }, index) => {
         const { color, icon, ...styles } = getStatusStyles(status);
         const bg = `${color}.${styles.bg}`;
         const text = `${color}.${styles.text}`;
@@ -261,13 +263,21 @@ export default ({ content, setSubmissionView, ...props }) => {
                       title="Sorry, let's try again!"
                       description="You did not pass this part of the project. You can check out the link below for your feedback and try again after making some corrections."
                       attempts={attempts}
-                      viewPastSubmission={(v) => setSubmissionView(v)}
+                      viewPastSubmission={() => setSubmissionView(_key)}
                       mb={6}
                     />
                   )}
                   <Flex align="center">
                     <Button
-                      onClick={() => console.log('Start')}
+                      onClick={() => {
+                        if (status === 'not-started') {
+                          onBeginProjectPart(_key).then(() => {
+                            setSubmissionView(_key);
+                          });
+                        } else {
+                          setSubmissionView(_key);
+                        }
+                      }}
                       colorScheme="black"
                       mr={4}
                     >
@@ -317,7 +327,7 @@ export default ({ content, setSubmissionView, ...props }) => {
                     </>
                   }
                   attempts={attempts}
-                  viewPastSubmission={(v) => setSubmissionView(v)}
+                  viewPastSubmission={() => setSubmissionView(_key)}
                 />
               )}
               {status === 'passed' && (
@@ -326,7 +336,7 @@ export default ({ content, setSubmissionView, ...props }) => {
                   title="Congratulations!"
                   description="You passed this portion of the project. Check out the link below for your feedback."
                   attempts={attempts}
-                  viewPastSubmission={(v) => setSubmissionView(v)}
+                  viewPastSubmission={() => setSubmissionView(_key)}
                 />
               )}
             </AccordionPanel>

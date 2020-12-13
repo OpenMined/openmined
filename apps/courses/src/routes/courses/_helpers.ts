@@ -36,11 +36,6 @@ export const hasCompletedConcept = (u, l, c) =>
   hasStartedConcept(u, l, c) && !!u.lessons[l].concepts[c].completed_at;
 
 // Project permissions
-export const getProjectPartIndex = (pjs, p) =>
-  pjs.findIndex(({ _key }) => _key === p);
-export const getProjectPartNumber = (pjs, p) => getProjectPartIndex(pjs, p) + 1;
-export const doesProjectPartExist = (pjs, p) =>
-  getProjectPartIndex(pjs, p) !== -1;
 export const hasStartedProject = (u) =>
   hasStartedCourse(u) && !!u.project && !!u.project.started_at;
 export const hasCompletedProject = (u) =>
@@ -48,6 +43,11 @@ export const hasCompletedProject = (u) =>
 
 // Project part permissions
 export const PROJECT_PART_SUBMISSIONS = 3;
+export const getProjectPartIndex = (pjs, p) =>
+  pjs.findIndex(({ _key }) => _key === p);
+export const getProjectPartNumber = (pjs, p) => getProjectPartIndex(pjs, p) + 1;
+export const doesProjectPartExist = (pjs, p) =>
+  getProjectPartIndex(pjs, p) !== -1;
 export const hasStartedProjectPart = (u, p) =>
   hasStartedProject(u) &&
   !!u.project.parts[p] &&

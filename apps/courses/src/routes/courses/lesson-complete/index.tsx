@@ -83,7 +83,7 @@ export default ({ progress, page, user, ts, course, lesson }) => {
           .then(resolve)
           .catch(reject);
       } else {
-        resolve();
+        resolve(true);
       }
     });
 

@@ -230,47 +230,6 @@ export default extendTheme({
     header: '5rem',
   },
   components: {
-    Accordion: {
-      variants: {
-        boxed: (props) => {
-          const { colorScheme: c } = props;
-
-          return {
-            container: {
-              border: 'none',
-              my: 4,
-            },
-            button: {
-              px: 6,
-              py: 4,
-              borderRadius: 'md',
-              borderColor: `${c}.50`,
-              color: `${c}.500`,
-              fontFamily: 'heading',
-              backgroundColor: `${c}.50`,
-              _hover: {
-                backgroundColor: `${c}.50`,
-              },
-              _disabled: {
-                backgroundColor: 'gray.200',
-                color: 'gray.500',
-                opacity: 1,
-              },
-              _expanded: {
-                borderBottomRadius: 0,
-              },
-            },
-            panel: {
-              py: 6,
-              px: 8,
-              borderWidth: 1,
-              borderColor: `${c}.50`,
-              borderBottomRadius: 5,
-            },
-          };
-        },
-      },
-    },
     Button: {
       baseStyle: {
         fontFamily: 'heading',

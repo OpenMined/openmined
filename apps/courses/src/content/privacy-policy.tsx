@@ -38,7 +38,7 @@ export default {
           textDecoration="underline"
           target="_blank"
           rel="noopener noreferrer"
-          href="https://discussions.openmined.org"
+          href="https://discussion.openmined.org"
           as="a"
         >
           discussion board

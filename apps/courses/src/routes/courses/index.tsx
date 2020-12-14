@@ -11,6 +11,8 @@ import CourseWrap from './Wrapper';
 
 import Loading from '../../components/Loading';
 
+// TODO: We absolutely should be using the useFirestoreDocData function instead, make sure to check if the DB has been updated for concepts though!
+
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
 const CourseProject = lazy(() => import('./project'));

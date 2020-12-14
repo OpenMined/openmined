@@ -1,5 +1,5 @@
 import React from 'react';
-import { BoxProps, Flex, Link } from '@chakra-ui/core';
+import { BoxProps, Flex, Link } from '@chakra-ui/react';
 import * as yup from 'yup';
 import { useUser, useFirestore, useFirestoreDocData, useAuth } from 'reactfire';
 import { User } from '@openmined/shared/types';

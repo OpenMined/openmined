@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Flex, Text } from '@chakra-ui/core';
+import { Flex, Text } from '@chakra-ui/react';
 
 export default ({ math, spacing }) => {
   const ref = useRef(null);

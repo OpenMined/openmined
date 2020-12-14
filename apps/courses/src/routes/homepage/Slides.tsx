@@ -14,7 +14,7 @@ import {
   CircularProgress,
   CircularProgressProps,
   Icon,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { useTimer } from 'use-timer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';

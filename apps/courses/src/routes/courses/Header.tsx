@@ -15,7 +15,7 @@ import {
   Heading,
   Image,
   useDisclosure,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import {
   useAuth,
   useFirestore,
@@ -82,6 +82,17 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
     );
   });
 
+const userAvatar = forwardRef((props, ref) => {
+  const user = useUser();
+  const db = useFirestore();
+  const dbUserRef = db.collection('users').doc(user.uid);
+  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+
+  return (
+    <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
+  );
+});
+
 // TODO: Patrick, how much of this logic CAN and SHOULD we share with the original header?
 
 export default ({
@@ -94,17 +105,7 @@ export default ({
 }) => {
   const user = useUser();
   const auth = useAuth();
-  const db = useFirestore();
   const toast = useToast();
-
-  const userAvatar = forwardRef((props, ref) => {
-    const dbUserRef = db.collection('users').doc(user.uid);
-    const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
-
-    return (
-      <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
-    );
-  });
 
   const {
     isOpen: isLeftDrawerOpen,

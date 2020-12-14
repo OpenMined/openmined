@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Heading, Image, Text, Flex } from '@chakra-ui/core';
+import { Button, Heading, Image, Text, Flex } from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
 import { Link as RRDLink } from 'react-router-dom';
 

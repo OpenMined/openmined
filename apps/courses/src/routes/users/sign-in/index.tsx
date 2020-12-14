@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Heading, Text, Flex } from '@chakra-ui/core';
+import { Box, Heading, Text, Flex } from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
 
 import content from '../../../content/sign-in';

@@ -14,7 +14,7 @@ import {
   SimpleGrid,
   Text,
   UnorderedList,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';

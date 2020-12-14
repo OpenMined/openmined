@@ -43,48 +43,48 @@ export const hasCompletedProject = (u) =>
 
 // Project part permissions
 export const PROJECT_PART_SUBMISSIONS = 3;
-export const getProjectPartIndex = (pjs, p) =>
-  pjs.findIndex(({ _key }) => _key === p);
-export const getProjectPartNumber = (pjs, p) => getProjectPartIndex(pjs, p) + 1;
-export const doesProjectPartExist = (pjs, p) =>
-  getProjectPartIndex(pjs, p) !== -1;
+export const getProjectPartIndex = (ps, p) =>
+  ps.findIndex(({ _key }) => _key === p);
+export const getProjectPartNumber = (ps, p) => getProjectPartIndex(ps, p) + 1;
+export const doesProjectPartExist = (ps, p) =>
+  getProjectPartIndex(ps, p) !== -1;
 export const hasStartedProjectPart = (u, p) =>
   hasStartedProject(u) &&
   !!u.project.parts[p] &&
   !!u.project.parts[p].started_at;
 export const hasCompletedProjectPart = (u, p) =>
   hasStartedProjectPart(u, p) && !!u.project.parts[p].completed_at;
-export const hasAttemptedProjectPart = (u, p) =>
+export const hasSubmittedProjectPart = (u, p) =>
   hasStartedProjectPart(u, p) &&
-  !!u.project.parts[p].attempts &&
-  u.project.parts[p].attempts.length > 0;
-export const hasReceivedProjectPartFeedback = (u, p) =>
-  hasAttemptedProjectPart(u, p) &&
-  !!u.project.parts[p].feedback &&
-  u.project.parts[p].feedback.length > 0;
-export const hasRemainingProjectPartAttempts = (u, p) =>
-  hasReceivedProjectPartFeedback(u, p) &&
-  u.project.parts[p].feedback.length < PROJECT_PART_SUBMISSIONS;
-export const hasReceivedPassingProjectPartFeedback = (u, p) => {
-  if (!hasReceivedProjectPartFeedback(u, p)) return false;
+  !!u.project.parts[p].submissions &&
+  u.project.parts[p].submissions.length > 0;
+export const hasReceivedProjectPartReview = (u, p) =>
+  hasSubmittedProjectPart(u, p) &&
+  !!u.project.parts[p].reviews &&
+  u.project.parts[p].reviews.length > 0;
+export const hasRemainingProjectPartSubmissions = (u, p) =>
+  hasReceivedProjectPartReview(u, p) &&
+  u.project.parts[p].reviews.length < PROJECT_PART_SUBMISSIONS;
+export const hasReceivedPassingProjectPartReview = (u, p) => {
+  if (!hasReceivedProjectPartReview(u, p)) return false;
 
-  for (let i = 0; i < u.project.parts[p].feedback.length; i++) {
-    const currentFeedback = u.project.parts[p].feedback[i];
+  for (let i = 0; i < u.project.parts[p].reviews.length; i++) {
+    const currentReview = u.project.parts[p].reviews[i];
 
-    if (currentFeedback.status === 'passed' && currentFeedback.passed_at) {
+    if (currentReview.status === 'passed' && currentReview.reviewed_at) {
       return true;
     }
   }
 
   return false;
 };
-export const hasReceivedFailingProjectPartFeedback = (u, p) => {
-  if (!hasReceivedProjectPartFeedback(u, p)) return false;
+export const hasReceivedFailingProjectPartReview = (u, p) => {
+  if (!hasReceivedProjectPartReview(u, p)) return false;
 
-  for (let i = 0; i < u.project.parts[p].feedback.length; i++) {
-    const currentFeedback = u.project.parts[p].feedback[i];
+  for (let i = 0; i < u.project.parts[p].reviews.length; i++) {
+    const currentReview = u.project.parts[p].reviews[i];
 
-    if (currentFeedback.status === 'failed' && currentFeedback.failed_at) {
+    if (currentReview.status === 'failed' && currentReview.reviewed_at) {
       return true;
     }
   }
@@ -92,33 +92,33 @@ export const hasReceivedFailingProjectPartFeedback = (u, p) => {
   return false;
 };
 export const getProjectPartStatus = (u, p) => {
-  // If they have received feedback on the project part, and they passed...
-  if (hasReceivedPassingProjectPartFeedback(u, p)) {
+  // If they have received a review on the project part, and they passed...
+  if (hasReceivedPassingProjectPartReview(u, p)) {
     return 'passed';
   }
 
-  // If they have received feedback on the project part, and they they failed, but have remaining attempts...
+  // If they have received a review on the project part, and they they failed, but have remaining submissions...
   else if (
-    hasReceivedFailingProjectPartFeedback(u, p) &&
-    hasRemainingProjectPartAttempts(u, p)
+    hasReceivedFailingProjectPartReview(u, p) &&
+    hasRemainingProjectPartSubmissions(u, p)
   ) {
     return 'failed-but-pending';
   }
 
-  // If they have received feedback on the project part, and they they failed, and they don't have any remaining attempts...
+  // If they have received a review on the project part, and they they failed, and they don't have any remaining submissions...
   else if (
-    hasReceivedFailingProjectPartFeedback(u, p) &&
-    !hasRemainingProjectPartAttempts(u, p)
+    hasReceivedFailingProjectPartReview(u, p) &&
+    !hasRemainingProjectPartSubmissions(u, p)
   ) {
     return 'failed';
   }
 
-  // If they have attempted the project part, but haven't received feedback on it...
+  // If they have submitted the project part, but haven't received a review on it...
   else if (
-    hasAttemptedProjectPart(u, p) &&
-    !hasReceivedProjectPartFeedback(u, p)
+    hasSubmittedProjectPart(u, p) &&
+    !hasReceivedProjectPartReview(u, p)
   ) {
-    return 'attempted';
+    return 'submitted';
   }
 
   // If they have started the project part, but they have not completed it...

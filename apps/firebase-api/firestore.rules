@@ -27,6 +27,10 @@ service cloud.firestore {
         // TODO: User should not be able to modify certain fields
         // - They can't change the started_at date once it's set
         // - They can't change the completed_at date once it's set
+
+        match /submissions/{submission} {
+          allow read, create: if isSameUser()
+        }
       }
     }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Link } from '@chakra-ui/core';
+import { Text, Link } from '@chakra-ui/react';
 
 export default {
   heading: {

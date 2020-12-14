@@ -11,7 +11,7 @@ import {
   useToken,
   Stack,
   Divider,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
 import { useParams, Link as RRDLink, Navigate } from 'react-router-dom';
 import { User } from '@openmined/shared/types';

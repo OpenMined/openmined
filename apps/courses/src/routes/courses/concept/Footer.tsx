@@ -20,7 +20,7 @@ import {
   Progress,
   Text,
   Textarea,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBug,

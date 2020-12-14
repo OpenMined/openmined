@@ -9,7 +9,7 @@ import {
   BoxProps,
   useDisclosure,
   Input,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAuth, useFirestore } from 'reactfire';

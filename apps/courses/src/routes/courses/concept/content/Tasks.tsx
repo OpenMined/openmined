@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Stack, Checkbox, Text } from '@chakra-ui/core';
+import { Flex, Stack, Checkbox, Text } from '@chakra-ui/react';
 
 export default ({ tasks, spacing }) => (
   <Flex justify="center" my={spacing}>

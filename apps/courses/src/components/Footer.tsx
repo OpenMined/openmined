@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, Flex, Divider, Link, Icon } from '@chakra-ui/core';
+import { Box, Text, Button, Flex, Divider, Link, Icon } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 

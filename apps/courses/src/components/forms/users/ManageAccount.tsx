@@ -13,7 +13,7 @@ import {
   Icon,
   Link,
   Text,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import * as yup from 'yup';
 import { useAuth, useFirestore, useUser } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

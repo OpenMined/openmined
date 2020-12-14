@@ -5,7 +5,7 @@ import { unstable_createRoot } from 'react-dom';
 import { FirebaseAppProvider } from 'reactfire';
 import { SanityProvider } from '@openmined/shared/data-access-sanity';
 import { HelmetProvider } from 'react-helmet-async';
-import { ChakraProvider } from '@chakra-ui/core';
+import { ChakraProvider } from '@chakra-ui/react';
 import { SEOProvider } from '@openmined/shared/util-page';
 
 import theme from './theme';

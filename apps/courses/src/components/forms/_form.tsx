@@ -21,7 +21,7 @@ import {
   Stack,
   Radio,
   Flex,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { ObjectSchema } from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -95,13 +95,13 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
           {options.map((option) => {
             if (typeof option === 'string') {
               return (
-                <Radio key={option} value={option} ref={register}>
+                <Radio key={option} value={option} id={`option-${option.toLowerCase().split(' ').join('-')}`} ref={register}>
                   {option}
                 </Radio>
               );
             } else {
               return (
-                <Radio key={option.label} value={option.value} ref={register}>
+                <Radio key={option.label} value={option.value} id={`option-${option.value.toLowerCase().split(' ').join('-')}`} ref={register}>
                   {option.label}
                 </Radio>
               );

@@ -18,11 +18,11 @@ import {
   hasCompletedProject,
   hasStartedProjectPart,
   hasCompletedProjectPart,
-  hasAttemptedProjectPart,
-  hasReceivedProjectPartFeedback,
-  hasRemainingProjectPartAttempts,
-  hasReceivedPassingProjectPartFeedback,
-  hasReceivedFailingProjectPartFeedback,
+  hasSubmittedProjectPart,
+  hasReceivedProjectPartReview,
+  hasRemainingProjectPartSubmissions,
+  hasReceivedPassingProjectPartReview,
+  hasReceivedFailingProjectPartReview,
   getProjectPartStatus,
   getProjectStatus,
   getNextAvailablePage,
@@ -159,13 +159,13 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
-              { status: 'failed', failed_at: Date.now() },
-              { status: 'passed', passed_at: Date.now() },
+            reviews: [
+              { status: 'failed', reviewed_at: Date.now() },
+              { status: 'passed', reviewed_at: Date.now() },
             ],
             completed_at: Date.now(),
           },
@@ -177,7 +177,7 @@ describe('project helpers', () => {
     expect(hasCompletedProjectPart(user, part)).toBeTruthy();
   });
 
-  it('user has attempted project part', () => {
+  it('user has submitted project part', () => {
     const part = '1st-project-part';
     const user = {
       started_at: Date.now(),
@@ -186,16 +186,16 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            attempts: [{ submitted_at: Date.now() }],
+            submissions: [{ submitted_at: Date.now() }],
           },
         },
       },
     };
 
-    expect(hasAttemptedProjectPart(user, part)).toBeTruthy();
+    expect(hasSubmittedProjectPart(user, part)).toBeTruthy();
   });
 
-  it('user has received project part feedback', () => {
+  it('user has received project part review', () => {
     const part = '1st-project-part';
     const user = {
       started_at: Date.now(),
@@ -204,11 +204,11 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            attempts: [{ submitted_at: Date.now() }],
-            feedback: [
+            submissions: [{ submitted_at: Date.now() }],
+            reviews: [
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
             ],
           },
@@ -216,13 +216,11 @@ describe('project helpers', () => {
       },
     };
 
-    expect(hasReceivedProjectPartFeedback(user, part)).toBeTruthy();
-    expect(
-      hasReceivedProjectPartFeedback(user, '2nd-project-part')
-    ).toBeFalsy();
+    expect(hasReceivedProjectPartReview(user, part)).toBeTruthy();
+    expect(hasReceivedProjectPartReview(user, '2nd-project-part')).toBeFalsy();
   });
 
-  it('user has remaining project part attempts', () => {
+  it('user has remaining project part submissions', () => {
     const firstPart = '1st-project-part';
     const secondPart = '2nd-project-part';
     const user = {
@@ -232,33 +230,33 @@ describe('project helpers', () => {
         parts: {
           [firstPart]: {
             started_at: Date.now(),
-            attempts: [{ submitted_at: Date.now() }],
-            feedback: [
+            submissions: [{ submitted_at: Date.now() }],
+            reviews: [
               {
                 status: 'passed',
-                passed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
             ],
           },
           [secondPart]: {
             started_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
+            reviews: [
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
             ],
           },
@@ -266,11 +264,11 @@ describe('project helpers', () => {
       },
     };
 
-    expect(hasRemainingProjectPartAttempts(user, firstPart)).toBeTruthy();
-    expect(hasRemainingProjectPartAttempts(user, secondPart)).toBeFalsy();
+    expect(hasRemainingProjectPartSubmissions(user, firstPart)).toBeTruthy();
+    expect(hasRemainingProjectPartSubmissions(user, secondPart)).toBeFalsy();
   });
 
-  it('user has received passing project part feedback', () => {
+  it('user has received passing project part review', () => {
     const part = '1st-project-part';
     const user = {
       started_at: Date.now(),
@@ -279,18 +277,18 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
+            reviews: [
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
               {
                 status: 'passed',
-                passed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
             ],
           },
@@ -298,13 +296,13 @@ describe('project helpers', () => {
       },
     };
 
-    expect(hasReceivedPassingProjectPartFeedback(user, part)).toBeTruthy();
+    expect(hasReceivedPassingProjectPartReview(user, part)).toBeTruthy();
     expect(
-      hasReceivedPassingProjectPartFeedback(user, '2nd-project-part')
+      hasReceivedPassingProjectPartReview(user, '2nd-project-part')
     ).toBeFalsy();
   });
 
-  it('user has received failing project part feedback', () => {
+  it('user has received failing project part review', () => {
     const part = '1st-project-part';
     const user = {
       started_at: Date.now(),
@@ -313,18 +311,18 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
+            reviews: [
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
               {
                 status: 'passed',
-                passed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
             ],
           },
@@ -332,9 +330,9 @@ describe('project helpers', () => {
       },
     };
 
-    expect(hasReceivedFailingProjectPartFeedback(user, part)).toBeTruthy();
+    expect(hasReceivedFailingProjectPartReview(user, part)).toBeTruthy();
     expect(
-      hasReceivedFailingProjectPartFeedback(user, '2nd-project-part')
+      hasReceivedFailingProjectPartReview(user, '2nd-project-part')
     ).toBeFalsy();
   });
 
@@ -372,7 +370,7 @@ describe('project helpers', () => {
     expect(getProjectPartStatus(user, part)).toBe('in-progress');
   });
 
-  it('user has attempted a project part', () => {
+  it('user has submitted a project part', () => {
     const part = '1st-project-part';
     const user = {
       started_at: Date.now(),
@@ -381,13 +379,13 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            attempts: [{ submitted_at: Date.now() }],
+            submissions: [{ submitted_at: Date.now() }],
           },
         },
       },
     };
 
-    expect(getProjectPartStatus(user, part)).toBe('attempted');
+    expect(getProjectPartStatus(user, part)).toBe('submitted');
   });
 
   it('user has failed a project part', () => {
@@ -399,23 +397,23 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
+            reviews: [
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
             ],
           },
@@ -426,7 +424,7 @@ describe('project helpers', () => {
     expect(getProjectPartStatus(user, part)).toBe('failed');
   });
 
-  it('user has failed a project part, but has more attempts', () => {
+  it('user has failed a project part, but has more submissions', () => {
     const part = '1st-project-part';
     const user = {
       started_at: Date.now(),
@@ -435,18 +433,18 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
+            reviews: [
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
             ],
           },
@@ -466,18 +464,18 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
+            reviews: [
               {
                 status: 'failed',
-                failed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
               {
                 status: 'passed',
-                passed_at: Date.now(),
+                reviewed_at: Date.now(),
               },
             ],
           },
@@ -515,8 +513,8 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            attempts: [{ submitted_at: Date.now() }],
-            feedback: [{ status: 'passed', passed_at: Date.now() }],
+            submissions: [{ submitted_at: Date.now() }],
+            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
           },
           '2nd-project-part': {
             started_at: Date.now(),
@@ -532,18 +530,18 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            attempts: [{ submitted_at: Date.now() }],
-            feedback: [{ status: 'passed', passed_at: Date.now() }],
+            submissions: [{ submitted_at: Date.now() }],
+            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
           },
           '2nd-project-part': {
             started_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
-              { status: 'failed', failed_at: Date.now() },
-              { status: 'failed', failed_at: Date.now() },
+            reviews: [
+              { status: 'failed', reviewed_at: Date.now() },
+              { status: 'failed', reviewed_at: Date.now() },
             ],
           },
         },
@@ -557,19 +555,19 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            attempts: [{ submitted_at: Date.now() }],
-            feedback: [{ status: 'passed', passed_at: Date.now() }],
+            submissions: [{ submitted_at: Date.now() }],
+            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
           },
           '2nd-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
-              { status: 'failed', failed_at: Date.now() },
-              { status: 'passed', passed_at: Date.now() },
+            reviews: [
+              { status: 'failed', reviewed_at: Date.now() },
+              { status: 'passed', reviewed_at: Date.now() },
             ],
           },
         },
@@ -595,33 +593,33 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            attempts: [{ submitted_at: Date.now() }],
-            feedback: [{ status: 'passed', passed_at: Date.now() }],
+            submissions: [{ submitted_at: Date.now() }],
+            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
           },
           '2nd-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
-              { status: 'failed', failed_at: Date.now() },
-              { status: 'passed', passed_at: Date.now() },
+            reviews: [
+              { status: 'failed', reviewed_at: Date.now() },
+              { status: 'passed', reviewed_at: Date.now() },
             ],
           },
           '3rd-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
-              { status: 'failed', failed_at: Date.now() },
-              { status: 'failed', failed_at: Date.now() },
-              { status: 'passed', passed_at: Date.now() },
+            reviews: [
+              { status: 'failed', reviewed_at: Date.now() },
+              { status: 'failed', reviewed_at: Date.now() },
+              { status: 'passed', reviewed_at: Date.now() },
             ],
           },
         },
@@ -645,20 +643,20 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            attempts: [{ submitted_at: Date.now() }],
-            feedback: [{ status: 'passed', passed_at: Date.now() }],
+            submissions: [{ submitted_at: Date.now() }],
+            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
           },
           '2nd-project-part': {
             started_at: Date.now(),
-            attempts: [
+            submissions: [
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
               { submitted_at: Date.now() },
             ],
-            feedback: [
-              { status: 'failed', failed_at: Date.now() },
-              { status: 'failed', failed_at: Date.now() },
-              { status: 'failed', failed_at: Date.now() },
+            reviews: [
+              { status: 'failed', reviewed_at: Date.now() },
+              { status: 'failed', reviewed_at: Date.now() },
+              { status: 'failed', reviewed_at: Date.now() },
             ],
           },
         },

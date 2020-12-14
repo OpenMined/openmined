@@ -7,7 +7,7 @@ import {
   OrderedList,
   Text,
   UnorderedList,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import sanityClient from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';

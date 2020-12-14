@@ -7,7 +7,7 @@ import {
   Box,
   Image,
   SimpleGrid,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 import GridContainer from '../../components/GridContainer';
 import waveform from '../../assets/waveform/waveform-rainbow.png';

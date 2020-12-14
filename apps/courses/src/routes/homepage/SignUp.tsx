@@ -7,7 +7,7 @@ import {
   Flex,
   Icon,
   Link,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { useUser } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRss } from '@fortawesome/free-solid-svg-icons';

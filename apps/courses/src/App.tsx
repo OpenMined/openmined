@@ -1,7 +1,12 @@
 import React, { Suspense, useEffect, useState, useLayoutEffect } from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { useAnalytics } from 'reactfire';
+import {
+  preloadAuth,
+  preloadFirestore,
+  useAnalytics,
+  useFirebaseApp,
+} from 'reactfire';
 
 import Routes from './routes';
 
@@ -22,6 +27,33 @@ const Analytics = ({ location }) => {
 };
 
 const history = createBrowserHistory();
+
+const preloadSDKs = (firebaseApp) => {
+  return Promise.all([
+    preloadFirestore({
+      firebaseApp,
+      setup: (firestore) => {
+        const initalizedStore = firestore();
+        initalizedStore.settings({ host: 'localhost:8080', ssl: false });
+        firestore().enablePersistence();
+      },
+    }),
+    // TODO:  Create a bucket for dev purposes only
+    //
+    // preloadStorage({
+    //   firebaseApp,
+    //   setup: (storage) => {
+    //     storage('gs://put-a-bucket-here');
+    //   },
+    // }),
+    preloadAuth({
+      firebaseApp,
+      setup: (auth) => {
+        auth().useEmulator('http://localhost:9099/');
+      },
+    }),
+  ]);
+};
 
 const App = () => {
   const [cookiePrefs, setCookiePrefs] = useState(
@@ -53,6 +85,12 @@ const App = () => {
   const isInsideConcept =
     location.pathname.includes('/courses') &&
     location.pathname.split('/').length > 4;
+
+  const firebaseApp = useFirebaseApp();
+
+  if (process.env.NODE_ENV === 'development') {
+    preloadSDKs(firebaseApp);
+  }
 
   return (
     <Router action={action} location={location} navigator={history}>

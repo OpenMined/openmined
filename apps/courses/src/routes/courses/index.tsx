@@ -11,7 +11,10 @@ import CourseWrap from './Wrapper';
 
 import Loading from '../../components/Loading';
 
-// TODO: We absolutely should be using the useFirestoreDocData function instead, make sure to check if the DB has been updated for concepts though!
+// TODO: We absolutely should be using the useFirestoreDocData function instead, make sure to check if the DB has been updated for concepts though so that we don't write to the DB 2,000 times a minute!
+// After we do this, we can switch all instances of "window.location.href = " and "window.location.reload()" to use the "useNavigate()" hook in react-router... this would look way better, but I've had problems with the permissions working when using this
+// Therefore, to avoid permissions issues, it might just be better to force the page to change, rather than do a client-side navigation change
+// Either way, this is a fairly tough problem... please make sure to do this (if we do it at all) in ALL instnaces around the codebase
 
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));

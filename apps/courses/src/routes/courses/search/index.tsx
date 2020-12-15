@@ -7,6 +7,8 @@ import Sidebar from './Sidebar';
 import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
 
+// TODO: Just a general todo here: the fuzzy-find search is no longer working - fix it!
+
 export default ({ page }) => {
   const FIXED_SIDEBAR_WIDTH = 250;
   const FIXED_SIDEBAR_MD_WIDTH = 200;

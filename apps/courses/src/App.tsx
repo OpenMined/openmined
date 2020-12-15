@@ -42,6 +42,10 @@ const App = () => {
     setCookiePrefs(preference);
   };
 
+  // TODO: We need to write a test for the below logic, or refactor this to be tied to our routes somehow
+  // Basically, some pages will use the header and footer that are "sitewide", but many pages will not
+  // I think we should maybe consider putting this in some sort of configuration file and writing a test for it
+
   // If we're inside the course, don't show the <Header /> at all
   // Instead, we'll show the <CourseHeader />
   const isInsideCourse =

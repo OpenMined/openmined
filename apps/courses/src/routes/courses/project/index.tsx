@@ -113,10 +113,6 @@ const getStatusStyles = (status) => {
   }
 };
 
-// TODO: Remember to revisit the header title and such once you get the CMS plugged in
-// TODO: Create a sidebar component for use on a few pages
-// TODO: Create a link props method to determine internal vs. external links
-
 export default ({ course, page, progress, user, ts }) => {
   const db = useFirestore();
 

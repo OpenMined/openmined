@@ -72,6 +72,22 @@ export default ({ page }) => {
     },
   ];
 
+  const navigateLinkProps = (link) => {
+    const isExternal = link.includes('http://') || link.includes('https://');
+
+    return isExternal
+      ? {
+          as: 'a',
+          href: link,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        }
+      : {
+          as: RRDLink,
+          to: link,
+        };
+  };
+
   return (
     <Box bg="gray.900" color="white">
       <GridContainer isInitial py={[8, null, null, 16]}>
@@ -139,7 +155,11 @@ export default ({ page }) => {
                       {description}
                     </Text>
                   </Flex>
-                  <Link textDecoration="underline" {...linkProps}>
+                  <Link
+                    {...navigateLinkProps(link)}
+                    textDecoration="underline"
+                    {...linkProps}
+                  >
                     {linkTitle}
                   </Link>
                 </Flex>

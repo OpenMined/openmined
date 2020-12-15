@@ -8,7 +8,7 @@ import {
   Circle,
   Flex,
   Heading,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 export const CircledNumber = ({ isActive = false, children, ...props }) => {
   const circleProps = isActive

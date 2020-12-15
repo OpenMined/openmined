@@ -15,7 +15,7 @@ import {
   MenuItem,
   Text,
   MenuDivider,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import {
   useAuth,
   useFirestore,
@@ -108,10 +108,20 @@ const createLinks = (
     });
 };
 
+const userAvatar = forwardRef((props, ref) => {
+  const user = useUser();
+  const db = useFirestore();
+  const dbUserRef = db.collection('users').doc(user.uid);
+  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+
+  return (
+    <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
+  );
+});
+
 export default () => {
   const user = useUser();
   const auth = useAuth();
-  const db = useFirestore();
   const toast = useToast();
   const isLoggedIn = !!user;
 
@@ -124,15 +134,6 @@ export default () => {
     if (scrollY > 0 && !isScrolled) setIsScrolled(true);
     else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
   }, [scrollY, isScrolled]);
-
-  const userAvatar = forwardRef((props, ref) => {
-    const dbUserRef = db.collection('users').doc(user.uid);
-    const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
-
-    return (
-      <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
-    );
-  });
 
   // TODO: Patrick, these are the links we will have until this website goes live
   let LEFT_LINKS: LinkProps[], RIGHT_LINKS: LinkProps[];

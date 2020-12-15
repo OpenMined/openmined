@@ -1,5 +1,5 @@
 import React from 'react';
-import { BoxProps } from '@chakra-ui/core';
+import { BoxProps } from '@chakra-ui/react';
 import * as yup from 'yup';
 import { useAuth } from 'reactfire';
 

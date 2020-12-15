@@ -8,7 +8,7 @@ import {
   Stack,
   Icon,
   Progress,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { useFirestore, useUser } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';

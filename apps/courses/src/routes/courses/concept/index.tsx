@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useFirestore } from 'reactfire';
-import { Box } from '@chakra-ui/core';
+import { Box } from '@chakra-ui/react';
 import useScrollPosition from '@react-hook/window-scroll';
 
 import CourseContent from './content';

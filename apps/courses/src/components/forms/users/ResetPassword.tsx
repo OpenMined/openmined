@@ -1,7 +1,7 @@
 import React from 'react';
 import * as yup from 'yup';
 import { useAuth } from 'reactfire';
-import { BoxProps } from '@chakra-ui/core';
+import { BoxProps } from '@chakra-ui/react';
 
 import Form from '../_form';
 import { validEmail } from '../_validation';

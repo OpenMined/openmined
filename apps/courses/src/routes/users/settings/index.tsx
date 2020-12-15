@@ -10,7 +10,7 @@ import {
   Box,
   Heading,
   useToken,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 import { useUser } from 'reactfire';
 
 import Page from '@openmined/shared/util-page';

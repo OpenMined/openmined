@@ -12,7 +12,8 @@ import {
   TagLabel,
   Text,
   UnorderedList,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
+import { useFirestore } from 'reactfire';
 import { Link as RRDLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -26,17 +27,20 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import ProjectAccordion from './ProjectAccordion';
-
-import {
-  getProjectPartStatus,
-  getProjectStatus,
-  hasAttemptedProjectPart,
-  hasStartedProject,
-} from '../_helpers';
-import GridContainer from '../../../components/GridContainer';
-import { useFirestore } from 'reactfire';
 import SubmissionView from './SubmissionView';
 
+import {
+  getProjectPartNumber,
+  getProjectPartStatus,
+  getProjectStatus,
+  hasSubmittedProjectPart,
+  hasStartedProject,
+  hasReceivedProjectPartReview,
+  PROJECT_PART_SUBMISSIONS,
+} from '../_helpers';
+import GridContainer from '../../../components/GridContainer';
+
+// The detail links on the sidebar
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
     <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
@@ -47,18 +51,41 @@ const Detail = ({ title, value }) => (
   </Flex>
 );
 
+// Intelligently combine the submissions array and the reviews array so they're easier to work with
+const combineSubmissionsAndReviews = (submissions, reviews) =>
+  submissions && submissions.length > 0
+    ? [
+        ...submissions.map((s, i) => {
+          const equivalentReview = reviews[i];
+
+          if (equivalentReview) return { ...s, ...equivalentReview };
+          return { ...s, status: 'pending' };
+        }),
+        ...Array(PROJECT_PART_SUBMISSIONS - submissions.length).fill({
+          status: 'none',
+        }),
+      ]
+    : Array(PROJECT_PART_SUBMISSIONS).fill({ status: 'none' });
+
+// Tell us the status the entire project
+// ... and go through the user's progress and tell us the status of each part
+// ... and return all the relevant submissions and reviews
 const prepAccordionAndStatus = (progress, parts) => {
   const content = parts.map((part) => ({
     ...part,
     status: getProjectPartStatus(progress, part._key),
-    attempts: hasAttemptedProjectPart(progress, part._key)
-      ? progress.project.parts[part._key].attempts
+    submissions: hasSubmittedProjectPart(progress, part._key)
+      ? combineSubmissionsAndReviews(
+          progress.project.parts[part._key].submissions,
+          progress.project.parts[part._key].reviews
+        )
       : [],
   }));
 
   return { content, status: getProjectStatus(progress, parts) };
 };
 
+// Return the appropriate text and <Tag /> styles for the relevant status
 const getStatusStyles = (status) => {
   if (status === 'not-started') {
     return {
@@ -85,6 +112,12 @@ const getStatusStyles = (status) => {
   }
 };
 
+// PATRICK, THE FOLLOWING ARE YOU "FINAL" TODOS FOR THE PROJECT PAGE:
+// - Render the previous submission content instead of the <RichTextEditor />
+// - Render the list of attempts that have been reviewed above the <Tabs /> on <SubmissionView />
+// - Clicking on one of those calls setSubmissionViewAttempt, which enables the feedback tab and the feedback black box above the tabs
+// - Make sure that the submission tab is not rendering the editor when feedback is enabled!
+
 // TODO: Remember to revisit the header title and such once you get the CMS plugged in
 // TODO: Do a project-wide search for the original project string field and see where it was used (replace with project.title)
 // TODO: Do the course completion page
@@ -103,20 +136,10 @@ export default ({ course, page, progress, user, ts }) => {
     certification,
   } = page;
 
-  const [submissionView, setSubmissionView] = useState(null);
-
-  if (submissionView) {
-    return (
-      <SubmissionView
-        projectTitle={title}
-        part={parts[parts.findIndex((p) => p._key === submissionView)]}
-        setSubmissionView={setSubmissionView}
-      />
-    );
-  }
-
+  // Set up the width of the sidebar
   const SIDEBAR_WIDTH = 360;
 
+  // Define the resources for that sidebar, too
   const resources = [
     {
       title: 'Discussion Board',
@@ -135,16 +158,28 @@ export default ({ course, page, progress, user, ts }) => {
     },
   ];
 
+  // Make sure to get the content for each of the parts and the project status
   const { content, status } = prepAccordionAndStatus(progress, parts);
+
+  // Also get the styles for the current project status
   const {
     icon: statusIcon,
     text: statusText,
     ...statusStyles
   } = getStatusStyles(status);
 
-  const onBeginProjectPart = (part) => {
-    const data = {};
+  // Save the arrayUnion function so that we can push items into a Firestore array
+  const arrayUnion = useFirestore.FieldValue.arrayUnion;
 
+  // Apparently, you cannot use SererTimestamp (ts()) inside of arrayUnion, so this is needed
+  // https://stackoverflow.com/questions/52324505/function-fieldvalue-arrayunion-called-with-invalid-data-fieldvalue-servertime
+  const currentTime = useFirestore.Timestamp.now;
+
+  // When beginning a project part
+  const onBeginProjectPart = (part) => {
+    const data = progress;
+
+    // If they haven't begun the project at all
     if (!hasStartedProject(progress)) {
       data.project = {
         started_at: ts(),
@@ -152,8 +187,11 @@ export default ({ course, page, progress, user, ts }) => {
       };
     }
 
+    // Add the project part to the object of parts
     data.project.parts[part] = {
       started_at: ts(),
+      submissions: [], // Make sure to set the submissions array up
+      reviews: [], // Make sure to also set the reviews array up
     };
 
     return db
@@ -164,6 +202,83 @@ export default ({ course, page, progress, user, ts }) => {
       .set(data, { merge: true });
   };
 
+  // When the user attempts a submission
+  const onAttemptSubmission = async (part, content) => {
+    // Get their current submissions
+    const submissions = progress.project.parts[part].submissions;
+
+    // If we have less than the total number of allowed submissions
+    if (submissions.length < PROJECT_PART_SUBMISSIONS) {
+      // Get the current time (see where this function is defined above)
+      const time = currentTime();
+
+      // First, submit the submissions to the submissions subcollection
+      const submission = await db
+        .collection('users')
+        .doc(user.uid)
+        .collection('courses')
+        .doc(course)
+        .collection('submissions')
+        .add({
+          course,
+          part,
+          attempt:
+            submissions && submissions.length ? submissions.length + 1 : 1,
+          student: db.collection('users').doc(user.uid),
+          submitted_at: time,
+          content,
+        });
+
+      // Once that's done, add the submissions to the submissions array on the user's course document
+      // Note the use of the reference to the previous submission
+      await db
+        .collection('users')
+        .doc(user.uid)
+        .collection('courses')
+        .doc(course)
+        .set(
+          {
+            project: {
+              parts: {
+                [part]: {
+                  submissions: arrayUnion({
+                    submitted_at: time,
+                    submission,
+                  }),
+                },
+              },
+            },
+          },
+          { merge: true }
+        )
+        .then(() => {
+          // Once that's done, reload the screen to refresh the state
+          window.location.reload();
+        });
+    }
+  };
+
+  // submissionView will be set to a project part "_key" and will change the layout
+  // submissionViewAttempt is used with submissionView to assign a specific attempt to the submission view
+  const [submissionView, setSubmissionView] = useState(null);
+  const [submissionViewAttempt, setSubmissionViewAttempt] = useState(null);
+
+  // If we have a submission view, render that screen
+  if (submissionView) {
+    return (
+      <SubmissionView
+        projectTitle={title}
+        number={getProjectPartNumber(parts, submissionView)}
+        part={content[content.findIndex((p) => p._key === submissionView)]}
+        setSubmissionView={setSubmissionView}
+        submissionViewAttempt={submissionViewAttempt}
+        setSubmissionViewAttempt={setSubmissionViewAttempt}
+        onAttemptSubmission={onAttemptSubmission}
+      />
+    );
+  }
+
+  // Otherwise, render the main project page
   return (
     <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
       <Flex
@@ -209,6 +324,7 @@ export default ({ course, page, progress, user, ts }) => {
             content={content}
             mb={6}
             setSubmissionView={setSubmissionView}
+            setSubmissionViewAttempt={setSubmissionViewAttempt}
             onBeginProjectPart={onBeginProjectPart}
           />
           <Button disabled colorScheme="black">

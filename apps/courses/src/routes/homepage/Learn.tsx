@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Heading, Text, SimpleGrid } from '@chakra-ui/core';
+import { Box, Heading, Text, SimpleGrid } from '@chakra-ui/react';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 
 import GridContainer from '../../components/GridContainer';

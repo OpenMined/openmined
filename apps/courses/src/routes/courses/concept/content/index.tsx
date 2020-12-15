@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Heading, Text, Divider as ChakraDivider } from '@chakra-ui/core';
+import { Box, Heading, Text, Divider as ChakraDivider } from '@chakra-ui/react';
 
 import Code from './Code';
 import Divider from './Divider';
@@ -14,7 +14,7 @@ import GridContainer from '../../../../components/GridContainer';
 
 const SPACING = 8;
 
-const Content = ({
+export const Content = ({
   content,
   course,
   lesson,
@@ -42,8 +42,8 @@ const Content = ({
           lesson={lesson}
           concept={concept}
           progress={progress}
-          numQuizzes={numQuizzesOnConcept}
           onComplete={onQuizComplete}
+          numQuizzes={numQuizzesOnConcept}
         />
       );
     } else if (_type === 'tasks') {

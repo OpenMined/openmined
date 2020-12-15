@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Heading, Text, Button, Link, Icon } from '@chakra-ui/core';
+import { Box, Flex, Heading, Text, Button, Link, Icon } from '@chakra-ui/react';
 import {
   ComposableMap,
   Geographies,

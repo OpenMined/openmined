@@ -14,7 +14,7 @@ import Header from './components/Header';
 import Loading from './components/Loading';
 import Cookies from './components/Cookies';
 import Footer from './components/Footer';
-import { Box } from '@chakra-ui/core';
+import { Box } from '@chakra-ui/react';
 
 const Analytics = ({ location }) => {
   const analytics = useAnalytics();

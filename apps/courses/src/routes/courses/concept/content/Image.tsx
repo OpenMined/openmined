@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Image } from '@chakra-ui/core';
+import { Flex, Image } from '@chakra-ui/react';
 import { useSanityImage } from '@openmined/shared/data-access-sanity';
 
 export default (image, spacing) => {

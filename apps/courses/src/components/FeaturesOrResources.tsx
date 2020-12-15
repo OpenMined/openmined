@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Heading, Text, SimpleGrid, Link } from '@chakra-ui/core';
+import { Box, Heading, Text, SimpleGrid, Link } from '@chakra-ui/react';
 
 import GridContainer from './GridContainer';
 

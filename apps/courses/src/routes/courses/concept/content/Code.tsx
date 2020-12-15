@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { useClipboard, Box, Icon } from '@chakra-ui/core';
+import { useClipboard, Box, Icon } from '@chakra-ui/react';
 import Prism from 'prismjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';

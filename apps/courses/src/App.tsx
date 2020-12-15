@@ -46,7 +46,14 @@ const App = () => {
   // Instead, we'll show the <CourseHeader />
   const isInsideCourse =
     location.pathname.includes('/courses') &&
-    location.pathname.split('/').length > 3;
+    location.pathname.split('/').length > 3 &&
+    !location.pathname.includes('/complete');
+
+  // If we're on the course completion page, we want the header to default to black
+  const isOnCourseComplete =
+    location.pathname.includes('/courses') &&
+    location.pathname.split('/').length > 3 &&
+    location.pathname.includes('/complete');
 
   // More specifically, if we're inside the concept, we don't render the default <Footer />
   // Instead, we'll show the <CourseFooter />
@@ -58,7 +65,7 @@ const App = () => {
     <Router action={action} location={location} navigator={history}>
       <Suspense fallback={<Loading />}>
         {cookiePrefs === 'all' && <Analytics location={location} />}
-        {!isInsideCourse && <Header />}
+        {!isInsideCourse && <Header noScrolling={isOnCourseComplete} />}
         <Box
           minHeight="100vh"
           display="grid"

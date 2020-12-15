@@ -144,8 +144,8 @@ export default extendTheme({
       900: '#004A48',
     },
     cyan: {
-      50: '#D8F6FA',
-      100: '#D8F6FA',
+      50: '#DFF5F8',
+      100: '#AAE9F1',
       200: '#7CD8E4',
       300: '#50CFE0',
       400: '#0FC2DA',

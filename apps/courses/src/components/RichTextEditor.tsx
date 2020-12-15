@@ -1,5 +1,17 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Flex, Icon, Text, Box, Divider } from '@chakra-ui/react';
+import {
+  Flex,
+  Icon,
+  Text,
+  Box,
+  Divider,
+  Heading,
+  UnorderedList,
+  ListItem,
+  OrderedList,
+  Link,
+  Code,
+} from '@chakra-ui/react';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, useSlate, Slate } from 'slate-react';
 import {
@@ -19,8 +31,11 @@ import {
   faListOl,
   faListUl,
   faQuoteLeft,
+  faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
+
+export const EDITOR_STORAGE_STRING = '@openmined/rich-text-editor';
 
 const HOTKEYS = {
   'mod+b': 'bold',
@@ -31,8 +46,6 @@ const HOTKEYS = {
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 
-export const EDITOR_STORAGE_STRING = '@openmined/rich-text-editor';
-
 const initialValue = [
   {
     type: 'paragraph',
@@ -40,68 +53,81 @@ const initialValue = [
   },
 ];
 
-export default () => {
+export default ({ readOnly = false, content = null, ...props }) => {
   const [value, setValue] = useState<Node[]>(
-    JSON.parse(localStorage.getItem(EDITOR_STORAGE_STRING)) || initialValue
+    content ||
+      JSON.parse(localStorage.getItem(EDITOR_STORAGE_STRING)) ||
+      initialValue
   );
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   return (
-    <Slate
-      editor={editor}
-      value={value}
-      onChange={(v) => {
-        setValue(v);
+    <Box {...props}>
+      <Slate
+        editor={editor}
+        value={value}
+        onChange={(v) => {
+          setValue(v);
 
-        localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(v));
-      }}
-    >
-      <Flex width="full" bg="gray.800" justify="space-between" align="center">
-        <Flex align="center">
-          <MarkButton format="bold" icon={faBold} />
-          <MarkButton format="italic" icon={faItalic} />
-          <MarkButton format="underline" icon={faUnderline} />
-          <Divider orientation="vertical" height={8} mx={2} />
-          <BlockButton format="heading-one" text="H1" />
-          <BlockButton format="heading-two" text="H2" />
-          <BlockButton format="heading-three" text="H3" />
-          <BlockButton format="heading-four" text="H4" />
-          <BlockButton format="heading-five" text="H5" />
-          <BlockButton format="heading-six" text="H6" />
-          <Divider orientation="vertical" height={8} mx={2} />
-          {/* TODO: Patrick add the link functionality */}
-          <MarkButton format="link" icon={faLink} />
-          <MarkButton format="code" icon={faCode} />
-          <BlockButton format="block-quote" icon={faQuoteLeft} />
-          <Divider orientation="vertical" height={8} mx={2} />
-          <BlockButton format="numbered-list" icon={faListOl} />
-          <BlockButton format="bulleted-list" icon={faListUl} />
-        </Flex>
-        <Text color="gray.400" mr={3} fontStyle="italic">
-          Autosave on
-        </Text>
-      </Flex>
-      <Box px={12} py={8}>
-        <Editable
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          placeholder="Start typing..."
-          spellCheck
-          autoFocus
-          onKeyDown={(event) => {
-            for (const hotkey in HOTKEYS) {
-              if (isHotkey(hotkey, event as any)) {
-                event.preventDefault();
-                const mark = HOTKEYS[hotkey];
-                toggleMark(editor, mark);
+          localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(v));
+        }}
+      >
+        {!readOnly && (
+          <Flex
+            width="full"
+            bg="gray.800"
+            justify="space-between"
+            align="center"
+          >
+            <Flex align="center">
+              <MarkButton format="bold" icon={faBold} />
+              <MarkButton format="italic" icon={faItalic} />
+              <MarkButton format="underline" icon={faUnderline} />
+              <MarkButton format="strikethrough" icon={faStrikethrough} />
+              <Divider orientation="vertical" height={8} mx={2} />
+              <BlockButton format="heading-one" text="H1" />
+              <BlockButton format="heading-two" text="H2" />
+              <BlockButton format="heading-three" text="H3" />
+              <BlockButton format="heading-four" text="H4" />
+              <BlockButton format="heading-five" text="H5" />
+              <BlockButton format="heading-six" text="H6" />
+              <Divider orientation="vertical" height={8} mx={2} />
+              {/* TODO: Patrick add the link functionality */}
+              <MarkButton format="link" icon={faLink} />
+              <MarkButton format="code" icon={faCode} />
+              <BlockButton format="block-quote" icon={faQuoteLeft} />
+              <Divider orientation="vertical" height={8} mx={2} />
+              <BlockButton format="numbered-list" icon={faListOl} />
+              <BlockButton format="bulleted-list" icon={faListUl} />
+            </Flex>
+            <Text color="gray.400" mr={3} fontStyle="italic">
+              Autosave on
+            </Text>
+          </Flex>
+        )}
+        <Box px={readOnly ? 0 : 12} py={readOnly ? 0 : 8}>
+          <Editable
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            placeholder="Start typing..."
+            readOnly={readOnly}
+            spellCheck
+            autoFocus
+            onKeyDown={(event) => {
+              for (const hotkey in HOTKEYS) {
+                if (isHotkey(hotkey, event as any)) {
+                  event.preventDefault();
+                  const mark = HOTKEYS[hotkey];
+                  toggleMark(editor, mark);
+                }
               }
-            }
-          }}
-        />
-      </Box>
-    </Slate>
+            }}
+          />
+        </Box>
+      </Slate>
+    </Box>
   );
 };
 
@@ -153,53 +179,128 @@ const isMarkActive = (editor, format) => {
   return marks ? marks[format] === true : false;
 };
 
-const Element = ({ attributes, children, element }) => {
+export const Element = ({ attributes, children, element }) => {
   switch (element.type) {
     case 'block-quote':
-      return <blockquote {...attributes}>{children}</blockquote>;
-    case 'bulleted-list':
-      return <ul {...attributes}>{children}</ul>;
-    case 'heading-one':
-      return <h1 {...attributes}>{children}</h1>;
-    case 'heading-two':
-      return <h2 {...attributes}>{children}</h2>;
-    case 'heading-three':
-      return <h3 {...attributes}>{children}</h3>;
-    case 'heading-four':
-      return <h4 {...attributes}>{children}</h4>;
-    case 'heading-five':
-      return <h5 {...attributes}>{children}</h5>;
-    case 'heading-six':
-      return <h6 {...attributes}>{children}</h6>;
-    case 'list-item':
-      return <li {...attributes}>{children}</li>;
+      return (
+        <Text
+          mb={4}
+          fontStyle="italic"
+          color="gray.700"
+          bg="gray.100"
+          p={4}
+          {...attributes}
+        >
+          {children}
+        </Text>
+      );
     case 'numbered-list':
-      return <ol {...attributes}>{children}</ol>;
+      return (
+        <OrderedList mb={4} {...attributes}>
+          {children}
+        </OrderedList>
+      );
+    case 'bulleted-list':
+      return (
+        <UnorderedList mb={4} {...attributes}>
+          {children}
+        </UnorderedList>
+      );
+    case 'list-item':
+      return <ListItem>{children}</ListItem>;
+    case 'heading-one':
+      return (
+        <Heading mb={4} as="h1" size="2xl" {...attributes}>
+          {children}
+        </Heading>
+      );
+    case 'heading-two':
+      return (
+        <Heading mb={4} as="h2" size="xl" {...attributes}>
+          {children}
+        </Heading>
+      );
+    case 'heading-three':
+      return (
+        <Heading mb={4} as="h3" size="lg" {...attributes}>
+          {children}
+        </Heading>
+      );
+    case 'heading-four':
+      return (
+        <Heading mb={4} as="h4" size="md" {...attributes}>
+          {children}
+        </Heading>
+      );
+    case 'heading-five':
+      return (
+        <Heading mb={4} as="h5" size="sm" {...attributes}>
+          {children}
+        </Heading>
+      );
+    case 'heading-six':
+      return (
+        <Heading mb={4} as="h6" size="xs" {...attributes}>
+          {children}
+        </Heading>
+      );
     case 'link':
-      return <a {...attributes}>{children}</a>;
+      return (
+        <Link as="a" target="_blank" rel="noopener noreferrer" {...attributes}>
+          {children}
+        </Link>
+      );
     default:
-      return <p {...attributes}>{children}</p>;
+      return (
+        <Text mb={4} {...attributes}>
+          {children}
+        </Text>
+      );
   }
 };
 
-const Leaf = ({ attributes, children, leaf }) => {
+export const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
-    children = <strong>{children}</strong>;
-  }
-
-  if (leaf.code) {
-    children = <code>{children}</code>;
+    return (
+      <Text as="span" fontWeight="bold" {...attributes}>
+        {children}
+      </Text>
+    );
   }
 
   if (leaf.italic) {
-    children = <em>{children}</em>;
+    return (
+      <Text as="span" fontStyle="italic" {...attributes}>
+        {children}
+      </Text>
+    );
   }
 
   if (leaf.underline) {
-    children = <u>{children}</u>;
+    return (
+      <Text as="span" textDecoration="underline" {...attributes}>
+        {children}
+      </Text>
+    );
   }
 
-  return <span {...attributes}>{children}</span>;
+  if (leaf.strikethrough) {
+    return (
+      <Text as="span" textDecoration="line-through" {...attributes}>
+        {children}
+      </Text>
+    );
+  }
+
+  if (leaf.code) {
+    return <Code {...attributes}>{children}</Code>;
+  }
+
+  return (
+    <Text as="span" {...attributes}>
+      {children}
+    </Text>
+  );
 };
 
 const BlockButton = ({ format, icon, text }) => {

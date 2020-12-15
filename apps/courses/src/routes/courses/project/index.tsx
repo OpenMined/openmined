@@ -82,7 +82,8 @@ const prepAccordionAndStatus = (progress, parts) => {
       : [],
   }));
 
-  return { content, status: getProjectStatus(progress, parts) };
+  // return { content, status: getProjectStatus(progress, parts) };
+  return { content, status: 'passed' };
 };
 
 // Return the appropriate text and <Tag /> styles for the relevant status
@@ -112,16 +113,7 @@ const getStatusStyles = (status) => {
   }
 };
 
-// PATRICK, THE FOLLOWING ARE YOU "FINAL" TODOS FOR THE PROJECT PAGE:
-// - Render the previous submission content instead of the <RichTextEditor />
-// - Render the list of attempts that have been reviewed above the <Tabs /> on <SubmissionView />
-// - Clicking on one of those calls setSubmissionViewAttempt, which enables the feedback tab and the feedback black box above the tabs
-// - Make sure that the submission tab is not rendering the editor when feedback is enabled!
-
 // TODO: Remember to revisit the header title and such once you get the CMS plugged in
-// TODO: Do a project-wide search for the original project string field and see where it was used (replace with project.title)
-// TODO: Do the course completion page
-// TODO: Figure out what we're gonna need to do for certification in various places around the site
 // TODO: Create a sidebar component for use on a few pages
 // TODO: Create a link props method to determine internal vs. external links
 
@@ -327,7 +319,13 @@ export default ({ course, page, progress, user, ts }) => {
             setSubmissionViewAttempt={setSubmissionViewAttempt}
             onBeginProjectPart={onBeginProjectPart}
           />
-          <Button disabled colorScheme="black">
+          <Button
+            disabled={!(status === 'passed' || status === 'failed')}
+            onClick={() =>
+              (window.location.href = `/courses/${course}/project/complete`)
+            }
+            colorScheme="black"
+          >
             Finish
           </Button>
         </Box>
@@ -341,7 +339,7 @@ export default ({ course, page, progress, user, ts }) => {
           {level && <Detail title="Level" value={level} />}
           {length && <Detail title="Length" value={length} />}
           {certification && (
-            <Detail title="Certification" value={certification} />
+            <Detail title="Certification" value={certification.title} />
           )}
           <Divider my={6} />
           <Text fontWeight="bold" mb={4}>

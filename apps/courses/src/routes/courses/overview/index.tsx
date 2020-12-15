@@ -174,7 +174,7 @@ export default ({ course, page }) => {
               {level && <Detail title="Level" value={level} />}
               {length && <Detail title="Length" value={length} />}
               {certification && (
-                <Detail title="Certification" value={certification} />
+                <Detail title="Certification" value={certification.title} />
               )}
               <Divider mb={4} />
               <Text fontWeight="bold">Prerequisites</Text>

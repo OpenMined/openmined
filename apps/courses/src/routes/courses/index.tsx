@@ -15,7 +15,9 @@ import Loading from '../../components/Loading';
 
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
+const CourseComplete = lazy(() => import('./course-complete'));
 const CourseProject = lazy(() => import('./project'));
+const CourseProjectComplete = lazy(() => import('./project-complete'));
 const CourseLesson = lazy(() => import('./lesson'));
 const CourseLessonComplete = lazy(() => import('./lesson-complete'));
 const CourseConcept = lazy(() => import('./concept'));
@@ -24,7 +26,9 @@ const CourseConcept = lazy(() => import('./concept'));
 const pages = {
   search: CourseSearch,
   overview: CourseOverview,
+  courseComplete: CourseComplete,
   project: CourseProject,
+  projectComplete: CourseProjectComplete,
   lesson: CourseLesson,
   lessonComplete: CourseLessonComplete,
   concept: CourseConcept,
@@ -37,7 +41,7 @@ const PermissionsGate = ({ children, progress, which, page, ...params }) => {
     page.lessons || page.course.lessons, // The CMS's list of lessons and concepts
     params.course, // The current course
     params.lesson || 'project', // The current lesson (or the "project" lesson)
-    params.concept ? params.concept : which === 'lesson' ? null : 'complete' // The current concept, if it exists, or the appropriate lesson/lesson complete "concept"
+    params.concept ? params.concept : which === 'lesson' ? null : 'complete' // The current concept, if it exists, or the appropriate lesson/project/course complete "concept"
   );
 
   // If we're loading or going to redirect, render the loader

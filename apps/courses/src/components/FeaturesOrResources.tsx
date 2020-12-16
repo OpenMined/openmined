@@ -39,7 +39,8 @@ const Feature = ({ title, description, icon, link }) => (
 );
 
 export default ({ which }) => {
-  const { title, icon, list } = which === 'features' ? features : resources;
+  const { title, icon, list }: { title: string; icon: string; list: any[] } =
+    which === 'features' ? features : resources;
 
   return (
     <GridContainer bg="gray.200">

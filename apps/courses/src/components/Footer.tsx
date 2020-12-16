@@ -67,7 +67,7 @@ export default (props) => (
                     item.link.includes('http://') ||
                     item.link.includes('https://');
 
-                  const linkProps = isExternal
+                  const linkProps: any = isExternal
                     ? {
                         target: '_blank',
                         rel: 'noopener noreferrer',

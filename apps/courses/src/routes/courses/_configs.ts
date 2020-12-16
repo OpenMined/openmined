@@ -1,7 +1,6 @@
 import { getLessonNumber } from './_helpers';
 
-// TODO: Check with designs to see if we HAVE to have a gray.50 background for this page
-// <Page body={{ style: `background: ${gray50};` }} />
+// SEE TODO #7
 export const search = () => ({
   page: {
     title: 'Courses',

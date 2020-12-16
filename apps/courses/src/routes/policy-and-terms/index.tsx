@@ -130,6 +130,7 @@ export default () => {
                   ))}
                 </List>
                 <Divider my={8} />
+                {/* SEE TODO (#3) */}
                 <Icon
                   as={FontAwesomeIcon}
                   icon={faCommentAlt}
@@ -146,6 +147,7 @@ export default () => {
                     color="indigo.500"
                     textAlign="center"
                   >
+                    {/* SEE TODO (#3) */}
                     <Icon as={FontAwesomeIcon} icon={faChevronUp} />
                     <Text textTransform="uppercase">Top</Text>
                   </Box>

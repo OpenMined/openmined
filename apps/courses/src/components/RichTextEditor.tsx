@@ -94,7 +94,7 @@ export default ({ readOnly = false, content = null, ...props }) => {
               <BlockButton format="heading-five" text="H5" />
               <BlockButton format="heading-six" text="H6" />
               <Divider orientation="vertical" height={8} mx={2} />
-              {/* TODO: Patrick add the link functionality */}
+              {/* SEE TODO (#2) */}
               <MarkButton format="link" icon={faLink} />
               <MarkButton format="code" icon={faCode} />
               <BlockButton format="block-quote" icon={faQuoteLeft} />
@@ -319,6 +319,7 @@ const BlockButton = ({ format, icon, text }) => {
         toggleBlock(editor, format);
       }}
     >
+      {/* SEE TODO (#3) */}
       {icon && <Icon as={FontAwesomeIcon} icon={icon} />}
       {text && <Text fontWeight="bold">{text}</Text>}
     </Flex>
@@ -341,6 +342,7 @@ const MarkButton = ({ format, icon }) => {
         toggleMark(editor, format);
       }}
     >
+      {/* SEE TODO (#3) */}
       <Icon as={FontAwesomeIcon} icon={icon} />
     </Flex>
   );

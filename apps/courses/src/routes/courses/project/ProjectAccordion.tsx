@@ -226,6 +226,7 @@ export default ({
                 onClick={() => openIndex(index)}
               >
                 <Flex flex="1" align="center">
+                  {/* SEE TODO (#3) */}
                   {typeof icon !== 'string' && (
                     <Icon
                       size="lg"

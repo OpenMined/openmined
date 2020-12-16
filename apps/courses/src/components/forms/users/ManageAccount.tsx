@@ -46,7 +46,7 @@ export default ({
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef();
 
-  // TODO: Patrick, find a way to centralize this logic since it's done twice in the codebase
+  // SEE TODO (#5)
   const githubProvider = new useAuth.GithubAuthProvider();
 
   githubProvider.addScope('public_repo');
@@ -158,7 +158,7 @@ export default ({
       })
       .catch((error) => handleErrors(toast, error));
 
-  // TODO: Patrick, we need to make sure this actually deletes all the data associated with the user
+  // SEE TODO (#6)
   const onDeleteAccount = () =>
     auth.currentUser
       .delete()
@@ -190,7 +190,7 @@ export default ({
         Manage Linked Accounts
       </Heading>
       <Flex align="center">
-        {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+        {/* SEE TODO (#3) */}
         <Icon as={FontAwesomeIcon} icon={faEnvelope} size="2x" />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Email
@@ -200,7 +200,7 @@ export default ({
         )}
       </Flex>
       <Flex align="center" mt={4}>
-        {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+        {/* SEE TODO (#3) */}
         <Icon as={FontAwesomeIcon} icon={faGithub} size="2x" />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Github

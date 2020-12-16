@@ -116,6 +116,7 @@ export default ({
     <Box bg="gray.50">
       <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
         <Flex justify="space-between" align="center">
+          {/* SEE TODO (#3) */}
           <Breadcrumb
             spacing={2}
             color="gray.700"
@@ -141,6 +142,7 @@ export default ({
             _hover={{ color: 'gray.800' }}
           >
             <Flex align="center">
+              {/* SEE TODO (#3) */}
               <Icon as={FontAwesomeIcon} icon={faCommentAlt} mr={2} />
               <Text>Get Help</Text>
             </Flex>

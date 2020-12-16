@@ -1,7 +1,7 @@
 import React from 'react';
 import { Flex, AspectRatio, Box } from '@chakra-ui/react';
 
-// TODO: Consider doing a skinned version of the video player (including in the Hero on the homepage)
+// SEE TODO #12
 
 export default ({ video, spacing = 0 }) => (
   <Flex justify="center" my={spacing}>

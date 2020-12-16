@@ -45,6 +45,7 @@ export default (props) => (
             boxShadow="0px 4px 16px rgba(0, 0, 0, 0.3)"
           >
             <Text mr={2}>{about.button.text}</Text>
+            {/* SEE TODO (#3) */}
             <Icon
               color="gray.200"
               as={FontAwesomeIcon}

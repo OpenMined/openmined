@@ -5,6 +5,7 @@ export default ({ tasks, spacing }) => (
   <Flex justify="center" my={spacing}>
     <Stack spacing={4}>
       {tasks.map((t, i) => (
+        // SEE TODO (#4)
         <Checkbox
           key={i}
           spacing={4}

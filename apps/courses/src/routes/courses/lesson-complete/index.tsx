@@ -32,6 +32,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={icon} size="lg" mb={4} />
     <Text>{children}</Text>
   </Box>
@@ -109,6 +110,7 @@ export default ({ progress, page, user, ts, course, lesson }) => {
       <GridContainer isInitial py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
+            {/* SEE TODO (#3) */}
             <Icon
               as={FontAwesomeIcon}
               icon={faCheckCircle}
@@ -142,6 +144,7 @@ export default ({ progress, page, user, ts, course, lesson }) => {
               p={6}
               mb={8}
             >
+              {/* SEE TODO (#3) */}
               <Icon
                 as={FontAwesomeIcon}
                 icon={typeof nextLesson === 'string' ? faShapes : faArrowRight}

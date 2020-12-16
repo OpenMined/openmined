@@ -55,8 +55,9 @@ export default ({ callback, ...props }: SignUpFormProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [tempCredentials, setTempCredentials] = useState<CredentialProps>({});
 
-  // TODO: Patrick, find a way to centralize this logic since it's done twice in the codebase
   const emailProvider = useAuth.EmailAuthProvider;
+
+  // SEE TODO (#5)
   const githubProvider = new useAuth.GithubAuthProvider();
 
   githubProvider.addScope('public_repo');
@@ -251,7 +252,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
                 colorScheme="black"
                 isLoading={isSubmitting}
               >
-                {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+                {/* SEE TODO (#3) */}
                 Sign Up with Github{' '}
                 <Icon
                   as={FontAwesomeIcon}
@@ -262,19 +263,18 @@ export default ({ callback, ...props }: SignUpFormProps) => {
                 />
               </Button>
             </Flex>
-            {/* TODO: Patrick, uncomment these when these pages exist */}
-            {/* <Divider my={6} />
-          <Text fontSize="sm" color="gray.700">
-            By signing up you agree to our{' '}
-            <Link as={RRDLink} to="/terms">
-              Terms of Use
-            </Link>{' '}
-            and{' '}
-            <Link as={RRDLink} to="/policy">
-              Privacy Policy
-            </Link>
-            .
-          </Text> */}
+            <Divider my={6} />
+            <Text fontSize="sm" color="gray.700">
+              By signing up you agree to our{' '}
+              <Link as={RRDLink} to="/terms">
+                Terms of Use
+              </Link>{' '}
+              and{' '}
+              <Link as={RRDLink} to="/policy">
+                Privacy Policy
+              </Link>
+              .
+            </Text>
           </>
         )}
       />

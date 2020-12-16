@@ -136,6 +136,7 @@ export default ({ page }) => {
                     align="center"
                   >
                     <Circle p={1} mb={2} bg={iconBg} boxSize={12}>
+                      {/* SEE TODO (#3) */}
                       <Icon
                         as={FontAwesomeIcon}
                         icon={icon}

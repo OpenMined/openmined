@@ -33,9 +33,8 @@ export default ({ signup, signedup }) => {
     },
   ];
 
-  // TODO: Patrick, we can remove the signup ID when going live
   return (
-    <GridContainer py={[16, null, null, 32]} id="signup">
+    <GridContainer py={[16, null, null, 32]}>
       <SimpleGrid columns={[1, null, null, 2]} spacing={[4, null, 8]}>
         <Box alignSelf="center" mr={{ base: 0, md: 8 }}>
           <Heading as="h2" size="2xl" mb={4}>
@@ -66,6 +65,7 @@ export default ({ signup, signedup }) => {
                   align="center"
                   justify="center"
                 >
+                  {/* SEE TODO (#3) */}
                   <Icon as={FontAwesomeIcon} icon={icon} size="2x" />
                   <Text
                     fontWeight="bold"

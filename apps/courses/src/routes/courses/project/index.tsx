@@ -82,8 +82,7 @@ const prepAccordionAndStatus = (progress, parts) => {
       : [],
   }));
 
-  // return { content, status: getProjectStatus(progress, parts) };
-  return { content, status: 'passed' };
+  return { content, status: getProjectStatus(progress, parts) };
 };
 
 // Return the appropriate text and <Tag /> styles for the relevant status

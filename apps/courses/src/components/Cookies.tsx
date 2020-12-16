@@ -43,13 +43,16 @@ export default ({ callback }) => {
         >
           Click me for {isOpen ? 'less' : 'more'} information
         </Text>
-        <Collapse
-          isOpen={isOpen}
-          animateOpacity
+        <Box
           display={{ base: 'block', md: 'none' }}
         >
-          <Justification />
-        </Collapse>
+          <Collapse
+            in={isOpen}
+            animateOpacity
+          >
+            <Justification />
+          </Collapse>
+        </Box>
         <Justification
           display={{ base: 'none', md: 'block' }}
           width={{ lg: '80%' }}

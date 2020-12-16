@@ -48,7 +48,7 @@ const ProgressButton = ({ value, direction, onClick }) => (
       size={8}
       style={absolute}
     />
-    {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+    {/* SEE TODO (#3) */}
     {direction === 'forward' && (
       <Icon
         as={FontAwesomeIcon}
@@ -57,6 +57,7 @@ const ProgressButton = ({ value, direction, onClick }) => (
         style={absolute}
       />
     )}
+    {/* SEE TODO (#3) */}
     {direction === 'back' && (
       <Icon
         as={FontAwesomeIcon}

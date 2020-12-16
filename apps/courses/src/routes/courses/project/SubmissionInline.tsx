@@ -44,6 +44,7 @@ export default ({
       }}
     >
       <Flex align="center">
+        {/* SEE TODO (#3) */}
         <Icon
           as={FontAwesomeIcon}
           icon={passed ? faCheckCircle : faTimesCircle}
@@ -58,6 +59,7 @@ export default ({
           {dayjs(submission.reviewed_at.toDate()).fromNow()}
         </Text>
       </Flex>
+      {/* SEE TODO (#3) */}
       <Icon as={FontAwesomeIcon} icon={faArrowRight} color={iconColor} />
     </Flex>
   );

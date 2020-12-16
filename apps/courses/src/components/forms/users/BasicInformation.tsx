@@ -146,6 +146,8 @@ export default ({
     [timezoneField(dbUser.timezone), null],
   ];
 
+  // SEE TODO (#17)
+
   return (
     <Form
       {...props}

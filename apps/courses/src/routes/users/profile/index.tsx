@@ -30,6 +30,7 @@ import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
   <Flex align="center" {...props}>
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={icon} mr={2} />
     <Link
       as="a"
@@ -73,6 +74,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
       transitionDuration="normal"
       transitionTimingFunction="ease-in-out"
     >
+      {/* SEE TODO (#3) */}
       <Icon as={FontAwesomeIcon} icon={icon} size="lg" color="inherit" mr={3} />
       <Text color="inherit">{title}</Text>
     </Flex>
@@ -133,6 +135,7 @@ export default () => {
                       right={2}
                       bottom={2}
                     >
+                      {/* SEE TODO (#3) */}
                       <Icon
                         as={FontAwesomeIcon}
                         icon={faPencilAlt}
@@ -195,7 +198,6 @@ export default () => {
             </Flex>
             <Box mt={{ base: 8, lg: 0 }} ml={{ lg: 12 }}>
               Finished courses and certificates go here!
-              {/* TODO: Patrick, we need to put the finished courses here with a link to the certificate ON the card, not as a separate tab like in the designs */}
             </Box>
           </Flex>
         </GridContainer>

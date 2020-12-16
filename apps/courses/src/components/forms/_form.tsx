@@ -82,26 +82,38 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   } else if (input.type === 'textarea') {
     elem = <Textarea {...input} variant={VARIANT} size={SIZE} ref={register} />;
   } else if (input.type === 'array') {
-    // TODO: Not sure why this is going wrong, should fix it
     // @ts-ignore
     elem = <FieldArray {...input} control={control} register={register} />;
   } else if (input.type === 'read-only') {
     elem = <Text color="gray.700">{input.defaultValue}</Text>;
   } else if (input.type === 'radio') {
-    // TODO: Currently Radios require a double click... why? This should be one click!
+    // SEE TODO (#4)
     elem = (
       <RadioGroup {...input}>
         <Stack spacing={2} direction="column">
           {options.map((option) => {
             if (typeof option === 'string') {
               return (
-                <Radio key={option} value={option} id={`option-${option.toLowerCase().split(' ').join('-')}`} ref={register}>
+                <Radio
+                  key={option}
+                  value={option}
+                  id={`option-${option.toLowerCase().split(' ').join('-')}`}
+                  ref={register}
+                >
                   {option}
                 </Radio>
               );
             } else {
               return (
-                <Radio key={option.label} value={option.value} id={`option-${option.value.toLowerCase().split(' ').join('-')}`} ref={register}>
+                <Radio
+                  key={option.label}
+                  value={option.value}
+                  id={`option-${option.value
+                    .toLowerCase()
+                    .split(' ')
+                    .join('-')}`}
+                  ref={register}
+                >
                   {option.label}
                 </Radio>
               );
@@ -153,7 +165,7 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }) => {
                   control
                 )}
                 <InputRightElement cursor="pointer">
-                  {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+                  {/* SEE TODO (#3) */}
                   <Icon
                     as={FontAwesomeIcon}
                     icon={faTrash}
@@ -172,7 +184,7 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }) => {
         colorScheme="blue"
         mt={2}
       >
-        {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+        {/* SEE TODO (#3) */}
         <Icon as={FontAwesomeIcon} icon={faPlus} mr={2} />
         <Text>Add</Text>
       </Button>
@@ -193,7 +205,6 @@ export default ({
 
   const defVals = {};
 
-  // TODO: Not sure why this is going wrong, should fix it
   // @ts-ignore
   fields.forEach(({ name, defaultValue }) => {
     defVals[name] = defaultValue;

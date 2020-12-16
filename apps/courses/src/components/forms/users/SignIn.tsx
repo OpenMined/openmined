@@ -33,7 +33,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // TODO: Patrick, find a way to centralize this logic since it's done twice in the codebase
+  // SEE TODO (#5)
   const githubProvider = new useAuth.GithubAuthProvider();
 
   githubProvider.addScope('public_repo');
@@ -102,7 +102,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
                 colorScheme="black"
                 isLoading={isSubmitting}
               >
-                {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+                {/* SEE TODO (#3) */}
                 Sign In with Github{' '}
                 <Icon
                   as={FontAwesomeIcon}
@@ -116,8 +116,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
             <Link onClick={onOpen} mt={4} display="block">
               Reset your password
             </Link>
-            {/* TODO: Patrick, uncomment these when these pages exist */}
-            {/* <Divider my={6} />
+            <Divider my={6} />
             <Text fontSize="sm" color="gray.700">
               By signing in you agree to our{' '}
               <Link as={RRDLink} to="/terms">
@@ -128,7 +127,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
                 Privacy Policy
               </Link>
               .
-            </Text> */}
+            </Text>
           </>
         )}
       />

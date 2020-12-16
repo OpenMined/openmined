@@ -35,6 +35,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={icon} size="lg" mb={4} />
     <Text>{children}</Text>
   </Box>
@@ -133,6 +134,7 @@ export default ({ progress, page, user, ts, course }) => {
               p={6}
               mb={8}
             >
+              {/* SEE TODO (#3) */}
               <Icon
                 as={FontAwesomeIcon}
                 icon={status === 'passed' ? faCheckCircle : faTimesCircle}

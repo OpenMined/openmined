@@ -28,6 +28,8 @@ import {
   getNextAvailablePage,
 } from './_helpers';
 
+// SEE TODO (#9)
+
 describe('course helpers', () => {
   it('empty user has not started or completed course', () => {
     const user = {};

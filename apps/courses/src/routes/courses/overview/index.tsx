@@ -30,6 +30,7 @@ import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
@@ -41,6 +42,7 @@ const Detail = ({ title, value }) => (
 const LearnHow = ({ value }) => (
   <Box>
     <Circle bg="white" size={8} display={{ base: 'none', md: 'block' }}>
+      {/* SEE TODO (#3) */}
       <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
     </Circle>
     <Heading
@@ -85,6 +87,7 @@ export default ({ course, page }) => {
       color: 'gray.600',
     };
 
+    // SEE TODO (#3)
     // @ts-ignore
     const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
     // @ts-ignore

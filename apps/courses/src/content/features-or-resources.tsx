@@ -54,6 +54,7 @@ export const resources = {
       description:
         'Take your learning to the next level and discuss it with the community!',
       icon: (
+        // SEE TODO (#3)
         <Icon
           as={FontAwesomeIcon}
           icon={faCommentAlt}
@@ -71,6 +72,7 @@ export const resources = {
       description:
         'Join the conversation with over 10,000 others in Slack community!',
       icon: (
+        // SEE TODO (#3)
         <Icon
           as={FontAwesomeIcon}
           icon={faSlack}
@@ -88,6 +90,7 @@ export const resources = {
       description:
         'For the latest news and info on the OpenMined community, visit our blog!',
       icon: (
+        // SEE TODO (#3)
         <Icon
           as={FontAwesomeIcon}
           icon={faPencilAlt}
@@ -105,6 +108,7 @@ export const resources = {
       description:
         'Our mentors provide feedback on your projects and help you at every step!',
       icon: (
+        // SEE TODO (#3)
         <Icon
           as={FontAwesomeIcon}
           icon={faUser}

@@ -93,7 +93,7 @@ const userAvatar = forwardRef((props, ref) => {
   );
 });
 
-// TODO: Patrick, how much of this logic CAN and SHOULD we share with the original header?
+// SEE TODO (#10)
 
 export default ({
   subtitle,
@@ -196,6 +196,7 @@ export default ({
                       if (onClick) onClick();
                     }}
                   >
+                    {/* SEE TODO (#3) */}
                     {icon && (
                       <Icon
                         as={FontAwesomeIcon}
@@ -247,7 +248,7 @@ export default ({
     >
       <Flex as="nav" align="center" justify="space-between">
         <Box width={{ base: 6, [BREAK]: 1 / 4 }}>
-          {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+          {/* SEE TODO (#3) */}
           <Icon
             as={FontAwesomeIcon}
             icon={faBars}
@@ -285,6 +286,7 @@ export default ({
           justify="flex-end"
           display={{ base: 'flex', [BREAK]: 'none' }}
         >
+          {/* SEE TODO (#3) */}
           <Icon
             as={FontAwesomeIcon}
             icon={faHome}

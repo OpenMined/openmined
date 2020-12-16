@@ -43,6 +43,7 @@ const DrawerItem = ({
       onClick={() => toggleAccordionItem(index)}
     >
       <Flex flex="1" textAlign="left" align="center">
+        {/* SEE TODO (#3) */}
         <Icon as={FontAwesomeIcon} icon={icon} mr={6} size="lg" />
         <Text fontWeight="bold">{title}</Text>
       </Flex>
@@ -83,6 +84,7 @@ const DrawerItem = ({
                 >
                   <Flex justify="space-between" align="center">
                     <Flex align="center">
+                      {/* SEE TODO (#3) */}
                       {icon && (
                         <Icon
                           as={FontAwesomeIcon}
@@ -93,6 +95,7 @@ const DrawerItem = ({
                       )}
                       <Text>{title}</Text>
                     </Flex>
+                    {/* SEE TODO (#3) */}
                     {isExternal && (
                       <Icon as={FontAwesomeIcon} icon={faExternalLinkAlt} />
                     )}
@@ -125,6 +128,7 @@ const DrawerItem = ({
 
               return (
                 <Flex key={index} align="center" {...linkProps}>
+                  {/* SEE TODO (#3) */}
                   <Icon
                     as={FontAwesomeIcon}
                     icon={icon}

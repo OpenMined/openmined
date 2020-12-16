@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-// TODO: Make all of these tests written in the order in which they're supposed to appear
-// TODO: And likewise, ensure that they must build on each other (i.e. to test the completion of a lesson, you must test the completion of all previous concepts and lessons)
+// SEE TODO (#8)
 
 // Course permissions
 export const hasStartedCourse = (u) =>

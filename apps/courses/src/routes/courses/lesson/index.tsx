@@ -29,6 +29,7 @@ import GridContainer from '../../../components/GridContainer';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
@@ -164,6 +165,7 @@ export default ({ page, progress, user, ts, course, lesson }) => {
                       <Flex align="center">
                         <Text>{title}</Text>
                       </Flex>
+                      {/* SEE TODO (#3) */}
                       {isExternal && (
                         <Icon as={FontAwesomeIcon} icon={faExternalLinkAlt} />
                       )}

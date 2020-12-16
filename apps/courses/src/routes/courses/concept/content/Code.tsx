@@ -57,6 +57,7 @@ export default ({ code, language, spacing }) => {
 
   return (
     <Box position="relative" my={spacing}>
+      {/* SEE TODO (#3) */}
       <Icon
         as={FontAwesomeIcon}
         icon={faCopy}

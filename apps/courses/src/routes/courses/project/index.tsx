@@ -35,7 +35,6 @@ import {
   getProjectStatus,
   hasSubmittedProjectPart,
   hasStartedProject,
-  hasReceivedProjectPartReview,
   PROJECT_PART_SUBMISSIONS,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
@@ -43,6 +42,7 @@ import GridContainer from '../../../components/GridContainer';
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
@@ -277,6 +277,7 @@ export default ({ course, page, progress, user, ts }) => {
             {courseTitle}
           </Text>
           <Box position="relative" mb={4}>
+            {/* SEE TODO (#3) */}
             <Icon
               as={FontAwesomeIcon}
               icon={faShapes}
@@ -290,6 +291,7 @@ export default ({ course, page, progress, user, ts }) => {
             </Heading>
           </Box>
           <Tag {...statusStyles}>
+            {/* SEE TODO (#3) */}
             {statusIcon && (
               <Icon as={FontAwesomeIcon} icon={statusIcon} mr={2} />
             )}
@@ -406,6 +408,7 @@ export default ({ course, page, progress, user, ts }) => {
                 {...linkProps}
               >
                 <Flex align="center">
+                  {/* SEE TODO (#3) */}
                   <Icon as={FontAwesomeIcon} icon={icon} size="lg" mr={4} />
                   <Text>{title}</Text>
                 </Flex>

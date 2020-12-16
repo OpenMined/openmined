@@ -59,6 +59,7 @@ const Feedback = ({
           _hover={{ color: 'gray.200' }}
         >
           <Flex align="center">
+            {/* SEE TODO (#3) */}
             <Icon as={FontAwesomeIcon} icon={faBullhorn} />
             <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
               Give Feedback
@@ -158,6 +159,7 @@ const Help = ({ helpOpen, setHelpOpen }) => {
         _hover={{ color: 'gray.200' }}
       >
         <Flex align="center">
+          {/* SEE TODO (#3) */}
           <Icon as={FontAwesomeIcon} icon={faCommentAlt} />
           <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
             Get Help
@@ -183,6 +185,7 @@ const Help = ({ helpOpen, setHelpOpen }) => {
 
           return (
             <MenuItem key={index} {...linkProps}>
+              {/* SEE TODO (#3) */}
               {icon && (
                 <Icon
                   as={FontAwesomeIcon}

@@ -44,9 +44,8 @@ export default ({ callback }) => {
           Click me for {isOpen ? 'less' : 'more'} information
         </Text>
         <Collapse
-          isOpen={isOpen}
+          in={isOpen}
           animateOpacity
-          display={{ base: 'block', md: 'none' }}
         >
           <Justification />
         </Collapse>

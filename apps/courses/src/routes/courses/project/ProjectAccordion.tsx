@@ -18,15 +18,12 @@ import {
   faCheckCircle,
   faTimesCircle,
   faPaperPlane,
-  faArrowRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+
+import SubmissionInline from './SubmissionInline';
 
 import { PROJECT_PART_SUBMISSIONS } from '../_helpers';
-
-dayjs.extend(relativeTime);
 
 // As we did on the main file, we need to get some basic styles for the <AccordionItem /> according to this part's status
 const getStatusStyles = (status) => {
@@ -127,50 +124,16 @@ const AttemptedView = ({
         {description}
       </Text>
     </Flex>
-    {submissions.map(({ status, ...submission }, index) => {
-      const passed = status === 'passed';
-
-      const props = {
-        key: index,
-        p: 3,
-        mt: 2,
-        cursor: 'pointer',
-        borderRadius: 'md',
-        fontSize: 'sm',
-        justify: 'space-between',
-        align: 'center',
-        bg: passed ? 'green.50' : 'magenta.50',
-      };
-
-      const iconColor = passed ? 'green.400' : 'magenta.400';
-
-      return (
-        <Flex
-          {...props}
-          onClick={() => {
-            setSubmissionView(part);
-            setSubmissionViewAttempt(index);
-          }}
-        >
-          <Flex align="center">
-            <Icon
-              as={FontAwesomeIcon}
-              icon={passed ? faCheckCircle : faTimesCircle}
-              color={iconColor}
-              size="lg"
-              mr={4}
-            />
-            <Text fontWeight="bold" mr={2}>
-              {passed ? 'Passed' : 'Failed'}
-            </Text>
-            <Text fontStyle="italic" color="gray.700">
-              {dayjs(submission.reviewed_at.toDate()).fromNow()}
-            </Text>
-          </Flex>
-          <Icon as={FontAwesomeIcon} icon={faArrowRight} color={iconColor} />
-        </Flex>
-      );
-    })}
+    {submissions.map((submission, index) => (
+      <SubmissionInline
+        key={index}
+        part={part}
+        index={index}
+        {...submission}
+        setSubmissionView={setSubmissionView}
+        setSubmissionViewAttempt={setSubmissionViewAttempt}
+      />
+    ))}
   </Box>
 );
 
@@ -319,6 +282,14 @@ export default ({
                             });
                           } else {
                             setSubmissionView(_key);
+
+                            if (status === 'submitted') {
+                              setSubmissionViewAttempt(
+                                submissions.findIndex(
+                                  ({ status }) => status === 'pending'
+                                )
+                              );
+                            }
                           }
                         }}
                         colorScheme="black"

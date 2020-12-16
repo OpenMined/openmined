@@ -74,11 +74,22 @@ const App = () => {
     setCookiePrefs(preference);
   };
 
+  // TODO: We need to write a test for the below logic, or refactor this to be tied to our routes somehow
+  // Basically, some pages will use the header and footer that are "sitewide", but many pages will not
+  // I think we should maybe consider putting this in some sort of configuration file and writing a test for it
+
   // If we're inside the course, don't show the <Header /> at all
   // Instead, we'll show the <CourseHeader />
   const isInsideCourse =
     location.pathname.includes('/courses') &&
-    location.pathname.split('/').length > 3;
+    location.pathname.split('/').length > 3 &&
+    !location.pathname.includes('/complete');
+
+  // If we're on the course completion page, we want the header to default to black
+  const isOnCourseComplete =
+    location.pathname.includes('/courses') &&
+    location.pathname.split('/').length > 3 &&
+    location.pathname.includes('/complete');
 
   // More specifically, if we're inside the concept, we don't render the default <Footer />
   // Instead, we'll show the <CourseFooter />
@@ -96,7 +107,7 @@ const App = () => {
     <Router action={action} location={location} navigator={history}>
       <Suspense fallback={<Loading />}>
         {cookiePrefs === 'all' && <Analytics location={location} />}
-        {!isInsideCourse && <Header />}
+        {!isInsideCourse && <Header noScrolling={isOnCourseComplete} />}
         <Box
           minHeight="100vh"
           display="grid"

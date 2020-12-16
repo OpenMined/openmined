@@ -94,7 +94,7 @@ export default ({ progress, page, user, ts, course, lesson, concept }) => {
           .then(resolve)
           .catch(reject);
       } else {
-        resolve();
+        resolve(true);
       }
     });
 

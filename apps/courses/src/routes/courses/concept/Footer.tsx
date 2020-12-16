@@ -53,18 +53,18 @@ const Feedback = ({
   return (
     <Popover isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)}>
       <PopoverTrigger>
-        <Flex
-          as={Link}
+        <Link
           onClick={() => setFeedbackOpen(true)}
-          align="center"
           color="gray.400"
           _hover={{ color: 'gray.200' }}
         >
-          <Icon as={FontAwesomeIcon} icon={faBullhorn} />
-          <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
-            Give Feedback
-          </Text>
-        </Flex>
+          <Flex align="center">
+            <Icon as={FontAwesomeIcon} icon={faBullhorn} />
+            <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
+              Give Feedback
+            </Text>
+          </Flex>
+        </Link>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverArrow />
@@ -152,13 +152,12 @@ const Help = ({ helpOpen, setHelpOpen }) => {
       onOpen={() => setHelpOpen(true)}
       onClose={() => setHelpOpen(false)}
     >
-      <MenuButton onClick={() => setHelpOpen(true)}>
-        <Flex
-          as={Link}
-          align="center"
-          color="gray.400"
-          _hover={{ color: 'gray.200' }}
-        >
+      <MenuButton
+        onClick={() => setHelpOpen(true)}
+        color="gray.400"
+        _hover={{ color: 'gray.200' }}
+      >
+        <Flex align="center">
           <Icon as={FontAwesomeIcon} icon={faCommentAlt} />
           <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
             Get Help

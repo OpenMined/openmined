@@ -11,11 +11,16 @@ import CourseWrap from './Wrapper';
 
 import Loading from '../../components/Loading';
 
-// TODO: We absolutely should be using the useFirestoreDocData function instead, make sure to check if the DB has been updated for concepts though!
+// TODO: We absolutely should be using the useFirestoreDocData function instead, make sure to check if the DB has been updated for concepts though so that we don't write to the DB 2,000 times a minute!
+// After we do this, we can switch all instances of "window.location.href = " and "window.location.reload()" to use the "useNavigate()" hook in react-router... this would look way better, but I've had problems with the permissions working when using this
+// Therefore, to avoid permissions issues, it might just be better to force the page to change, rather than do a client-side navigation change
+// Either way, this is a fairly tough problem... please make sure to do this (if we do it at all) in ALL instnaces around the codebase
 
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
+const CourseComplete = lazy(() => import('./course-complete'));
 const CourseProject = lazy(() => import('./project'));
+const CourseProjectComplete = lazy(() => import('./project-complete'));
 const CourseLesson = lazy(() => import('./lesson'));
 const CourseLessonComplete = lazy(() => import('./lesson-complete'));
 const CourseConcept = lazy(() => import('./concept'));
@@ -24,7 +29,9 @@ const CourseConcept = lazy(() => import('./concept'));
 const pages = {
   search: CourseSearch,
   overview: CourseOverview,
+  courseComplete: CourseComplete,
   project: CourseProject,
+  projectComplete: CourseProjectComplete,
   lesson: CourseLesson,
   lessonComplete: CourseLessonComplete,
   concept: CourseConcept,
@@ -37,7 +44,7 @@ const PermissionsGate = ({ children, progress, which, page, ...params }) => {
     page.lessons || page.course.lessons, // The CMS's list of lessons and concepts
     params.course, // The current course
     params.lesson || 'project', // The current lesson (or the "project" lesson)
-    params.concept ? params.concept : which === 'lesson' ? null : 'complete' // The current concept, if it exists, or the appropriate lesson/lesson complete "concept"
+    params.concept ? params.concept : which === 'lesson' ? null : 'complete' // The current concept, if it exists, or the appropriate lesson/project/course complete "concept"
   );
 
   // If we're loading or going to redirect, render the loader

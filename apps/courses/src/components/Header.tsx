@@ -119,7 +119,7 @@ const userAvatar = forwardRef((props, ref) => {
   );
 });
 
-export default () => {
+export default ({ noScrolling }) => {
   const user = useUser();
   const auth = useAuth();
   const toast = useToast();
@@ -128,12 +128,14 @@ export default () => {
   const [show, setShow] = useState(false);
 
   const scrollY = useScrollPosition();
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(noScrolling || false);
 
   useEffect(() => {
-    if (scrollY > 0 && !isScrolled) setIsScrolled(true);
-    else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
-  }, [scrollY, isScrolled]);
+    if (!noScrolling) {
+      if (scrollY > 0 && !isScrolled) setIsScrolled(true);
+      else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
+    }
+  }, [scrollY, isScrolled, noScrolling]);
 
   // TODO: Patrick, these are the links we will have until this website goes live
   let LEFT_LINKS: LinkProps[], RIGHT_LINKS: LinkProps[];

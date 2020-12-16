@@ -12,6 +12,7 @@ import {
   GridItem,
   Heading,
   Icon,
+  Image,
   Link,
   SimpleGrid,
   Tab,
@@ -21,8 +22,13 @@ import {
   Tabs,
   Text,
 } from '@chakra-ui/react';
+import { useFirestoreDocDataOnce } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+import SubmissionInline from './SubmissionInline';
 
 import { PROJECT_PART_SUBMISSIONS } from '../_helpers';
 import { Content } from '../concept/content';
@@ -30,6 +36,8 @@ import GridContainer from '../../../components/GridContainer';
 import RichTextEditor, {
   EDITOR_STORAGE_STRING,
 } from '../../../components/RichTextEditor';
+
+dayjs.extend(relativeTime);
 
 const tabProps = {
   fontWeight: 'bold',
@@ -48,6 +56,33 @@ const tabProps = {
   },
 };
 
+const ReviewStatus = ({ status }) => {
+  const passed = status === 'passed';
+  const image = passed
+    ? 'https://emojis.slackmojis.com/emojis/images/1572027739/6832/blob_cheer.png?1572027739'
+    : 'https://emojis.slackmojis.com/emojis/images/1578406259/7444/sadblob.gif?1578406259';
+  const message = passed
+    ? 'Congratulations! You have passed this part of the project. Read below for more in-depth feedback from our mentors.'
+    : 'Sorry you did not pass this part of the project. Read below for more in-depth feedback from our mentors.';
+
+  return (
+    <Flex width="full" p={6} bg="gray.800" borderRadius="md" align="center">
+      <Image src={image} boxSize={12} mr={4} />
+      <Box>
+        <Text
+          color={passed ? 'green.200' : 'magenta.200'}
+          fontWeight="bold"
+          fontSize="xl"
+          mb={2}
+        >
+          {passed ? 'Success' : 'Fail'}
+        </Text>
+        <Text color="gray.400">{message}</Text>
+      </Box>
+    </Flex>
+  );
+};
+
 export default ({
   setSubmissionView,
   submissionViewAttempt,
@@ -59,10 +94,23 @@ export default ({
 }) => {
   const { _key, title, submissions } = part;
 
-  // If we have a submission still pending a review
-  const hasSubmissionPending =
-    submissions.length > 0 &&
-    !!submissions.filter(({ status }) => status === 'pending');
+  // If we've been asked to load an attempt for this page
+  const attemptRef =
+    submissionViewAttempt !== null
+      ? submissions[submissionViewAttempt].submission
+      : null;
+  const attemptData = attemptRef ? useFirestoreDocDataOnce(attemptRef) : null;
+
+  // If we've been asked to load a review for this page
+  const reviewRef =
+    submissionViewAttempt !== null
+      ? submissions[submissionViewAttempt].review
+      : null;
+  const reviewData = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
+
+  const onlyFailedOrPassedSubmissions = submissions.filter(
+    ({ status }) => status === 'passed' || status === 'failed'
+  );
 
   return (
     <Box bg="gray.50">
@@ -135,12 +183,41 @@ export default ({
                 of {PROJECT_PART_SUBMISSIONS} attempts
               </Text>
             </Flex>
+            {onlyFailedOrPassedSubmissions.length > 0 && (
+              <Box mb={6}>
+                {onlyFailedOrPassedSubmissions.map((submission, index) => (
+                  <SubmissionInline
+                    key={index}
+                    part={_key}
+                    index={index}
+                    {...submission}
+                    setSubmissionView={setSubmissionView}
+                    setSubmissionViewAttempt={setSubmissionViewAttempt}
+                  />
+                ))}
+              </Box>
+            )}
+            {reviewData && (
+              <Box mb={6}>
+                <Flex align="center" mb={3} color="gray.700">
+                  <Text>
+                    Submitted{' '}
+                    {dayjs(attemptData.submitted_at.toDate()).fromNow()}
+                  </Text>
+                  <Text mx={4}>|</Text>
+                  <Text>
+                    Reviewed {dayjs(reviewData.reviewed_at.toDate()).fromNow()}
+                  </Text>
+                </Flex>
+                <ReviewStatus status={reviewData.status} />
+              </Box>
+            )}
             <Tabs isFitted mb={8}>
               <TabList>
                 <Tab {...tabProps}>1. Instructions</Tab>
                 <Tab {...tabProps}>2. Rubric</Tab>
                 <Tab {...tabProps}>3. Submission</Tab>
-                {submissionViewAttempt && <Tab {...tabProps}>4. Feedback</Tab>}
+                {reviewData && <Tab {...tabProps}>4. Feedback</Tab>}
               </TabList>
               <TabPanels
                 bg="white"
@@ -163,12 +240,32 @@ export default ({
                   <Content content={part.rubric} />
                 </TabPanel>
                 <TabPanel p={0} minHeight={400}>
-                  {!hasSubmissionPending && <RichTextEditor />}
-                  {/* TODO: Patrick, add the last known submission here */}
+                  {!attemptData && <RichTextEditor />}
+                  {attemptData && (
+                    <Box px={24} py={16}>
+                      <Heading as="p" mb={2} size="lg">
+                        Submission
+                      </Heading>
+                      <Divider />
+                      <RichTextEditor
+                        mt={8}
+                        content={JSON.parse(attemptData.content)}
+                        readOnly
+                      />
+                    </Box>
+                  )}
                 </TabPanel>
-                {submissionViewAttempt && (
+                {reviewData && (
                   <TabPanel px={24} py={16}>
-                    <p>four!</p>
+                    <Heading as="p" mb={2} size="lg">
+                      Feedback
+                    </Heading>
+                    <Divider />
+                    <RichTextEditor
+                      mt={8}
+                      content={JSON.parse(reviewData.content)}
+                      readOnly
+                    />
                   </TabPanel>
                 )}
               </TabPanels>
@@ -184,21 +281,23 @@ export default ({
               >
                 Back to Project
               </Button>
-              <Button
-                onClick={() => {
-                  // Submit the attempt with the _key of the part and the content of the editor
-                  onAttemptSubmission(
-                    _key,
-                    localStorage.getItem(EDITOR_STORAGE_STRING)
-                  );
+              {!attemptData && (
+                <Button
+                  onClick={() => {
+                    // Submit the attempt with the _key of the part and the content of the editor
+                    onAttemptSubmission(
+                      _key,
+                      localStorage.getItem(EDITOR_STORAGE_STRING)
+                    );
 
-                  // And clear the editor's cache
-                  localStorage.removeItem(EDITOR_STORAGE_STRING);
-                }}
-                colorScheme="black"
-              >
-                Submit
-              </Button>
+                    // And clear the editor's cache
+                    localStorage.removeItem(EDITOR_STORAGE_STRING);
+                  }}
+                  colorScheme="black"
+                >
+                  Submit
+                </Button>
+              )}
             </Flex>
           </GridItem>
         </Grid>

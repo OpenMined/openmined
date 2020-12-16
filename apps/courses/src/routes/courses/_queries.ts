@@ -34,7 +34,27 @@ export const overview = ({ course }) => `
   }
 }[0]`;
 
+export const courseComplete = ({ course }) => `
+*[_type == "course" && slug.current == "${course}"] {
+  ...,
+  lessons[] -> {
+    _id,
+    title,
+    "concepts": concepts[] -> { _id }
+  }
+}[0]`;
+
 export const project = ({ course }) => `
+*[_type == "course" && slug.current == "${course}"] {
+  ...,
+  lessons[] -> {
+    _id,
+    title,
+    "concepts": concepts[] -> { _id }
+  }
+}[0]`;
+
+export const projectComplete = ({ course }) => `
 *[_type == "course" && slug.current == "${course}"] {
   ...,
   lessons[] -> {

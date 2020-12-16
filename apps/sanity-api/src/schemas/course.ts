@@ -83,7 +83,19 @@ export default {
     {
       title: 'Certification',
       name: 'certification',
-      type: 'string',
+      type: 'object',
+      fields: [
+        {
+          title: 'Title',
+          name: 'title',
+          type: 'string',
+        },
+        {
+          title: 'Link',
+          name: 'link',
+          type: 'string',
+        },
+      ],
     },
     {
       title: 'Learn From',

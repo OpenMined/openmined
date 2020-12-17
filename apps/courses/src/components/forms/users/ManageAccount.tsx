@@ -37,7 +37,7 @@ export default ({
   onAddPassword,
   ...props
 }: ManageAccountFormProps) => {
-  const user = useUser();
+  const user: firebase.User = useUser();
   const auth = useAuth();
   const db = useFirestore();
   const toast = useToast();
@@ -171,15 +171,12 @@ export default ({
 
   const fields = [{ ...emailField(), label: 'New Email Address' }];
 
-  // @ts-ignore
   const numProviders = user.providerData.length;
 
-  // @ts-ignore
   const hasPasswordAccount = !!user.providerData.filter(
     (p) => p.providerId === 'password'
   ).length;
 
-  // @ts-ignore
   const hasGithubAccount = !!user.providerData.filter(
     (p) => p.providerId === 'github.com'
   ).length;

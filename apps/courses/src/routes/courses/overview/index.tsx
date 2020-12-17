@@ -80,7 +80,7 @@ export default ({ course, page }) => {
   };
 
   const prepareLessonContent = (description, concepts) => {
-    const iconProps = {
+    const iconProps: any = {
       as: FontAwesomeIcon,
       size: 'lg',
       mr: 2,
@@ -88,9 +88,7 @@ export default ({ course, page }) => {
     };
 
     // SEE TODO (#3)
-    // @ts-ignore
     const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
-    // @ts-ignore
     const CompleteConcept = () => <Icon {...iconProps} icon={faCheckCircle} />;
 
     return (

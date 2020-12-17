@@ -6,12 +6,9 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
-- We need to fix ALL Typescript issues. There's a PR for that, but I don't think it's very good. [Could maybe use some of it and then fix the remaining issues manually.](https://github.com/OpenMined/openmined/pull/15)
-- We need to fix ALL instances where we're using @ts-ignore
 - Make sure all Firebase calls (which you can find by project searching for "db.") have appropriate error handling, only some of the original logic I wrote does... not all calls will properly toast the error
 - Set up remote logging and bug reporting in Firebase so that we can track the errors that users are getting (we should make sure to also do this for all Firebase and Sanity CMS calls)
 - Add error boundaries to React app to catch errors, handle them gracefully, and report them to the appropriate service (see last todo item above)
-- Create a link props method to determine internal vs. external links (make sure to replace this everywhere sitewide)
 - Go through each page and test them for responsiveness, fixing any issues along the way. We KNOW that there will be problems on the following pages: project, project-complete, course-complete
 - Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass
 - Make the feedback a subcollection under the course, not at the same level as "courses".

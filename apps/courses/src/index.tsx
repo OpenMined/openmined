@@ -1,6 +1,5 @@
 import React from 'react';
-// @ts-ignore
-import { unstable_createRoot } from 'react-dom';
+const { unstable_createRoot } = require('react-dom');
 import { FirebaseAppProvider } from 'reactfire';
 import { SanityProvider } from '@openmined/shared/data-access-sanity';
 import { HelmetProvider } from 'react-helmet-async';

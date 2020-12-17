@@ -113,6 +113,8 @@ export default ({
     ({ status }) => status === 'passed' || status === 'failed'
   );
 
+  // SEE TODO (#21)
+
   return (
     <Box bg="gray.50">
       <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>

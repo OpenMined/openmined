@@ -13,6 +13,8 @@ import Loading from '../../components/Loading';
 
 // SEE TODO (#11)
 
+// SEE TODO (#20)
+
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
 const CourseComplete = lazy(() => import('./course-complete'));

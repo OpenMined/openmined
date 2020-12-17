@@ -53,6 +53,8 @@
     "@sanity/desk-tool": "^2.0.9",
     "@sanity/image-url": "^0.140.19",
     "@sanity/vision": "^2.0.9",
+    "@sentry/react": "^5.29.1",
+    "@sentry/tracing": "^5.29.1",
     "@types/prismjs": "^1.16.2",
     "dayjs": "^1.9.7",
     "firebase": "7.24.0",

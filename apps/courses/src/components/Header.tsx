@@ -107,7 +107,7 @@ const createLinks = (
       return null;
     });
 };
-
+// SEE TODO (#18)
 const userAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
   const user: firebase.User = useUser();
   const db = useFirestore();

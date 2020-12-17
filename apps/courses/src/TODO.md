@@ -7,11 +7,23 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 ### Danny
 
 - Make sure all Firebase calls (which you can find by project searching for "db.") have appropriate error handling, only some of the original logic I wrote does... not all calls will properly toast the error
-- Set up remote logging and bug reporting in Firebase so that we can track the errors that users are getting (we should make sure to also do this for all Firebase and Sanity CMS calls)
 - Add error boundaries to React app to catch errors, handle them gracefully, and report them to the appropriate service (see last todo item above)
 - Go through each page and test them for responsiveness, fixing any issues along the way. We KNOW that there will be problems on the following pages: project, project-complete, course-complete
 - Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass
 - Make the feedback a subcollection under the course, not at the same level as "courses".
+
+### Bren
+
+- TODO (#1): We need to write a test for when to show the `<Header />` and `<Footer />` on the homepage. It might be a good candidate for a small refactor where we define what pages receive this header or footer, and which don't.
+- TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
+- TODO (#3): The way we're doing the `<Icon />` throughout the site is kinda ugly and repetitive. I suggest we write a reusable component to automate the "as" prop.
+- TODO (#4): All radios and checkboxes require a double click for some reason... have no idea what's going on here, but Chakra doesn't natively have this problem. It's something we're doing wrong here.
+- TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.
+- TODO (#18): Resizing the window on any page with the main `<Header />` causes a call stack overflow to happen which crashes the page. It looks like this is related to the `<Avatar />` being reloaded multiple times? This also will probably happen on the Course Header.
+- TODO (#19): Click on any one of the "Get Help" items in the Course `<Footer />` will trigger an infinite update logic (same as #18, but in a different place).
+- TODO (#20): Clicking on the lessons in the Drawer from the Project page doesn't work
+- Go through each page and test them for responsiveness, fixing any issues along the way. We KNOW that there will be problems on the following pages: project, project-complete, course-complete
+- TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
 
 ### Hericles
 
@@ -44,16 +56,11 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Available issues (specific)
 
-- TODO (#1): We need to write a test for when to show the `<Header />` and `<Footer />` on the homepage. It might be a good candidate for a small refactor where we define what pages receive this header or footer, and which don't.
-- TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
-- TODO (#3): The way we're doing the `<Icon />` throughout the site is kinda ugly and repetitive. I suggest we write a reusable component to automate the "as" prop.
-- TODO (#4): All radios and checkboxes require a double click for some reason... have no idea what's going on here, but Chakra doesn't natively have this problem. It's something we're doing wrong here.
-- TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.
 - TODO (#6 HARD): Ensure that deleting a user's account also deletes all their subcollections and THEN deletes their auth account with Firebase. Might be good to do this in a Firebase function. Likewise, [this existing Firebase solution might be a good one](https://firebase.google.com/products/extensions/delete-user-data).
 - TODO (#7): Find a way to change the background color of a page. We know that the following code works: `` <Page body={{ style: `background: ${gray50};` }} /> ``, but that's really bad. Ideally we don't set the background color on the body element at all and we can remove this from the `<Page /> component entirely. It might be better to just set on the top most element for that page instead.
-- TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
 - TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
 - TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)
+- TODO (#21): Disable the submit on the project submission page until they've actually started their submission
 
 ## Pre-Launch Checklist
 

@@ -1,8 +1,8 @@
-## Note about the Firebase data model
+# Note about the Firebase data model
 
 The following is the theoretical, and incomplete, data structure for the user's model in Firestore as it pertains to submissions and reviews:
 
-### Student
+## Student
 
 - C: courses
   - D: [course]
@@ -33,7 +33,7 @@ The following is the theoretical, and incomplete, data structure for the user's 
             - status
             - REF: review
 
-### Reviewer
+## Reviewer
 
 - C: courses
   - D: [course]

@@ -108,6 +108,7 @@ const createLinks = (
     });
 };
 
+// SEE TODO (#18)
 const userAvatar = forwardRef((props, ref) => {
   const user = useUser();
   const db = useFirestore();

@@ -82,7 +82,6 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   } else if (input.type === 'textarea') {
     elem = <Textarea {...input} variant={VARIANT} size={SIZE} ref={register} />;
   } else if (input.type === 'array') {
-    // @ts-ignore
     elem = <FieldArray {...input} control={control} register={register} />;
   } else if (input.type === 'read-only') {
     elem = <Text color="gray.700">{input.defaultValue}</Text>;
@@ -137,7 +136,7 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   );
 };
 
-const FieldArray = ({ name, max, fields, control, register, defaultValue }) => {
+const FieldArray = ({ name, max, fields, control, register, defaultValue }: any) => {
   const fieldArray = useFieldArray({
     control,
     name,
@@ -205,8 +204,7 @@ export default ({
 
   const defVals = {};
 
-  // @ts-ignore
-  fields.forEach(({ name, defaultValue }) => {
+  fields.forEach(({ name, defaultValue }: Field) => {
     defVals[name] = defaultValue;
   });
 

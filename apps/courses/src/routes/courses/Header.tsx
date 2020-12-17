@@ -39,13 +39,13 @@ import { User } from '@openmined/shared/types';
 import CourseDrawer from './Drawer';
 
 import useToast, { toastConfig } from '../../components/Toast';
-import { handleErrors } from '../../helpers';
+import { getLinkPropsFromLink, handleErrors } from '../../helpers';
 import logo from '../../assets/logo.svg';
 
-interface LinkProps {
+type LinkProps = {
   title: string;
   type: string;
-  element?: React.ReactNode;
+  element?: React.ReactElement;
   auth?: boolean;
   unauth?: boolean;
   to?: string;
@@ -57,7 +57,7 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
     if (type === 'element')
       return React.cloneElement(link.element, { key: title });
 
-    const as = link.to ? { as: RRDLink } : {};
+    const as: any = link.to ? { as: RRDLink } : {};
 
     if (!link.onClick) link.onClick = onClick;
     else {
@@ -83,8 +83,8 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
   });
 
 // SEE TODO (#18)
-const userAvatar = forwardRef((props, ref) => {
-  const user = useUser();
+const userAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
@@ -105,7 +105,7 @@ export default ({
   noShadow = false,
   noTitle = false,
 }) => {
-  const user = useUser();
+  const user: firebase.User = useUser();
   const auth = useAuth();
   const toast = useToast();
 
@@ -175,25 +175,10 @@ export default ({
               ({ type, link = '', onClick, title, icon }, index) => {
                 if (type === 'divider') return <MenuDivider key={index} />;
 
-                const isExternal =
-                  link.includes('http://') || link.includes('https://');
-
-                const linkProps = isExternal
-                  ? {
-                      as: 'a',
-                      href: link,
-                      target: '_blank',
-                      rel: 'noopener noreferrer',
-                    }
-                  : {
-                      as: RRDLink,
-                      to: link,
-                    };
-
                 return (
                   <MenuItem
                     key={index}
-                    {...linkProps}
+                    {...getLinkPropsFromLink(link)}
                     onClick={() => {
                       if (onClick) onClick();
                     }}

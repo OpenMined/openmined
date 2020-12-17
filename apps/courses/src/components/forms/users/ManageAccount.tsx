@@ -37,7 +37,7 @@ export default ({
   onAddPassword,
   ...props
 }: ManageAccountFormProps) => {
-  const user = useUser();
+  const user: firebase.User = useUser();
   const auth = useAuth();
   const db = useFirestore();
   const toast = useToast();
@@ -116,13 +116,13 @@ export default ({
 
         batch.set(
           userDoc,
-          { github: authUser.additionalUserInfo.profile.login },
+          { github: (authUser.additionalUserInfo.profile as any).login },
           { merge: true }
         );
 
         batch.set(
           userPrivateDoc,
-          { github_access_token: authUser.credential.accessToken },
+          { github_access_token: (authUser.credential as any).accessToken },
           { merge: true }
         );
 
@@ -171,15 +171,12 @@ export default ({
 
   const fields = [{ ...emailField(), label: 'New Email Address' }];
 
-  // @ts-ignore
   const numProviders = user.providerData.length;
 
-  // @ts-ignore
   const hasPasswordAccount = !!user.providerData.filter(
     (p) => p.providerId === 'password'
   ).length;
 
-  // @ts-ignore
   const hasGithubAccount = !!user.providerData.filter(
     (p) => p.providerId === 'github.com'
   ).length;

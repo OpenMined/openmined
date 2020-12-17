@@ -22,7 +22,7 @@ export const Content = ({
   progress,
   onQuizComplete,
   numQuizzesOnConcept,
-}) =>
+}: any) =>
   content.map(({ _type, ...item }, i) => {
     if (_type === 'code') {
       return <Code key={i} spacing={SPACING} {...item} />;

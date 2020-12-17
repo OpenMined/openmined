@@ -39,6 +39,7 @@ service cloud.firestore {
         // TODO: Cannot start complete project or set project status without all previous parts being passed OR without one part being failed without any remaining attempts
         // TODO: Student cannot complete a project part or set the project part status, this can only be done by their mentor and requires either the part being passed OR with the part being failed without any remaining attempts
         // TODO: Student cannot write to their own reviews array on the project part
+        // TODO: Cannot "restart" or "recomplete" any course, lesson, concept, project, or project part (these values are immutable)
 
         match /submissions/{submission} {
           allow read, create: if isSameUser()

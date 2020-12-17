@@ -1,3 +1,8 @@
+import {
+  faBookOpen,
+  faCube,
+  faShapes,
+} from '@fortawesome/free-solid-svg-icons';
 import { getLessonNumber } from './_helpers';
 
 // SEE TODO #7
@@ -30,7 +35,8 @@ export const project = ({ page, course, lesson, progress }) => ({
     description: page.description,
   },
   header: {
-    title: page.title,
+    icon: faShapes,
+    title: page.project.title,
     subtitle: 'Final Project',
     course: course,
     lesson: lesson,
@@ -48,6 +54,7 @@ export const projectComplete = ({ page, course, lesson, progress }) => ({
     description: page.description,
   },
   header: {
+    icon: faShapes,
     title: page.title,
     subtitle: 'Final Project',
     course: course,
@@ -68,6 +75,7 @@ export const lesson = ({ page, course, lesson, progress }) => ({
     description: page.description,
   },
   header: {
+    icon: faBookOpen,
     title: page.title,
     subtitle: `Lesson ${getLessonNumber(page.course.lessons, lesson)}`,
     course: course,
@@ -87,6 +95,7 @@ export const lessonComplete = ({ page, course, lesson, progress }) => ({
     description: page.description,
   },
   header: {
+    icon: faBookOpen,
     title: page.title,
     subtitle: `Lesson ${getLessonNumber(page.course.lessons, lesson)}`,
     course: course,
@@ -107,6 +116,7 @@ export const concept = ({ page, course, lesson, concept, progress }) => ({
     title: `${page.title} - ${page.concept.title}`,
   },
   header: {
+    icon: faCube,
     title: page.concept.title,
     subtitle: `Lesson ${getLessonNumber(page.course.lessons, lesson)}`,
     course: course,

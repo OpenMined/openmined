@@ -105,7 +105,8 @@ export const concept = ({ lesson, concept }) => `
   "concept": *[_type == "concept" && _id == "${concept}"][0],
   "concepts": concepts[] -> {
     _id,
-    title
+    title,
+    "type": content[0]._type
   },
   "course": *[_type == "course" && references(^._id)][0] {
     title,

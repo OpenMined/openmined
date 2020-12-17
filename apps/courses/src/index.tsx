@@ -74,14 +74,16 @@ export const WrappedApp = () => (
   </React.StrictMode>
 );
 
-Sentry.init({
-  dsn:
-    'https://3a0a3cc70179428f8ecda14adc0bb149@o492939.ingest.sentry.io/5561166',
-  autoSessionTracking: true,
-  integrations: [new Integrations.BrowserTracing()],
-  tracesSampleRate: 1.0,
-  environment: process.env.NODE_ENV,
-});
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn:
+      'https://3a0a3cc70179428f8ecda14adc0bb149@o492939.ingest.sentry.io/5561166',
+    autoSessionTracking: true,
+    integrations: [new Integrations.BrowserTracing()],
+    tracesSampleRate: 1.0,
+    environment: process.env.NODE_ENV,
+  });
+}
 
 if (process.env.NODE_ENV !== 'test') {
   // Experimental concurrence mode in React

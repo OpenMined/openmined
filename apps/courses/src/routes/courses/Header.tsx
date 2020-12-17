@@ -97,10 +97,11 @@ const userAvatar = forwardRef((props, ref) => {
 // SEE TODO (#10)
 
 export default ({
-  subtitle,
+  icon,
   title,
+  subtitle,
   course,
-  leftDrawerSections,
+  sections,
   noShadow = false,
   noTitle = false,
 }) => {
@@ -258,20 +259,25 @@ export default ({
             onClick={isLeftDrawerOpen ? onLeftDrawerClose : onLeftDrawerOpen}
           />
         </Box>
-        <Heading
-          width={{ base: 'full', [BREAK]: 1 / 2 }}
-          mx={4}
-          textAlign="center"
-          as="span"
-          size="md"
-          color="white"
-        >
+        <Box width={{ base: 'full', [BREAK]: 1 / 2 }} mx={4}>
           {!noTitle && (
-            <>
-              {subtitle}: {title}
-            </>
+            <Flex justify="center" align="center">
+              {/* SEE TODO (#3) */}
+              {icon && (
+                <Icon
+                  as={FontAwesomeIcon}
+                  icon={icon}
+                  color="gray.700"
+                  size="lg"
+                  mr={4}
+                />
+              )}
+              <Heading as="span" size="md" color="white">
+                {subtitle}: {title}
+              </Heading>
+            </Flex>
           )}
-        </Heading>
+        </Box>
         <Stack
           width={1 / 4}
           justify="flex-end"
@@ -320,7 +326,7 @@ export default ({
             </Link>
           </>
         }
-        content={leftDrawerSections}
+        content={sections}
       />
       <CourseDrawer
         isOpen={isRightDrawerOpen}

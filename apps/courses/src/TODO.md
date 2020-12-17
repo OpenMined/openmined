@@ -23,7 +23,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.
 - TODO (#18): Resizing the window on any page with the main `<Header />` causes a call stack overflow to happen which crashes the page. It looks like this is related to the `<Avatar />` being reloaded multiple times? This also will probably happen on the Course Header.
 - TODO (#19): Click on any one of the "Get Help" items in the Course `<Footer />` will trigger an infinite update logic (same as #18, but in a different place).
-- TODO (#20): Clicking on the lessons in the Drawer from the Project page doesn't work
 - Go through each page and test them for responsiveness, fixing any issues along the way. We KNOW that there will be problems on the following pages: project, project-complete, course-complete
 - TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
 
@@ -33,28 +32,27 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Remember to revisit the header title and such once you get the CMS plugged in
 - Add the submission alert dialogs to the project page
 - Fuzzy find search on Search page isn't working
+- TODO (HARD): Make the current Privacy & Society course on Sanity API to be the "dummy" course that doesn't change over time and is just used for testing. You'll want to immediately rename this course (since it's the name of the actual first course). Then, you'll then need to actually create the real "Privacy & Society" course to be filled in by the writing team days before launch. PLEASE make sure that when you do this that there's a way to designate a course as being "for testing purposes only" in the backend, and DO NOT show these courses in the production site. Lastly, also make another toggle for courses that marks a course as being "ready to be taken". Do not allow users to take a course that doesn't have content yet (but we will still need to have the top-level course content so we can display it as "coming soon" on the site).
 - Build the My Courses page (maybe don't even worry about the existing PR) and rename it Dashboard everywhere
 - Build the notifications drawer and mentorship dashboard toggle
 - Build the mentorship dashboard
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, profile, my courses, and search pages
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same
 - Make sure that the OpenMined emails work on dev and production so that everything is coming from the @openmined.org domain name and NOT Firebase.
+- TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
+- TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
 
 ### Available issues (general)
 
 - TODO (HARD): Add a ton of security rules
 - TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
-- TODO (HARD): Make the current Privacy & Society course on Sanity API to be the "dummy" course that doesn't change over time and is just used for testing. You'll want to immediately rename this course (since it's the name of the actual first course). Then, you'll then need to actually create the real "Privacy & Society" course to be filled in by the writing team days before launch. PLEASE make sure that when you do this that there's a way to designate a course as being "for testing purposes only" in the backend, and DO NOT show these courses in the production site. Lastly, also make another toggle for courses that marks a course as being "ready to be taken". Do not allow users to take a course that doesn't have content yet (but we will still need to have the top-level course content so we can display it as "coming soon" on the site).
 - TODO: Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials
 - TODO: Place all Firebase calls related to courses in the same file and then use them throughout the various pages... this will make this logic more testable in conjunction with the helpers file
 - TODO (HARD): Build Typescript interfaces for the course and use them throughout the various Firebase API calls file (see above), helpers file, and various views
 - TODO: We need to set up better Firebase performance logging to see what calls and page loads are taking the most time
 - TODO (HARD): [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-counter) to count a variety of metrics to a `metrics` collection at the top-level. Make sure to block this collection from being written to by anyone else except the function. This should include a variety of useful information, such as, but not limited to: number of user signups (through Github, through email, and total), number of user deletions, number of courses started, number of lessons started, number of concepts started, number of courses completed, number of lessons completed, number of concepts completed, number of projects started, number of projects passed, number of projects failed, etc. Maybe work with Patrick on this.
-- TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
-- TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
 
 ### Available issues (specific)
 

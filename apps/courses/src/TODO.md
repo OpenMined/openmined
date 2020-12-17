@@ -16,13 +16,13 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Bren
 
+- TODO (#18): Resizing the window on any page with the main `<Header />` causes a call stack overflow to happen which crashes the page. It looks like this is related to the `<Avatar />` being reloaded multiple times? This also will probably happen on the Course Header.
+- TODO (#19): Click on any one of the "Get Help" items in the Course `<Footer />` will trigger an infinite update logic (same as #18, but in a different place). We also have this same problem when resizing any concept page, often it's related to a similar problem in the "Feedback" section instead of "Get Help", but both elements have roughly the same problem.
 - TODO (#1): We need to write a test for when to show the `<Header />` and `<Footer />` on the homepage. It might be a good candidate for a small refactor where we define what pages receive this header or footer, and which don't.
 - TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
 - TODO (#3): The way we're doing the `<Icon />` throughout the site is kinda ugly and repetitive. I suggest we write a reusable component to automate the "as" prop.
 - TODO (#4): All radios and checkboxes require a double click for some reason... have no idea what's going on here, but Chakra doesn't natively have this problem. It's something we're doing wrong here.
 - TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.
-- TODO (#18): Resizing the window on any page with the main `<Header />` causes a call stack overflow to happen which crashes the page. It looks like this is related to the `<Avatar />` being reloaded multiple times? This also will probably happen on the Course Header.
-- TODO (#19): Click on any one of the "Get Help" items in the Course `<Footer />` will trigger an infinite update logic (same as #18, but in a different place).
 - Go through each page and test them for responsiveness, fixing any issues along the way. We KNOW that there will be problems on the following pages: project, project-complete, course-complete
 - TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
 

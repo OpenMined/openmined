@@ -116,13 +116,13 @@ export default ({
 
         batch.set(
           userDoc,
-          { github: authUser.additionalUserInfo.profile.login },
+          { github: (authUser.additionalUserInfo.profile as any).login },
           { merge: true }
         );
 
         batch.set(
           userPrivateDoc,
-          { github_access_token: authUser.credential.accessToken },
+          { github_access_token: (authUser.credential as any).accessToken },
           { merge: true }
         );
 

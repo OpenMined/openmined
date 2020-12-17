@@ -56,7 +56,7 @@ export default ({ which }) => {
   const params = useParams();
 
   // Get the user's current progress on their courses
-  const user = useUser();
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const dbCourseRef = params.course
     ? db

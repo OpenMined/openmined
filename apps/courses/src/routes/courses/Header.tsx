@@ -45,7 +45,7 @@ import logo from '../../assets/logo.svg';
 type LinkProps = {
   title: string;
   type: string;
-  element: React.ReactElement;
+  element?: React.ReactElement;
   auth?: boolean;
   unauth?: boolean;
   to?: string;
@@ -83,13 +83,13 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
   });
 
 const userAvatar = forwardRef((props, ref) => {
-  const user = useUser();
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
 
   return (
-    <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
+    <Avatar forwardedRef={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
   );
 });
 
@@ -103,7 +103,7 @@ export default ({
   noShadow = false,
   noTitle = false,
 }) => {
-  const user = useUser();
+  const user: firebase.User = useUser();
   const auth = useAuth();
   const toast = useToast();
 

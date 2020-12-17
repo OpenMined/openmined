@@ -16,7 +16,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@openmined/courses/*": ["apps/courses/src/*"],
       "@openmined/shared/util-page": ["libs/shared/util-page/src/index.tsx"],
       "@openmined/shared/types": ["libs/shared/types/src/index.ts"],
       "@openmined/shared/data-access-sanity": [

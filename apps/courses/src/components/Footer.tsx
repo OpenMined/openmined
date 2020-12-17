@@ -65,19 +65,17 @@ export default (props) => (
               key={group.title}
             >
               <Flex direction="column">
-                {group.links.map((item, i) => {
-                  return (
-                    <Link
-                      key={i}
-                      {...getLinkPropsFromLink(item.link)}
-                      color="gray.400"
-                      _hover={{ color: 'white' }}
-                      mt={i === 0 ? 0 : 2}
-                    >
-                      {item.title}
-                    </Link>
-                  );
-                })}
+                {group.links.map((item, i) => (
+                  <Link
+                    key={i}
+                    {...getLinkPropsFromLink(item.link)}
+                    color="gray.400"
+                    _hover={{ color: 'white' }}
+                    mt={i === 0 ? 0 : 2}
+                  >
+                    {item.title}
+                  </Link>
+                ))}
               </Flex>
             </FooterSection>
           ))}

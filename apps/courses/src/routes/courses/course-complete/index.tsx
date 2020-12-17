@@ -119,7 +119,7 @@ export default ({ page }) => {
                 description,
                 link: { title: linkTitle, link, ...linkProps },
                 ...props
-              }) => (
+              }: any) => (
                 <Flex
                   direction="column"
                   justify="space-between"

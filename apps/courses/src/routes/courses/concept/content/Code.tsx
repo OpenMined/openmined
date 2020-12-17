@@ -44,7 +44,7 @@ import 'prismjs/components/prism-yaml';
 import 'prismjs/themes/prism.css';
 import 'prismjs/themes/prism-tomorrow.css';
 
-export default ({ code, language, spacing }) => {
+export default ({ code, language, spacing }: any) => {
   const ref = useRef();
   const { onCopy } = useClipboard(code);
   const toast = useToast();

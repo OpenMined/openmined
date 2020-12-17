@@ -38,6 +38,7 @@ import {
   PROJECT_PART_SUBMISSIONS,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
+import { getLinkPropsFromLink } from '../../../helpers';
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
@@ -345,25 +346,10 @@ export default ({ course, page, progress, user, ts }) => {
           <UnorderedList spacing={2}>
             {needs.map(({ title, link }) => {
               if (link) {
-                const isExternal =
-                  link.includes('http://') || link.includes('https://');
-
-                const linkProps = isExternal
-                  ? {
-                      as: 'a',
-                      href: link,
-                      target: '_blank',
-                      rel: 'noopener noreferrer',
-                    }
-                  : {
-                      as: RRDLink,
-                      to: link,
-                    };
-
                 return (
                   <ListItem key={title}>
                     <Link
-                      {...linkProps}
+                      {...getLinkPropsFromLink(link)}
                       color="gray.700"
                       _hover={{ color: 'gray.800' }}
                       textDecoration="underline"
@@ -383,21 +369,6 @@ export default ({ course, page, progress, user, ts }) => {
           </UnorderedList>
           <Divider my={6} />
           {resources.map(({ title, link, icon }, index) => {
-            const isExternal =
-              link.includes('http://') || link.includes('https://');
-
-            const linkProps = isExternal
-              ? {
-                  as: 'a',
-                  href: link,
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                }
-              : {
-                  as: RRDLink,
-                  to: link,
-                };
-
             return (
               <Link
                 key={index}
@@ -405,7 +376,7 @@ export default ({ course, page, progress, user, ts }) => {
                 _hover={{ color: 'gray.800' }}
                 display="block"
                 mt={6}
-                {...linkProps}
+                {...getLinkPropsFromLink(link)}
               >
                 <Flex align="center">
                   {/* SEE TODO (#3) */}

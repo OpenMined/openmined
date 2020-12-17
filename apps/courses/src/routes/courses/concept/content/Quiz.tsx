@@ -278,13 +278,13 @@ export default ({
   numQuizzes,
   spacing,
   onComplete,
-}) => {
+}: any) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentSelection, setCurrentSelection] = useState(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  const user = useUser();
+  const user: firebase.User = useUser();
   const db = useFirestore();
 
   const arrayUnion = useFirestore.FieldValue.arrayUnion;

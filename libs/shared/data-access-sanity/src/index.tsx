@@ -65,7 +65,7 @@ const processChildren = (children, markDefs) =>
             const isExternal =
               extra.href.includes('http://') || extra.href.includes('https://');
 
-            const linkProps = isExternal
+            const linkProps: any = isExternal
               ? {
                   as: 'a',
                   href: extra.href,
@@ -116,7 +116,7 @@ const blockRenderer = (props) => {
     else if (+level === 6) size = 'xs';
 
     return (
-      <Heading size={size} as={`h${level}`} mb={4}>
+      <Heading size={size} as={`h${level}` as React.ElementType<any>} mb={4}>
         {children}
       </Heading>
     );
@@ -134,7 +134,7 @@ const blockRenderer = (props) => {
 };
 
 const listRenderer = ({ type, level, children }) => {
-  const ListElem = type === 'bullet' ? UnorderedList : OrderedList;
+  const ListElem: React.ElementType = type === 'bullet' ? UnorderedList : OrderedList;
   let styleType;
 
   if (type === 'bullet') {

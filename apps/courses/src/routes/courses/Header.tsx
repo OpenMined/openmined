@@ -82,14 +82,14 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
     );
   });
 
-const userAvatar = forwardRef((props, ref) => {
+const userAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
 
   return (
-    <Avatar forwardedRef={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
+    <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
   );
 });
 

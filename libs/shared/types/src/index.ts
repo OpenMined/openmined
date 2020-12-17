@@ -1,3 +1,5 @@
+import * as firebase from 'firebase/app';
+
 export interface User {
   first_name: string;
   last_name: string;
@@ -11,4 +13,21 @@ export interface User {
   city?: string;
   country?: string;
   timezone?: string;
+}
+
+export namespace Course {
+  export type ProjectSubmission = {
+    attempt: number;
+    content: string;
+    course: string;
+    part: string;
+    student: firebase.firestore.DocumentReference;
+    submitted_at: firebase.firestore.Timestamp;
+  };
+
+  export type ProjectAttempt = {
+    submitted_at: firebase.firestore.Timestamp;
+    submission: firebase.firestore.DocumentReference;
+    content: any;
+  };
 }

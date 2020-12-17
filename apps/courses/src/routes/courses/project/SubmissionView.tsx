@@ -37,6 +37,7 @@ import RichTextEditor, {
   EDITOR_STORAGE_STRING,
 } from '../../../components/RichTextEditor';
 
+import { Course } from '@openmined/shared/types';
 dayjs.extend(relativeTime);
 
 const tabProps = {
@@ -99,14 +100,14 @@ export default ({
     submissionViewAttempt !== null
       ? submissions[submissionViewAttempt].submission
       : null;
-  const attemptData = attemptRef ? useFirestoreDocDataOnce(attemptRef) : null;
+  const attemptData: Course.ProjectSubmission = attemptRef ? useFirestoreDocDataOnce(attemptRef) : null;
 
   // If we've been asked to load a review for this page
   const reviewRef =
     submissionViewAttempt !== null
       ? submissions[submissionViewAttempt].review
       : null;
-  const reviewData = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
+  const reviewData: any = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
 
   const onlyFailedOrPassedSubmissions = submissions.filter(
     ({ status }) => status === 'passed' || status === 'failed'
@@ -161,7 +162,7 @@ export default ({
             <Flex justify="space-between" align="center" mb={8}>
               <SimpleGrid columns={3} spacing={2} flex={1}>
                 {submissions.map(({ status }, index) => {
-                  const props = {};
+                  const props: { bg?: string } = {};
 
                   if (status === 'passed') props.bg = 'green.500';
                   else if (status === 'failed') props.bg = 'magenta.500';

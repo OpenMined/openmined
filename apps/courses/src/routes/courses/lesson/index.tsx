@@ -26,6 +26,7 @@ import {
   hasStartedLesson,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
+import { getLinkPropsFromLink } from '../../../helpers';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
@@ -139,19 +140,6 @@ export default ({ page, progress, user, ts, course, lesson }) => {
               {resources.map(({ title, link }, index) => {
                 const isExternal =
                   link.includes('http://') || link.includes('https://');
-
-                const linkProps = isExternal
-                  ? {
-                      as: 'a',
-                      href: link,
-                      target: '_blank',
-                      rel: 'noopener noreferrer',
-                    }
-                  : {
-                      as: RRDLink,
-                      to: link,
-                    };
-
                 return (
                   <Link
                     key={index}
@@ -159,7 +147,7 @@ export default ({ page, progress, user, ts, course, lesson }) => {
                     _hover={{ color: 'magenta.700' }}
                     display="block"
                     mt={2}
-                    {...linkProps}
+                    {...getLinkPropsFromLink(link)}
                   >
                     <Flex justify="space-between" align="center">
                       <Flex align="center">

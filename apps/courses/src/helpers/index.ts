@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toastConfig } from '../components/Toast';
+import { Link as RRDLink } from 'react-router-dom';
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
@@ -37,3 +38,21 @@ export const handleErrors = (toast, error) =>
   });
 
 export const SIDEBAR_WIDTH = 280;
+
+export const getLinkPropsFromLink = (link: string) => {
+  const isExternal = /^https?:\/\//.test(link);
+
+  const linkProps = isExternal
+    ? {
+        as: 'a',
+        href: link,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+      }
+    : {
+        as: RRDLink,
+        to: link,
+      };
+
+  return linkProps as any;
+};

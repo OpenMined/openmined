@@ -25,6 +25,7 @@ import {
   faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
+import { getLinkPropsFromLink } from '../../helpers';
 
 const DrawerItem = ({
   index,
@@ -59,18 +60,6 @@ const DrawerItem = ({
               const isExternal =
                 link.includes('http://') || link.includes('https://');
 
-              const linkProps = isExternal
-                ? {
-                    as: 'a',
-                    href: link,
-                    target: '_blank',
-                    rel: 'noopener noreferrer',
-                  }
-                : {
-                    as: RRDLink,
-                    to: link,
-                  };
-
               return (
                 <Link
                   key={index}
@@ -80,7 +69,7 @@ const DrawerItem = ({
                     if (onClick) onClick();
                     onClose();
                   }}
-                  {...linkProps}
+                  {...getLinkPropsFromLink(link)}
                 >
                   <Flex justify="space-between" align="center">
                     <Flex align="center">
@@ -103,7 +92,7 @@ const DrawerItem = ({
                 </Link>
               );
             } else {
-              const linkProps = link
+              const linkProps: any = link
                 ? {
                     as: RRDLink,
                     to: link,

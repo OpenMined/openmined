@@ -7,6 +7,8 @@ import GridContainer from './GridContainer';
 
 import content from '../content/footer';
 
+import { getLinkPropsFromLink } from '../helpers';
+
 const { about, links, copyright } = content;
 
 const FooterSection = ({ title, children, ...props }) => (
@@ -64,26 +66,10 @@ export default (props) => (
             >
               <Flex direction="column">
                 {group.links.map((item, i) => {
-                  const isExternal =
-                    item.link.includes('http://') ||
-                    item.link.includes('https://');
-
-                  const linkProps: any = isExternal
-                    ? {
-                        target: '_blank',
-                        rel: 'noopener noreferrer',
-                        href: item.link,
-                        as: 'a',
-                      }
-                    : {
-                        to: item.link,
-                        as: RRDLink,
-                      };
-
                   return (
                     <Link
                       key={i}
-                      {...linkProps}
+                      {...getLinkPropsFromLink(item.link)}
                       color="gray.400"
                       _hover={{ color: 'white' }}
                       mt={i === 0 ? 0 : 2}

@@ -43,7 +43,7 @@ import { handleErrors } from '../helpers';
 interface LinkProps {
   title: string;
   type: string;
-  element?: React.ReactNode;
+  element?: React.ReactElement;
   auth?: boolean;
   unauth?: boolean;
   to?: string;
@@ -72,7 +72,7 @@ const createLinks = (
       if (type === 'element')
         return React.cloneElement(link.element, { key: title });
 
-      const as = link.to ? { as: RRDLink } : {};
+      const as: any = link.to ? { as: RRDLink } : {};
 
       if (!link.onClick) link.onClick = onClick;
       else {
@@ -107,10 +107,9 @@ const createLinks = (
       return null;
     });
 };
-
 // SEE TODO (#18)
-const userAvatar = forwardRef((props, ref) => {
-  const user = useUser();
+const userAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
@@ -121,7 +120,7 @@ const userAvatar = forwardRef((props, ref) => {
 });
 
 export default ({ noScrolling }) => {
-  const user = useUser();
+  const user: firebase.User = useUser();
   const auth = useAuth();
   const toast = useToast();
   const isLoggedIn = !!user;

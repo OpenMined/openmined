@@ -27,6 +27,7 @@ import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 import GridContainer from '../../../components/GridContainer';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
+import { getLinkPropsFromLink } from '../../../helpers';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
   <Flex align="center" {...props}>
@@ -45,24 +46,10 @@ const SocialItem = ({ title, href, icon, ...props }) => (
 );
 
 const LinkItem = ({ title, icon, link, ...props }) => {
-  const isExternal = link.includes('http://') || link.includes('https://');
-
-  const linkProps = isExternal
-    ? {
-        as: 'a',
-        target: '_blank',
-        rel: 'noopener noreferrer',
-        href: link,
-      }
-    : {
-        as: RRDLink,
-        to: link,
-      };
-
   return (
     <Flex
       {...props}
-      {...linkProps}
+      {...getLinkPropsFromLink(link)}
       align="center"
       p={3}
       width="full"
@@ -83,7 +70,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
 
 export default () => {
   const gray50 = useToken('colors', 'gray.50');
-  const user = useUser();
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const { uid } = useParams();
 

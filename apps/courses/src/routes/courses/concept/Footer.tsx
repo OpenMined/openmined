@@ -29,6 +29,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import useToast, { toastConfig } from '../../../components/Toast';
+import { getLinkPropsFromLink } from '../../../helpers';
 
 const BREAK = 'md';
 
@@ -170,23 +171,8 @@ const Help = ({ helpOpen, setHelpOpen }) => {
       </MenuButton>
       <MenuList>
         {helpLinks.map(({ title, link, icon }, index) => {
-          const isExternal =
-            link.includes('http://') || link.includes('https://');
-
-          const linkProps = isExternal
-            ? {
-                as: 'a',
-                href: link,
-                target: '_blank',
-                rel: 'noopener noreferrer',
-              }
-            : {
-                as: RRDLink,
-                to: link,
-              };
-
           return (
-            <MenuItem key={index} {...linkProps}>
+            <MenuItem key={index} {...getLinkPropsFromLink(link)}>
               {/* SEE TODO (#3) */}
               {icon && (
                 <Icon

@@ -31,10 +31,9 @@ const Map = () => {
             })
             .filter((d) => d);
 
-          // @ts-ignore
           const uniqueMembers = Array.from(
             new Set(finalMembers.map(JSON.stringify)),
-            JSON.parse
+            (member: string) => JSON.parse(member),
           );
 
           setMembers(uniqueMembers);

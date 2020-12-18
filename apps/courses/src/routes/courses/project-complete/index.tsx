@@ -95,14 +95,21 @@ export default ({ progress, page, user, ts, course }) => {
 
   // We need a function to be able to provide feedback for this project
   const onProvideFeedback = (value, feedback = null) =>
-    db.collection('users').doc(user.uid).collection('feedback').doc(course).set(
-      {
-        value,
-        feedback,
-        type: 'project',
-      },
-      { merge: true }
-    );
+    db
+      .collection('users')
+      .doc(user.uid)
+      .collection('courses')
+      .doc(course)
+      .collection('feedback')
+      .doc(course)
+      .set(
+        {
+          value,
+          feedback,
+          type: 'project',
+        },
+        { merge: true }
+      );
 
   const votes = [
     { text: '👎', val: -1 },

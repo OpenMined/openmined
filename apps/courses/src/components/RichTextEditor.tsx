@@ -138,7 +138,7 @@ const toggleBlock = (editor, format) => {
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       LIST_TYPES.includes(
-        !Editor.isEditor(n) && SlateElement.isElement(n) && n.type
+        !Editor.isEditor(n) && SlateElement.isElement(n) && n.type as string
       ),
     split: true,
   });
@@ -303,7 +303,7 @@ export const Leaf = ({ attributes, children, leaf }) => {
   );
 };
 
-const BlockButton = ({ format, icon, text }) => {
+const BlockButton = ({ format, icon, text }: any) => {
   const editor = useSlate();
 
   return (

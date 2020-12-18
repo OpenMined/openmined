@@ -195,14 +195,14 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         first_name: firstName,
         last_name: lastName,
         photo_url: authUser.user.photoURL,
-        description: authUser.additionalUserInfo.profile.bio,
-        github: authUser.additionalUserInfo.profile.login,
-        twitter: authUser.additionalUserInfo.profile.twitter_username,
-        website: authUser.additionalUserInfo.profile.blog,
+        description: (authUser.additionalUserInfo.profile as any).bio,
+        github: (authUser.additionalUserInfo.profile as any).login,
+        twitter: (authUser.additionalUserInfo.profile as any).twitter_username,
+        website: (authUser.additionalUserInfo.profile as any).blog,
       });
 
       batch.set(userPrivateDoc, {
-        github_access_token: authUser.credential.accessToken,
+        github_access_token: (authUser.credential as any).accessToken,
       });
 
       batch

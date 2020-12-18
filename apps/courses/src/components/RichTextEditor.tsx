@@ -90,7 +90,7 @@ export default ({
             justify="space-between"
             align="center"
           >
-            <Flex align="center">
+            <Flex align="center" wrap="wrap">
               <MarkButton format="bold" icon={faBold} />
               <MarkButton format="italic" icon={faItalic} />
               <MarkButton format="underline" icon={faUnderline} />
@@ -111,12 +111,18 @@ export default ({
               <BlockButton format="numbered-list" icon={faListOl} />
               <BlockButton format="bulleted-list" icon={faListUl} />
             </Flex>
-            <Text color="gray.400" mr={3} fontStyle="italic">
+            <Text
+              ml={6}
+              mr={3}
+              fontStyle="italic"
+              color="gray.400"
+              whiteSpace="nowrap"
+            >
               Autosave on
             </Text>
           </Flex>
         )}
-        <Box px={readOnly ? 0 : 12} py={readOnly ? 0 : 8}>
+        <Box px={readOnly ? 0 : [8, null, 12]} py={readOnly ? 0 : 8}>
           <Editable
             renderElement={renderElement}
             renderLeaf={renderLeaf}

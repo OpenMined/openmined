@@ -61,7 +61,10 @@ const combineSubmissionsAndReviews = (submissions, reviews) =>
         ...submissions.map((s, i) => {
           const equivalentReview = reviews[i];
 
-          if (equivalentReview) return { ...s, ...equivalentReview };
+          if (equivalentReview && equivalentReview.status) {
+            return { ...s, ...equivalentReview };
+          }
+
           return { ...s, status: 'pending' };
         }),
         ...Array(PROJECT_PART_SUBMISSIONS - submissions.length).fill({
@@ -274,10 +277,7 @@ export default ({ course, page, progress, user, ts }) => {
   // Otherwise, render the main project page
   return (
     <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
-      <Flex
-        align="flex-start"
-        direction={{ base: 'column-reverse', lg: 'row' }}
-      >
+      <Flex align="flex-start" direction={{ base: 'column', lg: 'row' }}>
         <Box mr={{ lg: 16 }}>
           <Text color="gray.700" fontWeight="bold" mb={2}>
             {courseTitle}

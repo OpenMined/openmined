@@ -30,6 +30,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useFirestoreDocDataOnce } from 'reactfire';
+import { Course } from '@openmined/shared/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
@@ -44,23 +45,23 @@ import RichTextEditor, {
   EDITOR_STORAGE_STRING,
 } from '../../../components/RichTextEditor';
 
-import { Course } from '@openmined/shared/types';
 dayjs.extend(relativeTime);
 
 const tabProps = {
   fontWeight: 'bold',
   color: 'gray.600',
   borderColor: 'gray.300',
+  borderTopRadius: 'md',
+  borderBottomRadius: ['md', null, 'none'],
   py: 4,
+  mb: [2, null, 0],
   _selected: {
     bg: 'cyan.50',
     color: 'cyan.700',
     border: '1px solid',
     borderColor: 'cyan.100',
     borderBottom: '2px solid',
-    borderBottomColor: 'cyan.700',
-    borderTopLeftRadius: 'md',
-    borderTopRightRadius: 'md',
+    borderBottomColor: ['cyan.100', null, 'cyan.700'],
   },
 };
 
@@ -92,7 +93,7 @@ const ReviewStatus = ({ status }) => {
 };
 
 const SubmissionBoxes = ({ submissions, ...props }) => (
-  <SimpleGrid columns={3} spacing={2} {...props}>
+  <SimpleGrid columns={3} spacing={2} width="full" {...props}>
     {submissions.map(({ status }, index) => {
       const props: { bg?: string } = {};
 
@@ -145,7 +146,11 @@ export default ({
   return (
     <Box bg="gray.50">
       <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
-        <Flex justify="space-between" align="center">
+        <Flex
+          direction={['column', null, 'row']}
+          justify="space-between"
+          align="center"
+        >
           {/* SEE TODO (#3) */}
           <Breadcrumb
             spacing={2}
@@ -170,6 +175,7 @@ export default ({
             rel="noopener noreferrer"
             color="gray.600"
             _hover={{ color: 'gray.800' }}
+            mt={[2, null, 0]}
           >
             <Flex align="center">
               {/* SEE TODO (#3) */}
@@ -179,18 +185,29 @@ export default ({
           </Link>
         </Flex>
         <Grid templateColumns="repeat(12, 1fr)" mt={8}>
-          <GridItem colSpan={1}>
+          <GridItem colSpan={1} mb={[4, null, null, 0]}>
             <Circle bg="gray.800" color="white" fontWeight="bold" size={8}>
               {number}
             </Circle>
           </GridItem>
-          <GridItem colSpan={10}>
+          <GridItem colSpan={[12, null, null, 10]}>
             <Heading as="h1" size="xl" mt={-1} mb={4}>
               {title}
             </Heading>
-            <Flex justify="space-between" align="center" mb={8}>
+            <Flex
+              direction={['column', null, 'row']}
+              justify="space-between"
+              align="center"
+              mb={8}
+            >
               <SubmissionBoxes submissions={submissions} flex={1} />
-              <Text fontSize="sm" fontStyle="italic" color="gray.700" ml={4}>
+              <Text
+                fontSize="sm"
+                fontStyle="italic"
+                color="gray.700"
+                ml={4}
+                mt={[2, null, 0]}
+              >
                 {submissions.filter(({ status }) => status !== 'none').length ||
                   0}{' '}
                 of {PROJECT_PART_SUBMISSIONS} attempts
@@ -226,7 +243,7 @@ export default ({
               </Box>
             )}
             <Tabs isFitted mb={8}>
-              <TabList>
+              <TabList flexDirection={['column', null, 'row']}>
                 <Tab {...tabProps}>1. Instructions</Tab>
                 <Tab {...tabProps}>2. Rubric</Tab>
                 <Tab {...tabProps}>3. Submission</Tab>
@@ -238,14 +255,14 @@ export default ({
                 borderColor="gray.300"
                 borderBottomRadius="md"
               >
-                <TabPanel px={24} py={16}>
+                <TabPanel px={[8, null, null, 24]} py={[8, null, null, 16]}>
                   <Heading as="p" mb={2} size="lg">
                     Instructions
                   </Heading>
                   <Divider />
                   <Content content={part.instructions} />
                 </TabPanel>
-                <TabPanel px={24} py={16}>
+                <TabPanel px={[8, null, null, 24]} py={[8, null, null, 16]}>
                   <Heading as="p" mb={2} size="lg">
                     Rubric
                   </Heading>
@@ -263,7 +280,7 @@ export default ({
                     />
                   )}
                   {attemptData && (
-                    <Box px={24} py={16}>
+                    <Box px={[8, null, null, 24]} py={[8, null, null, 16]}>
                       <Heading as="p" mb={2} size="lg">
                         Submission
                       </Heading>
@@ -277,7 +294,7 @@ export default ({
                   )}
                 </TabPanel>
                 {reviewData && (
-                  <TabPanel px={24} py={16}>
+                  <TabPanel px={[8, null, null, 24]} py={[8, null, null, 16]}>
                     <Heading as="p" mb={2} size="lg">
                       Feedback
                     </Heading>
@@ -326,11 +343,7 @@ export default ({
                       <Heading as="p" size="xl" mb={6}>
                         Woah there, cowboy!
                       </Heading>
-                      <SubmissionBoxes
-                        submissions={submissions}
-                        width="full"
-                        mb={6}
-                      />
+                      <SubmissionBoxes submissions={submissions} mb={6} />
                       <Text color="gray.400" mb={6}>
                         You have a total of 3 attempts on this part of the
                         project, before you submit make sure you check the

@@ -1,17 +1,34 @@
 import React from 'react';
 import * as Sentry from '@sentry/react';
-import { Box, Text, Heading } from '@chakra-ui/react';
+import { Flex, Text, Heading, Link } from '@chakra-ui/react';
 
 const FallbackComponent = () => (
-  <Box>
-    <Heading as="p" size="md">
-      Sorry, there was an error!
+  <Flex
+    w="100vw"
+    h="100vh"
+    p={8}
+    direction="column"
+    justify="center"
+    align="center"
+  >
+    <Heading as="p" size="lg" mb={3}>
+      Sorry, it looks like there was an error!
     </Heading>
     <Text color="gray.700">
       Our development team has been notified and is working on a fix. We
-      apologize for the inconvenience.
+      apologize for the inconvenience. If you'd like to file an official bug
+      report,{' '}
+      <Link
+        href="https://github.com/OpenMined/openmined/issues"
+        as="a"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        please do so here
+      </Link>
+      .
     </Text>
-  </Box>
+  </Flex>
 );
 
 export default class ErrorBoundary extends React.Component {

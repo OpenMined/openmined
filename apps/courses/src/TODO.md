@@ -10,6 +10,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
 - TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (#6 HARD): Ensure that deleting a user's account also deletes all their subcollections and THEN deletes their auth account with Firebase. Might be good to do this in a Firebase function. Likewise, [this existing Firebase solution might be a good one](https://firebase.google.com/products/extensions/delete-user-data).
+- TODO: We need to set up better Firebase performance logging to see what calls and page loads are taking the most time
 - TODO (HARD): Add a ton of security rules (make sure to reference the \_helpers.ts file!!!)
 - TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
 - Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass
@@ -30,22 +31,17 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Add reponsiveness to project page sidebar
-- Do responsive layout for submission view
-- Work on the design of the ErrorBoundary FallbackComponent
 - Build the My Courses page (maybe don't even worry about the existing PR) and rename it Dashboard everywhere
 - Build the mentorship dashboard
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, profile, my courses, and search pages
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same
-- Make sure that the OpenMined emails work on dev and production so that everything is coming from the @openmined.org domain name and NOT Firebase.
 - TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
 - TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
 
 ### Available issues (general)
 
 - TODO (HARD): Build Typescript interfaces for the course and use them throughout the various Firebase API calls file (see above), helpers file, and various views
-- TODO: We need to set up better Firebase performance logging to see what calls and page loads are taking the most time
 - TODO (HARD): [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-counter) to count a variety of metrics to a `metrics` collection at the top-level. Make sure to block this collection from being written to by anyone else except the function. This should include a variety of useful information, such as, but not limited to: number of user signups (through Github, through email, and total), number of user deletions, number of courses started, number of lessons started, number of concepts started, number of courses completed, number of lessons completed, number of concepts completed, number of projects started, number of projects passed, number of projects failed, etc. Maybe work with Patrick on this.
 
 ### Available issues (specific)

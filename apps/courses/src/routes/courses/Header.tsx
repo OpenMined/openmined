@@ -50,7 +50,7 @@ type LinkProps = {
   unauth?: boolean;
   to?: string;
   onClick?: () => void;
-}
+};
 
 const createLinks = (links: LinkProps[], onClick: () => void) =>
   links.map(({ type, title, auth, unauth, ...link }: LinkProps) => {
@@ -83,7 +83,7 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
   });
 
 // SEE TODO (#18)
-const userAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
+const UserAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
@@ -169,7 +169,7 @@ export default ({
       type: 'element',
       element: (
         <Menu placement="bottom-end">
-          <MenuButton as={userAvatar} />
+          <MenuButton as={UserAvatar} />
           <MenuList>
             {menuLinks.map(
               ({ type, link = '', onClick, title, icon }, index) => {

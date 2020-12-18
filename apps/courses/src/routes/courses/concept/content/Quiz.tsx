@@ -13,6 +13,8 @@ import { useFirestore, useUser } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons';
+import { handleErrors } from '../../../../helpers';
+import useToast from '../../../../components/Toast';
 
 const FinishedBox = ({ correct, total }) => (
   <Box bg="gray.100" borderRadius="md" p={8}>
@@ -286,6 +288,7 @@ export default ({
 
   const user: firebase.User = useUser();
   const db = useFirestore();
+  const toast = useToast();
 
   const arrayUnion = useFirestore.FieldValue.arrayUnion;
 
@@ -320,7 +323,8 @@ export default ({
             },
           },
           { merge: true }
-        );
+        )
+        .catch((error) => handleErrors(toast, error));
     }
   };
 

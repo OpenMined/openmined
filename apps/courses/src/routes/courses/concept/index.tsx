@@ -11,9 +11,12 @@ import {
   hasCompletedConcept,
   hasStartedConcept,
 } from '../_helpers';
+import { handleErrors } from '../../../helpers';
+import useToast from '../../../components/Toast';
 
 export default ({ progress, page, user, ts, course, lesson, concept }) => {
   const db = useFirestore();
+  const toast = useToast();
 
   const {
     concepts,
@@ -35,7 +38,8 @@ export default ({ progress, page, user, ts, course, lesson, concept }) => {
         .doc(user.uid)
         .collection('courses')
         .doc(course)
-        .set(data, { merge: true });
+        .set(data, { merge: true })
+        .catch((error) => handleErrors(toast, error));
     }
   }, [user.uid, db, progress, ts, course, lessons, lesson, concept]);
 

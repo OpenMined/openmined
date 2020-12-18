@@ -39,6 +39,9 @@ import {
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import { getLinkPropsFromLink } from '../../../helpers';
+import { handleErrors } from '../../../helpers';
+import useToast from '../../../components/Toast';
+
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
@@ -115,6 +118,7 @@ const getStatusStyles = (status) => {
 
 export default ({ course, page, progress, user, ts }) => {
   const db = useFirestore();
+  const toast = useToast();
 
   const {
     title: courseTitle,
@@ -215,7 +219,8 @@ export default ({ course, page, progress, user, ts }) => {
           student: db.collection('users').doc(user.uid),
           submitted_at: time,
           content,
-        });
+        })
+        .catch((error) => handleErrors(toast, error));
 
       // Once that's done, add the submissions to the submissions array on the user's course document
       // Note the use of the reference to the previous submission
@@ -242,7 +247,8 @@ export default ({ course, page, progress, user, ts }) => {
         .then(() => {
           // Once that's done, reload the screen to refresh the state
           window.location.reload();
-        });
+        })
+        .catch((error) => handleErrors(toast, error));
     }
   };
 

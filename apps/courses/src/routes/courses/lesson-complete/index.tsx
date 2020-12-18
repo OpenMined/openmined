@@ -24,6 +24,7 @@ import {
 import { getLessonIndex, hasCompletedLesson } from '../_helpers';
 import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
+import { handleErrors } from '../../../helpers';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -104,7 +105,8 @@ export default ({ progress, page, user, ts, course, lesson }) => {
           type: 'lesson',
         },
         { merge: true }
-      );
+      )
+      .catch((error) => handleErrors(toast, error));
 
   const votes = [
     { text: '👎', val: -1 },

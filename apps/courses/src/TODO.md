@@ -28,7 +28,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Fuzzy find search on Search page isn't working
 - Build the My Courses page (maybe don't even worry about the existing PR) and rename it Dashboard everywhere
 - Build the mentorship dashboard
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, profile, my courses, and search pages
@@ -40,6 +39,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Available issues (general)
 
+- TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (HARD): Add a ton of security rules
 - TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
 - TODO: Place all Firebase calls related to courses in the same file and then use them throughout the various pages... this will make this logic more testable in conjunction with the helpers file

@@ -93,7 +93,7 @@ export default ({ filters, numCourses, clearFilters }) => {
       )}
       <Accordion allowMultiple allowToggle>
         {filters.map((filter) => (
-          <SidebarItem key={filter.title} title="Skill Level" {...filter} />
+          <SidebarItem key={filter.title} {...filter} />
         ))}
       </Accordion>
     </>

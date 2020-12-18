@@ -49,19 +49,19 @@ const root = document.getElementById('root');
 
 export const WrappedApp = () => (
   <React.StrictMode>
-    <ErrorBoundaryWrapper>
-      <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-        <SanityProvider sanityConfig={sanityConfig}>
-          <HelmetProvider>
-            <ChakraProvider theme={theme}>
-              <SEOProvider metadata={metadata}>
+    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+      <SanityProvider sanityConfig={sanityConfig}>
+        <HelmetProvider>
+          <ChakraProvider theme={theme}>
+            <SEOProvider metadata={metadata}>
+              <ErrorBoundaryWrapper>
                 <App />
-              </SEOProvider>
-            </ChakraProvider>
-          </HelmetProvider>
-        </SanityProvider>
-      </FirebaseAppProvider>
-    </ErrorBoundaryWrapper>
+              </ErrorBoundaryWrapper>
+            </SEOProvider>
+          </ChakraProvider>
+        </HelmetProvider>
+      </SanityProvider>
+    </FirebaseAppProvider>
   </React.StrictMode>
 );
 

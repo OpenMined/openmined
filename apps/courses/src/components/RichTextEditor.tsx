@@ -53,7 +53,12 @@ const initialValue = [
   },
 ];
 
-export default ({ readOnly = false, content = null, ...props }) => {
+export default ({
+  readOnly = false,
+  content = null,
+  onChange = null,
+  ...props
+}) => {
   const [value, setValue] = useState<Node[]>(
     content ||
       JSON.parse(localStorage.getItem(EDITOR_STORAGE_STRING)) ||
@@ -72,6 +77,10 @@ export default ({ readOnly = false, content = null, ...props }) => {
           setValue(v);
 
           localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(v));
+
+          if (onChange && JSON.stringify(v) !== JSON.stringify(initialValue)) {
+            onChange(v);
+          }
         }}
       >
         {!readOnly && (
@@ -138,7 +147,7 @@ const toggleBlock = (editor, format) => {
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       LIST_TYPES.includes(
-        !Editor.isEditor(n) && SlateElement.isElement(n) && n.type as string
+        !Editor.isEditor(n) && SlateElement.isElement(n) && (n.type as string)
       ),
     split: true,
   });

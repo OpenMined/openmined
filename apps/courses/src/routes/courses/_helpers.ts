@@ -214,8 +214,8 @@ const checkForPrevious = (user, ls, l, c) => {
 
   // Or, we're not on a project page
   else if (l !== 'project') {
-    // Are we on a lesson page, and has the current lesson been completed?
-    if (c === null && hasCompletedLesson(user, l)) {
+    // Are we on a lesson page, and has the current lesson been started?
+    if (c === null && hasStartedLesson(user, l)) {
       return true;
     }
 
@@ -231,8 +231,8 @@ const checkForPrevious = (user, ls, l, c) => {
       return true;
     }
 
-    // Are we on a concept page, and has the concept been completed?
-    if (c !== null && c !== 'complete' && hasCompletedConcept(user, l, c)) {
+    // Are we on a concept page, and has the concept been started?
+    if (c !== null && c !== 'complete' && hasStartedConcept(user, l, c)) {
       return true;
     }
   }

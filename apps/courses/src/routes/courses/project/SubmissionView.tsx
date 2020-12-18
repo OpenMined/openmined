@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Breadcrumb,
@@ -100,7 +100,9 @@ export default ({
     submissionViewAttempt !== null
       ? submissions[submissionViewAttempt].submission
       : null;
-  const attemptData: Course.ProjectSubmission = attemptRef ? useFirestoreDocDataOnce(attemptRef) : null;
+  const attemptData: Course.ProjectSubmission = attemptRef
+    ? useFirestoreDocDataOnce(attemptRef)
+    : null;
 
   // If we've been asked to load a review for this page
   const reviewRef =
@@ -113,7 +115,7 @@ export default ({
     ({ status }) => status === 'passed' || status === 'failed'
   );
 
-  // SEE TODO (#21)
+  const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
 
   return (
     <Box bg="gray.50">
@@ -245,7 +247,15 @@ export default ({
                   <Content content={part.rubric} />
                 </TabPanel>
                 <TabPanel p={0} minHeight={400}>
-                  {!attemptData && <RichTextEditor />}
+                  {!attemptData && (
+                    <RichTextEditor
+                      onChange={() => {
+                        if (!hasStartedSubmission) {
+                          setHasStartedSubmission(true);
+                        }
+                      }}
+                    />
+                  )}
                   {attemptData && (
                     <Box px={24} py={16}>
                       <Heading as="p" mb={2} size="lg">
@@ -286,7 +296,7 @@ export default ({
               >
                 Back to Project
               </Button>
-              {!attemptData && (
+              {!attemptData && hasStartedSubmission && (
                 <Button
                   onClick={() => {
                     // Submit the attempt with the _key of the part and the content of the editor

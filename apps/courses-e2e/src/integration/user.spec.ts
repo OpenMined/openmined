@@ -37,7 +37,7 @@ describe('user not logged in', () => {
     cy.url().should('eq', withBaseUrl());
   });
 
-  it.skip('profile page should be unavailable', () => {
+  it('profile page should be unavailable', () => {
     // cy.visit(`users/${TEST_USER.uid}`);
     // Maybe 'Unauthorized Page'
     cy.url().should('eq', withBaseUrl());
@@ -135,13 +135,13 @@ describe('user logged in', () => {
     cy.url().should('not.eq', withBaseUrl());
   });
 
-  it.skip('signin page should not be available', () => {
+  it('signin page should not be available', () => {
     cy.visit('/signin');
     cy.url().should('not.eq', withBaseUrl('/signin'));
     cy.url().should('eq', withBaseUrl());
   });
 
-  it.skip('signup page should not be available', () => {
+  it('signup page should not be available', () => {
     cy.visit('/signup');
     cy.url().should('not.eq', withBaseUrl('/signup'));
     cy.url().should('eq', withBaseUrl());
@@ -153,7 +153,7 @@ describe('user logged in', () => {
     cy.url().should('eq', withBaseUrl());
   });
 
-  it.skip('profile page should be available', () => {
+  it('profile page should be available', () => {
     // cy.visit(`users/${TEST_USER.uid}`);
     // cy.url().should('eq', `users/${TEST_USER.uid}`);
     cy.url().should('not.eq', withBaseUrl());

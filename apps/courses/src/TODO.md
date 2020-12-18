@@ -9,7 +9,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - Add error boundaries to React app to catch errors, handle them gracefully, and report them to the appropriate service (see last todo item above)
 - Go through each page and test them for responsiveness, fixing any issues along the way. We KNOW that there will be problems on the following pages: project, project-complete, course-complete
 - Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass
-- Make the feedback a subcollection under the course, not at the same level as "courses".
 
 ### Bren
 
@@ -33,7 +32,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - Fuzzy find search on Search page isn't working
 - TODO (HARD): Make the current Privacy & Society course on Sanity API to be the "dummy" course that doesn't change over time and is just used for testing. You'll want to immediately rename this course (since it's the name of the actual first course). Then, you'll then need to actually create the real "Privacy & Society" course to be filled in by the writing team days before launch. PLEASE make sure that when you do this that there's a way to designate a course as being "for testing purposes only" in the backend, and DO NOT show these courses in the production site. Lastly, also make another toggle for courses that marks a course as being "ready to be taken". Do not allow users to take a course that doesn't have content yet (but we will still need to have the top-level course content so we can display it as "coming soon" on the site).
 - Build the My Courses page (maybe don't even worry about the existing PR) and rename it Dashboard everywhere
-- Build the notifications drawer and mentorship dashboard toggle
 - Build the mentorship dashboard
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, profile, my courses, and search pages
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same

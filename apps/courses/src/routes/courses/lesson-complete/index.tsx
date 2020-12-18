@@ -91,15 +91,22 @@ export default ({ progress, page, user, ts, course, lesson }) => {
 
   // We need a function to be able to provide feedback for this lesson
   const onProvideFeedback = (value, feedback = null) =>
-    db.collection('users').doc(user.uid).collection('feedback').doc(lesson).set(
-      {
-        value,
-        feedback,
-        type: 'lesson',
-      },
-      { merge: true }
-    )
-    .catch((error) => handleErrors(toast, error));;
+    db
+      .collection('users')
+      .doc(user.uid)
+      .collection('courses')
+      .doc(course)
+      .collection('feedback')
+      .doc(lesson)
+      .set(
+        {
+          value,
+          feedback,
+          type: 'lesson',
+        },
+        { merge: true }
+      )
+      .catch((error) => handleErrors(toast, error));
 
   const votes = [
     { text: '👎', val: -1 },

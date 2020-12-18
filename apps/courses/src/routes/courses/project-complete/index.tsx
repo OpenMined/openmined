@@ -99,6 +99,8 @@ export default ({ progress, page, user, ts, course }) => {
     db
       .collection('users')
       .doc(user.uid)
+      .collection('courses')
+      .doc(course)
       .collection('feedback')
       .doc(course)
       .set(

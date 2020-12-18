@@ -8,6 +8,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { SEOProvider } from '@openmined/shared/util-page';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
+import ErrorBoundaryWrapper from './components/ErrorBoundaryWrapper';
 
 import theme from './theme';
 import App from './App';
@@ -53,7 +54,9 @@ export const WrappedApp = () => (
         <HelmetProvider>
           <ChakraProvider theme={theme}>
             <SEOProvider metadata={metadata}>
-              <App />
+              <ErrorBoundaryWrapper>
+                <App />
+              </ErrorBoundaryWrapper>
             </SEOProvider>
           </ChakraProvider>
         </HelmetProvider>

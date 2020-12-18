@@ -28,7 +28,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Add the submission alert dialogs to the project page
 - Fuzzy find search on Search page isn't working
 - Build the My Courses page (maybe don't even worry about the existing PR) and rename it Dashboard everywhere
 - Build the mentorship dashboard

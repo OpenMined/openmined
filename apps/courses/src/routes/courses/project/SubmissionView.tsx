@@ -14,6 +14,12 @@ import {
   Icon,
   Image,
   Link,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalOverlay,
   SimpleGrid,
   Tab,
   TabList,
@@ -21,6 +27,7 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useFirestoreDocDataOnce } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -84,6 +91,23 @@ const ReviewStatus = ({ status }) => {
   );
 };
 
+const SubmissionBoxes = ({ submissions, ...props }) => (
+  <SimpleGrid columns={3} spacing={2} {...props}>
+    {submissions.map(({ status }, index) => {
+      const props: { bg?: string } = {};
+
+      if (status === 'passed') props.bg = 'green.500';
+      else if (status === 'failed') props.bg = 'magenta.500';
+      else if (status === 'pending') props.bg = 'gray.500';
+      else if (status === 'none') props.bg = 'gray.400';
+
+      return (
+        <Box key={index} borderRadius="md" width="full" height={1} {...props} />
+      );
+    })}
+  </SimpleGrid>
+);
+
 export default ({
   setSubmissionView,
   submissionViewAttempt,
@@ -116,6 +140,7 @@ export default ({
   );
 
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
+  const preSubmitModal = useDisclosure();
 
   return (
     <Box bg="gray.50">
@@ -164,26 +189,7 @@ export default ({
               {title}
             </Heading>
             <Flex justify="space-between" align="center" mb={8}>
-              <SimpleGrid columns={3} spacing={2} flex={1}>
-                {submissions.map(({ status }, index) => {
-                  const props: { bg?: string } = {};
-
-                  if (status === 'passed') props.bg = 'green.500';
-                  else if (status === 'failed') props.bg = 'magenta.500';
-                  else if (status === 'pending') props.bg = 'gray.500';
-                  else if (status === 'none') props.bg = 'gray.400';
-
-                  return (
-                    <Box
-                      key={index}
-                      borderRadius="md"
-                      width="full"
-                      height={1}
-                      {...props}
-                    />
-                  );
-                })}
-              </SimpleGrid>
+              <SubmissionBoxes submissions={submissions} flex={1} />
               <Text fontSize="sm" fontStyle="italic" color="gray.700" ml={4}>
                 {submissions.filter(({ status }) => status !== 'none').length ||
                   0}{' '}
@@ -296,20 +302,74 @@ export default ({
               >
                 Back to Project
               </Button>
-              {!attemptData && hasStartedSubmission && (
-                <Button
-                  onClick={() => {
-                    // Submit the attempt with the _key of the part and the content of the editor
-                    onAttemptSubmission(
-                      _key,
-                      localStorage.getItem(EDITOR_STORAGE_STRING)
-                    );
-
-                    // And clear the editor's cache
-                    localStorage.removeItem(EDITOR_STORAGE_STRING);
-                  }}
-                  colorScheme="black"
+              <Modal
+                isOpen={preSubmitModal.isOpen}
+                onClose={preSubmitModal.onClose}
+                size="xl"
+              >
+                <ModalOverlay />
+                <ModalContent
+                  bg="gray.800"
+                  color="white"
+                  textAlign="center"
+                  px={8}
+                  py={6}
                 >
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Flex direction="column" align="center">
+                      <Image
+                        src="https://emojis.slackmojis.com/emojis/images/1605478401/10874/cool_cowboy.png?1605478401"
+                        boxSize={12}
+                        mb={6}
+                      />
+                      <Heading as="p" size="xl" mb={6}>
+                        Woah there, cowboy!
+                      </Heading>
+                      <SubmissionBoxes
+                        submissions={submissions}
+                        width="full"
+                        mb={6}
+                      />
+                      <Text color="gray.400" mb={6}>
+                        You have a total of 3 attempts on this part of the
+                        project, before you submit make sure you check the
+                        rubric. If you’re ready click submit, if not click
+                        cancel.
+                      </Text>
+                    </Flex>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      colorScheme="cyan"
+                      mr={3}
+                      onClick={() => {
+                        // Submit the attempt with the _key of the part and the content of the editor
+                        onAttemptSubmission(
+                          _key,
+                          localStorage.getItem(EDITOR_STORAGE_STRING)
+                        );
+
+                        // And clear the editor's cache
+                        localStorage.removeItem(EDITOR_STORAGE_STRING);
+
+                        preSubmitModal.onClose();
+                      }}
+                    >
+                      Continue
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      colorScheme="white"
+                      onClick={preSubmitModal.onClose}
+                    >
+                      Cancel
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+              {!attemptData && hasStartedSubmission && (
+                <Button onClick={preSubmitModal.onOpen} colorScheme="black">
                   Submit
                 </Button>
               )}

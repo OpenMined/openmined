@@ -33,7 +33,7 @@ import {
   getProjectPartNumber,
   getProjectPartStatus,
   getProjectStatus,
-  hasSubmittedProjectPart,
+  hasStartedProjectPart,
   hasStartedProject,
   PROJECT_PART_SUBMISSIONS,
 } from '../_helpers';
@@ -41,7 +41,6 @@ import GridContainer from '../../../components/GridContainer';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
-
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
@@ -78,7 +77,7 @@ const prepAccordionAndStatus = (progress, parts) => {
   const content = parts.map((part) => ({
     ...part,
     status: getProjectPartStatus(progress, part._key),
-    submissions: hasSubmittedProjectPart(progress, part._key)
+    submissions: hasStartedProjectPart(progress, part._key)
       ? combineSubmissionsAndReviews(
           progress.project.parts[part._key].submissions,
           progress.project.parts[part._key].reviews

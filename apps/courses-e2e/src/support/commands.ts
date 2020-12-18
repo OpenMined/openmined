@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -10,30 +11,84 @@
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
+  type User = {
+    email: string;
+    password: string;
+    first_name: string;
+    last_name: string;
+  };
+
+  type AlertMessage = {
+    title: string;
+    desc: string;
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     login(email: string, password: string): void;
+    logout(): void;
+    createUser(user: User): void;
+    deleteAccount(): void;
+    checkAlert(message: AlertMessage): void;
+    acceptCookies(): void;
     saveLocalStorageCache(): void;
     restoreLocalStorageCache(): void;
+    fetchCoursesData(): void;
+    goToLesson(course: string, ref: string): void;
     answerQuiz(question: string, answer: string, finish?: boolean): void;
   }
 }
-//
-// -- This is a parent command --
+
+/* Constants */
+const LOCAL_STORAGE_MEMORY = {};
+
 Cypress.Commands.add('login', (email, password) => {
-  console.log('Custom command example: Login', email, password);
+  cy.visit('/signin');
+  cy.get("input[name='email']").type(email);
+  cy.get("input[name='password']").type(password);
+  cy.get('form').submit();
+  console.log('Logging as', email, password);
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(5000);
 });
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('logout', () => {
+  cy.get('span.chakra-avatar').click();
+  cy.wait(1000);
+  cy.get('button.chakra-menu__menuitem').contains('Logout').click();
+});
+
+Cypress.Commands.add('createUser', (user) => {
+  cy.visit('/signup');
+  cy.get("input[name='first_name']").type(user.first_name);
+  cy.get("input[name='last_name']").type(user.last_name);
+  cy.get("input[name='email']").type(user.email);
+  cy.get("input[name='password']").type(user.password);
+  cy.get("input[name='password_confirm']").type(user.password);
+  cy.get('form').submit();
+});
+
+Cypress.Commands.add('deleteAccount', () => {
+  cy.get('span.chakra-avatar').click();
+  cy.wait(1000);
+  cy.get('a.chakra-menu__menuitem').contains('Account Settings').click();
+  cy.wait(1000);
+  cy.get('button').contains('Manage Account').click();
+  cy.get('button').contains('Delete Account').click();
+  // Confirmation
+  cy.wait(1000);
+  cy.get('footer.chakra-modal__footer').within(() => {
+    cy.get('button').contains('Delete Account').click();
+  });
+});
+
+Cypress.Commands.add('acceptCookies', () => {
+  cy.get('div#cookies').contains('Accept all cookies').click();
+  Cypress.Cookies.defaults({
+    whitelist: (cookie) => true,
+  });
+  cy.log('Cookies Accepted!');
+});
 
 Cypress.Commands.add('isNotActionable', (element, done) => {
   element.click({ force: true });
@@ -46,8 +101,6 @@ Cypress.Commands.add('isNotActionable', (element, done) => {
     new Error('Expected element NOT to be clickable, but click() succeeded')
   );
 });
-
-let LOCAL_STORAGE_MEMORY = {};
 
 Cypress.Commands.add('saveLocalStorageCache', () => {
   Object.keys(localStorage).forEach((key) => {
@@ -67,10 +120,30 @@ Cypress.Commands.add('answerQuiz', (question, answer, finish = false) => {
     .parent('div')
     .within(() => {
       cy.get('div').contains(answer).click();
-      cy.wait(500);
       cy.get('svg')
         .parent()
         .contains(finish ? 'Finish' : 'Next')
         .click();
     });
 });
+
+Cypress.Commands.add('goToLesson', (course, ref) =>
+  cy.visit(`/courses/${course}/${ref}`)
+);
+
+Cypress.Commands.add('checkAlert', (message) => {
+  cy.get('div.chakra-alert__title').first().should('have.text', message.title);
+  cy.get('div.chakra-alert__desc').first().should('have.text', message.desc);
+});
+
+//
+// -- This is a child command --
+// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
+//
+//
+// -- This is a dual command --
+// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
+//
+//
+// -- This will overwrite an existing command --
+// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })

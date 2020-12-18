@@ -62,11 +62,13 @@ export default ({ which }) => {
   const user = useUser();
   const db = useFirestore();
   const dbCourseRef = params.course
-    ? db
-        .collection('users')
-        .doc(user.uid)
-        .collection('courses')
-        .doc(params.course)
+    ? user
+      ? db
+          .collection('users')
+          .doc(user.uid)
+          .collection('courses')
+          .doc(params.course)
+      : null
     : null;
   const dbCourse = dbCourseRef ? useFirestoreDocDataOnce(dbCourseRef) : [];
 

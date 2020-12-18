@@ -35,7 +35,7 @@ const preloadSDKs = (firebaseApp) => {
       setup: (firestore) => {
         const initalizedStore = firestore();
         initalizedStore.settings({ host: 'localhost:8080', ssl: false });
-        firestore().enablePersistence();
+        firestore().enablePersistence({ experimentalForceOwningTab: true });
       },
     }),
     // TODO:  Create a bucket for dev purposes only

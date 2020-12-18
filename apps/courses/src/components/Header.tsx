@@ -15,6 +15,7 @@ import {
   MenuItem,
   Text,
   MenuDivider,
+  useDisclosure,
 } from '@chakra-ui/react';
 import {
   useAuth,
@@ -108,7 +109,7 @@ const createLinks = (
     });
 };
 // SEE TODO (#18)
-const userAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
+const UserAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
@@ -136,6 +137,8 @@ export default ({ noScrolling }) => {
       else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
     }
   }, [scrollY, isScrolled, noScrolling]);
+
+  const menuDisclosure = useDisclosure();
 
   const LEFT_LINKS = [
     {
@@ -169,69 +172,77 @@ export default ({ noScrolling }) => {
       type: 'element',
       auth: true,
       element: (
-        <Menu placement="bottom-end">
-          <MenuButton as={userAvatar} />
-          <MenuList>
-            {user && (
-              <MenuItem as={RRDLink} to={`/users/${user.uid}`}>
+        <Menu placement="bottom-end" {...menuDisclosure}>
+          <Box position="relative">
+            <UserAvatar
+              onClick={
+                menuDisclosure.isOpen
+                  ? menuDisclosure.onClose
+                  : menuDisclosure.onOpen
+              }
+            />
+            <MenuList>
+              {user && (
+                <MenuItem as={RRDLink} to={`/users/${user.uid}`}>
+                  {/* SEE TODO (#3) */}
+                  <Icon
+                    as={FontAwesomeIcon}
+                    icon={faUserCircle}
+                    size="lg"
+                    color="gray.400"
+                    mr={4}
+                  />
+                  <Text color="gray.700">Profile</Text>
+                </MenuItem>
+              )}
+              <MenuItem as={RRDLink} to="/users/settings">
                 {/* SEE TODO (#3) */}
                 <Icon
                   as={FontAwesomeIcon}
-                  icon={faUserCircle}
+                  icon={faCog}
                   size="lg"
                   color="gray.400"
                   mr={4}
                 />
-                <Text color="gray.700">Profile</Text>
+                <Text color="gray.700">Account Settings</Text>
               </MenuItem>
-            )}
-            <MenuItem as={RRDLink} to="/users/settings">
-              {/* SEE TODO (#3) */}
-              <Icon
-                as={FontAwesomeIcon}
-                icon={faCog}
-                size="lg"
-                color="gray.400"
-                mr={4}
-              />
-              <Text color="gray.700">Account Settings</Text>
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
-              as="a"
-              href="https://discussion.openmined.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {/* SEE TODO (#3) */}
-              <Icon
-                as={FontAwesomeIcon}
-                icon={faCommentAlt}
-                size="lg"
-                color="gray.400"
-                mr={4}
-              />
-              <Text color="gray.700">Forum</Text>
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
-              onClick={() =>
-                auth
-                  .signOut()
-                  .then(() =>
-                    toast({
-                      ...toastConfig,
-                      title: 'Sign out successful',
-                      description: 'Come back soon!',
-                      status: 'success',
-                    })
-                  )
-                  .catch((error) => handleErrors(toast, error))
-              }
-            >
-              <Text color="gray.700">Logout</Text>
-            </MenuItem>
-          </MenuList>
+              <MenuDivider />
+              <MenuItem
+                as="a"
+                href="https://discussion.openmined.org"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {/* SEE TODO (#3) */}
+                <Icon
+                  as={FontAwesomeIcon}
+                  icon={faCommentAlt}
+                  size="lg"
+                  color="gray.400"
+                  mr={4}
+                />
+                <Text color="gray.700">Forum</Text>
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem
+                onClick={() =>
+                  auth
+                    .signOut()
+                    .then(() =>
+                      toast({
+                        ...toastConfig,
+                        title: 'Sign out successful',
+                        description: 'Come back soon!',
+                        status: 'success',
+                      })
+                    )
+                    .catch((error) => handleErrors(toast, error))
+                }
+              >
+                <Text color="gray.700">Logout</Text>
+              </MenuItem>
+            </MenuList>
+          </Box>
         </Menu>
       ),
     },

@@ -14,7 +14,7 @@ const FallbackComponent = () => (
   </Box>
 );
 
-export default class extends React.Component {
+export default class ErrorBoundary extends React.Component {
   render() {
     return (
       <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
@@ -22,4 +22,4 @@ export default class extends React.Component {
       </Sentry.ErrorBoundary>
     );
   }
-};
+}

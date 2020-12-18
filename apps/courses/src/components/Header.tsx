@@ -284,8 +284,7 @@ export default ({ noScrolling }) => {
               <Icon as={FontAwesomeIcon} icon={faBars} {...iconStyles} />
             )}
           </Box>
-          <Box
-            display={{ base: show ? 'flex' : 'none', [BREAK]: 'flex' }}
+          {show && <Box
             width={{ base: 'full', [BREAK]: 'auto' }}
             flexGrow={1}
             my={{ base: 4, [BREAK]: 0 }}
@@ -305,9 +304,8 @@ export default ({ noScrolling }) => {
                 setShow(false)
               )}
             </Stack>
-          </Box>
-          <Box
-            display={{ base: show ? 'block' : 'none', [BREAK]: 'block' }}
+          </Box>}
+          {show && <Box
             flexGrow={{ base: 1, [BREAK]: 0 }}
           >
             <Stack
@@ -319,7 +317,7 @@ export default ({ noScrolling }) => {
                 setShow(false)
               )}
             </Stack>
-          </Box>
+          </Box>}
         </Flex>
       </GridContainer>
     </Box>

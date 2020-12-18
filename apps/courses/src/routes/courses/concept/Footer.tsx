@@ -34,7 +34,6 @@ const BREAK = 'md';
 
 // SEE TODO (#18)
 const Feedback = ({
-  feedbackOpen,
   setFeedbackOpen,
   vote,
   setVote,
@@ -52,7 +51,7 @@ const Feedback = ({
   ];
 
   return (
-    <Popover isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)}>
+    <Popover onClose={() => setFeedbackOpen(false)}>
       <PopoverTrigger>
         <Link
           onClick={() => setFeedbackOpen(true)}
@@ -276,8 +275,7 @@ export default ({
       <Box px={8}>
         <Flex justify="space-between" align="center">
           <Flex width={{ base: 6, [BREAK]: 1 / 4 }}>
-            <Feedback
-              feedbackOpen={feedbackOpen}
+            {feedbackOpen && <Feedback
               setFeedbackOpen={setFeedbackOpen}
               vote={vote}
               setVote={setVote}
@@ -285,7 +283,7 @@ export default ({
               setFeedback={setFeedback}
               onProvideFeedback={onProvideFeedback}
               setHelpOpen={setHelpOpen}
-            />
+            />}
           </Flex>
           <Flex
             width={{ base: 'full', [BREAK]: 1 / 2 }}

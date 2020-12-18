@@ -8,6 +8,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { SEOProvider } from '@openmined/shared/util-page';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
+import ErrorBoundaryWrapper from './components/ErrorBoundaryWrapper';
 
 import theme from './theme';
 import App from './App';
@@ -48,17 +49,19 @@ const root = document.getElementById('root');
 
 export const WrappedApp = () => (
   <React.StrictMode>
-    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <SanityProvider sanityConfig={sanityConfig}>
-        <HelmetProvider>
-          <ChakraProvider theme={theme}>
-            <SEOProvider metadata={metadata}>
-              <App />
-            </SEOProvider>
-          </ChakraProvider>
-        </HelmetProvider>
-      </SanityProvider>
-    </FirebaseAppProvider>
+    <ErrorBoundaryWrapper>
+      <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+        <SanityProvider sanityConfig={sanityConfig}>
+          <HelmetProvider>
+            <ChakraProvider theme={theme}>
+              <SEOProvider metadata={metadata}>
+                <App />
+              </SEOProvider>
+            </ChakraProvider>
+          </HelmetProvider>
+        </SanityProvider>
+      </FirebaseAppProvider>
+    </ErrorBoundaryWrapper>
   </React.StrictMode>
 );
 

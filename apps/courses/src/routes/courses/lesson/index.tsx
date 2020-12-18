@@ -27,6 +27,8 @@ import {
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import { getLinkPropsFromLink } from '../../../helpers';
+import { handleErrors } from '../../../helpers';
+import useToast from '../../../components/Toast';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
@@ -41,6 +43,7 @@ const Detail = ({ title, value }) => (
 
 export default ({ page, progress, user, ts, course, lesson }) => {
   const db = useFirestore();
+  const toast = useToast();
 
   const {
     course: { title: courseTitle, lessons },
@@ -88,7 +91,8 @@ export default ({ page, progress, user, ts, course, lesson }) => {
       .set(data, { merge: true })
       .then(() => {
         window.location.href = `/courses/${course}/${lesson}/${firstConcept}`;
-      });
+      })
+      .catch((error) => handleErrors(toast, error));
   };
 
   return (

@@ -27,6 +27,7 @@ import {
 } from '../_helpers';
 import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
+import { handleErrors } from '../../../helpers';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -95,14 +96,20 @@ export default ({ progress, page, user, ts, course }) => {
 
   // We need a function to be able to provide feedback for this project
   const onProvideFeedback = (value, feedback = null) =>
-    db.collection('users').doc(user.uid).collection('feedback').doc(course).set(
-      {
-        value,
-        feedback,
-        type: 'project',
-      },
-      { merge: true }
-    );
+    db
+      .collection('users')
+      .doc(user.uid)
+      .collection('feedback')
+      .doc(course)
+      .set(
+        {
+          value,
+          feedback,
+          type: 'project',
+        },
+        { merge: true }
+      )
+      .catch((error) => handleErrors(toast, error));
 
   const votes = [
     { text: '👎', val: -1 },

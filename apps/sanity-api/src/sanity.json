@@ -13,11 +13,17 @@
     "@sanity/default-layout",
     "@sanity/default-login",
     "@sanity/desk-tool",
-    "intl-input"
+    "intl-input",
+    "media"
   ],
   "env": {
     "development": {
-      "plugins": ["@sanity/vision"]
+      "api": {
+        "dataset": "development"
+      },
+      "plugins": [
+        "@sanity/vision"
+      ]
     }
   },
   "parts": [

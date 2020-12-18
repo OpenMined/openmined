@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import theme from '../theme';
 
 export default ({ content, ...props }) => {
-  const { title, visual, cost, level, length, slug } = content;
+  const { title, visual, cost, level, length, slug, live } = content;
 
   const absoluteOpacityStyles: ChakraProps = {
     position: 'absolute',
@@ -34,6 +34,7 @@ export default ({ content, ...props }) => {
       overflow="hidden"
       borderRadius="md"
       boxShadow="lg"
+      color={live ? 'white' : 'gray.600'}
       {...props}
     >
       <Box
@@ -65,23 +66,25 @@ export default ({ content, ...props }) => {
               {...absoluteOpacityStyles}
               src={visual.default}
               alt={title}
-              _groupHover={{ opacity: 0 }}
+              _groupHover={{ opacity: live ? 0 : 1 }}
             />
             <Image
               {...absoluteOpacityStyles}
               src={visual.full}
               alt={title}
               opacity={0}
-              _groupHover={{ opacity: 1 }}
+              _groupHover={{ opacity: live ? 1 : 0 }}
             />
           </Box>
           <Flex justify="space-between">
             <Text fontFamily="mono" color="gray.400">
-              {level}
+              {live ? level : 'Coming Soon'}
             </Text>
-            <Text fontFamily="mono" color="gray.400">
-              {length}
-            </Text>
+            {live && (
+              <Text fontFamily="mono" color="gray.400">
+                {length}
+              </Text>
+            )}
           </Flex>
         </Box>
       </Flex>

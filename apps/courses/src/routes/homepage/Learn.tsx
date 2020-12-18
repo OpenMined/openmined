@@ -7,11 +7,12 @@ import Course from '../../components/CourseCard';
 
 export default ({ title, description }) => {
   const { data, loading } = useSanity(
-    `*[_type == "course"] {
+    `*[_type == "course" && visible == true] {
       title,
       level,
       length,
       cost,
+      live,
       "slug": slug.current,
       visual {
         "default": default.asset -> url,

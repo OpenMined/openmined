@@ -4,6 +4,10 @@
 import * as functions from 'firebase-functions';
 
 // import ssr from './app/ssr';
+import sanity from './app/sanity';
+
+// Set up Sanity API requests
+exports.sanity = functions.region('europe-west1').https.onCall(sanity);
 
 // SEE TODO #16
 exports.createUser = functions

@@ -134,7 +134,8 @@ const blockRenderer = (props) => {
 };
 
 const listRenderer = ({ type, level, children }) => {
-  const ListElem: React.ElementType = type === 'bullet' ? UnorderedList : OrderedList;
+  const ListElem: React.ElementType =
+    type === 'bullet' ? UnorderedList : OrderedList;
   let styleType;
 
   if (type === 'bullet') {

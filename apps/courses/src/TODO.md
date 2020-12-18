@@ -29,12 +29,13 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
+- TODO (#21): Disable the submit on the project submission page until they've actually started their submission
 - Add the submission alert dialogs to the project page
 - Fuzzy find search on Search page isn't working
-- TODO (HARD): Make the current Privacy & Society course on Sanity API to be the "dummy" course that doesn't change over time and is just used for testing. You'll want to immediately rename this course (since it's the name of the actual first course). Then, you'll then need to actually create the real "Privacy & Society" course to be filled in by the writing team days before launch. PLEASE make sure that when you do this that there's a way to designate a course as being "for testing purposes only" in the backend, and DO NOT show these courses in the production site. Lastly, also make another toggle for courses that marks a course as being "ready to be taken". Do not allow users to take a course that doesn't have content yet (but we will still need to have the top-level course content so we can display it as "coming soon" on the site).
 - Build the My Courses page (maybe don't even worry about the existing PR) and rename it Dashboard everywhere
 - Build the mentorship dashboard
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, profile, my courses, and search pages
+- Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same
 - Make sure that the OpenMined emails work on dev and production so that everything is coming from the @openmined.org domain name and NOT Firebase.
 - TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
@@ -44,7 +45,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 - TODO (HARD): Add a ton of security rules
 - TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
-- TODO: Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials
 - TODO: Place all Firebase calls related to courses in the same file and then use them throughout the various pages... this will make this logic more testable in conjunction with the helpers file
 - TODO (HARD): Build Typescript interfaces for the course and use them throughout the various Firebase API calls file (see above), helpers file, and various views
 - TODO: We need to set up better Firebase performance logging to see what calls and page loads are taking the most time
@@ -56,7 +56,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - TODO (#7): Find a way to change the background color of a page. We know that the following code works: `` <Page body={{ style: `background: ${gray50};` }} /> ``, but that's really bad. Ideally we don't set the background color on the body element at all and we can remove this from the `<Page /> component entirely. It might be better to just set on the top most element for that page instead.
 - TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
 - TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)
-- TODO (#21): Disable the submit on the project submission page until they've actually started their submission
 
 ## Pre-Launch Checklist
 

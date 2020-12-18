@@ -32,6 +32,9 @@ typings
 *.log
 .firebase/
 
+# Secrets
+.secret.env
+
 # System Files
 .DS_Store
 Thumbs.db

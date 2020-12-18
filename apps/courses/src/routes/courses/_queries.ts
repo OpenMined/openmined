@@ -1,10 +1,11 @@
 export const search = () => `
-*[_type == "course"] {
+*[_type == "course" && visible == true] {
   title,
   description,
   level,
   length,
   cost,
+  live,
   "slug": slug.current,
   visual {
     "default": default.asset -> url,
@@ -13,7 +14,7 @@ export const search = () => `
 }`;
 
 export const overview = ({ course }) => `
-*[_type == "course" && slug.current == "${course}"] {
+*[_type == "course" && slug.current == "${course}" && visible == true] {
   ...,
   "slug": slug.current,
   visual {
@@ -35,7 +36,7 @@ export const overview = ({ course }) => `
 }[0]`;
 
 export const courseComplete = ({ course }) => `
-*[_type == "course" && slug.current == "${course}"] {
+*[_type == "course" && slug.current == "${course}" && live == true] {
   ...,
   lessons[] -> {
     _id,
@@ -45,7 +46,7 @@ export const courseComplete = ({ course }) => `
 }[0]`;
 
 export const project = ({ course }) => `
-*[_type == "course" && slug.current == "${course}"] {
+*[_type == "course" && slug.current == "${course}" && live == true] {
   ...,
   lessons[] -> {
     _id,
@@ -55,7 +56,7 @@ export const project = ({ course }) => `
 }[0]`;
 
 export const projectComplete = ({ course }) => `
-*[_type == "course" && slug.current == "${course}"] {
+*[_type == "course" && slug.current == "${course}" && live == true] {
   ...,
   lessons[] -> {
     _id,
@@ -73,7 +74,7 @@ export const lesson = ({ lesson }) => `
   },
   "firstConcept": concepts[0]._ref,
   "conceptsCount": count(concepts),
-  "course": *[_type == "course" && references(^._id) ][0] {
+  "course": *[_type == "course" && references(^._id)][0] {
     title,
     "lessons": lessons[] -> {
       _id,
@@ -84,7 +85,7 @@ export const lesson = ({ lesson }) => `
 }[0]`;
 
 export const lessonComplete = ({ lesson }) => `
-*[_type == "lesson" && _id == "${lesson}"] {
+*[_type == "lesson" && _id == "${lesson}" && *[_type == "course" && references(^._id)][0].live == true] {
   title,
   description,
   resources,
@@ -99,7 +100,7 @@ export const lessonComplete = ({ lesson }) => `
 }[0]`;
 
 export const concept = ({ lesson, concept }) => `
-*[_type == "lesson" && _id == "${lesson}"] {
+*[_type == "lesson" && _id == "${lesson}" && *[_type == "course" && references(^._id)][0].live == true] {
   title,
   resources,
   "concept": *[_type == "concept" && _id == "${concept}"][0],

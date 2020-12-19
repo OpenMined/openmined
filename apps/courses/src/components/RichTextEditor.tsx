@@ -19,6 +19,7 @@ import {
   Transforms,
   createEditor,
   Node,
+  Range,
   Element as SlateElement,
 } from 'slate';
 import { withHistory } from 'slate-history';
@@ -34,6 +35,7 @@ import {
   faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
+import isUrl from 'is-url';
 
 export const EDITOR_STORAGE_STRING = '@openmined/rich-text-editor';
 
@@ -103,8 +105,7 @@ export default ({
               <BlockButton format="heading-five" text="H5" />
               <BlockButton format="heading-six" text="H6" />
               <Divider orientation="vertical" height={8} mx={2} />
-              {/* SEE TODO (#2) */}
-              <MarkButton format="link" icon={faLink} />
+              <LinkButton icon={faLink} />
               <MarkButton format="code" icon={faCode} />
               <BlockButton format="block-quote" icon={faQuoteLeft} />
               <Divider orientation="vertical" height={8} mx={2} />
@@ -261,7 +262,13 @@ export const Element = ({ attributes, children, element }) => {
       );
     case 'link':
       return (
-        <Link as="a" target="_blank" rel="noopener noreferrer" {...attributes}>
+        <Link
+          as="a"
+          target="_blank"
+          rel="noopener noreferrer"
+          {...attributes}
+          href={element.url}
+        >
           {children}
         </Link>
       );
@@ -355,6 +362,99 @@ const MarkButton = ({ format, icon }) => {
       onMouseDown={(event) => {
         event.preventDefault();
         toggleMark(editor, format);
+      }}
+    >
+      {/* SEE TODO (#3) */}
+      <Icon as={FontAwesomeIcon} icon={icon} />
+    </Flex>
+  );
+};
+const withLinks = (editor) => {
+  const { insertData, insertText, isInline } = editor;
+
+  editor.isInline = (element) => {
+    return element.type === 'link' ? true : isInline(element);
+  };
+
+  editor.insertText = (text) => {
+    if (text && isUrl(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertText(text);
+    }
+  };
+
+  editor.insertData = (data) => {
+    const text = data.getData('text/plain');
+
+    if (text && isUrl(text)) {
+      wrapLink(editor, text);
+    } else {
+      insertData(data);
+    }
+  };
+
+  return editor;
+};
+
+const insertLink = (editor, url) => {
+  if (editor.selection) {
+    wrapLink(editor, url);
+  }
+};
+
+const isLinkActive = (editor) => {
+  const [link] = Editor.nodes(editor, {
+    match: (n) =>
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
+  });
+  return !!link;
+};
+
+const unwrapLink = (editor) => {
+  Transforms.unwrapNodes(editor, {
+    match: (n) =>
+      !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
+  });
+};
+
+const wrapLink = (editor, url) => {
+  if (isLinkActive(editor)) {
+    unwrapLink(editor);
+  }
+
+  const { selection } = editor;
+  const isCollapsed = selection && Range.isCollapsed(selection);
+  const link = {
+    type: 'link',
+    url,
+    children: isCollapsed ? [{ text: url }] : [],
+  };
+
+  if (isCollapsed) {
+    Transforms.insertNodes(editor, link);
+  } else {
+    Transforms.wrapNodes(editor, link, { split: true });
+    Transforms.collapse(editor, { edge: 'end' });
+  }
+};
+
+const LinkButton = ({ icon }) => {
+  const editor = useSlate();
+
+  return (
+    <Flex
+      justify="center"
+      align="center"
+      boxSize={10}
+      cursor="pointer"
+      color={isLinkActive(editor) ? 'white' : 'gray.400'}
+      _hover={{ color: 'gray.200' }}
+      onMouseDown={(event) => {
+        event.preventDefault();
+        const url = window.prompt('Enter the URL of the link:');
+        if (!url) return;
+        insertLink(editor, url);
       }}
     >
       {/* SEE TODO (#3) */}

@@ -190,7 +190,7 @@ export default () => {
             </Flex>
           </GridItem>
           <GridItem colSpan={12}>
-            <Box mt={12}>
+            <Box mt={[8, null, 12, 24]}>
               {(!mentorMode || !dbMentor) && (
                 <StudentTabs courses={data} progress={dbCourses} />
               )}

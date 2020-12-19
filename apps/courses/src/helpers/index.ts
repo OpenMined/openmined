@@ -29,15 +29,23 @@ export const useWindowSize = () => {
   return windowSize;
 };
 
-export const useQueryState = (key, initialValue) => {
+export const useQueryState = (keys) => {
   const [params, setParams] = useSearchParams();
-  const [value, setValue] = useState(params[key] || initialValue);
+
+  const existing = {};
+  keys.forEach((key) => (existing[key] = params.get(key) || null));
+
+  const [value, setValue] = useState(existing);
+
   const onSetValue = useCallback(
-    (newValue) => {
-      setValue(newValue);
-      setParams({
-        key: newValue,
-      });
+    (newVal) => {
+      setValue(newVal);
+
+      Object.keys(newVal).forEach(
+        (key) => newVal[key] === null && delete newVal[key]
+      );
+
+      setParams(newVal);
     },
     [setParams]
   );

@@ -52,16 +52,16 @@ export const StudentContext = ({ courses, progress }) => {
 
 export const StudentTabs = ({ courses, progress }) => {
   const MyProjects = () => {
+    // PATRICK: Don't render the <ProjectAccordion /> here, just do it yourself and modify the
+    // <SubmissionInline /> components to also accept a link
+    // If you can, maybe at least try to take the accordion styling out into shared component
+    // PATRICK: Handle the null-case
     return <div>Projects</div>;
-    // return <ProjectAccordion
-    //   content={content}
-    //   setSubmissionView={setSubmissionView}
-    //   setSubmissionViewAttempt={setSubmissionViewAttempt}
-    //   onBeginProjectPart={onBeginProjectPart}
-    // />;
   };
 
   const CourseHistory = () => {
+    // PATRICK: Real easy - just make a <SimpleGrid /> of a new Card-type that's only for completed courses
+    // PATRICK: Handle the null-case
     return <div>History</div>;
   };
 

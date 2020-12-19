@@ -15,8 +15,7 @@ export default ({
   status,
   part,
   index,
-  setSubmissionView,
-  setSubmissionViewAttempt,
+  setSubmissionParams,
   ...submission
 }) => {
   const passed = status === 'passed';
@@ -39,8 +38,10 @@ export default ({
     <Flex
       {...props}
       onClick={() => {
-        setSubmissionView(part);
-        setSubmissionViewAttempt(index);
+        setSubmissionParams({
+          part,
+          attempt: index,
+        });
       }}
     >
       <Flex align="center">

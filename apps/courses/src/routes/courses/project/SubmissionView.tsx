@@ -21,11 +21,6 @@ import {
   ModalFooter,
   ModalOverlay,
   SimpleGrid,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -186,9 +181,8 @@ const SubmissionBoxes = ({ submissions, ...props }) => (
 );
 
 export default ({
-  setSubmissionView,
   submissionViewAttempt,
-  setSubmissionViewAttempt,
+  setSubmissionParams,
   onAttemptSubmission,
   projectTitle,
   number,
@@ -197,19 +191,17 @@ export default ({
   const { _key, title, submissions } = part;
 
   // If we've been asked to load an attempt for this page
-  const attemptRef =
-    submissionViewAttempt !== null
-      ? submissions[submissionViewAttempt].submission
-      : null;
+  const attemptRef = submissionViewAttempt
+    ? submissions[submissionViewAttempt].submission
+    : null;
   const attemptData: Course.ProjectSubmission = attemptRef
     ? useFirestoreDocDataOnce(attemptRef)
     : null;
 
   // If we've been asked to load a review for this page
-  const reviewRef =
-    submissionViewAttempt !== null
-      ? submissions[submissionViewAttempt].review
-      : null;
+  const reviewRef = submissionViewAttempt
+    ? submissions[submissionViewAttempt].review
+    : null;
   const reviewData: any = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
 
   const onlyFailedOrPassedSubmissions = submissions.filter(
@@ -236,7 +228,11 @@ export default ({
             }
           >
             <BreadcrumbItem>
-              <BreadcrumbLink onClick={() => setSubmissionView(null)}>
+              <BreadcrumbLink
+                onClick={() =>
+                  setSubmissionParams({ part: null, attempt: null })
+                }
+              >
                 {projectTitle}
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -297,8 +293,7 @@ export default ({
                     part={_key}
                     index={index}
                     {...submission}
-                    setSubmissionView={setSubmissionView}
-                    setSubmissionViewAttempt={setSubmissionViewAttempt}
+                    setSubmissionParams={setSubmissionParams}
                   />
                 ))}
               </Box>
@@ -331,8 +326,10 @@ export default ({
             <Flex justify="space-between" align="center">
               <Button
                 onClick={() => {
-                  setSubmissionView(null);
-                  setSubmissionViewAttempt(null);
+                  setSubmissionParams({
+                    part: null,
+                    attempt: null,
+                  });
                 }}
                 variant="outline"
                 colorScheme="black"

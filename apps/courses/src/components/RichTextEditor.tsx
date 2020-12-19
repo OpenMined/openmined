@@ -68,7 +68,7 @@ export default ({
   );
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(() => withLinks(withHistory(withReact(createEditor()))), []);
 
   return (
     <Box {...props}>
@@ -369,6 +369,7 @@ const MarkButton = ({ format, icon }) => {
     </Flex>
   );
 };
+
 const withLinks = (editor) => {
   const { insertData, insertText, isInline } = editor;
 

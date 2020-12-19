@@ -41,6 +41,7 @@ import GridContainer from '../../../components/GridContainer';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
+import { handleAttemptSubmission, handleProjectPartBegin } from '../_firebase';
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
@@ -170,88 +171,33 @@ export default ({ course, page, progress, user, ts }) => {
   const currentTime = useFirestore.Timestamp.now;
 
   // When beginning a project part
-  const onBeginProjectPart = (part) => {
-    const data = progress;
-
-    // If they haven't begun the project at all
-    if (!hasStartedProject(progress)) {
-      data.project = {
-        started_at: ts(),
-        parts: {},
-      };
-    }
-
-    // Add the project part to the object of parts
-    data.project.parts[part] = {
-      started_at: ts(),
-      submissions: [], // Make sure to set the submissions array up
-      reviews: [], // Make sure to also set the reviews array up
-    };
-
-    return db
-      .collection('users')
-      .doc(user.uid)
-      .collection('courses')
-      .doc(course)
-      .set(data, { merge: true });
-  };
+  const onBeginProjectPart = (part) =>
+    handleProjectPartBegin(
+      db,
+      user.uid,
+      course,
+      ts,
+      progress,
+      part
+    ).catch((error) => handleErrors(toast, error));
 
   // When the user attempts a submission
   const onAttemptSubmission = async (part, content) => {
-    // Get their current submissions
-    const submissions = progress.project.parts[part].submissions;
-
-    // If we have less than the total number of allowed submissions
-    if (submissions.length < PROJECT_PART_SUBMISSIONS) {
-      // Get the current time (see where this function is defined above)
-      const time = currentTime();
-
-      // First, submit the submissions to the submissions subcollection
-      const submission = await db
-        .collection('users')
-        .doc(user.uid)
-        .collection('courses')
-        .doc(course)
-        .collection('submissions')
-        .add({
-          course,
-          part,
-          attempt:
-            submissions && submissions.length ? submissions.length + 1 : 1,
-          student: db.collection('users').doc(user.uid),
-          submitted_at: time,
-          content,
-        })
-        .catch((error) => handleErrors(toast, error));
-
-      // Once that's done, add the submissions to the submissions array on the user's course document
-      // Note the use of the reference to the previous submission
-      await db
-        .collection('users')
-        .doc(user.uid)
-        .collection('courses')
-        .doc(course)
-        .set(
-          {
-            project: {
-              parts: {
-                [part]: {
-                  submissions: arrayUnion({
-                    submitted_at: time,
-                    submission,
-                  }),
-                },
-              },
-            },
-          },
-          { merge: true }
-        )
-        .then(() => {
-          // Once that's done, reload the screen to refresh the state
-          window.location.reload();
-        })
-        .catch((error) => handleErrors(toast, error));
-    }
+    handleAttemptSubmission(
+      db,
+      user.uid,
+      course,
+      arrayUnion,
+      currentTime,
+      progress,
+      part,
+      content
+    )
+      .then((succeed) => {
+        // Once that's done, reload the screen to refresh the state
+        succeed && window.location.reload();
+      })
+      .catch((error) => handleErrors(toast, error));
   };
 
   // submissionView will be set to a project part "_key" and will change the layout

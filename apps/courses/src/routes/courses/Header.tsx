@@ -41,6 +41,7 @@ import CourseDrawer from './Drawer';
 import useToast, { toastConfig } from '../../components/Toast';
 import { getLinkPropsFromLink, handleErrors } from '../../helpers';
 import logo from '../../assets/logo.svg';
+import { getUserRef } from './_firebase';
 
 type LinkProps = {
   title: string;
@@ -86,7 +87,7 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
 const UserAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
   const user: firebase.User = useUser();
   const db = useFirestore();
-  const dbUserRef = db.collection('users').doc(user.uid);
+  const dbUserRef = getUserRef(db, user.uid);
   const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
 
   return (

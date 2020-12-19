@@ -15,6 +15,7 @@ import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons';
 import { handleErrors } from '../../../../helpers';
 import useToast from '../../../../components/Toast';
+import { handleQuizFinish } from '../../_firebase';
 
 const FinishedBox = ({ correct, total }) => (
   <Box bg="gray.100" borderRadius="md" p={8}>
@@ -295,37 +296,18 @@ export default ({
   const onFinish = () => {
     onComplete();
 
-    const numQuizzesInDb = progress.lessons[lesson].concepts[concept].quizzes
-      ? progress.lessons[lesson].concepts[concept].quizzes.length
-      : 0;
-
-    if (numQuizzesInDb < numQuizzes) {
-      const percentage = (correctAnswers / quiz.length) * 100;
-
-      db.collection('users')
-        .doc(user.uid)
-        .collection('courses')
-        .doc(course)
-        .set(
-          {
-            lessons: {
-              [lesson]: {
-                concepts: {
-                  [concept]: {
-                    quizzes: arrayUnion({
-                      correct: correctAnswers,
-                      total: quiz.length,
-                      percentage,
-                    }),
-                  },
-                },
-              },
-            },
-          },
-          { merge: true }
-        )
-        .catch((error) => handleErrors(toast, error));
-    }
+    handleQuizFinish(
+      db,
+      user.uid,
+      course,
+      arrayUnion,
+      progress,
+      lesson,
+      concept,
+      numQuizzes,
+      correctAnswers,
+      quiz
+    ).catch((error) => handleErrors(toast, error));
   };
 
   return (

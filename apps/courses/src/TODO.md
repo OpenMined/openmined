@@ -6,7 +6,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
-- TODO: Place all Firebase calls related to courses in the same file and then use them throughout the various pages... this will make this logic more testable in conjunction with the helpers file
 - TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
 - TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (#6 HARD): Ensure that deleting a user's account also deletes all their subcollections and THEN deletes their auth account with Firebase. Might be good to do this in a Firebase function. Likewise, [this existing Firebase solution might be a good one](https://firebase.google.com/products/extensions/delete-user-data).

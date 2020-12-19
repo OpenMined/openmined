@@ -29,6 +29,7 @@ import GridContainer from '../../../components/GridContainer';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
+import { handleLessonStart } from '../_firebase';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
@@ -64,31 +65,7 @@ export default ({ page, progress, user, ts, course, lesson }) => {
   const lessonNum = getLessonNumber(lessons, lesson);
 
   const onLessonStart = () => {
-    const isCourseStarted = hasStartedCourse(progress);
-    const isLessonStarted = hasStartedLesson(progress, lesson);
-
-    const data = progress;
-
-    // Append the course data structure
-    if (!isCourseStarted) {
-      data.started_at = ts();
-      data.lessons = {};
-    }
-
-    // Then the lesson data structure inside that
-    if (!isLessonStarted) {
-      data.lessons[lesson] = {
-        started_at: ts(),
-        concepts: {},
-      };
-    }
-
-    // When the object is constructed, store it!
-    db.collection('users')
-      .doc(user.uid)
-      .collection('courses')
-      .doc(course)
-      .set(data, { merge: true })
+    handleLessonStart(db, user.uid, course, ts, progress, lesson)
       .then(() => {
         window.location.href = `/courses/${course}/${lesson}/${firstConcept}`;
       })

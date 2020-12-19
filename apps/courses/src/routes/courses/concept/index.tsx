@@ -13,6 +13,7 @@ import {
 } from '../_helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
+import { handleConceptComplete, handleConceptStarted, handleProvideFeedback } from '../_firebase';
 
 export default ({ progress, page, user, ts, course, lesson, concept }) => {
   const db = useFirestore();
@@ -24,23 +25,15 @@ export default ({ progress, page, user, ts, course, lesson, concept }) => {
   } = page;
 
   useEffect(() => {
-    // If we haven't started the concept
-    if (!hasStartedConcept(progress, lesson, concept)) {
-      const data = progress;
-
-      // Then the concept data structure inside that
-      data.lessons[lesson].concepts[concept] = {
-        started_at: ts(),
-      };
-
-      // When the object is constructed, store it!
-      db.collection('users')
-        .doc(user.uid)
-        .collection('courses')
-        .doc(course)
-        .set(data, { merge: true })
-        .catch((error) => handleErrors(toast, error));
-    }
+    handleConceptStarted(
+      db,
+      user.uid,
+      course,
+      ts,
+      progress,
+      lesson,
+      concept
+    ).catch((error) => handleErrors(toast, error));
   }, [user.uid, db, progress, ts, course, lessons, lesson, concept]);
 
   // We need to track the user's scroll progress, as well as whether or not they've hit the bottom at least once
@@ -73,52 +66,19 @@ export default ({ progress, page, user, ts, course, lesson, concept }) => {
   // Create a function that is triggered when the concept is completed
   // This is triggered by clicking the "Next" button in the <ConceptFooter />
   const onCompleteConcept = () =>
-    new Promise((resolve, reject) => {
-      // If we haven't already completed this concept...
-      if (!hasCompletedConcept(progress, lesson, concept)) {
-        // Tell the DB we've done so
-        db.collection('users')
-          .doc(user.uid)
-          .collection('courses')
-          .doc(course)
-          .set(
-            {
-              lessons: {
-                [lesson]: {
-                  concepts: {
-                    [concept]: {
-                      completed_at: ts(),
-                    },
-                  },
-                },
-              },
-            },
-            { merge: true }
-          )
-          .then(resolve)
-          .catch(reject);
-      } else {
-        resolve(true);
-      }
-    });
+    handleConceptComplete(db, user.uid, course, ts, progress, lesson, concept);
 
   // We need a function to be able to provide feedback for this concept
   const onProvideFeedback = (value, feedback = null) =>
-    db
-      .collection('users')
-      .doc(user.uid)
-      .collection('courses')
-      .doc(course)
-      .collection('feedback')
-      .doc(concept)
-      .set(
-        {
-          value,
-          feedback,
-          type: 'concept',
-        },
-        { merge: true }
-      );
+    handleProvideFeedback(
+      db,
+      user.uid,
+      course,
+      concept,
+      value,
+      feedback,
+      'concept'
+    ).catch((error) => handleErrors(toast, error));
 
   // Given the content we need to render... what's the type of the first piece?
   const firstContentPiece = page.concept.content[0]._type;

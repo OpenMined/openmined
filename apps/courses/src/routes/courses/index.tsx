@@ -10,6 +10,7 @@ import * as configs from './_configs';
 import CourseWrap from './Wrapper';
 
 import Loading from '../../components/Loading';
+import { getCourseRef } from './_firebase';
 
 // SEE TODO (#11)
 
@@ -61,11 +62,7 @@ export default ({ which }) => {
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbCourseRef = params.course
-    ? db
-        .collection('users')
-        .doc(user.uid)
-        .collection('courses')
-        .doc(params.course)
+    ? getCourseRef(db, user.uid, params.course)
     : null;
   const dbCourse = dbCourseRef ? useFirestoreDocDataOnce(dbCourseRef) : [];
 

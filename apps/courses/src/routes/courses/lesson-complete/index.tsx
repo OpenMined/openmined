@@ -25,6 +25,7 @@ import { getLessonIndex, hasCompletedLesson } from '../_helpers';
 import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
 import { handleErrors } from '../../../helpers';
+import { handleLessonComplete, handleProvideFeedback } from '../_firebase';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -64,49 +65,19 @@ export default ({ progress, page, user, ts, course, lesson }) => {
   // Create a function that is triggered when the lesson is completed
   // This is triggered by clicking the "Next" button in the <ConceptFooter />
   const onCompleteLesson = () =>
-    new Promise((resolve, reject) => {
-      // If we haven't already completed this lesson...
-      if (!hasCompletedLesson(progress, lesson)) {
-        // Tell the DB we've done so
-        db.collection('users')
-          .doc(user.uid)
-          .collection('courses')
-          .doc(course)
-          .set(
-            {
-              lessons: {
-                [lesson]: {
-                  completed_at: ts(),
-                },
-              },
-            },
-            { merge: true }
-          )
-          .then(resolve)
-          .catch(reject);
-      } else {
-        resolve(true);
-      }
-    });
+    handleLessonComplete(db, user.uid, course, ts, progress, lesson);
 
   // We need a function to be able to provide feedback for this lesson
   const onProvideFeedback = (value, feedback = null) =>
-    db
-      .collection('users')
-      .doc(user.uid)
-      .collection('courses')
-      .doc(course)
-      .collection('feedback')
-      .doc(lesson)
-      .set(
-        {
-          value,
-          feedback,
-          type: 'lesson',
-        },
-        { merge: true }
-      )
-      .catch((error) => handleErrors(toast, error));
+    handleProvideFeedback(
+      db,
+      user.uid,
+      course,
+      lesson,
+      value,
+      feedback,
+      'lesson'
+    ).catch((error) => handleErrors(toast, error));
 
   const votes = [
     { text: '👎', val: -1 },

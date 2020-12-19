@@ -160,9 +160,9 @@ export default ({
 
   const RIGHT_LINKS: LinkProps[] = [
     {
-      title: 'My Courses',
+      title: 'Dashboard',
       type: 'text',
-      to: '/my-courses',
+      to: '/users/dashboard',
     },
     {
       title: 'User',
@@ -210,8 +210,8 @@ export default ({
       icon: faLink,
       fields: [
         {
-          title: 'My Courses',
-          link: '/my-courses',
+          title: 'Dashboard',
+          link: '/users/dashboard',
           icon: faUserGraduate,
         },
         ...menuLinks,

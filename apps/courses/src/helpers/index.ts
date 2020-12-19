@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toastConfig } from '../components/Toast';
-import { Link as RRDLink } from 'react-router-dom';
+import { Link as RRDLink, useSearchParams } from 'react-router-dom';
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
@@ -27,6 +27,22 @@ export const useWindowSize = () => {
   }, []);
 
   return windowSize;
+};
+
+export const useQueryState = (key, initialValue) => {
+  const [params, setParams] = useSearchParams();
+  const [value, setValue] = useState(params[key] || initialValue);
+  const onSetValue = useCallback(
+    (newValue) => {
+      setValue(newValue);
+      setParams({
+        key: newValue,
+      });
+    },
+    [setParams]
+  );
+
+  return [value, onSetValue];
 };
 
 export const handleErrors = (toast, error) =>

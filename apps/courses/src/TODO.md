@@ -7,8 +7,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 ### Danny
 
 - TODO: Place all Firebase calls related to courses in the same file and then use them throughout the various pages... this will make this logic more testable in conjunction with the helpers file
-- TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
-- TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (#6 HARD): Ensure that deleting a user's account also deletes all their subcollections and THEN deletes their auth account with Firebase. Might be good to do this in a Firebase function. Likewise, [this existing Firebase solution might be a good one](https://firebase.google.com/products/extensions/delete-user-data).
 - TODO: We need to set up better Firebase performance logging to see what calls and page loads are taking the most time
 - TODO (HARD): Add a ton of security rules (make sure to reference the \_helpers.ts file!!!)
@@ -35,17 +33,21 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - Build the mentorship dashboard
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, profile, my courses, and search pages
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials
+- Convert everything to cyan
+- Figure out what to do about `<Menu />` and `<Popover />` and `<RichTextEditor />`
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same
 - TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
 - TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
 
 ### Available issues (general)
 
+- TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (HARD): Build Typescript interfaces for the course and use them throughout the various Firebase API calls file (see above), helpers file, and various views
 - TODO (HARD): [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-counter) to count a variety of metrics to a `metrics` collection at the top-level. Make sure to block this collection from being written to by anyone else except the function. This should include a variety of useful information, such as, but not limited to: number of user signups (through Github, through email, and total), number of user deletions, number of courses started, number of lessons started, number of concepts started, number of courses completed, number of lessons completed, number of concepts completed, number of projects started, number of projects passed, number of projects failed, etc. Maybe work with Patrick on this.
 
 ### Available issues (specific)
 
+- TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
 - TODO (#7): Find a way to change the background color of a page. We know that the following code works: `` <Page body={{ style: `background: ${gray50};` }} /> ``, but that's really bad. Ideally we don't set the background color on the body element at all and we can remove this from the `<Page /> component entirely. It might be better to just set on the top most element for that page instead.
 - TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
 - TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)
@@ -59,6 +61,8 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. T
 - Make an "intro to the CMS" video to give to Mat, Andrew, and Emma (and make sure to explain that filling in EVERY field is critical - if they can't fill in some, tell them to ask Patrick what to do)
 - Go back through the designs and make sure things are as accurate as possible, get final approval from Kyoko
 - Do a complete sweep of all content and make sure Mat and Andrew have signoff
+- Get Yemi and Sourav to populate the Discourse forum with a channel structure
+- Make sure all mentors are students and put all their ID's in the mentors collection
 
 ## Post-Launch
 

@@ -167,7 +167,7 @@ export default ({ page }) => {
               )
             )}
           </SimpleGrid>
-          <Button as={RRDLink} to="/my-courses" colorScheme="white">
+          <Button as={RRDLink} to="/users/dashboard" colorScheme="white">
             Go to Dashboard
           </Button>
         </Flex>

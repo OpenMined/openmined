@@ -172,7 +172,14 @@ export default ({ course, page, progress, user, ts }) => {
 
   // When beginning a project part
   const onBeginProjectPart = (part) =>
-    handleProjectPartBegin(db, user.uid, course, ts, progress, part);
+    handleProjectPartBegin(
+      db,
+      user.uid,
+      course,
+      ts,
+      progress,
+      part
+    ).catch((error) => handleErrors(toast, error));
 
   // When the user attempts a submission
   const onAttemptSubmission = async (part, content) => {

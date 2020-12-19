@@ -70,8 +70,14 @@ export default ({ progress, page, user, ts, course }) => {
 
   // Create a function that is triggered when the project is completed
   const onCompleteProject = () =>
-    handleProjectComplete(db, user.uid, course, ts, progress, status);
-
+    handleProjectComplete(
+      db,
+      user.uid,
+      course,
+      ts,
+      progress,
+      status
+    ).catch((error) => handleErrors(toast, error));
   // We need a function to be able to provide feedback for this project
   const onProvideFeedback = (value, feedback = null) =>
     handleProvideFeedback(

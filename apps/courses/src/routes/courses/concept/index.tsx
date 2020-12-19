@@ -13,7 +13,11 @@ import {
 } from '../_helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
-import { handleConceptComplete, handleConceptStarted, handleProvideFeedback } from '../_firebase';
+import {
+  handleConceptComplete,
+  handleConceptStarted,
+  handleProvideFeedback,
+} from '../_firebase';
 
 export default ({ progress, page, user, ts, course, lesson, concept }) => {
   const db = useFirestore();
@@ -66,7 +70,15 @@ export default ({ progress, page, user, ts, course, lesson, concept }) => {
   // Create a function that is triggered when the concept is completed
   // This is triggered by clicking the "Next" button in the <ConceptFooter />
   const onCompleteConcept = () =>
-    handleConceptComplete(db, user.uid, course, ts, progress, lesson, concept);
+    handleConceptComplete(
+      db,
+      user.uid,
+      course,
+      ts,
+      progress,
+      lesson,
+      concept
+    ).catch((error) => handleErrors(toast, error));
 
   // We need a function to be able to provide feedback for this concept
   const onProvideFeedback = (value, feedback = null) =>

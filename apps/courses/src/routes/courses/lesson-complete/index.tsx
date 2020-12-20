@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useFirestore } from 'reactfire';
+import { useFirestore, usePerformance } from 'reactfire';
 import {
   Box,
   Button,
@@ -42,7 +42,7 @@ const DetailLink = ({ icon, children, ...props }) => (
 
 export default ({ progress, page, user, ts, course, lesson }) => {
   const db = useFirestore();
-
+  const perf = usePerformance();
   const {
     course: { lessons },
     title,
@@ -64,15 +64,16 @@ export default ({ progress, page, user, ts, course, lesson }) => {
 
   // Create a function that is triggered when the lesson is completed
   // This is triggered by clicking the "Next" button in the <ConceptFooter />
-  const onCompleteLesson = () =>
-    handleLessonComplete(
-      db,
-      user.uid,
-      course,
-      ts,
-      progress,
-      lesson
-    ).catch((error) => handleErrors(toast, error));
+  const onCompleteLesson = async () => {
+    const trace = perf.trace('CUSTOM_TRACE_NAME');
+    trace.start();
+    try {
+      await handleLessonComplete(db, user.uid, course, ts, progress, lesson);
+    } catch (error) {
+      handleErrors(toast, error);
+    }
+    trace.stop();
+  };
 
   // We need a function to be able to provide feedback for this lesson
   const onProvideFeedback = (value, feedback = null) =>

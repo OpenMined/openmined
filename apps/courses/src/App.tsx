@@ -2,7 +2,6 @@ import React, { Suspense, useEffect, useState, useLayoutEffect } from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { useAnalytics } from 'reactfire';
-
 import Routes from './routes';
 
 import Header from './components/Header';
@@ -10,6 +9,8 @@ import Loading from './components/Loading';
 import Cookies from './components/Cookies';
 import Footer from './components/Footer';
 import { Box } from '@chakra-ui/react';
+
+import { usePerformance, SuspenseWithPerf } from 'reactfire';
 
 const Analytics = ({ location }) => {
   const analytics = useAnalytics();
@@ -63,9 +64,12 @@ const App = () => {
     location.pathname.includes('/courses') &&
     location.pathname.split('/').length > 4;
 
+  // This triggers the firebase to track the perfomance
+  const perf = usePerformance();
+
   return (
     <Router action={action} location={location} navigator={history}>
-      <Suspense fallback={<Loading />}>
+      <SuspenseWithPerf fallback={<Loading />} traceId={'loading-app-status'}>
         {cookiePrefs === 'all' && <Analytics location={location} />}
         {!isInsideCourse && <Header noScrolling={isOnCourseComplete} />}
         <Box
@@ -77,7 +81,7 @@ const App = () => {
           {!isInsideConcept && <Footer />}
         </Box>
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
-      </Suspense>
+      </SuspenseWithPerf>
     </Router>
   );
 };

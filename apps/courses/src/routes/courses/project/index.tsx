@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Button,
@@ -14,7 +14,6 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 import { useFirestore } from 'reactfire';
-import { Link as RRDLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBug,
@@ -34,11 +33,10 @@ import {
   getProjectPartStatus,
   getProjectStatus,
   hasStartedProjectPart,
-  hasStartedProject,
   PROJECT_PART_SUBMISSIONS,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
-import { getLinkPropsFromLink } from '../../../helpers';
+import { getLinkPropsFromLink, useQueryState } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
 import { handleAttemptSubmission, handleProjectPartBegin } from '../_firebase';
@@ -200,21 +198,23 @@ export default ({ course, page, progress, user, ts }) => {
       .catch((error) => handleErrors(toast, error));
   };
 
-  // submissionView will be set to a project part "_key" and will change the layout
-  // submissionViewAttempt is used with submissionView to assign a specific attempt to the submission view
-  const [submissionView, setSubmissionView] = useState(null);
-  const [submissionViewAttempt, setSubmissionViewAttempt] = useState(null);
+  // We want to track the part and the attempt in state, but also in the query params
+  const [submissionParams, setSubmissionParams] = useQueryState([
+    'part',
+    'attempt',
+  ]);
 
   // If we have a submission view, render that screen
-  if (submissionView) {
+  if (submissionParams.part) {
     return (
       <SubmissionView
         projectTitle={title}
-        number={getProjectPartNumber(parts, submissionView)}
-        part={content[content.findIndex((p) => p._key === submissionView)]}
-        setSubmissionView={setSubmissionView}
-        submissionViewAttempt={submissionViewAttempt}
-        setSubmissionViewAttempt={setSubmissionViewAttempt}
+        number={getProjectPartNumber(parts, submissionParams.part)}
+        part={
+          content[content.findIndex((p) => p._key === submissionParams.part)]
+        }
+        submissionViewAttempt={submissionParams.attempt}
+        setSubmissionParams={setSubmissionParams}
         onAttemptSubmission={onAttemptSubmission}
       />
     );
@@ -264,8 +264,7 @@ export default ({ course, page, progress, user, ts }) => {
           <ProjectAccordion
             content={content}
             mb={6}
-            setSubmissionView={setSubmissionView}
-            setSubmissionViewAttempt={setSubmissionViewAttempt}
+            setSubmissionParams={setSubmissionParams}
             onBeginProjectPart={onBeginProjectPart}
           />
           <Button

@@ -21,11 +21,6 @@ import {
   ModalFooter,
   ModalOverlay,
   SimpleGrid,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -44,25 +39,101 @@ import GridContainer from '../../../components/GridContainer';
 import RichTextEditor, {
   EDITOR_STORAGE_STRING,
 } from '../../../components/RichTextEditor';
+import ColoredTabs from '../../../components/ColoredTabs';
 
 dayjs.extend(relativeTime);
 
-const tabProps = {
-  fontWeight: 'bold',
-  color: 'gray.600',
-  borderColor: 'gray.300',
-  borderTopRadius: 'md',
-  borderBottomRadius: ['md', null, 'none'],
-  py: 4,
-  mb: [2, null, 0],
-  _selected: {
-    bg: 'cyan.50',
-    color: 'cyan.700',
-    border: '1px solid',
-    borderColor: 'cyan.100',
-    borderBottom: '2px solid',
-    borderBottomColor: ['cyan.100', null, 'cyan.700'],
-  },
+const genTabsContent = (
+  part,
+  attemptData,
+  reviewData,
+  hasStartedSubmission,
+  setHasStartedSubmission
+) => {
+  const content = [
+    {
+      title: '1. Instructions',
+      panel: () => (
+        <>
+          <Heading as="p" mb={2} size="lg">
+            Instructions
+          </Heading>
+          <Divider />
+          <Content content={part.instructions} />
+        </>
+      ),
+      px: [8, null, null, 24],
+      py: [8, null, null, 16],
+    },
+    {
+      title: '2. Rubric',
+      panel: () => (
+        <>
+          <Heading as="p" mb={2} size="lg">
+            Rubric
+          </Heading>
+          <Divider />
+          <Content content={part.rubric} />
+        </>
+      ),
+      px: [8, null, null, 24],
+      py: [8, null, null, 16],
+    },
+    {
+      title: '3. Submission',
+      panel: () => (
+        <>
+          {!attemptData && (
+            <RichTextEditor
+              onChange={() => {
+                if (!hasStartedSubmission) {
+                  setHasStartedSubmission(true);
+                }
+              }}
+            />
+          )}
+          {attemptData && (
+            <Box px={[8, null, null, 24]} py={[8, null, null, 16]}>
+              <Heading as="p" mb={2} size="lg">
+                Submission
+              </Heading>
+              <Divider />
+              <RichTextEditor
+                mt={8}
+                content={JSON.parse(attemptData.content)}
+                readOnly
+              />
+            </Box>
+          )}
+        </>
+      ),
+      p: 0,
+      minHeight: 400,
+    },
+  ];
+
+  if (reviewData) {
+    content.push({
+      title: '4. Feedback',
+      panel: () => (
+        <>
+          <Heading as="p" mb={2} size="lg">
+            Feedback
+          </Heading>
+          <Divider />
+          <RichTextEditor
+            mt={8}
+            content={JSON.parse(reviewData.content)}
+            readOnly
+          />
+        </>
+      ),
+      px: [8, null, null, 24],
+      py: [8, null, null, 16],
+    });
+  }
+
+  return content;
 };
 
 const ReviewStatus = ({ status }) => {
@@ -110,9 +181,8 @@ const SubmissionBoxes = ({ submissions, ...props }) => (
 );
 
 export default ({
-  setSubmissionView,
   submissionViewAttempt,
-  setSubmissionViewAttempt,
+  setSubmissionParams,
   onAttemptSubmission,
   projectTitle,
   number,
@@ -121,19 +191,17 @@ export default ({
   const { _key, title, submissions } = part;
 
   // If we've been asked to load an attempt for this page
-  const attemptRef =
-    submissionViewAttempt !== null
-      ? submissions[submissionViewAttempt].submission
-      : null;
+  const attemptRef = submissionViewAttempt
+    ? submissions[submissionViewAttempt].submission
+    : null;
   const attemptData: Course.ProjectSubmission = attemptRef
     ? useFirestoreDocDataOnce(attemptRef)
     : null;
 
   // If we've been asked to load a review for this page
-  const reviewRef =
-    submissionViewAttempt !== null
-      ? submissions[submissionViewAttempt].review
-      : null;
+  const reviewRef = submissionViewAttempt
+    ? submissions[submissionViewAttempt].review
+    : null;
   const reviewData: any = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
 
   const onlyFailedOrPassedSubmissions = submissions.filter(
@@ -160,7 +228,11 @@ export default ({
             }
           >
             <BreadcrumbItem>
-              <BreadcrumbLink onClick={() => setSubmissionView(null)}>
+              <BreadcrumbLink
+                onClick={() =>
+                  setSubmissionParams({ part: null, attempt: null })
+                }
+              >
                 {projectTitle}
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -221,8 +293,7 @@ export default ({
                     part={_key}
                     index={index}
                     {...submission}
-                    setSubmissionView={setSubmissionView}
-                    setSubmissionViewAttempt={setSubmissionViewAttempt}
+                    setSubmissionParams={setSubmissionParams}
                   />
                 ))}
               </Box>
@@ -242,77 +313,23 @@ export default ({
                 <ReviewStatus status={reviewData.status} />
               </Box>
             )}
-            <Tabs isFitted mb={8}>
-              <TabList flexDirection={['column', null, 'row']}>
-                <Tab {...tabProps}>1. Instructions</Tab>
-                <Tab {...tabProps}>2. Rubric</Tab>
-                <Tab {...tabProps}>3. Submission</Tab>
-                {reviewData && <Tab {...tabProps}>4. Feedback</Tab>}
-              </TabList>
-              <TabPanels
-                bg="white"
-                border="1px solid"
-                borderColor="gray.300"
-                borderBottomRadius="md"
-              >
-                <TabPanel px={[8, null, null, 24]} py={[8, null, null, 16]}>
-                  <Heading as="p" mb={2} size="lg">
-                    Instructions
-                  </Heading>
-                  <Divider />
-                  <Content content={part.instructions} />
-                </TabPanel>
-                <TabPanel px={[8, null, null, 24]} py={[8, null, null, 16]}>
-                  <Heading as="p" mb={2} size="lg">
-                    Rubric
-                  </Heading>
-                  <Divider />
-                  <Content content={part.rubric} />
-                </TabPanel>
-                <TabPanel p={0} minHeight={400}>
-                  {!attemptData && (
-                    <RichTextEditor
-                      onChange={() => {
-                        if (!hasStartedSubmission) {
-                          setHasStartedSubmission(true);
-                        }
-                      }}
-                    />
-                  )}
-                  {attemptData && (
-                    <Box px={[8, null, null, 24]} py={[8, null, null, 16]}>
-                      <Heading as="p" mb={2} size="lg">
-                        Submission
-                      </Heading>
-                      <Divider />
-                      <RichTextEditor
-                        mt={8}
-                        content={JSON.parse(attemptData.content)}
-                        readOnly
-                      />
-                    </Box>
-                  )}
-                </TabPanel>
-                {reviewData && (
-                  <TabPanel px={[8, null, null, 24]} py={[8, null, null, 16]}>
-                    <Heading as="p" mb={2} size="lg">
-                      Feedback
-                    </Heading>
-                    <Divider />
-                    <RichTextEditor
-                      mt={8}
-                      content={JSON.parse(reviewData.content)}
-                      readOnly
-                    />
-                  </TabPanel>
-                )}
-              </TabPanels>
-            </Tabs>
+            <ColoredTabs
+              mb={8}
+              content={genTabsContent(
+                part,
+                attemptData,
+                reviewData,
+                hasStartedSubmission,
+                setHasStartedSubmission
+              )}
+            />
             <Flex justify="space-between" align="center">
               <Button
                 onClick={() => {
-                  setSubmissionView(null);
-                  setSubmissionViewAttempt(null);
+                  setSubmissionParams({
+                    part: null,
+                    attempt: null,
+                  });
                 }}
                 variant="outline"
                 colorScheme="black"

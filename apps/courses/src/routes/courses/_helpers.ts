@@ -7,6 +7,40 @@ export const hasStartedCourse = (u) =>
   Object.keys(u).length !== 0 && !!u.started_at;
 export const hasCompletedCourse = (u) =>
   hasStartedCourse(u) && !!u.completed_at;
+// TODO: Need to test this
+export const getCourseProgress = (u, ls, ps) => {
+  let numLessons = 0;
+  let numCompletedLessons = 0;
+  let numConcepts = 0;
+  let numCompletedConcepts = 0;
+  const numProjectParts = ps.length;
+  let numCompletedProjectParts = 0;
+
+  ls.forEach((l) => {
+    numLessons++;
+
+    if (hasCompletedLesson(u, l._id)) numCompletedLessons++;
+
+    l.concepts.forEach((c) => {
+      numConcepts++;
+
+      if (hasCompletedConcept(u, l._id, c._id)) numCompletedConcepts++;
+    });
+  });
+
+  ps.forEach((p) => {
+    if (hasCompletedProjectPart(u, p._key)) numCompletedProjectParts++;
+  });
+
+  return {
+    lessons: numLessons,
+    completedLessons: numCompletedLessons,
+    concepts: numConcepts,
+    completedConcepts: numCompletedConcepts,
+    projectParts: numProjectParts,
+    completedProjectParts: numCompletedProjectParts,
+  };
+};
 
 // Lesson permissions
 export const getLessonIndex = (ls, l) => ls.findIndex(({ _id }) => _id === l);

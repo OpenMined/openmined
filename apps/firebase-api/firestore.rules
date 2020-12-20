@@ -2,17 +2,41 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function existingData() {
+      return resource.data;
+    }
+
+    function incomingData() {
+      return request.resource.data;
+    }
+
+    function getUserData(user) {
+      return get(/databases/$(database)/documents/users/$(user));
+    }
+
+    function isAdmin(user) {
+      return exists(/databases/$(database)/documents/admins/$(user));
+    }
+
+    function isMentor(user) {
+      return exists(/databases/$(database)/documents/mentors/$(user));
+    }
+
     function isLoggedIn() {
       return request.auth != null;
     }
 
-    match /users/{user} {
-      function isSameUser() {
-        return isLoggedIn() && request.auth.uid == user;
-      }
+    function isSameUser(user) {
+      return isLoggedIn() && request.auth.uid == user;
+    }
 
+    match /mentors/{mentor} {
+      allow read: if isSameUser(mentor) && isMentor(mentor);
+    }
+
+    match /users/{user} {
       allow read;
-      allow write: if isSameUser()
+      allow write: if isSameUser(user)
 
       // *-----*
       // NOTE: If you're writing security rules, MAKE SURE that you fully understand the data model posted in apps/courses/src/DATA-MODEL.md
@@ -20,12 +44,14 @@ service cloud.firestore {
       // NOTE: Please use the Firebase emulator for running tests
       // *-----*
 
+      // TODO: Cannot write to "is_mentor" field on user object
+
       match /private/{privateUserVar} {
-        allow read, write: if isSameUser()
+        allow read, write: if isSameUser(user)
       }
 
       match /courses/{course} {
-        allow read, write: if isSameUser()
+        allow read, write: if isSameUser(user)
 
         // TODO: Cannot complete course if there are incomplete concepts, lessons, or projects
         // TODO: Cannot start or complete lesson without previous lessons being completed
@@ -37,7 +63,7 @@ service cloud.firestore {
         // TODO: Cannot "restart" or "recomplete" any course, lesson, concept, project, or project part (these values are immutable)
 
         match /submissions/{submission} {
-          allow read, create: if isSameUser()
+          allow read, create: if isSameUser(user)
           // TODO: Nobody may edit or delete a submission
           // TODO: Deny read unless it's the same user OR if it's an assigned mentor (if possible)
         }
@@ -49,7 +75,7 @@ service cloud.firestore {
         // TODO: The only students who are allowed to read a review should be a) the mentor who created the review and b) the student whom the review was written for
 
         match /feedback/{conceptOrLesson} {
-          allow read, write: if isSameUser()
+          allow read, write: if isSameUser(user)
         }
       }
     }

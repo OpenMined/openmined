@@ -162,9 +162,9 @@ export default ({ noScrolling }) => {
       unauth: true,
     },
     {
-      title: 'My Courses',
+      title: 'Dashboard',
       type: 'text',
-      to: '/my-courses',
+      to: '/users/dashboard',
       auth: true,
     },
     {

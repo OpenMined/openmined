@@ -109,8 +109,7 @@ const AttemptedView = ({
   title,
   description,
   submissions,
-  setSubmissionView,
-  setSubmissionViewAttempt,
+  setSubmissionParams,
   part,
   ...props
 }) => (
@@ -130,8 +129,7 @@ const AttemptedView = ({
         part={part}
         index={index}
         {...submission}
-        setSubmissionView={setSubmissionView}
-        setSubmissionViewAttempt={setSubmissionViewAttempt}
+        setSubmissionParams={setSubmissionParams}
       />
     ))}
   </Box>
@@ -139,8 +137,7 @@ const AttemptedView = ({
 
 export default ({
   content,
-  setSubmissionView,
-  setSubmissionViewAttempt,
+  setSubmissionParams,
   onBeginProjectPart,
   ...props
 }) => {
@@ -268,8 +265,7 @@ export default ({
                         title="Sorry, let's try again!"
                         description="You did not pass this part of the project. You can check out the link below for your feedback and try again after making some corrections."
                         submissions={onlyPassAndFailSubmissions}
-                        setSubmissionView={setSubmissionView}
-                        setSubmissionViewAttempt={setSubmissionViewAttempt}
+                        setSubmissionParams={setSubmissionParams}
                         part={_key}
                         mb={6}
                       />
@@ -279,17 +275,18 @@ export default ({
                         onClick={() => {
                           if (status === 'not-started') {
                             onBeginProjectPart(_key).then(() => {
-                              setSubmissionView(_key);
+                              setSubmissionParams({ part: _key });
                             });
                           } else {
-                            setSubmissionView(_key);
+                            setSubmissionParams({ part: _key });
 
                             if (status === 'submitted') {
-                              setSubmissionViewAttempt(
-                                submissions.findIndex(
+                              setSubmissionParams({
+                                part: _key,
+                                attempt: submissions.findIndex(
                                   ({ status }) => status === 'pending'
-                                )
-                              );
+                                ),
+                              });
                             }
                           }
                         }}
@@ -333,8 +330,7 @@ export default ({
                       </>
                     }
                     submissions={onlyPassAndFailSubmissions}
-                    setSubmissionView={setSubmissionView}
-                    setSubmissionViewAttempt={setSubmissionViewAttempt}
+                    setSubmissionParams={setSubmissionParams}
                     part={_key}
                   />
                 )}
@@ -344,8 +340,7 @@ export default ({
                     title="Congratulations!"
                     description="You passed this portion of the project. Check out the link below for your feedback."
                     submissions={onlyPassAndFailSubmissions}
-                    setSubmissionView={setSubmissionView}
-                    setSubmissionViewAttempt={setSubmissionViewAttempt}
+                    setSubmissionParams={setSubmissionParams}
                     part={_key}
                   />
                 )}

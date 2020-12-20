@@ -11,6 +11,8 @@ import Cookies from './components/Cookies';
 import Footer from './components/Footer';
 import { Box } from '@chakra-ui/react';
 
+import { usePerformance, SuspenseWithPerf } from 'reactfire';
+
 const Analytics = ({ location }) => {
   const analytics = useAnalytics();
 
@@ -29,6 +31,8 @@ const App = () => {
   );
   const [action, setAction] = useState(history.action);
   const [location, setLocation] = useState(history.location);
+
+  const perf = usePerformance();
 
   useLayoutEffect(() => {
     history.listen(({ location, action }) => {
@@ -66,7 +70,7 @@ const App = () => {
 
   return (
     <Router action={action} location={location} navigator={history}>
-      <Suspense fallback={<Loading />}>
+      <SuspenseWithPerf fallback={<Loading />} traceId={location.pathname}>
         {cookiePrefs === 'all' && <Analytics location={location} />}
         {!isInsideCourse && <Header noScrolling={isOnCourseComplete} />}
         <Box
@@ -78,7 +82,7 @@ const App = () => {
           {!isInsideConcept && <Footer />}
         </Box>
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
-      </Suspense>
+      </SuspenseWithPerf>
     </Router>
   );
 };

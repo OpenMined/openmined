@@ -204,10 +204,6 @@ export default ({
     : null;
   const reviewData: any = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
 
-  const onlyFailedOrPassedSubmissions = submissions.filter(
-    ({ status }) => status === 'passed' || status === 'failed'
-  );
-
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const preSubmitModal = useDisclosure();
 
@@ -285,9 +281,9 @@ export default ({
                 of {PROJECT_PART_SUBMISSIONS} attempts
               </Text>
             </Flex>
-            {onlyFailedOrPassedSubmissions.length > 0 && (
+            {submissions.length > 0 && (
               <Box mb={6}>
-                {onlyFailedOrPassedSubmissions.map((submission, index) => (
+                {submissions.map((submission, index) => (
                   <SubmissionInline
                     key={index}
                     part={_key}

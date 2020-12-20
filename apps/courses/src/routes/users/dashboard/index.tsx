@@ -94,10 +94,6 @@ export default () => {
         "default": default.asset -> url,
         "full": full.asset -> url
       },
-      learnFrom[] -> {
-        ...,
-        "image": image.asset -> url
-      },
       lessons[] -> {
         _id,
         title,

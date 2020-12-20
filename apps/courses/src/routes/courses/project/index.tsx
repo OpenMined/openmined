@@ -75,7 +75,7 @@ const combineSubmissionsAndReviews = (submissions, reviews) =>
 // Tell us the status the entire project
 // ... and go through the user's progress and tell us the status of each part
 // ... and return all the relevant submissions and reviews
-const prepAccordionAndStatus = (progress, parts) => {
+export const prepAccordionAndStatus = (progress, parts) => {
   const content = parts.map((part) => ({
     ...part,
     status: getProjectPartStatus(progress, part._key),

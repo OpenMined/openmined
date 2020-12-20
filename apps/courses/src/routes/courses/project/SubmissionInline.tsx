@@ -1,13 +1,15 @@
 import React from 'react';
-import { Flex, Icon, Text } from '@chakra-ui/react';
+import { Box, Flex, Icon, Text } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRight,
   faCheckCircle,
+  faPaperPlane,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
 dayjs.extend(relativeTime);
 
@@ -16,9 +18,10 @@ export default ({
   part,
   index,
   setSubmissionParams,
+  link,
   ...submission
 }) => {
-  const passed = status === 'passed';
+  if (status === 'none') return null;
 
   const props = {
     key: index,
@@ -29,39 +32,66 @@ export default ({
     fontSize: 'sm',
     justify: 'space-between',
     align: 'center',
-    bg: passed ? 'green.50' : 'magenta.50',
   };
 
-  const iconColor = passed ? 'green.400' : 'magenta.400';
+  let icon, iconColor, text;
+
+  if (status === 'passed') {
+    props.bg = 'green.50';
+    icon = faCheckCircle;
+    iconColor = 'green.400';
+    text = 'Passed';
+  } else if (status === 'pending') {
+    props.bg = 'gray.200';
+    icon = faPaperPlane;
+    iconColor = 'gray.800';
+    text = 'Submitted';
+  } else {
+    props.bg = 'magenta.50';
+    icon = faTimesCircle;
+    iconColor = 'magenta.400';
+    text = 'Failed';
+  }
+
+  const linkProps = link
+    ? {
+        as: Link,
+        to: link,
+      }
+    : {
+        onClick: () => {
+          setSubmissionParams({
+            part,
+            attempt: index,
+          });
+        },
+      };
 
   return (
-    <Flex
-      {...props}
-      onClick={() => {
-        setSubmissionParams({
-          part,
-          attempt: index,
-        });
-      }}
-    >
-      <Flex align="center">
+    <Box {...linkProps}>
+      <Flex {...props}>
+        <Flex align="center">
+          {/* SEE TODO (#3) */}
+          <Icon
+            as={FontAwesomeIcon}
+            icon={icon}
+            color={iconColor}
+            size="lg"
+            mr={4}
+          />
+          <Text fontWeight="bold" mr={2}>
+            {text}
+          </Text>
+          <Text fontStyle="italic" color="gray.700">
+            {submission.reviewed_at &&
+              `Reviewed ${dayjs(submission.reviewed_at.toDate()).fromNow()}`}
+            {!submission.reviewed_at &&
+              `Submitted ${dayjs(submission.submitted_at.toDate()).fromNow()}`}
+          </Text>
+        </Flex>
         {/* SEE TODO (#3) */}
-        <Icon
-          as={FontAwesomeIcon}
-          icon={passed ? faCheckCircle : faTimesCircle}
-          color={iconColor}
-          size="lg"
-          mr={4}
-        />
-        <Text fontWeight="bold" mr={2}>
-          {passed ? 'Passed' : 'Failed'}
-        </Text>
-        <Text fontStyle="italic" color="gray.700">
-          {dayjs(submission.reviewed_at.toDate()).fromNow()}
-        </Text>
+        <Icon as={FontAwesomeIcon} icon={faArrowRight} color={iconColor} />
       </Flex>
-      {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={faArrowRight} color={iconColor} />
-    </Flex>
+    </Box>
   );
 };

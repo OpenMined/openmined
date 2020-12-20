@@ -28,7 +28,10 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Build the My Courses page (maybe don't even worry about the existing PR) and rename it Dashboard everywhere
+- Upon making a submission, it should clear the query variables and take you back to the project page
+- Clicking on the `<SubmissionInline />` on the `<SubmissionView />` doesn't actually change the attempt and crashes the app
+- When hitting the "Back" button on a project submission view, it should take you back to the main project page
+- Make sure the defaultly open accordion item for the project parts when the second is available, is the second... currently it just opens the first passed accordion item
 - Build the mentorship dashboard
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, profile, my courses, and search pages
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials

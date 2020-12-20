@@ -77,6 +77,9 @@ export default ({
   const projectContent = content.map((i) => {
     const { _key, description, status, submissions } = i;
 
+    const hasActiveSubmission =
+      submissions.findIndex(({ status }) => status === 'pending') !== -1;
+
     const panel = () => (
       <>
         {status !== 'passed' && status !== 'failed' && (
@@ -99,36 +102,38 @@ export default ({
                 mb={6}
               />
             )}
-            <Flex align="center">
-              <Button
-                onClick={() => {
-                  if (status === 'not-started') {
-                    onBeginProjectPart(_key).then(() => {
-                      setSubmissionParams({ part: _key });
-                    });
-                  } else {
-                    setSubmissionParams({ part: _key });
-
-                    if (status === 'submitted') {
-                      setSubmissionParams({
-                        part: _key,
-                        attempt: submissions.findIndex(
-                          ({ status }) => status === 'pending'
-                        ),
+            {!hasActiveSubmission && (
+              <Flex align="center">
+                <Button
+                  onClick={() => {
+                    if (status === 'not-started') {
+                      onBeginProjectPart(_key).then(() => {
+                        setSubmissionParams({ part: _key });
                       });
+                    } else {
+                      setSubmissionParams({ part: _key });
+
+                      if (status === 'submitted') {
+                        setSubmissionParams({
+                          part: _key,
+                          attempt: submissions.findIndex(
+                            ({ status }) => status === 'pending'
+                          ),
+                        });
+                      }
                     }
-                  }
-                }}
-                colorScheme="black"
-                mr={4}
-              >
-                {getButtonText(status)}
-              </Button>
-              <Text color="gray.700" fontSize="sm">
-                {submissions.filter(({ status }) => status !== 'none').length}{' '}
-                of {PROJECT_PART_SUBMISSIONS} attempts
-              </Text>
-            </Flex>
+                  }}
+                  colorScheme="black"
+                  mr={4}
+                >
+                  {getButtonText(status)}
+                </Button>
+                <Text color="gray.700" fontSize="sm">
+                  {submissions.filter(({ status }) => status !== 'none').length}{' '}
+                  of {PROJECT_PART_SUBMISSIONS} attempts
+                </Text>
+              </Flex>
+            )}
           </>
         )}
         {status === 'failed' && (

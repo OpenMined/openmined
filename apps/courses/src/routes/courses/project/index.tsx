@@ -191,9 +191,9 @@ export default ({ course, page, progress, user, ts }) => {
       part,
       content
     )
-      .then((succeed) => {
-        // Once that's done, reload the screen to refresh the state
-        succeed && window.location.reload();
+      .then(() => {
+        // Once that's done, reload the projects in the default viewing state
+        window.location.href = `/courses/${course}/project`;
       })
       .catch((error) => handleErrors(toast, error));
   };

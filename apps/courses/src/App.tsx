@@ -57,11 +57,12 @@ const App = () => {
     location.pathname.split('/').length > 3 &&
     location.pathname.includes('/complete');
 
-  // More specifically, if we're inside the concept, we don't render the default <Footer />
+  // If we're inside the concept, we don't render the default <Footer />
   // Instead, we'll show the <CourseFooter />
   const isInsideConcept =
     location.pathname.includes('/courses') &&
-    location.pathname.split('/').length > 4;
+    location.pathname.split('/').length > 4 &&
+    !location.pathname.includes('/project');
 
   return (
     <Router action={action} location={location} navigator={history}>

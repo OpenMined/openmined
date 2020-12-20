@@ -28,7 +28,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Upon making a submission, it should clear the query variables and take you back to the project page
 - Clicking on the `<SubmissionInline />` on the `<SubmissionView />` doesn't actually change the attempt and crashes the app
 - When hitting the "Back" button on a project submission view, it should take you back to the main project page
 - Make sure the defaultly open accordion item for the project parts when the second is available, is the second... currently it just opens the first passed accordion item
@@ -36,6 +35,8 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, profile, my courses, and search pages
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials
 - Convert everything to cyan
+- Find some way to designate "cyan" as the primary color in Chakra
+- Re-add text underline to all links
 - Figure out what to do about `<Menu />` and `<Popover />` and `<RichTextEditor />`
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same
 - TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
@@ -58,6 +59,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
+- Take down Discourse and integate Spectrum with Slack (https://spectrum.chat/openmined/settings) and then invite the entire Slack community
 - Make sure to test the site on dev deployment
 - Make sure to search for any configurations, Firebase extensions, or anything that needs to be enabled on the production account first (to make it identical to the dev Firebase)
 - Make an "intro to the CMS" video to give to Mat, Andrew, and Emma (and make sure to explain that filling in EVERY field is critical - if they can't fill in some, tell them to ask Patrick what to do)

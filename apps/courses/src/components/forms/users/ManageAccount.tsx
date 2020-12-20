@@ -26,6 +26,7 @@ import { emailField } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
+import ChakraIcon from '../../ChakraIcon';
 
 interface ManageAccountFormProps extends BoxProps {
   callback?: () => void;
@@ -188,7 +189,7 @@ export default ({
       </Heading>
       <Flex align="center">
         {/* SEE TODO (#3) */}
-        <Icon as={FontAwesomeIcon} icon={faEnvelope} size="2x" />
+        <ChakraIcon icon={faEnvelope} size="2x" />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Email
         </Text>
@@ -198,7 +199,7 @@ export default ({
       </Flex>
       <Flex align="center" mt={4}>
         {/* SEE TODO (#3) */}
-        <Icon as={FontAwesomeIcon} icon={faGithub} size="2x" />
+        <ChakraIcon icon={faGithub} size="2x" />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Github
         </Text>

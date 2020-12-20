@@ -6,7 +6,6 @@ import {
   Heading,
   Progress,
   Divider,
-  Icon,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,6 +19,7 @@ import {
   getNextAvailablePage,
   hasCompletedLesson,
 } from '../routes/courses/_helpers';
+import ChakraIcon from './ChakraIcon';
 
 export default ({ content, ...props }) => {
   const { title, slug, level, length, lessons, project, progress } = content;
@@ -73,15 +73,14 @@ export default ({ content, ...props }) => {
             return (
               <Flex align="center" mt={i === 0 ? 0 : 2} key={i}>
                 {/* SEE TODO (#3) */}
-                <Icon as={FontAwesomeIcon} {...iconProps} mr={3} size="lg" />
+                <ChakraIcon {...iconProps} mr={3} size="lg" />
                 <Text color="gray.700">{l.title}</Text>
               </Flex>
             );
           })}
           <Flex align="center" mt={2}>
             {/* SEE TODO (#3) */}
-            <Icon
-              as={FontAwesomeIcon}
+            <ChakraIcon
               icon={faShapes}
               mr={3}
               color="gray.600"
@@ -97,7 +96,7 @@ export default ({ content, ...props }) => {
                 Resume
               </Text>
               {/* SEE TODO (#3) */}
-              <Icon as={FontAwesomeIcon} icon={faArrowRight} />
+              <ChakraIcon icon={faArrowRight} />
             </Flex>
           </Link>
         </Flex>

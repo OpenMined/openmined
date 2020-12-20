@@ -9,7 +9,6 @@ import {
   Grid,
   GridItem,
   Heading,
-  Icon,
   Switch,
   Text,
 } from '@chakra-ui/react';
@@ -31,6 +30,7 @@ import { MentorContext, MentorTabs, mentorResources } from './Mentor';
 import GridContainer from '../../../components/GridContainer';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { useSanity } from '@openmined/shared/data-access-sanity';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 dayjs.extend(relativeTime);
 
@@ -49,7 +49,7 @@ const LinkItem = ({ title, icon, link, ...props }) => (
     transitionTimingFunction="ease-in-out"
   >
     {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={icon} size="lg" color="inherit" mr={3} />
+    <ChakraIcon icon={icon} size="lg" color="inherit" mr={3} />
     <Text color="inherit">{title}</Text>
   </Flex>
 );

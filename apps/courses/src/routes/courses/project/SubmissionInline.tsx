@@ -8,6 +8,7 @@ import {
   faCheckCircle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 dayjs.extend(relativeTime);
 
@@ -61,7 +62,7 @@ export default ({
         </Text>
       </Flex>
       {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={faArrowRight} color={iconColor} />
+      <ChakraIcon icon={faArrowRight} color={iconColor} />
     </Flex>
   );
 };

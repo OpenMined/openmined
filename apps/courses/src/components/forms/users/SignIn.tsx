@@ -23,6 +23,7 @@ import { emailField, passwordField } from '../_fields';
 import useToast, { toastConfig } from '../../Toast';
 import Modal from '../../Modal';
 import { handleErrors } from '../../../helpers';
+import ChakraIcon from '../../ChakraIcon';
 
 interface SignInFormProps extends BoxProps {
   callback?: () => void;
@@ -104,8 +105,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
               >
                 {/* SEE TODO (#3) */}
                 Sign In with Github{' '}
-                <Icon
-                  as={FontAwesomeIcon}
+                <ChakraIcon
                   icon={faGithub}
                   ml={2}
                   boxSize={4}

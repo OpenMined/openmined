@@ -5,7 +5,6 @@ import {
   Text,
   SimpleGrid,
   Flex,
-  Icon,
   Link,
 } from '@chakra-ui/react';
 import { useUser } from 'reactfire';
@@ -15,6 +14,7 @@ import { faSlack } from '@fortawesome/free-brands-svg-icons';
 
 import GridContainer from '../../components/GridContainer';
 import Signup from '../../components/forms/users/SignUp';
+import ChakraIcon from '../../components/ChakraIcon';
 
 export default ({ signup, signedup }) => {
   const user = useUser();
@@ -66,7 +66,7 @@ export default ({ signup, signedup }) => {
                   justify="center"
                 >
                   {/* SEE TODO (#3) */}
-                  <Icon as={FontAwesomeIcon} icon={icon} size="2x" />
+                  <ChakraIcon icon={icon} size="2x" />
                   <Text
                     fontWeight="bold"
                     fontSize="lg"

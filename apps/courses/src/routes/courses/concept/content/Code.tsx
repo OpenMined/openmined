@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 
 import useToast, { toastConfig } from '../../../../components/Toast';
+import ChakraIcon from '../../../../components/ChakraIcon';
 
 // Plugins
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
@@ -58,8 +59,7 @@ export default ({ code, language, spacing }: any) => {
   return (
     <Box position="relative" my={spacing}>
       {/* SEE TODO (#3) */}
-      <Icon
-        as={FontAwesomeIcon}
+      <ChakraIcon
         icon={faCopy}
         size="lg"
         color="whiteAlpha.500"

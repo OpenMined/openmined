@@ -34,6 +34,7 @@ import {
 import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
 import Modal from '../../Modal';
+import ChakraIcon from '../../ChakraIcon';
 
 interface SignUpFormProps extends BoxProps {
   callback?: () => void;
@@ -254,8 +255,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
               >
                 {/* SEE TODO (#3) */}
                 Sign Up with Github{' '}
-                <Icon
-                  as={FontAwesomeIcon}
+                <ChakraIcon
                   icon={faGithub}
                   ml={2}
                   boxSize={4}

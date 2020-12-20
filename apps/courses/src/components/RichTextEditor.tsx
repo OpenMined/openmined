@@ -34,6 +34,7 @@ import {
   faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
+import ChakraIcon from './ChakraIcon';
 
 export const EDITOR_STORAGE_STRING = '@openmined/rich-text-editor';
 
@@ -335,7 +336,7 @@ const BlockButton = ({ format, icon, text }: any) => {
       }}
     >
       {/* SEE TODO (#3) */}
-      {icon && <Icon as={FontAwesomeIcon} icon={icon} />}
+      {icon && <ChakraIcon icon={icon} />}
       {text && <Text fontWeight="bold">{text}</Text>}
     </Flex>
   );
@@ -358,7 +359,7 @@ const MarkButton = ({ format, icon }) => {
       }}
     >
       {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={icon} />
+      <ChakraIcon icon={icon} />
     </Flex>
   );
 };

@@ -27,6 +27,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { capitalize } from '../../helpers';
+import ChakraIcon from '../ChakraIcon';
 
 interface Field {
   name: string;
@@ -165,8 +166,7 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }: any)
                 )}
                 <InputRightElement cursor="pointer">
                   {/* SEE TODO (#3) */}
-                  <Icon
-                    as={FontAwesomeIcon}
+                  <ChakraIcon
                     icon={faTrash}
                     color="red.500"
                     onClick={() => fieldArray.remove(index)}
@@ -184,7 +184,7 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }: any)
         mt={2}
       >
         {/* SEE TODO (#3) */}
-        <Icon as={FontAwesomeIcon} icon={faPlus} mr={2} />
+        <ChakraIcon icon={faPlus} mr={2} />
         <Text>Add</Text>
       </Button>
     </>

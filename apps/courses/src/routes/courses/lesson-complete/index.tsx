@@ -26,6 +26,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
 import { handleErrors } from '../../../helpers';
 import { handleLessonComplete, handleProvideFeedback } from '../_firebase';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -35,7 +36,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     {...props}
   >
     {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={icon} size="lg" mb={4} />
+    <ChakraIcon icon={icon} size="lg" mb={4} />
     <Text>{children}</Text>
   </Box>
 );

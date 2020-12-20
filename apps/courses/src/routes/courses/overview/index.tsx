@@ -24,6 +24,7 @@ import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 // TODO: On the course overview page, make sure the "walk away being able to" items have images for icons instead of Font Awesome icons
 // TODO: On the course overview page, make sure to have the project show up at the end in the syllabus
@@ -31,7 +32,7 @@ import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
     {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+    <ChakraIcon icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -43,7 +44,7 @@ const LearnHow = ({ value }) => (
   <Box>
     <Circle bg="white" size={8} display={{ base: 'none', md: 'block' }}>
       {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+      <ChakraIcon icon={faCheckCircle} size="2x" />
     </Circle>
     <Heading
       as="h3"

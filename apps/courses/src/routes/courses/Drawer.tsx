@@ -29,6 +29,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { getLinkPropsFromLink } from '../../helpers';
+import ChakraIcon from '../../components/ChakraIcon';
 
 const DrawerItem = ({
   index,
@@ -48,7 +49,7 @@ const DrawerItem = ({
     >
       <Flex flex="1" textAlign="left" align="center">
         {/* SEE TODO (#3) */}
-        <Icon as={FontAwesomeIcon} icon={icon} mr={6} size="lg" />
+        <ChakraIcon icon={icon} mr={6} size="lg" />
         <Text fontWeight="bold">{title}</Text>
       </Flex>
       <AccordionIcon color="gray.600" />
@@ -81,8 +82,7 @@ const DrawerItem = ({
                     <Flex align="center">
                       {/* SEE TODO (#3) */}
                       {icon && (
-                        <Icon
-                          as={FontAwesomeIcon}
+                        <ChakraIcon
                           icon={icon}
                           size="lg"
                           mr={6}
@@ -92,7 +92,7 @@ const DrawerItem = ({
                     </Flex>
                     {/* SEE TODO (#3) */}
                     {isExternal && (
-                      <Icon as={FontAwesomeIcon} icon={faExternalLinkAlt} />
+                      <ChakraIcon icon={faExternalLinkAlt} />
                     )}
                   </Flex>
                 </Link>
@@ -143,8 +143,7 @@ const DrawerItem = ({
                   >
                     {/* SEE TODO (#3) */}
                     {icon && (
-                      <Icon
-                        as={FontAwesomeIcon}
+                      <ChakraIcon
                         icon={icon}
                         color={status === 'completed' ? 'teal.300' : 'inherit'}
                         size="lg"

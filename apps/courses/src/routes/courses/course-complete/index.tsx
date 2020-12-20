@@ -18,6 +18,7 @@ import GridContainer from '../../../components/GridContainer';
 import projectIcon from '../../../assets/project-icon.svg';
 import { faBookOpen, faCertificate } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 export default ({ page }) => {
   const {
@@ -137,8 +138,7 @@ export default ({ page }) => {
                   >
                     <Circle p={1} mb={2} bg={iconBg} boxSize={12}>
                       {/* SEE TODO (#3) */}
-                      <Icon
-                        as={FontAwesomeIcon}
+                      <ChakraIcon
                         icon={icon}
                         size="lg"
                         color={iconColor}

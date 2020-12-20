@@ -40,6 +40,7 @@ import GridContainer from './GridContainer';
 
 import logo from '../assets/logo.svg';
 import { handleErrors } from '../helpers';
+import ChakraIcon from './ChakraIcon';
 
 interface LinkProps {
   title: string;
@@ -178,8 +179,7 @@ export default ({ noScrolling }) => {
             {user && (
               <MenuItem as={RRDLink} to={`/users/${user.uid}`}>
                 {/* SEE TODO (#3) */}
-                <Icon
-                  as={FontAwesomeIcon}
+                <ChakraIcon
                   icon={faUserCircle}
                   size="lg"
                   color="gray.400"
@@ -190,8 +190,7 @@ export default ({ noScrolling }) => {
             )}
             <MenuItem as={RRDLink} to="/users/settings">
               {/* SEE TODO (#3) */}
-              <Icon
-                as={FontAwesomeIcon}
+              <ChakraIcon
                 icon={faCog}
                 size="lg"
                 color="gray.400"
@@ -207,8 +206,7 @@ export default ({ noScrolling }) => {
               rel="noopener noreferrer"
             >
               {/* SEE TODO (#3) */}
-              <Icon
-                as={FontAwesomeIcon}
+              <ChakraIcon
                 icon={faCommentAlt}
                 size="lg"
                 color="gray.400"
@@ -281,9 +279,9 @@ export default ({ noScrolling }) => {
           <Box display={['block', null, 'none']} onClick={() => setShow(!show)}>
             {/* SEE TODO (#3) */}
             {show ? (
-              <Icon as={FontAwesomeIcon} icon={faTimes} {...iconStyles} />
+              <ChakraIcon icon={faTimes} {...iconStyles} />
             ) : (
-              <Icon as={FontAwesomeIcon} icon={faBars} {...iconStyles} />
+              <ChakraIcon icon={faBars} {...iconStyles} />
             )}
           </Box>
           <Box

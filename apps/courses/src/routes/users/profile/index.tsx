@@ -5,7 +5,6 @@ import {
   Box,
   Flex,
   Heading,
-  Icon,
   Text,
   Link,
   useToken,
@@ -28,11 +27,12 @@ import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import GridContainer from '../../../components/GridContainer';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 import { getLinkPropsFromLink } from '../../../helpers';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
   <Flex align="center" {...props}>
     {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={icon} mr={2} />
+    <ChakraIcon icon={icon} mr={2} />
     <Link
       as="a"
       color="gray.700"
@@ -62,7 +62,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
       transitionTimingFunction="ease-in-out"
     >
       {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={icon} size="lg" color="inherit" mr={3} />
+      <ChakraIcon icon={icon} size="lg" color="inherit" mr={3} />
       <Text color="inherit">{title}</Text>
     </Flex>
   );
@@ -123,8 +123,7 @@ export default () => {
                       bottom={2}
                     >
                       {/* SEE TODO (#3) */}
-                      <Icon
-                        as={FontAwesomeIcon}
+                      <ChakraIcon
                         icon={faPencilAlt}
                         color="white"
                         style={{ width: '0.35em' }}

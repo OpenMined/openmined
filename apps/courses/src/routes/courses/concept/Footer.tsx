@@ -30,6 +30,7 @@ import {
 
 import useToast, { toastConfig } from '../../../components/Toast';
 import { getLinkPropsFromLink } from '../../../helpers';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 const BREAK = 'md';
 
@@ -62,7 +63,7 @@ const Feedback = ({
         >
           <Flex align="center">
             {/* SEE TODO (#3) */}
-            <Icon as={FontAwesomeIcon} icon={faBullhorn} />
+            <ChakraIcon icon={faBullhorn} />
             <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
               Give Feedback
             </Text>
@@ -163,7 +164,7 @@ const Help = ({ helpOpen, setHelpOpen }) => {
       >
         <Flex align="center">
           {/* SEE TODO (#3) */}
-          <Icon as={FontAwesomeIcon} icon={faCommentAlt} />
+          <ChakraIcon icon={faCommentAlt} />
           <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
             Get Help
           </Text>
@@ -175,8 +176,7 @@ const Help = ({ helpOpen, setHelpOpen }) => {
             <MenuItem key={index} {...getLinkPropsFromLink(link)}>
               {/* SEE TODO (#3) */}
               {icon && (
-                <Icon
-                  as={FontAwesomeIcon}
+                <ChakraIcon
                   icon={icon}
                   size="lg"
                   color="gray.400"

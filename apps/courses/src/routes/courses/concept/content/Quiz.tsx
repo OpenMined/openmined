@@ -16,6 +16,7 @@ import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons';
 import { handleErrors } from '../../../../helpers';
 import useToast from '../../../../components/Toast';
 import { handleQuizFinish } from '../../_firebase';
+import ChakraIcon from 'apps/courses/src/components/ChakraIcon';
 
 const FinishedBox = ({ correct, total }) => (
   <Box bg="gray.100" borderRadius="md" p={8}>
@@ -105,8 +106,7 @@ const IncorrectAnswer = ({
     onClick={() => setCurrentSelection(index)}
   >
     {/* SEE TODO (#3) */}
-    <Icon
-      as={FontAwesomeIcon}
+    <ChakraIcon
       icon={faTimes}
       color="red.300"
       size="lg"
@@ -156,8 +156,7 @@ const UnansweredAnswer = ({
       onMouseLeave={() => setIsHovering(false)}
     >
       {/* SEE TODO (#3) */}
-      <Icon
-        as={FontAwesomeIcon}
+      <ChakraIcon
         icon={isHovering ? faDotCircle : faCircle}
         color={isHovering ? 'blue.500' : 'gray.700'}
         size="1x"
@@ -264,7 +263,7 @@ const QuizCard = ({
               {currentQuestion + 1 >= total ? 'Finish' : 'Next'}
             </Text>
             {/* SEE TODO (#3) */}
-            <Icon as={FontAwesomeIcon} icon={faArrowRight} size="1x" />
+            <ChakraIcon icon={faArrowRight} size="1x" />
           </Flex>
         </Flex>
       )}

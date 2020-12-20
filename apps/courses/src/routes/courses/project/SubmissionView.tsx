@@ -11,7 +11,6 @@ import {
   Grid,
   GridItem,
   Heading,
-  Icon,
   Image,
   Link,
   Modal,
@@ -40,6 +39,7 @@ import RichTextEditor, {
   EDITOR_STORAGE_STRING,
 } from '../../../components/RichTextEditor';
 import ColoredTabs from '../../../components/ColoredTabs';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 dayjs.extend(relativeTime);
 
@@ -224,7 +224,7 @@ export default ({
             spacing={2}
             color="gray.700"
             separator={
-              <Icon as={FontAwesomeIcon} icon={faAngleRight} color="gray.400" />
+              <ChakraIcon icon={faAngleRight} color="gray.400" />
             }
           >
             <BreadcrumbItem>
@@ -251,7 +251,7 @@ export default ({
           >
             <Flex align="center">
               {/* SEE TODO (#3) */}
-              <Icon as={FontAwesomeIcon} icon={faCommentAlt} mr={2} />
+              <ChakraIcon icon={faCommentAlt} mr={2} />
               <Text>Get Help</Text>
             </Flex>
           </Link>

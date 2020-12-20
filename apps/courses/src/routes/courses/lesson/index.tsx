@@ -12,7 +12,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Link,
   ListItem,
   Text,
@@ -30,11 +29,12 @@ import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
 import { handleLessonStart } from '../_firebase';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
     {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+    <ChakraIcon icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -136,7 +136,7 @@ export default ({ page, progress, user, ts, course, lesson }) => {
                       </Flex>
                       {/* SEE TODO (#3) */}
                       {isExternal && (
-                        <Icon as={FontAwesomeIcon} icon={faExternalLinkAlt} />
+                        <ChakraIcon icon={faExternalLinkAlt} />
                       )}
                     </Flex>
                   </Link>

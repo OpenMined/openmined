@@ -42,6 +42,7 @@ import useToast, { toastConfig } from '../../components/Toast';
 import { getLinkPropsFromLink, handleErrors } from '../../helpers';
 import logo from '../../assets/logo.svg';
 import { getUserRef } from './_firebase';
+import ChakraIcon from '../../components/ChakraIcon';
 
 type LinkProps = {
   title: string;
@@ -186,8 +187,7 @@ export default ({
                   >
                     {/* SEE TODO (#3) */}
                     {icon && (
-                      <Icon
-                        as={FontAwesomeIcon}
+                      <ChakraIcon
                         icon={icon}
                         size="lg"
                         color="gray.400"
@@ -237,8 +237,7 @@ export default ({
       <Flex as="nav" align="center" justify="space-between">
         <Box width={{ base: 6, [BREAK]: 1 / 4 }}>
           {/* SEE TODO (#3) */}
-          <Icon
-            as={FontAwesomeIcon}
+          <ChakraIcon
             icon={faBars}
             color="white"
             cursor="pointer"
@@ -250,8 +249,7 @@ export default ({
             <Flex justify="center" align="center">
               {/* SEE TODO (#3) */}
               {icon && (
-                <Icon
-                  as={FontAwesomeIcon}
+                <ChakraIcon
                   icon={icon}
                   color="gray.700"
                   size="lg"
@@ -280,8 +278,7 @@ export default ({
           display={{ base: 'flex', [BREAK]: 'none' }}
         >
           {/* SEE TODO (#3) */}
-          <Icon
-            as={FontAwesomeIcon}
+          <ChakraIcon
             icon={faHome}
             size="lg"
             color="white"

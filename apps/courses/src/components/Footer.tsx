@@ -8,6 +8,7 @@ import GridContainer from './GridContainer';
 import content from '../content/footer';
 
 import { getLinkPropsFromLink } from '../helpers';
+import ChakraIcon from './ChakraIcon';
 
 const { about, links, copyright } = content;
 
@@ -48,9 +49,8 @@ export default (props) => (
           >
             <Text mr={2}>{about.button.text}</Text>
             {/* SEE TODO (#3) */}
-            <Icon
+            <ChakraIcon
               color="gray.200"
-              as={FontAwesomeIcon}
               icon={about.button.icon}
               ml={2}
               boxSize={4}

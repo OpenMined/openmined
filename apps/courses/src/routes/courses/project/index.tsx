@@ -40,12 +40,13 @@ import { getLinkPropsFromLink, useQueryState } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
 import { handleAttemptSubmission, handleProjectPartBegin } from '../_firebase';
+import ChakraIcon from '../../../components/ChakraIcon';
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
     {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+    <ChakraIcon icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -245,7 +246,7 @@ export default ({ course, page, progress, user, ts }) => {
           <Tag {...statusStyles}>
             {/* SEE TODO (#3) */}
             {statusIcon && (
-              <Icon as={FontAwesomeIcon} icon={statusIcon} mr={2} />
+              <ChakraIcon icon={statusIcon} mr={2} />
             )}
             <TagLabel fontWeight="bold">{statusText}</TagLabel>
           </Tag>
@@ -330,7 +331,7 @@ export default ({ course, page, progress, user, ts }) => {
               >
                 <Flex align="center">
                   {/* SEE TODO (#3) */}
-                  <Icon as={FontAwesomeIcon} icon={icon} size="lg" mr={4} />
+                  <ChakraIcon icon={icon} size="lg" mr={4} />
                   <Text>{title}</Text>
                 </Flex>
               </Link>

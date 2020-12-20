@@ -21,6 +21,7 @@ import NumberedAccordion, {
 import GridContainer from '../../components/GridContainer';
 import policy from '../../content/privacy-policy';
 import terms from '../../content/terms-of-service';
+import ChakraIcon from '../../components/ChakraIcon';
 
 const SectionListItem = ({ content, index, ...props }) => {
   const handleClick = () => {
@@ -148,7 +149,7 @@ export default () => {
                     textAlign="center"
                   >
                     {/* SEE TODO (#3) */}
-                    <Icon as={FontAwesomeIcon} icon={faChevronUp} />
+                    <ChakraIcon icon={faChevronUp} />
                     <Text textTransform="uppercase">Top</Text>
                   </Box>
                 </Flex>

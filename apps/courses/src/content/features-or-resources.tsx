@@ -13,6 +13,7 @@ import realWorld from '../assets/homepage/real-world.svg';
 import instructors from '../assets/homepage/instructors.svg';
 import like from '../assets/homepage/like.svg';
 import technicalMentor from '../assets/homepage/technical-mentor.svg';
+import ChakraIcon from '../components/ChakraIcon';
 
 export const features = {
   title: 'Course Features',
@@ -55,8 +56,7 @@ export const resources = {
         'Take your learning to the next level and discuss it with the community!',
       icon: (
         // SEE TODO (#3)
-        <Icon
-          as={FontAwesomeIcon}
+        <ChakraIcon
           icon={faCommentAlt}
           size="2x"
           color="magenta.600"
@@ -73,8 +73,7 @@ export const resources = {
         'Join the conversation with over 10,000 others in Slack community!',
       icon: (
         // SEE TODO (#3)
-        <Icon
-          as={FontAwesomeIcon}
+        <ChakraIcon
           icon={faSlack}
           size="2x"
           color="magenta.600"
@@ -91,8 +90,7 @@ export const resources = {
         'For the latest news and info on the OpenMined community, visit our blog!',
       icon: (
         // SEE TODO (#3)
-        <Icon
-          as={FontAwesomeIcon}
+        <ChakraIcon
           icon={faPencilAlt}
           size="2x"
           color="magenta.600"
@@ -109,8 +107,7 @@ export const resources = {
         'Our mentors provide feedback on your projects and help you at every step!',
       icon: (
         // SEE TODO (#3)
-        <Icon
-          as={FontAwesomeIcon}
+        <ChakraIcon
           icon={faUser}
           size="2x"
           color="magenta.600"

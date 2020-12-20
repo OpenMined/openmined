@@ -1,10 +1,9 @@
 import React from 'react';
 import { Button, Flex, Text, Link, Image, Box } from '@chakra-ui/react';
 
-import SubmissionInline from './SubmissionInline';
-
 import { PROJECT_PART_SUBMISSIONS } from '../_helpers';
 import StatusAccordion from '../../../components/StatusAccordion';
+import SubmissionInline from '../../../components/SubmissionInline';
 
 // This is a component that shows up when the user has made a failed attempt ("failed-but-pending")
 // ... has failed all attempts ("failed")
@@ -14,8 +13,8 @@ const AttemptedView = ({
   title,
   description,
   submissions,
-  setSubmissionParams,
   part,
+  course,
   ...props
 }) => (
   <Box {...props}>
@@ -31,21 +30,14 @@ const AttemptedView = ({
     {submissions.map((submission, index) => (
       <SubmissionInline
         key={index}
-        part={part}
-        index={index}
+        link={`/courses/${course}/project/${part}/${index}`}
         {...submission}
-        setSubmissionParams={setSubmissionParams}
       />
     ))}
   </Box>
 );
 
-export default ({
-  content,
-  setSubmissionParams,
-  onBeginProjectPart,
-  ...props
-}) => {
+export default ({ content, course, onBeginProjectPart, ...props }) => {
   // The text to show when the user is pending a submission review
   const pendingReviewText = (
     <>
@@ -97,7 +89,7 @@ export default ({
                 title="Sorry, let's try again!"
                 description="You did not pass this part of the project. You can check out the link below for your feedback and try again after making some corrections."
                 submissions={submissions}
-                setSubmissionParams={setSubmissionParams}
+                course={course}
                 part={_key}
                 mb={6}
               />
@@ -108,18 +100,17 @@ export default ({
                   onClick={() => {
                     if (status === 'not-started') {
                       onBeginProjectPart(_key).then(() => {
-                        setSubmissionParams({ part: _key });
+                        window.location.href = `/courses/${course}/project/${_key}`;
                       });
                     } else {
-                      setSubmissionParams({ part: _key });
+                      window.location.href = `/courses/${course}/project/${_key}`;
 
                       if (status === 'submitted') {
-                        setSubmissionParams({
-                          part: _key,
-                          attempt: submissions.findIndex(
-                            ({ status }) => status === 'pending'
-                          ),
-                        });
+                        const attempt = submissions.findIndex(
+                          ({ status }) => status === 'pending'
+                        );
+
+                        window.location.href = `/courses/${course}/project/${_key}/${attempt}`;
                       }
                     }
                   }}
@@ -160,7 +151,7 @@ export default ({
               </>
             }
             submissions={submissions}
-            setSubmissionParams={setSubmissionParams}
+            course={course}
             part={_key}
           />
         )}
@@ -170,7 +161,7 @@ export default ({
             title="Congratulations!"
             description="You passed this portion of the project. Check out the link below for your feedback."
             submissions={submissions}
-            setSubmissionParams={setSubmissionParams}
+            course={course}
             part={_key}
           />
         )}

@@ -20,6 +20,7 @@ const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
 const CourseComplete = lazy(() => import('./course-complete'));
 const CourseProject = lazy(() => import('./project'));
+const CourseProjectSubmission = lazy(() => import('./project-submission'));
 const CourseProjectComplete = lazy(() => import('./project-complete'));
 const CourseLesson = lazy(() => import('./lesson'));
 const CourseLessonComplete = lazy(() => import('./lesson-complete'));
@@ -31,6 +32,7 @@ const pages = {
   overview: CourseOverview,
   courseComplete: CourseComplete,
   project: CourseProject,
+  projectSubmission: CourseProjectSubmission,
   projectComplete: CourseProjectComplete,
   lesson: CourseLesson,
   lessonComplete: CourseLessonComplete,

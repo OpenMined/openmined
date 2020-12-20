@@ -18,12 +18,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { prepAccordionAndStatus } from '../../courses/project';
-import SubmissionInline from '../../courses/project/SubmissionInline';
 import { hasCompletedCourse, hasStartedProject } from '../../courses/_helpers';
 import CourseProgressCard from '../../../components/CourseProgressCard';
+import SubmissionInline from '../../../components/SubmissionInline';
 import ColoredTabs from '../../../components/ColoredTabs';
 import StatusAccordion from '../../../components/StatusAccordion';
-import CourseCompleteCard from 'apps/courses/src/components/CourseCompleteCard';
+import CourseCompleteCard from '../../../components/CourseCompleteCard';
 
 const combineProgressAndCourses = (courses, progress, filter) => {
   let tempCourses = progress.filter(filter);
@@ -126,9 +126,7 @@ export const StudentTabs = ({ courses, progress }) => {
             {i.submissions.map((submission, index) => (
               <SubmissionInline
                 key={index}
-                part={i._key}
-                index={index}
-                link={`/courses/${course.slug}/project/?part=${i._key}&attempt=${index}`}
+                link={`/courses/${course.slug}/project/${i._key}/${index}`}
                 {...submission}
               />
             ))}

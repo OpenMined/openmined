@@ -55,6 +55,8 @@ export const project = ({ course }) => `
   }
 }[0]`;
 
+export const projectSubmission = project;
+
 export const projectComplete = ({ course }) => `
 *[_type == "course" && slug.current == "${course}" && live == true] {
   ...,

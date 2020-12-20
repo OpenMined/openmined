@@ -49,6 +49,16 @@ export default () => (
             path="complete"
             element={<CoursePage which="projectComplete" />}
           />
+          <AuthRoute path=":part">
+            <AuthRoute
+              path="/"
+              element={<CoursePage which="projectSubmission" />}
+            />
+            <AuthRoute
+              path=":attempt"
+              element={<CoursePage which="projectSubmission" />}
+            />
+          </AuthRoute>
         </AuthRoute>
         <AuthRoute path=":lesson">
           <AuthRoute path="/" element={<CoursePage which="lesson" />} />

@@ -24,22 +24,26 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useFirestoreDocDataOnce } from 'reactfire';
+import { Link as RRDLink } from 'react-router-dom';
+import { useFirestore, useFirestoreDocDataOnce } from 'reactfire';
 import { Course } from '@openmined/shared/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
-import SubmissionInline from './SubmissionInline';
-
-import { PROJECT_PART_SUBMISSIONS } from '../_helpers';
+import { PROJECT_PART_SUBMISSIONS, getProjectPartNumber } from '../_helpers';
+import { handleAttemptSubmission } from '../_firebase';
+import { prepAccordionAndStatus } from '../project';
 import { Content } from '../concept/content';
+import { handleErrors } from '../../../helpers';
 import GridContainer from '../../../components/GridContainer';
+import SubmissionInline from '../../../components/SubmissionInline';
 import RichTextEditor, {
   EDITOR_STORAGE_STRING,
 } from '../../../components/RichTextEditor';
 import ColoredTabs from '../../../components/ColoredTabs';
+import useToast from '../../../components/Toast';
 
 dayjs.extend(relativeTime);
 
@@ -180,32 +184,60 @@ const SubmissionBoxes = ({ submissions, ...props }) => (
   </SimpleGrid>
 );
 
-export default ({
-  submissionViewAttempt,
-  setSubmissionParams,
-  onAttemptSubmission,
-  projectTitle,
-  number,
-  part,
-}) => {
-  const { _key, title, submissions } = part;
+export default ({ page, progress, course, part, attempt, user, ...props }) => {
+  const db = useFirestore();
+  const toast = useToast();
+
+  // Make sure to get the content for each of the parts
+  const { content: allCombinedContent } = prepAccordionAndStatus(
+    progress,
+    page.project.parts
+  );
+  const content =
+    allCombinedContent[allCombinedContent.findIndex((p) => p._key === part)];
+  const number = getProjectPartNumber(page.project.parts, part);
+  const projectTitle = page.project.title;
+
+  const { _key, title, submissions } = content;
 
   // If we've been asked to load an attempt for this page
-  const attemptRef = submissionViewAttempt
-    ? submissions[submissionViewAttempt].submission
-    : null;
+  const attemptRef = attempt ? submissions[attempt].submission : null;
   const attemptData: Course.ProjectSubmission = attemptRef
     ? useFirestoreDocDataOnce(attemptRef)
     : null;
 
   // If we've been asked to load a review for this page
-  const reviewRef = submissionViewAttempt
-    ? submissions[submissionViewAttempt].review
-    : null;
-  const reviewData: any = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
+  const reviewRef = attempt ? submissions[attempt].review : null;
+  const reviewData = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
 
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const preSubmitModal = useDisclosure();
+
+  // Save the arrayUnion function so that we can push items into a Firestore array
+  const arrayUnion = useFirestore.FieldValue.arrayUnion;
+
+  // Apparently, you cannot use SererTimestamp (ts()) inside of arrayUnion, so this is needed
+  // https://stackoverflow.com/questions/52324505/function-fieldvalue-arrayunion-called-with-invalid-data-fieldvalue-servertime
+  const currentTime = useFirestore.Timestamp.now;
+
+  // When the user attempts a submission
+  const onAttemptSubmission = async (part, content) => {
+    handleAttemptSubmission(
+      db,
+      user.uid,
+      course,
+      arrayUnion,
+      currentTime,
+      progress,
+      part,
+      content
+    )
+      .then(() => {
+        // Once that's done, reload the projects in the default viewing state
+        window.location.href = `/courses/${course}/project`;
+      })
+      .catch((error) => handleErrors(toast, error));
+  };
 
   return (
     <Box bg="gray.50">
@@ -224,11 +256,7 @@ export default ({
             }
           >
             <BreadcrumbItem>
-              <BreadcrumbLink
-                onClick={() =>
-                  setSubmissionParams({ part: null, attempt: null })
-                }
-              >
+              <BreadcrumbLink as={RRDLink} to={`/courses/${course}/project`}>
                 {projectTitle}
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -286,10 +314,8 @@ export default ({
                 {submissions.map((submission, index) => (
                   <SubmissionInline
                     key={index}
-                    part={_key}
-                    index={index}
+                    link={`/courses/${course}/project/${part}/${index}`}
                     {...submission}
-                    setSubmissionParams={setSubmissionParams}
                   />
                 ))}
               </Box>
@@ -312,7 +338,7 @@ export default ({
             <ColoredTabs
               mb={8}
               content={genTabsContent(
-                part,
+                content,
                 attemptData,
                 reviewData,
                 hasStartedSubmission,
@@ -321,12 +347,8 @@ export default ({
             />
             <Flex justify="space-between" align="center">
               <Button
-                onClick={() => {
-                  setSubmissionParams({
-                    part: null,
-                    attempt: null,
-                  });
-                }}
+                as={RRDLink}
+                to={`/courses/${course}/project`}
                 variant="outline"
                 colorScheme="black"
               >

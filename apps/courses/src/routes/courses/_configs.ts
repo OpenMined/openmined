@@ -48,6 +48,8 @@ export const project = ({ page, course, lesson, progress }) => ({
   },
 });
 
+export const projectSubmission = project;
+
 export const projectComplete = ({ page, course, lesson, progress }) => ({
   page: {
     title: `${page.title} - Complete`,

@@ -26,20 +26,18 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import ProjectAccordion from './ProjectAccordion';
-import SubmissionView from './SubmissionView';
 
 import {
-  getProjectPartNumber,
   getProjectPartStatus,
   getProjectStatus,
   hasStartedProjectPart,
   PROJECT_PART_SUBMISSIONS,
 } from '../_helpers';
+import { handleProjectPartBegin } from '../_firebase';
 import GridContainer from '../../../components/GridContainer';
-import { getLinkPropsFromLink, useQueryState } from '../../../helpers';
+import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
-import { handleAttemptSubmission, handleProjectPartBegin } from '../_firebase';
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
@@ -161,13 +159,6 @@ export default ({ course, page, progress, user, ts }) => {
     ...statusStyles
   } = getStatusStyles(status);
 
-  // Save the arrayUnion function so that we can push items into a Firestore array
-  const arrayUnion = useFirestore.FieldValue.arrayUnion;
-
-  // Apparently, you cannot use SererTimestamp (ts()) inside of arrayUnion, so this is needed
-  // https://stackoverflow.com/questions/52324505/function-fieldvalue-arrayunion-called-with-invalid-data-fieldvalue-servertime
-  const currentTime = useFirestore.Timestamp.now;
-
   // When beginning a project part
   const onBeginProjectPart = (part) =>
     handleProjectPartBegin(
@@ -179,48 +170,6 @@ export default ({ course, page, progress, user, ts }) => {
       part
     ).catch((error) => handleErrors(toast, error));
 
-  // When the user attempts a submission
-  const onAttemptSubmission = async (part, content) => {
-    handleAttemptSubmission(
-      db,
-      user.uid,
-      course,
-      arrayUnion,
-      currentTime,
-      progress,
-      part,
-      content
-    )
-      .then(() => {
-        // Once that's done, reload the projects in the default viewing state
-        window.location.href = `/courses/${course}/project`;
-      })
-      .catch((error) => handleErrors(toast, error));
-  };
-
-  // We want to track the part and the attempt in state, but also in the query params
-  const [submissionParams, setSubmissionParams] = useQueryState([
-    'part',
-    'attempt',
-  ]);
-
-  // If we have a submission view, render that screen
-  if (submissionParams.part) {
-    return (
-      <SubmissionView
-        projectTitle={title}
-        number={getProjectPartNumber(parts, submissionParams.part)}
-        part={
-          content[content.findIndex((p) => p._key === submissionParams.part)]
-        }
-        submissionViewAttempt={submissionParams.attempt}
-        setSubmissionParams={setSubmissionParams}
-        onAttemptSubmission={onAttemptSubmission}
-      />
-    );
-  }
-
-  // Otherwise, render the main project page
   return (
     <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
       <Flex align="flex-start" direction={{ base: 'column', lg: 'row' }}>
@@ -263,9 +212,9 @@ export default ({ course, page, progress, user, ts }) => {
           </UnorderedList>
           <ProjectAccordion
             content={content}
-            mb={6}
-            setSubmissionParams={setSubmissionParams}
+            course={course}
             onBeginProjectPart={onBeginProjectPart}
+            mb={6}
           />
           <Button
             disabled={!(status === 'passed' || status === 'failed')}

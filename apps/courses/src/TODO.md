@@ -17,7 +17,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - TODO (#18): Resizing the window on any page with the main `<Header />` causes a call stack overflow to happen which crashes the page. It looks like this is related to the `<Avatar />` being reloaded multiple times? This also will probably happen on the Course Header.
 - TODO (#19): Click on any one of the "Get Help" items in the Course `<Footer />` will trigger an infinite update logic (same as #18, but in a different place). We also have this same problem when resizing any concept page, often it's related to a similar problem in the "Feedback" section instead of "Get Help", but both elements have roughly the same problem.
 - TODO (#1): We need to write a test for when to show the `<Header />` and `<Footer />` on the homepage. It might be a good candidate for a small refactor where we define what pages receive this header or footer, and which don't.
-- TODO (#3): The way we're doing the `<Icon />` throughout the site is kinda ugly and repetitive. I suggest we write a reusable component to automate the "as" prop.
+- TODO (#3): The way we're doing the `<Icon />` throughout the site is kinda ugly and repetitive. I suggest we write a reusable component to automate the "as" prop. And also switch out all "size" props for "boxSize" so that it uses the Chakra theme.
 - TODO (#4): All radios and checkboxes require a double click for some reason... have no idea what's going on here, but Chakra doesn't natively have this problem. It's something we're doing wrong here.
 - TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.
 - TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
@@ -28,17 +28,16 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Clicking on the `<SubmissionInline />` on the `<SubmissionView />` doesn't actually change the attempt and crashes the app
-- When hitting the "Back" button on a project submission view, it should take you back to the main project page
-- Make sure the defaultly open accordion item for the project parts when the second is available, is the second... currently it just opens the first passed accordion item
+- Manually navigating to a part page (with no attempt) allows a user to write another submission when they have one pending OR when they have none remaining
+- Redo the permissions gate to allow for projects and project parts with or without attempts. We probably need a "configuration" based strategy for this. Might be good to write some tests!!
 - Build the mentorship dashboard
-- Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, profile, my courses, and search pages
-- Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials
+- Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
 - Convert everything to cyan
 - Find some way to designate "cyan" as the primary color in Chakra
 - Re-add text underline to all links
 - Figure out what to do about `<Menu />` and `<Popover />` and `<RichTextEditor />`
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same
+- Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials
 - TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
 - TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
 
@@ -46,6 +45,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 - TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (HARD): Build Typescript interfaces for the course and use them throughout the various Firebase API calls file (see above), helpers file, and various views
+- TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
 - TODO (HARD): [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-counter) to count a variety of metrics to a `metrics` collection at the top-level. Make sure to block this collection from being written to by anyone else except the function. This should include a variety of useful information, such as, but not limited to: number of user signups (through Github, through email, and total), number of user deletions, number of courses started, number of lessons started, number of concepts started, number of courses completed, number of lessons completed, number of concepts completed, number of projects started, number of projects passed, number of projects failed, etc. Maybe work with Patrick on this.
 
 ### Available issues (specific)
@@ -59,7 +59,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
-- Take down Discourse and integate Spectrum with Slack (https://spectrum.chat/openmined/settings) and then invite the entire Slack community
+- Take down Discourse and integate Spectrum with Slack (https://spectrum.chat/openmined/settings) and then invite the entire Slack community - make sure to replace all the https://discussion.openmined.org links with the Spectrum link
 - Make sure to test the site on dev deployment
 - Make sure to search for any configurations, Firebase extensions, or anything that needs to be enabled on the production account first (to make it identical to the dev Firebase)
 - Make an "intro to the CMS" video to give to Mat, Andrew, and Emma (and make sure to explain that filling in EVERY field is critical - if they can't fill in some, tell them to ask Patrick what to do)

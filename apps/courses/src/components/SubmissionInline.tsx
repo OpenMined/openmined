@@ -13,18 +13,10 @@ import { Link } from 'react-router-dom';
 
 dayjs.extend(relativeTime);
 
-export default ({
-  status,
-  part,
-  index,
-  setSubmissionParams,
-  link,
-  ...submission
-}) => {
+export default ({ status, link, ...submission }) => {
   if (status === 'none') return null;
 
   const props = {
-    key: index,
     p: 3,
     mt: 2,
     cursor: 'pointer',
@@ -53,45 +45,29 @@ export default ({
     text = 'Failed';
   }
 
-  const linkProps = link
-    ? {
-        as: Link,
-        to: link,
-      }
-    : {
-        onClick: () => {
-          setSubmissionParams({
-            part,
-            attempt: index,
-          });
-        },
-      };
-
   return (
-    <Box {...linkProps}>
-      <Flex {...props}>
-        <Flex align="center">
-          {/* SEE TODO (#3) */}
-          <Icon
-            as={FontAwesomeIcon}
-            icon={icon}
-            color={iconColor}
-            size="lg"
-            mr={4}
-          />
-          <Text fontWeight="bold" mr={2}>
-            {text}
-          </Text>
-          <Text fontStyle="italic" color="gray.700">
-            {submission.reviewed_at &&
-              `Reviewed ${dayjs(submission.reviewed_at.toDate()).fromNow()}`}
-            {!submission.reviewed_at &&
-              `Submitted ${dayjs(submission.submitted_at.toDate()).fromNow()}`}
-          </Text>
-        </Flex>
+    <Flex as={Link} to={link} {...props}>
+      <Flex align="center">
         {/* SEE TODO (#3) */}
-        <Icon as={FontAwesomeIcon} icon={faArrowRight} color={iconColor} />
+        <Icon
+          as={FontAwesomeIcon}
+          icon={icon}
+          color={iconColor}
+          size="lg"
+          mr={4}
+        />
+        <Text fontWeight="bold" mr={2}>
+          {text}
+        </Text>
+        <Text fontStyle="italic" color="gray.700">
+          {submission.reviewed_at &&
+            `Reviewed ${dayjs(submission.reviewed_at.toDate()).fromNow()}`}
+          {!submission.reviewed_at &&
+            `Submitted ${dayjs(submission.submitted_at.toDate()).fromNow()}`}
+        </Text>
       </Flex>
-    </Box>
+      {/* SEE TODO (#3) */}
+      <Icon as={FontAwesomeIcon} icon={faArrowRight} color={iconColor} />
+    </Flex>
   );
 };

@@ -29,30 +29,6 @@ export const useWindowSize = () => {
   return windowSize;
 };
 
-export const useQueryState = (keys) => {
-  const [params, setParams] = useSearchParams();
-
-  const existing = {};
-  keys.forEach((key) => (existing[key] = params.get(key) || null));
-
-  const [value, setValue] = useState(existing);
-
-  const onSetValue = useCallback(
-    (newVal) => {
-      setValue(newVal);
-
-      Object.keys(newVal).forEach(
-        (key) => newVal[key] === null && delete newVal[key]
-      );
-
-      setParams(newVal);
-    },
-    [setParams]
-  );
-
-  return [value, onSetValue];
-};
-
 export const handleErrors = (toast, error) =>
   toast({
     ...toastConfig,

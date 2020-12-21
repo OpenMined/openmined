@@ -122,8 +122,7 @@ export default ({ progress, page, user, ts, course }) => {
               mb={8}
             >
               {/* SEE TODO (#3) */}
-              <Icon
-                as={FontAwesomeIcon}
+              <ChakraIcon
                 icon={status === 'passed' ? faCheckCircle : faTimesCircle}
                 color={status === 'passed' ? 'green.400' : 'magenta.400'}
                 size="lg"

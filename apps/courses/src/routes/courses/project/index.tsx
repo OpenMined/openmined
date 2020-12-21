@@ -231,8 +231,7 @@ export default ({ course, page, progress, user, ts }) => {
           </Text>
           <Box position="relative" mb={4}>
             {/* SEE TODO (#3) */}
-            <Icon
-              as={FontAwesomeIcon}
+            <ChakraIcon
               icon={faShapes}
               size="2x"
               position="absolute"

@@ -9,6 +9,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from '../../components/GridContainer';
+import ChakraIcon from '../../components/ChakraIcon';
 import theme from '../../theme';
 
 const geoUrl =
@@ -165,8 +166,7 @@ export default ({ title, description, buttons, links }) => (
               >
                 {/* SEE TODO (#3) */}
                 {title}{' '}
-                <Icon
-                  as={FontAwesomeIcon}
+                <ChakraIcon
                   icon={icon}
                   ml={2}
                   boxSize={4}

@@ -13,7 +13,6 @@ import {
   Flex,
   CircularProgress,
   CircularProgressProps,
-  Icon,
 } from '@chakra-ui/react';
 import { useTimer } from 'use-timer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,6 +20,7 @@ import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 import theme from '../../theme';
 import GridContainer from '../../components/GridContainer';
+import ChakraIcon from '../../components/ChakraIcon';
 
 import { useWindowSize } from '../../helpers';
 import { useSanity } from '@openmined/shared/data-access-sanity';
@@ -50,8 +50,7 @@ const ProgressButton = ({ value, direction, onClick }) => (
     />
     {/* SEE TODO (#3) */}
     {direction === 'forward' && (
-      <Icon
-        as={FontAwesomeIcon}
+      <ChakraIcon
         icon={faArrowRight}
         onClick={onClick}
         style={absolute}
@@ -59,8 +58,7 @@ const ProgressButton = ({ value, direction, onClick }) => (
     )}
     {/* SEE TODO (#3) */}
     {direction === 'back' && (
-      <Icon
-        as={FontAwesomeIcon}
+      <ChakraIcon
         icon={faArrowLeft}
         onClick={onClick}
         style={absolute}

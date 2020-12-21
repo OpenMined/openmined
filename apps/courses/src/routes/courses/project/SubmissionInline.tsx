@@ -47,8 +47,7 @@ export default ({
     >
       <Flex align="center">
         {/* SEE TODO (#3) */}
-        <Icon
-          as={FontAwesomeIcon}
+        <ChakraIcon
           icon={passed ? faCheckCircle : faTimesCircle}
           color={iconColor}
           size="lg"

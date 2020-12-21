@@ -82,15 +82,14 @@ export default ({ course, page }) => {
 
   const prepareLessonContent = (description, concepts) => {
     const iconProps: any = {
-      as: FontAwesomeIcon,
       size: 'lg',
       mr: 2,
       color: 'gray.600',
     };
 
     // SEE TODO (#3)
-    const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
-    const CompleteConcept = () => <Icon {...iconProps} icon={faCheckCircle} />;
+    const IncompleteConcept = () => <ChakraIcon {...iconProps} icon={faCircle} />;
+    const CompleteConcept = () => <ChakraIcon {...iconProps} icon={faCheckCircle} />;
 
     return (
       <Box bg="gray.200" p={8}>

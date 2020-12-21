@@ -132,8 +132,7 @@ export default () => {
                 </List>
                 <Divider my={8} />
                 {/* SEE TODO (#3) */}
-                <Icon
-                  as={FontAwesomeIcon}
+                <ChakraIcon
                   icon={faCommentAlt}
                   size="2x"
                   mb={2}

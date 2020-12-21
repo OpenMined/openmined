@@ -5,7 +5,6 @@ import {
   Flex,
   Link,
   Button,
-  Icon,
   Stack,
   Divider,
   Avatar,

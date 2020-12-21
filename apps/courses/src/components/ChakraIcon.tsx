@@ -4,9 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ChakraIcon = ({icon, ...iconProps}) => {
   return (
-    <div>
-      <ChakraIcon icon={icon} {...iconProps} />
-    </div>
+    <Icon icon={icon} as={FontAwesomeIcon} {...iconProps} />
   )
 }
 

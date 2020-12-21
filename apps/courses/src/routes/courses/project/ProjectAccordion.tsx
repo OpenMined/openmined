@@ -225,9 +225,8 @@ export default ({
                 <Flex flex="1" align="center">
                   {/* SEE TODO (#3) */}
                   {typeof icon !== 'string' && (
-                    <Icon
+                    <ChakraIcon
                       size="lg"
-                      as={FontAwesomeIcon}
                       icon={icon}
                       color={text}
                     />

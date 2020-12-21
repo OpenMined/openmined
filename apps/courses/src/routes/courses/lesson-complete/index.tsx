@@ -99,8 +99,7 @@ export default ({ progress, page, user, ts, course, lesson }) => {
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
             {/* SEE TODO (#3) */}
-            <Icon
-              as={FontAwesomeIcon}
+            <ChakraIcon
               icon={faCheckCircle}
               color="teal.300"
               size="3x"
@@ -133,8 +132,7 @@ export default ({ progress, page, user, ts, course, lesson }) => {
               mb={8}
             >
               {/* SEE TODO (#3) */}
-              <Icon
-                as={FontAwesomeIcon}
+              <ChakraIcon
                 icon={typeof nextLesson === 'string' ? faShapes : faArrowRight}
                 color="orange.200"
                 size="lg"

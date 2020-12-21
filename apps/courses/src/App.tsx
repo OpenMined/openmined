@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { useAnalytics } from 'reactfire';
@@ -11,7 +11,7 @@ import Cookies from './components/Cookies';
 import Footer from './components/Footer';
 import { Box } from '@chakra-ui/react';
 
-import { usePerformance, SuspenseWithPerf } from 'reactfire';
+import { SuspenseWithPerf } from 'reactfire';
 
 const Analytics = ({ location }) => {
   const analytics = useAnalytics();
@@ -31,8 +31,6 @@ const App = () => {
   );
   const [action, setAction] = useState(history.action);
   const [location, setLocation] = useState(history.location);
-
-  const perf = usePerformance();
 
   useLayoutEffect(() => {
     history.listen(({ location, action }) => {

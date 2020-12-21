@@ -7,16 +7,13 @@ import Sidebar from './Sidebar';
 import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
 
-// TODO: Just a general todo here: the fuzzy-find search is no longer working - fix it!
-
 export default ({ page }) => {
   const FIXED_SIDEBAR_WIDTH = 250;
   const FIXED_SIDEBAR_MD_WIDTH = 200;
 
-  const [searchData, setSearchData] = useState([]);
+  const [results, setResults] = useState(page);
+  const [search, setSearch] = useState('');
   const [skillLevel, setSkillLevel] = useState('');
-  const [topics, setTopics] = useState([]);
-  const [languages, setLanguages] = useState([]);
 
   const filters = [
     {
@@ -25,72 +22,41 @@ export default ({ page }) => {
       setter: setSkillLevel,
       options: ['Beginner', 'Intermediate', 'Advanced'],
     },
-    {
-      title: 'Topic',
-      multiple: true,
-      value: topics,
-      setter: setTopics,
-      options: ['Topic One', 'Topic Two', 'Topic Three'],
-    },
-    {
-      title: 'Language',
-      multiple: true,
-      value: languages,
-      setter: setLanguages,
-      options: ['Python', 'Javascript', 'Scala', 'R', 'SQL', 'Julia'],
-    },
   ];
 
-  const courseFilter = (course) => {
-    const NO_FILTER = true;
-
-    const hasSkillLevel =
-      skillLevel && course.level ? skillLevel === course.level : NO_FILTER;
-
-    const hasTopic =
-      topics && course.topics
-        ? topics.some((topic) => course.topics.includes(topic))
-        : NO_FILTER;
-
-    const hasLanguages =
-      languages && course.languages
-        ? languages.some((language) => course.languages.includes(language))
-        : NO_FILTER;
-
-    return hasSkillLevel && hasTopic && hasLanguages;
-  };
-
-  const filterData = (data) =>
-    data ? data.filter((course) => courseFilter(course)) : [];
-
   useEffect(() => {
-    setSearchData(filterData(page));
-  }, [page, filterData]);
+    const liveSort = (a, b) => (a.live === b.live ? 0 : a.live ? -1 : 1);
 
-  const searchItem = (query) => {
-    if (!query) {
-      setSearchData(filterData(page));
-      return;
-    }
-    const fuse = new Fuse(filterData(page), {
-      keys: ['title', 'description'],
-    });
-    const result = fuse.search(query);
-    const finalResult = [];
-    if (result.length) {
-      result.forEach((item) => {
-        finalResult.push(item.item);
+    const filteredResults =
+      page
+        .filter((course) => {
+          const NO_FILTER = true;
+
+          const hasSkillLevel =
+            skillLevel && course.level
+              ? skillLevel === course.level
+              : NO_FILTER;
+
+          return hasSkillLevel;
+        })
+        .sort(liveSort) || [];
+
+    if (search === '') setResults(filteredResults);
+    else {
+      const fuse = new Fuse(filteredResults, {
+        keys: ['title', 'description'],
       });
-      setSearchData(finalResult);
-    } else {
-      setSearchData([]);
+      const searchedResults = fuse
+        .search(search)
+        .map((i) => i.item)
+        .sort(liveSort);
+
+      setResults(searchedResults);
     }
-  };
+  }, [page, search, skillLevel]);
 
   const clearFilters = () => {
     setSkillLevel('');
-    setTopics([]);
-    setLanguages([]);
   };
 
   return (
@@ -112,7 +78,7 @@ export default ({ page }) => {
           >
             <Sidebar
               filters={filters}
-              numCourses={searchData.length}
+              numCourses={results.length}
               clearFilters={clearFilters}
             />
           </Box>
@@ -121,12 +87,12 @@ export default ({ page }) => {
           <Input
             w={['100%', null, null, '70%']}
             placeholder="Start typing something..."
-            onChange={(e) => searchItem(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
+            type="search"
             size="lg"
-            py={[2, null]}
-            my={4}
+            mt={[4, null, 0]}
           />
-          {searchData.length === 0 && (
+          {results.length === 0 && (
             <Box py={4}>
               <Text fontSize="3xl" px={2} fontWeight="bold">
                 Sorry, there are no search results for that query
@@ -139,10 +105,8 @@ export default ({ page }) => {
             spacing={[4, null, 6]}
             color="white"
           >
-            {searchData &&
-              searchData.map((course, i) => (
-                <Course key={i} content={course} />
-              ))}
+            {results &&
+              results.map((course, i) => <Course key={i} content={course} />)}
           </SimpleGrid>
         </Box>
       </Flex>

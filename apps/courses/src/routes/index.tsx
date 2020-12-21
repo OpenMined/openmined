@@ -5,6 +5,7 @@ import { useUser } from 'reactfire';
 const Homepage = lazy(() => import('./homepage'));
 const Signup = lazy(() => import('./users/sign-up'));
 const Signin = lazy(() => import('./users/sign-in'));
+const Dashboard = lazy(() => import('./users/dashboard'));
 const Settings = lazy(() => import('./users/settings'));
 const Profile = lazy(() => import('./users/profile'));
 const CoursePage = lazy(() => import('./courses'));
@@ -14,13 +15,13 @@ const NoMatch = lazy(() => import('./no-match'));
 const AuthRoute = (props) => {
   const user = useUser();
 
-  return user ? <Route {...props} /> : <Navigate to="/" />;
+  return user ? <Route {...props} /> : <Navigate to="/signin" />;
 };
 
 const UnauthRoute = (props) => {
   const user = useUser();
 
-  return !user ? <Route {...props} /> : <Navigate to="/" />;
+  return !user ? <Route {...props} /> : <Navigate to="/users/dashboard" />;
 };
 
 export default () => (
@@ -30,6 +31,7 @@ export default () => (
     <UnauthRoute path="signin" element={<Signin />} />
     <Route path="users">
       <Route path="/" element={<Navigate to="/" />} />
+      <AuthRoute path="dashboard" element={<Dashboard />} />
       <AuthRoute path="settings" element={<Settings />} />
       <Route path=":uid" element={<Profile />} />
     </Route>
@@ -47,6 +49,16 @@ export default () => (
             path="complete"
             element={<CoursePage which="projectComplete" />}
           />
+          <AuthRoute path=":part">
+            <AuthRoute
+              path="/"
+              element={<CoursePage which="projectSubmission" />}
+            />
+            <AuthRoute
+              path=":attempt"
+              element={<CoursePage which="projectSubmission" />}
+            />
+          </AuthRoute>
         </AuthRoute>
         <AuthRoute path=":lesson">
           <AuthRoute path="/" element={<CoursePage which="lesson" />} />

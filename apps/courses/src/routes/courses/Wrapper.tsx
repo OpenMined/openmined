@@ -1,5 +1,5 @@
 import React from 'react';
-import { faBookOpen, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faBookOpen, faCube, faLink } from '@fortawesome/free-solid-svg-icons';
 import Page from '@openmined/shared/util-page';
 
 import CourseHeader from './Header';
@@ -21,8 +21,8 @@ const genDrawerSections = (
   const sections = [
     {
       title: type === 'lessons' ? 'Lessons' : 'Concepts',
-      icon: faBookOpen,
-      fields: data.map(({ _id, title }, index) => {
+      icon: type === 'lessons' ? faBookOpen : faCube,
+      fields: data.map(({ _id, title, ...rest }, index) => {
         let status = 'unavailable';
 
         if (type === 'lessons') {
@@ -46,7 +46,7 @@ const genDrawerSections = (
               : `/courses/${course}/${lesson}/${_id}`
             : null;
 
-        return { status, title, link };
+        return { status, title, link, number: index + 1, ...rest };
       }),
     },
   ];
@@ -62,29 +62,20 @@ const genDrawerSections = (
   return sections;
 };
 
-export default ({ page, header, footer, children }) => {
-  const leftDrawerSections =
-    header &&
-    genDrawerSections(
+export default ({ page, header, children }) => {
+  if (header && !Array.isArray(header.sections)) {
+    header.sections = genDrawerSections(
       header.sections,
       header.resources,
       header.progress,
       header.course,
       header.lesson
     );
+  }
 
   return (
     <Page title={page.title} description={page.description}>
-      {header && (
-        <CourseHeader
-          subtitle={header.subtitle}
-          title={header.title}
-          course={header.course}
-          leftDrawerSections={leftDrawerSections}
-          noShadow={header.noShadow}
-          noTitle={header.noTitle}
-        />
-      )}
+      {header && <CourseHeader {...header} />}
       {children}
     </Page>
   );

@@ -13,6 +13,9 @@ import { useFirestore, useUser } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons';
+import { handleErrors } from '../../../../helpers';
+import useToast from '../../../../components/Toast';
+import { handleQuizFinish } from '../../_firebase';
 
 const FinishedBox = ({ correct, total }) => (
   <Box bg="gray.100" borderRadius="md" p={8}>
@@ -101,6 +104,7 @@ const IncorrectAnswer = ({
     borderColor="red.300"
     onClick={() => setCurrentSelection(index)}
   >
+    {/* SEE TODO (#3) */}
     <Icon
       as={FontAwesomeIcon}
       icon={faTimes}
@@ -151,6 +155,7 @@ const UnansweredAnswer = ({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
+      {/* SEE TODO (#3) */}
       <Icon
         as={FontAwesomeIcon}
         icon={isHovering ? faDotCircle : faCircle}
@@ -258,6 +263,7 @@ const QuizCard = ({
             <Text fontWeight="bold" mr={2}>
               {currentQuestion + 1 >= total ? 'Finish' : 'Next'}
             </Text>
+            {/* SEE TODO (#3) */}
             <Icon as={FontAwesomeIcon} icon={faArrowRight} size="1x" />
           </Flex>
         </Flex>
@@ -275,50 +281,33 @@ export default ({
   numQuizzes,
   spacing,
   onComplete,
-}) => {
+}: any) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [currentSelection, setCurrentSelection] = useState(null);
   const [correctAnswers, setCorrectAnswers] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  const user = useUser();
+  const user: firebase.User = useUser();
   const db = useFirestore();
+  const toast = useToast();
 
   const arrayUnion = useFirestore.FieldValue.arrayUnion;
 
   const onFinish = () => {
     onComplete();
 
-    const numQuizzesInDb = progress.lessons[lesson].concepts[concept].quizzes
-      ? progress.lessons[lesson].concepts[concept].quizzes.length
-      : 0;
-
-    if (numQuizzesInDb < numQuizzes) {
-      const percentage = (correctAnswers / quiz.length) * 100;
-
-      db.collection('users')
-        .doc(user.uid)
-        .collection('courses')
-        .doc(course)
-        .set(
-          {
-            lessons: {
-              [lesson]: {
-                concepts: {
-                  [concept]: {
-                    quizzes: arrayUnion({
-                      correct: correctAnswers,
-                      total: quiz.length,
-                      percentage,
-                    }),
-                  },
-                },
-              },
-            },
-          },
-          { merge: true }
-        );
-    }
+    handleQuizFinish(
+      db,
+      user.uid,
+      course,
+      arrayUnion,
+      progress,
+      lesson,
+      concept,
+      numQuizzes,
+      correctAnswers,
+      quiz
+    ).catch((error) => handleErrors(toast, error));
   };
 
   return (

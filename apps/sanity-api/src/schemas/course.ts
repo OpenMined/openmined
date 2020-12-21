@@ -11,6 +11,18 @@ export default {
   },
   fields: [
     {
+      title: 'Is visible?',
+      description: 'Should the course show up on the website?',
+      name: 'visible',
+      type: 'boolean',
+    },
+    {
+      title: 'Is live?',
+      description: 'Should the course be allowed to be taken by students?',
+      name: 'live',
+      type: 'boolean',
+    },
+    {
       title: 'Title',
       name: 'title',
       type: 'string',

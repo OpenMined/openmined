@@ -1,10 +1,15 @@
-// TODO: Find some sort of way of getting cloud functions working locally and deployable without main field in package.json
-// TODO: Find some sort of way to serve Firebase functions and run them in the shell locally: https://medium.com/mean-fire/nx-nrwl-firebase-functions-98f96f514055
+// SEE TODO #14
+// SEE TODO #15
 
 import * as functions from 'firebase-functions';
 
 // import ssr from './app/ssr';
+import sanity from './app/sanity';
 
+// Set up Sanity API requests
+exports.sanity = functions.region('europe-west1').https.onCall(sanity);
+
+// SEE TODO #16
 exports.createUser = functions
   .region('europe-west1')
   .firestore.document('users/{userId}')
@@ -19,4 +24,5 @@ exports.createUser = functions
     // perform desired operations ...
   });
 
+// SEE TODO #13
 // exports.ssr = functions.region('europe-west1').https.onRequest(ssr);

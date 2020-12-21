@@ -31,11 +31,9 @@ const Map = () => {
             })
             .filter((d) => d);
 
-          // TODO: Remove this if possible and remove the @typescript-eslint/ban-ts-comment rule in the root .eslintrc.json
-          // @ts-ignore
           const uniqueMembers = Array.from(
             new Set(finalMembers.map(JSON.stringify)),
-            JSON.parse
+            (member: string) => JSON.parse(member),
           );
 
           setMembers(uniqueMembers);
@@ -165,7 +163,7 @@ export default ({ title, description, buttons, links }) => (
                 mr={i === 0 ? 4 : 0}
                 colorScheme="gray"
               >
-                {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+                {/* SEE TODO (#3) */}
                 {title}{' '}
                 <Icon
                   as={FontAwesomeIcon}

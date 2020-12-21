@@ -10,16 +10,17 @@ import * as configs from './_configs';
 import CourseWrap from './Wrapper';
 
 import Loading from '../../components/Loading';
+import { getCourseRef } from './_firebase';
 
-// TODO: We absolutely should be using the useFirestoreDocData function instead, make sure to check if the DB has been updated for concepts though so that we don't write to the DB 2,000 times a minute!
-// After we do this, we can switch all instances of "window.location.href = " and "window.location.reload()" to use the "useNavigate()" hook in react-router... this would look way better, but I've had problems with the permissions working when using this
-// Therefore, to avoid permissions issues, it might just be better to force the page to change, rather than do a client-side navigation change
-// Either way, this is a fairly tough problem... please make sure to do this (if we do it at all) in ALL instnaces around the codebase
+// SEE TODO (#11)
+
+// SEE TODO (#20)
 
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
 const CourseComplete = lazy(() => import('./course-complete'));
 const CourseProject = lazy(() => import('./project'));
+const CourseProjectSubmission = lazy(() => import('./project-submission'));
 const CourseProjectComplete = lazy(() => import('./project-complete'));
 const CourseLesson = lazy(() => import('./lesson'));
 const CourseLessonComplete = lazy(() => import('./lesson-complete'));
@@ -31,6 +32,7 @@ const pages = {
   overview: CourseOverview,
   courseComplete: CourseComplete,
   project: CourseProject,
+  projectSubmission: CourseProjectSubmission,
   projectComplete: CourseProjectComplete,
   lesson: CourseLesson,
   lessonComplete: CourseLessonComplete,
@@ -59,16 +61,10 @@ export default ({ which }) => {
   const params = useParams();
 
   // Get the user's current progress on their courses
-  const user = useUser();
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const dbCourseRef = params.course
-    ? user
-      ? db
-          .collection('users')
-          .doc(user.uid)
-          .collection('courses')
-          .doc(params.course)
-      : null
+    ? getCourseRef(db, user.uid, params.course)
     : null;
   const dbCourse = dbCourseRef ? useFirestoreDocDataOnce(dbCourseRef) : [];
 

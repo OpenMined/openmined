@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import {
@@ -15,6 +15,8 @@ import Loading from './components/Loading';
 import Cookies from './components/Cookies';
 import Footer from './components/Footer';
 import { Box } from '@chakra-ui/react';
+
+import { SuspenseWithPerf } from 'reactfire';
 
 const Analytics = ({ location }) => {
   const analytics = useAnalytics();
@@ -74,9 +76,7 @@ const App = () => {
     setCookiePrefs(preference);
   };
 
-  // TODO: We need to write a test for the below logic, or refactor this to be tied to our routes somehow
-  // Basically, some pages will use the header and footer that are "sitewide", but many pages will not
-  // I think we should maybe consider putting this in some sort of configuration file and writing a test for it
+  // SEE TODO (#1)
 
   // If we're inside the course, don't show the <Header /> at all
   // Instead, we'll show the <CourseHeader />
@@ -91,11 +91,12 @@ const App = () => {
     location.pathname.split('/').length > 3 &&
     location.pathname.includes('/complete');
 
-  // More specifically, if we're inside the concept, we don't render the default <Footer />
+  // If we're inside the concept, we don't render the default <Footer />
   // Instead, we'll show the <CourseFooter />
   const isInsideConcept =
     location.pathname.includes('/courses') &&
-    location.pathname.split('/').length > 4;
+    location.pathname.split('/').length > 4 &&
+    !location.pathname.includes('/project');
 
   const firebaseApp = useFirebaseApp();
 
@@ -105,7 +106,7 @@ const App = () => {
 
   return (
     <Router action={action} location={location} navigator={history}>
-      <Suspense fallback={<Loading />}>
+      <SuspenseWithPerf fallback={<Loading />} traceId={location.pathname}>
         {cookiePrefs === 'all' && <Analytics location={location} />}
         {!isInsideCourse && <Header noScrolling={isOnCourseComplete} />}
         <Box
@@ -117,7 +118,7 @@ const App = () => {
           {!isInsideConcept && <Footer />}
         </Box>
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
-      </Suspense>
+      </SuspenseWithPerf>
     </Router>
   );
 };

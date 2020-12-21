@@ -1,13 +1,46 @@
 import { useEffect, useState } from 'react';
 
-// TODO: Make all of these tests written in the order in which they're supposed to appear
-// TODO: And likewise, ensure that they must build on each other (i.e. to test the completion of a lesson, you must test the completion of all previous concepts and lessons)
+// SEE TODO (#8)
 
 // Course permissions
 export const hasStartedCourse = (u) =>
   Object.keys(u).length !== 0 && !!u.started_at;
 export const hasCompletedCourse = (u) =>
   hasStartedCourse(u) && !!u.completed_at;
+// TODO: Need to test this
+export const getCourseProgress = (u, ls, ps) => {
+  let numLessons = 0;
+  let numCompletedLessons = 0;
+  let numConcepts = 0;
+  let numCompletedConcepts = 0;
+  const numProjectParts = ps.length;
+  let numCompletedProjectParts = 0;
+
+  ls.forEach((l) => {
+    numLessons++;
+
+    if (hasCompletedLesson(u, l._id)) numCompletedLessons++;
+
+    l.concepts.forEach((c) => {
+      numConcepts++;
+
+      if (hasCompletedConcept(u, l._id, c._id)) numCompletedConcepts++;
+    });
+  });
+
+  ps.forEach((p) => {
+    if (hasCompletedProjectPart(u, p._key)) numCompletedProjectParts++;
+  });
+
+  return {
+    lessons: numLessons,
+    completedLessons: numCompletedLessons,
+    concepts: numConcepts,
+    completedConcepts: numCompletedConcepts,
+    projectParts: numProjectParts,
+    completedProjectParts: numCompletedProjectParts,
+  };
+};
 
 // Lesson permissions
 export const getLessonIndex = (ls, l) => ls.findIndex(({ _id }) => _id === l);
@@ -215,8 +248,8 @@ const checkForPrevious = (user, ls, l, c) => {
 
   // Or, we're not on a project page
   else if (l !== 'project') {
-    // Are we on a lesson page, and has the current lesson been completed?
-    if (c === null && hasCompletedLesson(user, l)) {
+    // Are we on a lesson page, and has the current lesson been started?
+    if (c === null && hasStartedLesson(user, l)) {
       return true;
     }
 
@@ -232,8 +265,8 @@ const checkForPrevious = (user, ls, l, c) => {
       return true;
     }
 
-    // Are we on a concept page, and has the concept been completed?
-    if (c !== null && c !== 'complete' && hasCompletedConcept(user, l, c)) {
+    // Are we on a concept page, and has the concept been started?
+    if (c !== null && c !== 'complete' && hasStartedConcept(user, l, c)) {
       return true;
     }
   }

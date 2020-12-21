@@ -27,6 +27,8 @@ import {
 } from '../_helpers';
 import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
+import { handleErrors } from '../../../helpers';
+import { handleProjectComplete, handleProvideFeedback } from '../_firebase';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -35,6 +37,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={icon} size="lg" mb={4} />
     <Text>{children}</Text>
   </Box>
@@ -67,41 +70,25 @@ export default ({ progress, page, user, ts, course }) => {
 
   // Create a function that is triggered when the project is completed
   const onCompleteProject = () =>
-    new Promise((resolve, reject) => {
-      // If we haven't already completed this project and course...
-      if (!hasCompletedProject(progress) && !hasCompletedCourse(progress)) {
-        // Tell the DB we've done so
-        db.collection('users')
-          .doc(user.uid)
-          .collection('courses')
-          .doc(course)
-          .set(
-            {
-              completed_at: ts(),
-              project: {
-                status,
-                completed_at: ts(),
-              },
-            },
-            { merge: true }
-          )
-          .then(resolve)
-          .catch(reject);
-      } else {
-        resolve(true);
-      }
-    });
-
+    handleProjectComplete(
+      db,
+      user.uid,
+      course,
+      ts,
+      progress,
+      status
+    ).catch((error) => handleErrors(toast, error));
   // We need a function to be able to provide feedback for this project
   const onProvideFeedback = (value, feedback = null) =>
-    db.collection('users').doc(user.uid).collection('feedback').doc(course).set(
-      {
-        value,
-        feedback,
-        type: 'project',
-      },
-      { merge: true }
-    );
+    handleProvideFeedback(
+      db,
+      user.uid,
+      course,
+      course,
+      value,
+      feedback,
+      'project'
+    ).catch((error) => handleErrors(toast, error));
 
   const votes = [
     { text: '👎', val: -1 },
@@ -133,6 +120,7 @@ export default ({ progress, page, user, ts, course }) => {
               p={6}
               mb={8}
             >
+              {/* SEE TODO (#3) */}
               <Icon
                 as={FontAwesomeIcon}
                 icon={status === 'passed' ? faCheckCircle : faTimesCircle}

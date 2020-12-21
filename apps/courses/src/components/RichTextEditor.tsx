@@ -53,7 +53,12 @@ const initialValue = [
   },
 ];
 
-export default ({ readOnly = false, content = null, ...props }) => {
+export default ({
+  readOnly = false,
+  content = null,
+  onChange = null,
+  ...props
+}) => {
   const [value, setValue] = useState<Node[]>(
     content ||
       JSON.parse(localStorage.getItem(EDITOR_STORAGE_STRING)) ||
@@ -72,6 +77,10 @@ export default ({ readOnly = false, content = null, ...props }) => {
           setValue(v);
 
           localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(v));
+
+          if (onChange && JSON.stringify(v) !== JSON.stringify(initialValue)) {
+            onChange(v);
+          }
         }}
       >
         {!readOnly && (
@@ -81,7 +90,7 @@ export default ({ readOnly = false, content = null, ...props }) => {
             justify="space-between"
             align="center"
           >
-            <Flex align="center">
+            <Flex align="center" wrap="wrap">
               <MarkButton format="bold" icon={faBold} />
               <MarkButton format="italic" icon={faItalic} />
               <MarkButton format="underline" icon={faUnderline} />
@@ -94,7 +103,7 @@ export default ({ readOnly = false, content = null, ...props }) => {
               <BlockButton format="heading-five" text="H5" />
               <BlockButton format="heading-six" text="H6" />
               <Divider orientation="vertical" height={8} mx={2} />
-              {/* TODO: Patrick add the link functionality */}
+              {/* SEE TODO (#2) */}
               <MarkButton format="link" icon={faLink} />
               <MarkButton format="code" icon={faCode} />
               <BlockButton format="block-quote" icon={faQuoteLeft} />
@@ -102,12 +111,18 @@ export default ({ readOnly = false, content = null, ...props }) => {
               <BlockButton format="numbered-list" icon={faListOl} />
               <BlockButton format="bulleted-list" icon={faListUl} />
             </Flex>
-            <Text color="gray.400" mr={3} fontStyle="italic">
+            <Text
+              ml={6}
+              mr={3}
+              fontStyle="italic"
+              color="gray.400"
+              whiteSpace="nowrap"
+            >
               Autosave on
             </Text>
           </Flex>
         )}
-        <Box px={readOnly ? 0 : 12} py={readOnly ? 0 : 8}>
+        <Box px={readOnly ? 0 : [8, null, 12]} py={readOnly ? 0 : 8}>
           <Editable
             renderElement={renderElement}
             renderLeaf={renderLeaf}
@@ -138,7 +153,7 @@ const toggleBlock = (editor, format) => {
   Transforms.unwrapNodes(editor, {
     match: (n) =>
       LIST_TYPES.includes(
-        !Editor.isEditor(n) && SlateElement.isElement(n) && n.type
+        !Editor.isEditor(n) && SlateElement.isElement(n) && (n.type as string)
       ),
     split: true,
   });
@@ -303,7 +318,7 @@ export const Leaf = ({ attributes, children, leaf }) => {
   );
 };
 
-const BlockButton = ({ format, icon, text }) => {
+const BlockButton = ({ format, icon, text }: any) => {
   const editor = useSlate();
 
   return (
@@ -319,6 +334,7 @@ const BlockButton = ({ format, icon, text }) => {
         toggleBlock(editor, format);
       }}
     >
+      {/* SEE TODO (#3) */}
       {icon && <Icon as={FontAwesomeIcon} icon={icon} />}
       {text && <Text fontWeight="bold">{text}</Text>}
     </Flex>
@@ -341,6 +357,7 @@ const MarkButton = ({ format, icon }) => {
         toggleMark(editor, format);
       }}
     >
+      {/* SEE TODO (#3) */}
       <Icon as={FontAwesomeIcon} icon={icon} />
     </Flex>
   );

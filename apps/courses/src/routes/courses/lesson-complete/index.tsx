@@ -24,6 +24,8 @@ import {
 import { getLessonIndex, hasCompletedLesson } from '../_helpers';
 import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
+import { handleErrors } from '../../../helpers';
+import { handleLessonComplete, handleProvideFeedback } from '../_firebase';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -32,6 +34,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={icon} size="lg" mb={4} />
     <Text>{children}</Text>
   </Box>
@@ -62,41 +65,26 @@ export default ({ progress, page, user, ts, course, lesson }) => {
   // Create a function that is triggered when the lesson is completed
   // This is triggered by clicking the "Next" button in the <ConceptFooter />
   const onCompleteLesson = () =>
-    new Promise((resolve, reject) => {
-      // If we haven't already completed this lesson...
-      if (!hasCompletedLesson(progress, lesson)) {
-        // Tell the DB we've done so
-        db.collection('users')
-          .doc(user.uid)
-          .collection('courses')
-          .doc(course)
-          .set(
-            {
-              lessons: {
-                [lesson]: {
-                  completed_at: ts(),
-                },
-              },
-            },
-            { merge: true }
-          )
-          .then(resolve)
-          .catch(reject);
-      } else {
-        resolve(true);
-      }
-    });
+    handleLessonComplete(
+      db,
+      user.uid,
+      course,
+      ts,
+      progress,
+      lesson
+    ).catch((error) => handleErrors(toast, error));
 
   // We need a function to be able to provide feedback for this lesson
   const onProvideFeedback = (value, feedback = null) =>
-    db.collection('users').doc(user.uid).collection('feedback').doc(lesson).set(
-      {
-        value,
-        feedback,
-        type: 'lesson',
-      },
-      { merge: true }
-    );
+    handleProvideFeedback(
+      db,
+      user.uid,
+      course,
+      lesson,
+      value,
+      feedback,
+      'lesson'
+    ).catch((error) => handleErrors(toast, error));
 
   const votes = [
     { text: '👎', val: -1 },
@@ -109,6 +97,7 @@ export default ({ progress, page, user, ts, course, lesson }) => {
       <GridContainer isInitial py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
+            {/* SEE TODO (#3) */}
             <Icon
               as={FontAwesomeIcon}
               icon={faCheckCircle}
@@ -142,6 +131,7 @@ export default ({ progress, page, user, ts, course, lesson }) => {
               p={6}
               mb={8}
             >
+              {/* SEE TODO (#3) */}
               <Icon
                 as={FontAwesomeIcon}
                 icon={typeof nextLesson === 'string' ? faShapes : faArrowRight}

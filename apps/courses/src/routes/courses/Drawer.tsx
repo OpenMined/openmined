@@ -6,6 +6,7 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
+  Box,
   Divider,
   Drawer,
   DrawerBody,
@@ -23,8 +24,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
   faExternalLinkAlt,
+  faFile,
+  faPlayCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
+import { getLinkPropsFromLink } from '../../helpers';
 
 const DrawerItem = ({
   index,
@@ -43,6 +47,7 @@ const DrawerItem = ({
       onClick={() => toggleAccordionItem(index)}
     >
       <Flex flex="1" textAlign="left" align="center">
+        {/* SEE TODO (#3) */}
         <Icon as={FontAwesomeIcon} icon={icon} mr={6} size="lg" />
         <Text fontWeight="bold">{title}</Text>
       </Flex>
@@ -51,24 +56,15 @@ const DrawerItem = ({
     <AccordionPanel pb={4}>
       <Stack spacing={6} px={4} my={4}>
         {fields.map(
-          ({ status, title, link = '', icon, type, onClick }, index) => {
+          (
+            { status, title, link = '', icon, number, type, onClick },
+            index
+          ) => {
             if (!status) {
               if (type === 'divider') return <Divider key={index} />;
 
               const isExternal =
                 link.includes('http://') || link.includes('https://');
-
-              const linkProps = isExternal
-                ? {
-                    as: 'a',
-                    href: link,
-                    target: '_blank',
-                    rel: 'noopener noreferrer',
-                  }
-                : {
-                    as: RRDLink,
-                    to: link,
-                  };
 
               return (
                 <Link
@@ -79,10 +75,11 @@ const DrawerItem = ({
                     if (onClick) onClick();
                     onClose();
                   }}
-                  {...linkProps}
+                  {...getLinkPropsFromLink(link)}
                 >
                   <Flex justify="space-between" align="center">
                     <Flex align="center">
+                      {/* SEE TODO (#3) */}
                       {icon && (
                         <Icon
                           as={FontAwesomeIcon}
@@ -93,6 +90,7 @@ const DrawerItem = ({
                       )}
                       <Text>{title}</Text>
                     </Flex>
+                    {/* SEE TODO (#3) */}
                     {isExternal && (
                       <Icon as={FontAwesomeIcon} icon={faExternalLinkAlt} />
                     )}
@@ -100,7 +98,7 @@ const DrawerItem = ({
                 </Link>
               );
             } else {
-              const linkProps = link
+              const linkProps: any = link
                 ? {
                     as: RRDLink,
                     to: link,
@@ -117,21 +115,47 @@ const DrawerItem = ({
                 icon = faCheckCircle;
               } else if (status === 'available') {
                 linkProps.color = 'gray.400';
-                icon = faCircle;
+                icon = type ? (type === 'video' ? faPlayCircle : faFile) : null;
               } else if (status === 'unavailable') {
                 linkProps.color = 'gray.700';
-                icon = faCircle;
+                icon = type ? (type === 'video' ? faPlayCircle : faFile) : null;
+              }
+
+              // SEE TODO (#11)
+              // The following lines are unnecessary if TODO #11 is fixed, remove them
+              if (linkProps.to) {
+                linkProps.as = 'a';
+                linkProps.to = null;
+                linkProps.cursor = 'pointer';
+                linkProps.onClick = () => {
+                  window.location.href = link;
+                };
               }
 
               return (
                 <Flex key={index} align="center" {...linkProps}>
-                  <Icon
-                    as={FontAwesomeIcon}
-                    icon={icon}
-                    color={status === 'completed' ? 'orange.200' : 'inherit'}
-                    size="lg"
+                  <Flex
+                    justify="center"
+                    align="center"
+                    textAlign="center"
+                    width={5}
                     mr={6}
-                  />
+                  >
+                    {/* SEE TODO (#3) */}
+                    {icon && (
+                      <Icon
+                        as={FontAwesomeIcon}
+                        icon={icon}
+                        color={status === 'completed' ? 'teal.300' : 'inherit'}
+                        size="lg"
+                      />
+                    )}
+                    {!icon && (
+                      <Text fontWeight="bold" fontSize="xl">
+                        {number}
+                      </Text>
+                    )}
+                  </Flex>
                   <Text>{title}</Text>
                 </Flex>
               );

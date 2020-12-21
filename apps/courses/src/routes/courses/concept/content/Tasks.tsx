@@ -1,10 +1,11 @@
 import React from 'react';
 import { Flex, Stack, Checkbox, Text } from '@chakra-ui/react';
 
-export default ({ tasks, spacing }) => (
+export default ({ tasks, spacing }: any) => (
   <Flex justify="center" my={spacing}>
     <Stack spacing={4}>
       {tasks.map((t, i) => (
+        // SEE TODO (#4)
         <Checkbox
           key={i}
           spacing={4}

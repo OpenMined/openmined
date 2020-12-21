@@ -119,7 +119,7 @@ export default ({ page }) => {
                 description,
                 link: { title: linkTitle, link, ...linkProps },
                 ...props
-              }) => (
+              }: any) => (
                 <Flex
                   direction="column"
                   justify="space-between"
@@ -136,6 +136,7 @@ export default ({ page }) => {
                     align="center"
                   >
                     <Circle p={1} mb={2} bg={iconBg} boxSize={12}>
+                      {/* SEE TODO (#3) */}
                       <Icon
                         as={FontAwesomeIcon}
                         icon={icon}
@@ -166,7 +167,7 @@ export default ({ page }) => {
               )
             )}
           </SimpleGrid>
-          <Button as={RRDLink} to="/my-courses" colorScheme="white">
+          <Button as={RRDLink} to="/users/dashboard" colorScheme="white">
             Go to Dashboard
           </Button>
         </Flex>

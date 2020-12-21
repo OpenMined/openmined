@@ -39,25 +39,26 @@ import { User } from '@openmined/shared/types';
 import CourseDrawer from './Drawer';
 
 import useToast, { toastConfig } from '../../components/Toast';
-import { handleErrors } from '../../helpers';
+import { getLinkPropsFromLink, handleErrors } from '../../helpers';
 import logo from '../../assets/logo.svg';
+import { getUserRef } from './_firebase';
 
-interface LinkProps {
+type LinkProps = {
   title: string;
   type: string;
-  element?: React.ReactNode;
+  element?: React.ReactElement;
   auth?: boolean;
   unauth?: boolean;
   to?: string;
   onClick?: () => void;
-}
+};
 
 const createLinks = (links: LinkProps[], onClick: () => void) =>
   links.map(({ type, title, auth, unauth, ...link }: LinkProps) => {
     if (type === 'element')
       return React.cloneElement(link.element, { key: title });
 
-    const as = link.to ? { as: RRDLink } : {};
+    const as: any = link.to ? { as: RRDLink } : {};
 
     if (!link.onClick) link.onClick = onClick;
     else {
@@ -82,10 +83,11 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
     );
   });
 
-const userAvatar = forwardRef((props, ref) => {
-  const user = useUser();
+// SEE TODO (#18)
+const UserAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
+  const user: firebase.User = useUser();
   const db = useFirestore();
-  const dbUserRef = db.collection('users').doc(user.uid);
+  const dbUserRef = getUserRef(db, user.uid);
   const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
 
   return (
@@ -93,17 +95,18 @@ const userAvatar = forwardRef((props, ref) => {
   );
 });
 
-// TODO: Patrick, how much of this logic CAN and SHOULD we share with the original header?
+// SEE TODO (#10)
 
 export default ({
-  subtitle,
+  icon,
   title,
+  subtitle,
   course,
-  leftDrawerSections,
+  sections,
   noShadow = false,
   noTitle = false,
 }) => {
-  const user = useUser();
+  const user: firebase.User = useUser();
   const auth = useAuth();
   const toast = useToast();
 
@@ -158,44 +161,30 @@ export default ({
 
   const RIGHT_LINKS: LinkProps[] = [
     {
-      title: 'My Courses',
+      title: 'Dashboard',
       type: 'text',
-      to: '/my-courses',
+      to: '/users/dashboard',
     },
     {
       title: 'User',
       type: 'element',
       element: (
         <Menu placement="bottom-end">
-          <MenuButton as={userAvatar} />
+          <MenuButton as={UserAvatar} />
           <MenuList>
             {menuLinks.map(
               ({ type, link = '', onClick, title, icon }, index) => {
                 if (type === 'divider') return <MenuDivider key={index} />;
 
-                const isExternal =
-                  link.includes('http://') || link.includes('https://');
-
-                const linkProps = isExternal
-                  ? {
-                      as: 'a',
-                      href: link,
-                      target: '_blank',
-                      rel: 'noopener noreferrer',
-                    }
-                  : {
-                      as: RRDLink,
-                      to: link,
-                    };
-
                 return (
                   <MenuItem
                     key={index}
-                    {...linkProps}
+                    {...getLinkPropsFromLink(link)}
                     onClick={() => {
                       if (onClick) onClick();
                     }}
                   >
+                    {/* SEE TODO (#3) */}
                     {icon && (
                       <Icon
                         as={FontAwesomeIcon}
@@ -222,8 +211,8 @@ export default ({
       icon: faLink,
       fields: [
         {
-          title: 'My Courses',
-          link: '/my-courses',
+          title: 'Dashboard',
+          link: '/users/dashboard',
           icon: faUserGraduate,
         },
         ...menuLinks,
@@ -247,7 +236,7 @@ export default ({
     >
       <Flex as="nav" align="center" justify="space-between">
         <Box width={{ base: 6, [BREAK]: 1 / 4 }}>
-          {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+          {/* SEE TODO (#3) */}
           <Icon
             as={FontAwesomeIcon}
             icon={faBars}
@@ -256,20 +245,25 @@ export default ({
             onClick={isLeftDrawerOpen ? onLeftDrawerClose : onLeftDrawerOpen}
           />
         </Box>
-        <Heading
-          width={{ base: 'full', [BREAK]: 1 / 2 }}
-          mx={4}
-          textAlign="center"
-          as="span"
-          size="md"
-          color="white"
-        >
+        <Box width={{ base: 'full', [BREAK]: 1 / 2 }} mx={4}>
           {!noTitle && (
-            <>
-              {subtitle}: {title}
-            </>
+            <Flex justify="center" align="center">
+              {/* SEE TODO (#3) */}
+              {icon && (
+                <Icon
+                  as={FontAwesomeIcon}
+                  icon={icon}
+                  color="gray.700"
+                  size="lg"
+                  mr={4}
+                />
+              )}
+              <Heading as="span" size="md" color="white">
+                {subtitle}: {title}
+              </Heading>
+            </Flex>
           )}
-        </Heading>
+        </Box>
         <Stack
           width={1 / 4}
           justify="flex-end"
@@ -285,6 +279,7 @@ export default ({
           justify="flex-end"
           display={{ base: 'flex', [BREAK]: 'none' }}
         >
+          {/* SEE TODO (#3) */}
           <Icon
             as={FontAwesomeIcon}
             icon={faHome}
@@ -317,7 +312,7 @@ export default ({
             </Link>
           </>
         }
-        content={leftDrawerSections}
+        content={sections}
       />
       <CourseDrawer
         isOpen={isRightDrawerOpen}

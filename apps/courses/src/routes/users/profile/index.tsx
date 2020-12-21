@@ -27,9 +27,11 @@ import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 import GridContainer from '../../../components/GridContainer';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
+import { getLinkPropsFromLink } from '../../../helpers';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
   <Flex align="center" {...props}>
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={icon} mr={2} />
     <Link
       as="a"
@@ -44,24 +46,10 @@ const SocialItem = ({ title, href, icon, ...props }) => (
 );
 
 const LinkItem = ({ title, icon, link, ...props }) => {
-  const isExternal = link.includes('http://') || link.includes('https://');
-
-  const linkProps = isExternal
-    ? {
-        as: 'a',
-        target: '_blank',
-        rel: 'noopener noreferrer',
-        href: link,
-      }
-    : {
-        as: RRDLink,
-        to: link,
-      };
-
   return (
     <Flex
       {...props}
-      {...linkProps}
+      {...getLinkPropsFromLink(link)}
       align="center"
       p={3}
       width="full"
@@ -73,6 +61,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
       transitionDuration="normal"
       transitionTimingFunction="ease-in-out"
     >
+      {/* SEE TODO (#3) */}
       <Icon as={FontAwesomeIcon} icon={icon} size="lg" color="inherit" mr={3} />
       <Text color="inherit">{title}</Text>
     </Flex>
@@ -81,7 +70,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
 
 export default () => {
   const gray50 = useToken('colors', 'gray.50');
-  const user = useUser();
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const { uid } = useParams();
 
@@ -133,6 +122,7 @@ export default () => {
                       right={2}
                       bottom={2}
                     >
+                      {/* SEE TODO (#3) */}
                       <Icon
                         as={FontAwesomeIcon}
                         icon={faPencilAlt}
@@ -195,7 +185,6 @@ export default () => {
             </Flex>
             <Box mt={{ base: 8, lg: 0 }} ml={{ lg: 12 }}>
               Finished courses and certificates go here!
-              {/* TODO: Patrick, we need to put the finished courses here with a link to the certificate ON the card, not as a separate tab like in the designs */}
             </Box>
           </Flex>
         </GridContainer>

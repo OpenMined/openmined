@@ -22,8 +22,6 @@ import ChangePassword from '../../../components/forms/users/ChangePassword';
 import AddPassword from '../../../components/forms/users/AddPassword';
 import ManageAccount from '../../../components/forms/users/ManageAccount';
 
-// TODO: Patrick, add the ability to add, remove, and replace an avatar to BasicInformation (once the profile page is done)
-
 const StickyTabPanel = ({ title, children }) => (
   <Box bg="white" borderRadius="md" border="1px" borderColor="gray.400">
     <Box
@@ -53,13 +51,10 @@ export default () => {
   return (
     <Page title="Account Settings" body={{ style: `background: ${indigo50};` }}>
       <GridContainer isInitial py={{ base: 8, lg: 16 }}>
-        {/* TODO: I'd love to not have to do this, waiting on this issue to be merged: https://github.com/chakra-ui/chakra-ui/issues/2548 */}
         <Tabs
           index={tabIndex}
           onChange={(index) => setTabIndex(index)}
           variant="sticky"
-          display="flex"
-          flexDirection={{ base: 'column', lg: 'row' }}
         >
           <TabList>
             <Text fontWeight="bold" color="gray.700">
@@ -71,8 +66,7 @@ export default () => {
             {!hasPasswordAccount && <Tab>Add Password</Tab>}
             <Tab>Manage Account</Tab>
           </TabList>
-          {/* TODO: I'd love to not have to do this, waiting on this issue to be merged: https://github.com/chakra-ui/chakra-ui/issues/2548 */}
-          <TabPanels width="full">
+          <TabPanels>
             <TabPanel>
               <StickyTabPanel title="Basic Information">
                 <BasicInformation

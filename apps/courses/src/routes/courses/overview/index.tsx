@@ -30,6 +30,7 @@ import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
@@ -41,6 +42,7 @@ const Detail = ({ title, value }) => (
 const LearnHow = ({ value }) => (
   <Box>
     <Circle bg="white" size={8} display={{ base: 'none', md: 'block' }}>
+      {/* SEE TODO (#3) */}
       <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
     </Circle>
     <Heading
@@ -78,16 +80,15 @@ export default ({ course, page }) => {
   };
 
   const prepareLessonContent = (description, concepts) => {
-    const iconProps = {
+    const iconProps: any = {
       as: FontAwesomeIcon,
       size: 'lg',
       mr: 2,
       color: 'gray.600',
     };
 
-    // @ts-ignore
+    // SEE TODO (#3)
     const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
-    // @ts-ignore
     const CompleteConcept = () => <Icon {...iconProps} icon={faCheckCircle} />;
 
     return (
@@ -118,6 +119,7 @@ export default ({ course, page }) => {
     length,
     certification,
     learnFrom,
+    live,
   } = page;
 
   const lessons = page.lessons
@@ -127,7 +129,9 @@ export default ({ course, page }) => {
       }))
     : [];
 
-  const courseStartLink = `/courses/${course}/${page.lessons[0]._id}`;
+  const courseStartLink = live
+    ? `/courses/${course}/${page.lessons[0]._id}`
+    : null;
 
   // TODO: Patrick, fill this variable in with the appropriate value
   const isTakingCourse = false;
@@ -169,7 +173,11 @@ export default ({ course, page }) => {
                 {description}
               </Text>
             </Box>
-            <Box flex={{ lg: '0 0 280px' }} mt={[8, null, null, 0]}>
+            <Box
+              flex={{ lg: '0 0 280px' }}
+              mt={[8, null, null, 0]}
+              ml={[0, null, null, 8]}
+            >
               {cost && <Detail title="Cost" value={cost} />}
               {level && <Detail title="Level" value={level} />}
               {length && <Detail title="Length" value={length} />}
@@ -177,8 +185,10 @@ export default ({ course, page }) => {
                 <Detail title="Certification" value={certification.title} />
               )}
               <Divider mb={4} />
-              <Text fontWeight="bold">Prerequisites</Text>
-              <UnorderedList mb={6}>
+              <Text fontWeight="bold" mb={2}>
+                Prerequisites
+              </Text>
+              <UnorderedList spacing={2} mb={6}>
                 {prerequisites.map((p) => (
                   <ListItem key={p}>{p}</ListItem>
                 ))}
@@ -187,10 +197,11 @@ export default ({ course, page }) => {
                 <Button
                   colorScheme="blue"
                   size="lg"
-                  as={Link}
+                  as={courseStartLink ? Link : null}
                   to={courseStartLink}
+                  disabled={!courseStartLink}
                 >
-                  Start Course
+                  {courseStartLink ? 'Start Course' : 'Coming Soon'}
                 </Button>
               )}
             </Box>
@@ -254,10 +265,11 @@ export default ({ course, page }) => {
             <Button
               colorScheme="black"
               size="lg"
-              as={Link}
+              as={courseStartLink ? Link : null}
               to={courseStartLink}
+              disabled={!courseStartLink}
             >
-              Start Course
+              {courseStartLink ? 'Start Course' : 'Coming Soon'}
             </Button>
           </Flex>
         )}

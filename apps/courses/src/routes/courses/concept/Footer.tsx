@@ -29,9 +29,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import useToast, { toastConfig } from '../../../components/Toast';
+import { getLinkPropsFromLink } from '../../../helpers';
 
 const BREAK = 'md';
 
+// SEE TODO (#18)
 const Feedback = ({
   feedbackOpen,
   setFeedbackOpen,
@@ -59,6 +61,7 @@ const Feedback = ({
           _hover={{ color: 'gray.200' }}
         >
           <Flex align="center">
+            {/* SEE TODO (#3) */}
             <Icon as={FontAwesomeIcon} icon={faBullhorn} />
             <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
               Give Feedback
@@ -132,6 +135,7 @@ const Feedback = ({
   );
 };
 
+// SEE TODO (#18)
 const Help = ({ helpOpen, setHelpOpen }) => {
   const helpLinks = [
     {
@@ -158,6 +162,7 @@ const Help = ({ helpOpen, setHelpOpen }) => {
         _hover={{ color: 'gray.200' }}
       >
         <Flex align="center">
+          {/* SEE TODO (#3) */}
           <Icon as={FontAwesomeIcon} icon={faCommentAlt} />
           <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
             Get Help
@@ -166,23 +171,9 @@ const Help = ({ helpOpen, setHelpOpen }) => {
       </MenuButton>
       <MenuList>
         {helpLinks.map(({ title, link, icon }, index) => {
-          const isExternal =
-            link.includes('http://') || link.includes('https://');
-
-          const linkProps = isExternal
-            ? {
-                as: 'a',
-                href: link,
-                target: '_blank',
-                rel: 'noopener noreferrer',
-              }
-            : {
-                as: RRDLink,
-                to: link,
-              };
-
           return (
-            <MenuItem key={index} {...linkProps}>
+            <MenuItem key={index} {...getLinkPropsFromLink(link)}>
+              {/* SEE TODO (#3) */}
               {icon && (
                 <Icon
                   as={FontAwesomeIcon}

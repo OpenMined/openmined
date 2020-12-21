@@ -42,12 +42,11 @@ export default ({
   onAddPassword,
   ...props
 }: BasicInformationFormProps) => {
-  const user = useUser();
+  const user: firebase.User = useUser();
   const auth = useAuth();
   const db = useFirestore();
   const toast = useToast();
 
-  // @ts-ignore
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: User = useFirestoreDocData(dbUserRef);
 
@@ -74,7 +73,6 @@ export default ({
   const onSubmit = (data: User) =>
     db
       .collection('users')
-      // @ts-ignore
       .doc(user.uid)
       .set(data, { merge: true })
       .then(onSuccess)
@@ -99,18 +97,15 @@ export default ({
     timezone: optionalItem(timezones.map((d) => d.name)),
   });
 
-  // @ts-ignore
   const hasPasswordAccount = !!user.providerData.filter(
     (p) => p.providerId === 'password'
   ).length;
 
-  // @ts-ignore
   const hasGithubAccount = !!user.providerData.filter(
     (p) => p.providerId === 'github.com'
   ).length;
 
   const fields = [
-    // @ts-ignore
     readOnlyEmailField(user.email, (props) => (
       <Flex {...props}>
         {hasPasswordAccount && (
@@ -119,7 +114,6 @@ export default ({
         {!hasPasswordAccount && (
           <Link onClick={onAddPassword}>Add Password</Link>
         )}
-        {/* @ts-ignore */}
         {!user.emailVerified && (
           <Link color="red.500" ml={4} onClick={onReverifyEmail}>
             Resend Verification Email
@@ -145,6 +139,8 @@ export default ({
     [cityField(dbUser.city), countryField(dbUser.country)],
     [timezoneField(dbUser.timezone), null],
   ];
+
+  // SEE TODO (#17)
 
   return (
     <Form

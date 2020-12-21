@@ -1,7 +1,11 @@
+import {
+  faBookOpen,
+  faCube,
+  faShapes,
+} from '@fortawesome/free-solid-svg-icons';
 import { getLessonNumber } from './_helpers';
 
-// TODO: Check with designs to see if we HAVE to have a gray.50 background for this page
-// <Page body={{ style: `background: ${gray50};` }} />
+// SEE TODO #7
 export const search = () => ({
   page: {
     title: 'Courses',
@@ -31,7 +35,8 @@ export const project = ({ page, course, lesson, progress }) => ({
     description: page.description,
   },
   header: {
-    title: page.title,
+    icon: faShapes,
+    title: page.project.title,
     subtitle: 'Final Project',
     course: course,
     lesson: lesson,
@@ -43,12 +48,15 @@ export const project = ({ page, course, lesson, progress }) => ({
   },
 });
 
+export const projectSubmission = project;
+
 export const projectComplete = ({ page, course, lesson, progress }) => ({
   page: {
     title: `${page.title} - Complete`,
     description: page.description,
   },
   header: {
+    icon: faShapes,
     title: page.title,
     subtitle: 'Final Project',
     course: course,
@@ -69,6 +77,7 @@ export const lesson = ({ page, course, lesson, progress }) => ({
     description: page.description,
   },
   header: {
+    icon: faBookOpen,
     title: page.title,
     subtitle: `Lesson ${getLessonNumber(page.course.lessons, lesson)}`,
     course: course,
@@ -88,6 +97,7 @@ export const lessonComplete = ({ page, course, lesson, progress }) => ({
     description: page.description,
   },
   header: {
+    icon: faBookOpen,
     title: page.title,
     subtitle: `Lesson ${getLessonNumber(page.course.lessons, lesson)}`,
     course: course,
@@ -108,6 +118,7 @@ export const concept = ({ page, course, lesson, concept, progress }) => ({
     title: `${page.title} - ${page.concept.title}`,
   },
   header: {
+    icon: faCube,
     title: page.concept.title,
     subtitle: `Lesson ${getLessonNumber(page.course.lessons, lesson)}`,
     course: course,

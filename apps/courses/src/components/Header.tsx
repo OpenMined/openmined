@@ -15,6 +15,7 @@ import {
   MenuItem,
   Text,
   MenuDivider,
+  useDisclosure,
 } from '@chakra-ui/react';
 import {
   useAuth,
@@ -43,7 +44,7 @@ import { handleErrors } from '../helpers';
 interface LinkProps {
   title: string;
   type: string;
-  element?: React.ReactNode;
+  element?: React.ReactElement;
   auth?: boolean;
   unauth?: boolean;
   to?: string;
@@ -72,7 +73,7 @@ const createLinks = (
       if (type === 'element')
         return React.cloneElement(link.element, { key: title });
 
-      const as = link.to ? { as: RRDLink } : {};
+      const as: any = link.to ? { as: RRDLink } : {};
 
       if (!link.onClick) link.onClick = onClick;
       else {
@@ -107,9 +108,9 @@ const createLinks = (
       return null;
     });
 };
-
-const userAvatar = forwardRef((props, ref) => {
-  const user = useUser();
+// SEE TODO (#18)
+const UserAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
@@ -120,7 +121,7 @@ const userAvatar = forwardRef((props, ref) => {
 });
 
 export default ({ noScrolling }) => {
-  const user = useUser();
+  const user: firebase.User = useUser();
   const auth = useAuth();
   const toast = useToast();
   const isLoggedIn = !!user;
@@ -137,121 +138,107 @@ export default ({ noScrolling }) => {
     }
   }, [scrollY, isScrolled, noScrolling]);
 
-  // TODO: Patrick, these are the links we will have until this website goes live
-  let LEFT_LINKS: LinkProps[], RIGHT_LINKS: LinkProps[];
+  const menuDisclosure = useDisclosure();
 
-  if (process.env.NODE_ENV === 'production') {
-    LEFT_LINKS = [];
-    RIGHT_LINKS = [
-      {
-        title: 'Sign Up',
-        type: 'button',
-        onClick: () => {
-          document
-            .getElementById('signup')
-            .scrollIntoView({ behavior: 'smooth' });
-        },
-        unauth: true,
-      },
-    ];
-  } else {
-    LEFT_LINKS = [
-      {
-        title: 'Courses',
-        type: 'text',
-        to: '/courses',
-      },
-    ];
+  const LEFT_LINKS = [
+    {
+      title: 'Courses',
+      type: 'text',
+      to: '/courses',
+    },
+  ];
 
-    RIGHT_LINKS = [
-      {
-        title: 'Sign In',
-        type: 'text',
-        to: '/signin',
-        unauth: true,
-      },
-      {
-        title: 'Sign Up',
-        type: 'button',
-        to: '/signup',
-        unauth: true,
-      },
-      {
-        title: 'My Courses',
-        type: 'text',
-        to: '/my-courses',
-        auth: true,
-      },
-      {
-        title: 'User',
-        type: 'element',
-        auth: true,
-        element: (
-          <Menu placement="bottom-end">
-            <MenuButton as={userAvatar} />
-            <MenuList>
-              {user && (
-                <MenuItem as={RRDLink} to={`/users/${user.uid}`}>
-                  <Icon
-                    as={FontAwesomeIcon}
-                    icon={faUserCircle}
-                    size="lg"
-                    color="gray.400"
-                    mr={4}
-                  />
-                  <Text color="gray.700">Profile</Text>
-                </MenuItem>
-              )}
-              <MenuItem as={RRDLink} to="/users/settings">
+  const RIGHT_LINKS = [
+    {
+      title: 'Sign In',
+      type: 'text',
+      to: '/signin',
+      unauth: true,
+    },
+    {
+      title: 'Sign Up',
+      type: 'button',
+      to: '/signup',
+      unauth: true,
+    },
+    {
+      title: 'Dashboard',
+      type: 'text',
+      to: '/users/dashboard',
+      auth: true,
+    },
+    {
+      title: 'User',
+      type: 'element',
+      auth: true,
+      element: (
+        <Menu placement="bottom-end">
+          <MenuButton as={UserAvatar} />
+          <MenuList>
+            {user && (
+              <MenuItem as={RRDLink} to={`/users/${user.uid}`}>
+                {/* SEE TODO (#3) */}
                 <Icon
                   as={FontAwesomeIcon}
-                  icon={faCog}
+                  icon={faUserCircle}
                   size="lg"
                   color="gray.400"
                   mr={4}
                 />
-                <Text color="gray.700">Account Settings</Text>
+                <Text color="gray.700">Profile</Text>
               </MenuItem>
-              <MenuDivider />
-              <MenuItem
-                as="a"
-                href="https://discussion.openmined.org"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Icon
-                  as={FontAwesomeIcon}
-                  icon={faCommentAlt}
-                  size="lg"
-                  color="gray.400"
-                  mr={4}
-                />
-                <Text color="gray.700">Forum</Text>
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem
-                onClick={() =>
-                  auth
-                    .signOut()
-                    .then(() =>
-                      toast({
-                        ...toastConfig,
-                        title: 'Sign out successful',
-                        description: 'Come back soon!',
-                        status: 'success',
-                      })
-                    )
-                    .catch((error) => handleErrors(toast, error))
-                }
-              >
-                <Text color="gray.700">Logout</Text>
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        ),
-      },
-    ];
-  }
+            )}
+            <MenuItem as={RRDLink} to="/users/settings">
+              {/* SEE TODO (#3) */}
+              <Icon
+                as={FontAwesomeIcon}
+                icon={faCog}
+                size="lg"
+                color="gray.400"
+                mr={4}
+              />
+              <Text color="gray.700">Account Settings</Text>
+            </MenuItem>
+            <MenuDivider />
+            <MenuItem
+              as="a"
+              href="https://discussion.openmined.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {/* SEE TODO (#3) */}
+              <Icon
+                as={FontAwesomeIcon}
+                icon={faCommentAlt}
+                size="lg"
+                color="gray.400"
+                mr={4}
+              />
+              <Text color="gray.700">Forum</Text>
+            </MenuItem>
+            <MenuDivider />
+            <MenuItem
+              onClick={() =>
+                auth
+                  .signOut()
+                  .then(() =>
+                    toast({
+                      ...toastConfig,
+                      title: 'Sign out successful',
+                      description: 'Come back soon!',
+                      status: 'success',
+                    })
+                  )
+                  .catch((error) => handleErrors(toast, error))
+              }
+            >
+              <Text color="gray.700">Logout</Text>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      ),
+    },
+  ];
 
   const BREAK = 'md';
   const iconStyles = {
@@ -292,7 +279,7 @@ export default ({ noScrolling }) => {
             />
           </RRDLink>
           <Box display={['block', null, 'none']} onClick={() => setShow(!show)}>
-            {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+            {/* SEE TODO (#3) */}
             {show ? (
               <Icon as={FontAwesomeIcon} icon={faTimes} {...iconStyles} />
             ) : (
@@ -305,15 +292,12 @@ export default ({ noScrolling }) => {
             flexGrow={1}
             my={{ base: 4, [BREAK]: 0 }}
           >
-            {/* TODO: Patrick, this conditional also won't apply when we move to production and can be removed then */}
-            {LEFT_LINKS.length > 0 && (
-              <Divider
-                orientation="vertical"
-                height={6}
-                mr={{ base: 4, [BREAK]: 6 }}
-                display={{ base: 'none', [BREAK]: 'block' }}
-              />
-            )}
+            <Divider
+              orientation="vertical"
+              height={6}
+              mr={{ base: 4, [BREAK]: 6 }}
+              display={{ base: 'none', [BREAK]: 'block' }}
+            />
             <Stack
               align={{ [BREAK]: 'center' }}
               direction={{ base: 'column', [BREAK]: 'row' }}

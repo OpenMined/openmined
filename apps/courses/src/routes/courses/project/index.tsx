@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Button,
@@ -14,7 +14,6 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 import { useFirestore } from 'reactfire';
-import { Link as RRDLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBug,
@@ -27,22 +26,23 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import ProjectAccordion from './ProjectAccordion';
-import SubmissionView from './SubmissionView';
 
 import {
-  getProjectPartNumber,
   getProjectPartStatus,
   getProjectStatus,
-  hasSubmittedProjectPart,
-  hasStartedProject,
-  hasReceivedProjectPartReview,
+  hasStartedProjectPart,
   PROJECT_PART_SUBMISSIONS,
 } from '../_helpers';
+import { handleProjectPartBegin } from '../_firebase';
 import GridContainer from '../../../components/GridContainer';
+import { getLinkPropsFromLink } from '../../../helpers';
+import { handleErrors } from '../../../helpers';
+import useToast from '../../../components/Toast';
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
@@ -58,7 +58,10 @@ const combineSubmissionsAndReviews = (submissions, reviews) =>
         ...submissions.map((s, i) => {
           const equivalentReview = reviews[i];
 
-          if (equivalentReview) return { ...s, ...equivalentReview };
+          if (equivalentReview && equivalentReview.status) {
+            return { ...s, ...equivalentReview };
+          }
+
           return { ...s, status: 'pending' };
         }),
         ...Array(PROJECT_PART_SUBMISSIONS - submissions.length).fill({
@@ -70,11 +73,11 @@ const combineSubmissionsAndReviews = (submissions, reviews) =>
 // Tell us the status the entire project
 // ... and go through the user's progress and tell us the status of each part
 // ... and return all the relevant submissions and reviews
-const prepAccordionAndStatus = (progress, parts) => {
+export const prepAccordionAndStatus = (progress, parts) => {
   const content = parts.map((part) => ({
     ...part,
     status: getProjectPartStatus(progress, part._key),
-    submissions: hasSubmittedProjectPart(progress, part._key)
+    submissions: hasStartedProjectPart(progress, part._key)
       ? combineSubmissionsAndReviews(
           progress.project.parts[part._key].submissions,
           progress.project.parts[part._key].reviews
@@ -114,6 +117,7 @@ const getStatusStyles = (status) => {
 
 export default ({ course, page, progress, user, ts }) => {
   const db = useFirestore();
+  const toast = useToast();
 
   const {
     title: courseTitle,
@@ -155,128 +159,26 @@ export default ({ course, page, progress, user, ts }) => {
     ...statusStyles
   } = getStatusStyles(status);
 
-  // Save the arrayUnion function so that we can push items into a Firestore array
-  const arrayUnion = useFirestore.FieldValue.arrayUnion;
-
-  // Apparently, you cannot use SererTimestamp (ts()) inside of arrayUnion, so this is needed
-  // https://stackoverflow.com/questions/52324505/function-fieldvalue-arrayunion-called-with-invalid-data-fieldvalue-servertime
-  const currentTime = useFirestore.Timestamp.now;
-
   // When beginning a project part
-  const onBeginProjectPart = (part) => {
-    const data = progress;
+  const onBeginProjectPart = (part) =>
+    handleProjectPartBegin(
+      db,
+      user.uid,
+      course,
+      ts,
+      progress,
+      part
+    ).catch((error) => handleErrors(toast, error));
 
-    // If they haven't begun the project at all
-    if (!hasStartedProject(progress)) {
-      data.project = {
-        started_at: ts(),
-        parts: {},
-      };
-    }
-
-    // Add the project part to the object of parts
-    data.project.parts[part] = {
-      started_at: ts(),
-      submissions: [], // Make sure to set the submissions array up
-      reviews: [], // Make sure to also set the reviews array up
-    };
-
-    return db
-      .collection('users')
-      .doc(user.uid)
-      .collection('courses')
-      .doc(course)
-      .set(data, { merge: true });
-  };
-
-  // When the user attempts a submission
-  const onAttemptSubmission = async (part, content) => {
-    // Get their current submissions
-    const submissions = progress.project.parts[part].submissions;
-
-    // If we have less than the total number of allowed submissions
-    if (submissions.length < PROJECT_PART_SUBMISSIONS) {
-      // Get the current time (see where this function is defined above)
-      const time = currentTime();
-
-      // First, submit the submissions to the submissions subcollection
-      const submission = await db
-        .collection('users')
-        .doc(user.uid)
-        .collection('courses')
-        .doc(course)
-        .collection('submissions')
-        .add({
-          course,
-          part,
-          attempt:
-            submissions && submissions.length ? submissions.length + 1 : 1,
-          student: db.collection('users').doc(user.uid),
-          submitted_at: time,
-          content,
-        });
-
-      // Once that's done, add the submissions to the submissions array on the user's course document
-      // Note the use of the reference to the previous submission
-      await db
-        .collection('users')
-        .doc(user.uid)
-        .collection('courses')
-        .doc(course)
-        .set(
-          {
-            project: {
-              parts: {
-                [part]: {
-                  submissions: arrayUnion({
-                    submitted_at: time,
-                    submission,
-                  }),
-                },
-              },
-            },
-          },
-          { merge: true }
-        )
-        .then(() => {
-          // Once that's done, reload the screen to refresh the state
-          window.location.reload();
-        });
-    }
-  };
-
-  // submissionView will be set to a project part "_key" and will change the layout
-  // submissionViewAttempt is used with submissionView to assign a specific attempt to the submission view
-  const [submissionView, setSubmissionView] = useState(null);
-  const [submissionViewAttempt, setSubmissionViewAttempt] = useState(null);
-
-  // If we have a submission view, render that screen
-  if (submissionView) {
-    return (
-      <SubmissionView
-        projectTitle={title}
-        number={getProjectPartNumber(parts, submissionView)}
-        part={content[content.findIndex((p) => p._key === submissionView)]}
-        setSubmissionView={setSubmissionView}
-        submissionViewAttempt={submissionViewAttempt}
-        setSubmissionViewAttempt={setSubmissionViewAttempt}
-        onAttemptSubmission={onAttemptSubmission}
-      />
-    );
-  }
-
-  // Otherwise, render the main project page
   return (
     <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
-      <Flex
-        align="flex-start"
-        direction={{ base: 'column-reverse', lg: 'row' }}
-      >
+      <Flex align="flex-start" direction={{ base: 'column', lg: 'row' }}>
         <Box mr={{ lg: 16 }}>
           <Text color="gray.700" fontWeight="bold" mb={2}>
             {courseTitle}
           </Text>
           <Box position="relative" mb={4}>
+            {/* SEE TODO (#3) */}
             <Icon
               as={FontAwesomeIcon}
               icon={faShapes}
@@ -290,6 +192,7 @@ export default ({ course, page, progress, user, ts }) => {
             </Heading>
           </Box>
           <Tag {...statusStyles}>
+            {/* SEE TODO (#3) */}
             {statusIcon && (
               <Icon as={FontAwesomeIcon} icon={statusIcon} mr={2} />
             )}
@@ -309,10 +212,9 @@ export default ({ course, page, progress, user, ts }) => {
           </UnorderedList>
           <ProjectAccordion
             content={content}
-            mb={6}
-            setSubmissionView={setSubmissionView}
-            setSubmissionViewAttempt={setSubmissionViewAttempt}
+            course={course}
             onBeginProjectPart={onBeginProjectPart}
+            mb={6}
           />
           <Button
             disabled={!(status === 'passed' || status === 'failed')}
@@ -343,25 +245,10 @@ export default ({ course, page, progress, user, ts }) => {
           <UnorderedList spacing={2}>
             {needs.map(({ title, link }) => {
               if (link) {
-                const isExternal =
-                  link.includes('http://') || link.includes('https://');
-
-                const linkProps = isExternal
-                  ? {
-                      as: 'a',
-                      href: link,
-                      target: '_blank',
-                      rel: 'noopener noreferrer',
-                    }
-                  : {
-                      as: RRDLink,
-                      to: link,
-                    };
-
                 return (
                   <ListItem key={title}>
                     <Link
-                      {...linkProps}
+                      {...getLinkPropsFromLink(link)}
                       color="gray.700"
                       _hover={{ color: 'gray.800' }}
                       textDecoration="underline"
@@ -381,21 +268,6 @@ export default ({ course, page, progress, user, ts }) => {
           </UnorderedList>
           <Divider my={6} />
           {resources.map(({ title, link, icon }, index) => {
-            const isExternal =
-              link.includes('http://') || link.includes('https://');
-
-            const linkProps = isExternal
-              ? {
-                  as: 'a',
-                  href: link,
-                  target: '_blank',
-                  rel: 'noopener noreferrer',
-                }
-              : {
-                  as: RRDLink,
-                  to: link,
-                };
-
             return (
               <Link
                 key={index}
@@ -403,9 +275,10 @@ export default ({ course, page, progress, user, ts }) => {
                 _hover={{ color: 'gray.800' }}
                 display="block"
                 mt={6}
-                {...linkProps}
+                {...getLinkPropsFromLink(link)}
               >
                 <Flex align="center">
+                  {/* SEE TODO (#3) */}
                   <Icon as={FontAwesomeIcon} icon={icon} size="lg" mr={4} />
                   <Text>{title}</Text>
                 </Flex>

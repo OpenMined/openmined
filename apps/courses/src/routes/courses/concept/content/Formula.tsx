@@ -1,11 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { Flex, Text } from '@chakra-ui/react';
+declare const katex: any;
 
-export default ({ math, spacing }) => {
+export default ({ math, spacing }: any) => {
   const ref = useRef(null);
 
   useEffect(() => {
-    // @ts-ignore We import this in the HTML file
     katex.render(String.raw`${math}`, ref.current, {
       throwOnError: false,
     });

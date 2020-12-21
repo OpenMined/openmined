@@ -37,6 +37,7 @@ const SidebarItem = ({
     </AccordionButton>
     <AccordionPanel pb={4}>
       {multiple ? (
+        // SEE TODO (#4)
         <CheckboxGroup colorScheme="cyan" onChange={setter} value={value}>
           <Stack direction="column" align="flex-start">
             {options.map((item) => (
@@ -47,6 +48,7 @@ const SidebarItem = ({
           </Stack>
         </CheckboxGroup>
       ) : (
+        // SEE TODO (#4)
         <RadioGroup colorScheme="cyan" onChange={setter} value={value}>
           <Stack>
             {options.map((item) => (
@@ -91,7 +93,7 @@ export default ({ filters, numCourses, clearFilters }) => {
       )}
       <Accordion allowMultiple allowToggle>
         {filters.map((filter) => (
-          <SidebarItem key={filter.title} title="Skill Level" {...filter} />
+          <SidebarItem key={filter.title} {...filter} />
         ))}
       </Accordion>
     </>

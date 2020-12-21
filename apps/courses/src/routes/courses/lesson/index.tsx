@@ -26,9 +26,14 @@ import {
   hasStartedLesson,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
+import { getLinkPropsFromLink } from '../../../helpers';
+import { handleErrors } from '../../../helpers';
+import useToast from '../../../components/Toast';
+import { handleLessonStart } from '../_firebase';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
+    {/* SEE TODO (#3) */}
     <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
@@ -39,6 +44,7 @@ const Detail = ({ title, value }) => (
 
 export default ({ page, progress, user, ts, course, lesson }) => {
   const db = useFirestore();
+  const toast = useToast();
 
   const {
     course: { title: courseTitle, lessons },
@@ -59,34 +65,11 @@ export default ({ page, progress, user, ts, course, lesson }) => {
   const lessonNum = getLessonNumber(lessons, lesson);
 
   const onLessonStart = () => {
-    const isCourseStarted = hasStartedCourse(progress);
-    const isLessonStarted = hasStartedLesson(progress, lesson);
-
-    const data = progress;
-
-    // Append the course data structure
-    if (!isCourseStarted) {
-      data.started_at = ts();
-      data.lessons = {};
-    }
-
-    // Then the lesson data structure inside that
-    if (!isLessonStarted) {
-      data.lessons[lesson] = {
-        started_at: ts(),
-        concepts: {},
-      };
-    }
-
-    // When the object is constructed, store it!
-    db.collection('users')
-      .doc(user.uid)
-      .collection('courses')
-      .doc(course)
-      .set(data, { merge: true })
+    handleLessonStart(db, user.uid, course, ts, progress, lesson)
       .then(() => {
         window.location.href = `/courses/${course}/${lesson}/${firstConcept}`;
-      });
+      })
+      .catch((error) => handleErrors(toast, error));
   };
 
   return (
@@ -138,19 +121,6 @@ export default ({ page, progress, user, ts, course, lesson }) => {
               {resources.map(({ title, link }, index) => {
                 const isExternal =
                   link.includes('http://') || link.includes('https://');
-
-                const linkProps = isExternal
-                  ? {
-                      as: 'a',
-                      href: link,
-                      target: '_blank',
-                      rel: 'noopener noreferrer',
-                    }
-                  : {
-                      as: RRDLink,
-                      to: link,
-                    };
-
                 return (
                   <Link
                     key={index}
@@ -158,12 +128,13 @@ export default ({ page, progress, user, ts, course, lesson }) => {
                     _hover={{ color: 'magenta.700' }}
                     display="block"
                     mt={2}
-                    {...linkProps}
+                    {...getLinkPropsFromLink(link)}
                   >
                     <Flex justify="space-between" align="center">
                       <Flex align="center">
                         <Text>{title}</Text>
                       </Flex>
+                      {/* SEE TODO (#3) */}
                       {isExternal && (
                         <Icon as={FontAwesomeIcon} icon={faExternalLinkAlt} />
                       )}

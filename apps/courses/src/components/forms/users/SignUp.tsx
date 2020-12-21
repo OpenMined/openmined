@@ -55,8 +55,9 @@ export default ({ callback, ...props }: SignUpFormProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [tempCredentials, setTempCredentials] = useState<CredentialProps>({});
 
-  // TODO: Patrick, find a way to centralize this logic since it's done twice in the codebase
   const emailProvider = useAuth.EmailAuthProvider;
+
+  // SEE TODO (#5)
   const githubProvider = new useAuth.GithubAuthProvider();
 
   githubProvider.addScope('public_repo');
@@ -194,14 +195,14 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         first_name: firstName,
         last_name: lastName,
         photo_url: authUser.user.photoURL,
-        description: authUser.additionalUserInfo.profile.bio,
-        github: authUser.additionalUserInfo.profile.login,
-        twitter: authUser.additionalUserInfo.profile.twitter_username,
-        website: authUser.additionalUserInfo.profile.blog,
+        description: (authUser.additionalUserInfo.profile as any).bio,
+        github: (authUser.additionalUserInfo.profile as any).login,
+        twitter: (authUser.additionalUserInfo.profile as any).twitter_username,
+        website: (authUser.additionalUserInfo.profile as any).blog,
       });
 
       batch.set(userPrivateDoc, {
-        github_access_token: authUser.credential.accessToken,
+        github_access_token: (authUser.credential as any).accessToken,
       });
 
       batch
@@ -251,7 +252,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
                 colorScheme="black"
                 isLoading={isSubmitting}
               >
-                {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+                {/* SEE TODO (#3) */}
                 Sign Up with Github{' '}
                 <Icon
                   as={FontAwesomeIcon}
@@ -262,19 +263,18 @@ export default ({ callback, ...props }: SignUpFormProps) => {
                 />
               </Button>
             </Flex>
-            {/* TODO: Patrick, uncomment these when these pages exist */}
-            {/* <Divider my={6} />
-          <Text fontSize="sm" color="gray.700">
-            By signing up you agree to our{' '}
-            <Link as={RRDLink} to="/terms">
-              Terms of Use
-            </Link>{' '}
-            and{' '}
-            <Link as={RRDLink} to="/policy">
-              Privacy Policy
-            </Link>
-            .
-          </Text> */}
+            <Divider my={6} />
+            <Text fontSize="sm" color="gray.700">
+              By signing up you agree to our{' '}
+              <Link as={RRDLink} to="/terms">
+                Terms of Use
+              </Link>{' '}
+              and{' '}
+              <Link as={RRDLink} to="/policy">
+                Privacy Policy
+              </Link>
+              .
+            </Text>
           </>
         )}
       />

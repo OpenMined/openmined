@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { useAnalytics } from 'reactfire';
@@ -10,6 +10,8 @@ import Loading from './components/Loading';
 import Cookies from './components/Cookies';
 import Footer from './components/Footer';
 import { Box } from '@chakra-ui/react';
+
+import { SuspenseWithPerf } from 'reactfire';
 
 const Analytics = ({ location }) => {
   const analytics = useAnalytics();
@@ -66,7 +68,7 @@ const App = () => {
 
   return (
     <Router action={action} location={location} navigator={history}>
-      <Suspense fallback={<Loading />}>
+      <SuspenseWithPerf fallback={<Loading />} traceId={location.pathname}>
         {cookiePrefs === 'all' && <Analytics location={location} />}
         {!isInsideCourse && <Header noScrolling={isOnCourseComplete} />}
         <Box
@@ -78,7 +80,7 @@ const App = () => {
           {!isInsideConcept && <Footer />}
         </Box>
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
-      </Suspense>
+      </SuspenseWithPerf>
     </Router>
   );
 };

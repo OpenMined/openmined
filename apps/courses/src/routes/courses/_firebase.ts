@@ -245,7 +245,12 @@ export const handleAttemptSubmission = async (
       attempt: submissions && submissions.length ? submissions.length + 1 : 1,
       student: db.collection('users').doc(uId),
       submitted_at: time,
-      content,
+      submission_content: content,
+      mentor: null,
+      status: null,
+      review_content: null,
+      review_started_at: null,
+      review_ended_at: null,
     });
 
     // Once that's done, add the submissions to the submissions array on the user's course document

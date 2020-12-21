@@ -16,18 +16,16 @@ import {
   InputRightElement,
   InputLeftAddon,
   InputRightAddon,
-  Icon,
   RadioGroup,
   Stack,
   Radio,
   Flex,
 } from '@chakra-ui/react';
 import { ObjectSchema } from 'yup';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { capitalize } from '../../helpers';
-import ChakraIcon from '../ChakraIcon';
+import Icon from '../Icon';
 
 interface Field {
   name: string;
@@ -165,8 +163,7 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }: any)
                   control
                 )}
                 <InputRightElement cursor="pointer">
-                  {/* SEE TODO (#3) */}
-                  <ChakraIcon
+                  <Icon
                     icon={faTrash}
                     color="red.500"
                     onClick={() => fieldArray.remove(index)}
@@ -183,8 +180,7 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }: any)
         colorScheme="blue"
         mt={2}
       >
-        {/* SEE TODO (#3) */}
-        <ChakraIcon icon={faPlus} mr={2} />
+        <Icon icon={faPlus} mr={2} />
         <Text>Add</Text>
       </Button>
     </>

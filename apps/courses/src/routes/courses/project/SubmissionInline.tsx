@@ -1,14 +1,13 @@
 import React from 'react';
-import { Flex, Icon, Text } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRight,
   faCheckCircle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 dayjs.extend(relativeTime);
 
@@ -46,8 +45,7 @@ export default ({
       }}
     >
       <Flex align="center">
-        {/* SEE TODO (#3) */}
-        <ChakraIcon
+        <Icon
           icon={passed ? faCheckCircle : faTimesCircle}
           color={iconColor}
           size="lg"
@@ -60,8 +58,7 @@ export default ({
           {dayjs(submission.reviewed_at.toDate()).fromNow()}
         </Text>
       </Flex>
-      {/* SEE TODO (#3) */}
-      <ChakraIcon icon={faArrowRight} color={iconColor} />
+      <Icon icon={faArrowRight} color={iconColor} />
     </Flex>
   );
 };

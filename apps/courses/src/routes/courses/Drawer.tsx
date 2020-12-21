@@ -6,7 +6,6 @@ import {
   AccordionIcon,
   AccordionItem,
   AccordionPanel,
-  Box,
   Divider,
   Drawer,
   DrawerBody,
@@ -15,7 +14,6 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  Icon,
   Link,
   Stack,
   Text,
@@ -29,7 +27,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { getLinkPropsFromLink } from '../../helpers';
-import ChakraIcon from '../../components/ChakraIcon';
+import Icon from '../../components/Icon';
 
 const DrawerItem = ({
   index,
@@ -48,8 +46,7 @@ const DrawerItem = ({
       onClick={() => toggleAccordionItem(index)}
     >
       <Flex flex="1" textAlign="left" align="center">
-        {/* SEE TODO (#3) */}
-        <ChakraIcon icon={icon} mr={6} size="lg" />
+        <Icon icon={icon} mr={6} size="lg" />
         <Text fontWeight="bold">{title}</Text>
       </Flex>
       <AccordionIcon color="gray.600" />
@@ -80,9 +77,8 @@ const DrawerItem = ({
                 >
                   <Flex justify="space-between" align="center">
                     <Flex align="center">
-                      {/* SEE TODO (#3) */}
                       {icon && (
-                        <ChakraIcon
+                        <Icon
                           icon={icon}
                           size="lg"
                           mr={6}
@@ -90,9 +86,8 @@ const DrawerItem = ({
                       )}
                       <Text>{title}</Text>
                     </Flex>
-                    {/* SEE TODO (#3) */}
                     {isExternal && (
-                      <ChakraIcon icon={faExternalLinkAlt} />
+                      <Icon icon={faExternalLinkAlt} />
                     )}
                   </Flex>
                 </Link>
@@ -141,9 +136,8 @@ const DrawerItem = ({
                     width={5}
                     mr={6}
                   >
-                    {/* SEE TODO (#3) */}
                     {icon && (
-                      <ChakraIcon
+                      <Icon
                         icon={icon}
                         color={status === 'completed' ? 'teal.300' : 'inherit'}
                         size="lg"

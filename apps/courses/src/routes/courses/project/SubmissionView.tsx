@@ -25,7 +25,6 @@ import {
 } from '@chakra-ui/react';
 import { useFirestoreDocDataOnce } from 'reactfire';
 import { Course } from '@openmined/shared/types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -39,7 +38,7 @@ import RichTextEditor, {
   EDITOR_STORAGE_STRING,
 } from '../../../components/RichTextEditor';
 import ColoredTabs from '../../../components/ColoredTabs';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 dayjs.extend(relativeTime);
 
@@ -219,12 +218,11 @@ export default ({
           justify="space-between"
           align="center"
         >
-          {/* SEE TODO (#3) */}
           <Breadcrumb
             spacing={2}
             color="gray.700"
             separator={
-              <ChakraIcon icon={faAngleRight} color="gray.400" />
+              <Icon icon={faAngleRight} color="gray.400" />
             }
           >
             <BreadcrumbItem>
@@ -250,8 +248,7 @@ export default ({
             mt={[2, null, 0]}
           >
             <Flex align="center">
-              {/* SEE TODO (#3) */}
-              <ChakraIcon icon={faCommentAlt} mr={2} />
+              <Icon icon={faCommentAlt} mr={2} />
               <Text>Get Help</Text>
             </Flex>
           </Link>

@@ -10,13 +10,11 @@ import {
   Button,
   Flex,
   Heading,
-  Icon,
   Link,
   Text,
 } from '@chakra-ui/react';
 import * as yup from 'yup';
 import { useAuth, useFirestore, useUser } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
@@ -26,7 +24,7 @@ import { emailField } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
-import ChakraIcon from '../../ChakraIcon';
+import Icon from '../../Icon';
 
 interface ManageAccountFormProps extends BoxProps {
   callback?: () => void;
@@ -188,8 +186,7 @@ export default ({
         Manage Linked Accounts
       </Heading>
       <Flex align="center">
-        {/* SEE TODO (#3) */}
-        <ChakraIcon icon={faEnvelope} size="2x" />
+        <Icon icon={faEnvelope} size="2x" />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Email
         </Text>
@@ -198,8 +195,7 @@ export default ({
         )}
       </Flex>
       <Flex align="center" mt={4}>
-        {/* SEE TODO (#3) */}
-        <ChakraIcon icon={faGithub} size="2x" />
+        <Icon icon={faGithub} size="2x" />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Github
         </Text>

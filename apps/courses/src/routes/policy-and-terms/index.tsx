@@ -7,10 +7,8 @@ import {
   ListItem,
   Divider,
   Flex,
-  Icon,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import Page from '@openmined/shared/util-page';
 
@@ -21,7 +19,7 @@ import NumberedAccordion, {
 import GridContainer from '../../components/GridContainer';
 import policy from '../../content/privacy-policy';
 import terms from '../../content/terms-of-service';
-import ChakraIcon from '../../components/ChakraIcon';
+import Icon from '../../components/Icon';
 
 const SectionListItem = ({ content, index, ...props }) => {
   const handleClick = () => {
@@ -131,8 +129,7 @@ export default () => {
                   ))}
                 </List>
                 <Divider my={8} />
-                {/* SEE TODO (#3) */}
-                <ChakraIcon
+                <Icon
                   icon={faCommentAlt}
                   size="2x"
                   mb={2}
@@ -147,8 +144,7 @@ export default () => {
                     color="indigo.500"
                     textAlign="center"
                   >
-                    {/* SEE TODO (#3) */}
-                    <ChakraIcon icon={faChevronUp} />
+                    <Icon icon={faChevronUp} />
                     <Text textTransform="uppercase">Top</Text>
                   </Box>
                 </Flex>

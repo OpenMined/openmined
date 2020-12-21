@@ -20,7 +20,6 @@ import {
   useFirestore,
   useFirestoreCollectionData,
 } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -30,7 +29,7 @@ import { MentorContext, MentorTabs, mentorResources } from './Mentor';
 import GridContainer from '../../../components/GridContainer';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { useSanity } from '@openmined/shared/data-access-sanity';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 dayjs.extend(relativeTime);
 
@@ -48,8 +47,7 @@ const LinkItem = ({ title, icon, link, ...props }) => (
     transitionDuration="normal"
     transitionTimingFunction="ease-in-out"
   >
-    {/* SEE TODO (#3) */}
-    <ChakraIcon icon={icon} size="lg" color="inherit" mr={3} />
+    <Icon icon={icon} size="lg" color="inherit" mr={3} />
     <Text color="inherit">{title}</Text>
   </Flex>
 );

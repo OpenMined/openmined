@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Button, SimpleGrid, Text } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faSlack } from '@fortawesome/free-brands-svg-icons';
 import {
   faCommentAlt,
@@ -13,7 +12,7 @@ import ProjectAccordion from '../../courses/project/ProjectAccordion';
 import { hasCompletedCourse } from '../../courses/_helpers';
 import CourseProgressCard from '../../../components/CourseProgressCard';
 import ColoredTabs from '../../../components/ColoredTabs';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 export const StudentContext = ({ courses, progress }) => {
   let incompleteCourses = progress.filter((c) => !hasCompletedCourse(c));
@@ -35,7 +34,7 @@ export const StudentContext = ({ courses, progress }) => {
           Currently, you're not taking any courses. Perhaps you should add one!
         </Text>
         <Button as={Link} to="/courses" variant="outline" colorScheme="black">
-          <ChakraIcon icon={faSearch} mr={3} />
+          <Icon icon={faSearch} mr={3} />
           <Text>Browse Courses</Text>
         </Button>
       </Box>

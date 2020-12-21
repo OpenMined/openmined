@@ -6,17 +6,15 @@ import {
   Heading,
   Text,
   Stack,
-  Icon,
   Progress,
 } from '@chakra-ui/react';
 import { useFirestore, useUser } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons';
 import { handleErrors } from '../../../../helpers';
 import useToast from '../../../../components/Toast';
 import { handleQuizFinish } from '../../_firebase';
-import ChakraIcon from 'apps/courses/src/components/ChakraIcon';
+import Icon from 'apps/courses/src/components/Icon';
 
 const FinishedBox = ({ correct, total }) => (
   <Box bg="gray.100" borderRadius="md" p={8}>
@@ -105,8 +103,7 @@ const IncorrectAnswer = ({
     borderColor="red.300"
     onClick={() => setCurrentSelection(index)}
   >
-    {/* SEE TODO (#3) */}
-    <ChakraIcon
+    <Icon
       icon={faTimes}
       color="red.300"
       size="lg"
@@ -155,8 +152,7 @@ const UnansweredAnswer = ({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* SEE TODO (#3) */}
-      <ChakraIcon
+      <Icon
         icon={isHovering ? faDotCircle : faCircle}
         color={isHovering ? 'blue.500' : 'gray.700'}
         size="1x"
@@ -262,8 +258,7 @@ const QuizCard = ({
             <Text fontWeight="bold" mr={2}>
               {currentQuestion + 1 >= total ? 'Finish' : 'Next'}
             </Text>
-            {/* SEE TODO (#3) */}
-            <ChakraIcon icon={faArrowRight} size="1x" />
+            <Icon icon={faArrowRight} size="1x" />
           </Flex>
         </Flex>
       )}

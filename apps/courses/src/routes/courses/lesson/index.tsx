@@ -17,7 +17,6 @@ import {
   Text,
   UnorderedList,
 } from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
   getLessonNumber,
@@ -29,12 +28,11 @@ import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
 import { handleLessonStart } from '../_firebase';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
-    {/* SEE TODO (#3) */}
-    <ChakraIcon icon={faCheckCircle} size="2x" />
+    <Icon icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -134,9 +132,8 @@ export default ({ page, progress, user, ts, course, lesson }) => {
                       <Flex align="center">
                         <Text>{title}</Text>
                       </Flex>
-                      {/* SEE TODO (#3) */}
                       {isExternal && (
-                        <ChakraIcon icon={faExternalLinkAlt} />
+                        <Icon icon={faExternalLinkAlt} />
                       )}
                     </Flex>
                   </Link>

@@ -1,11 +1,10 @@
 import React, { useRef, useEffect } from 'react';
-import { useClipboard, Box, Icon } from '@chakra-ui/react';
+import { useClipboard, Box } from '@chakra-ui/react';
 import Prism from 'prismjs';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-solid-svg-icons';
 
 import useToast, { toastConfig } from '../../../../components/Toast';
-import ChakraIcon from '../../../../components/ChakraIcon';
+import Icon from '../../../../components/Icon';
 
 // Plugins
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
@@ -58,8 +57,7 @@ export default ({ code, language, spacing }: any) => {
 
   return (
     <Box position="relative" my={spacing}>
-      {/* SEE TODO (#3) */}
-      <ChakraIcon
+      <Icon
         icon={faCopy}
         size="lg"
         color="whiteAlpha.500"

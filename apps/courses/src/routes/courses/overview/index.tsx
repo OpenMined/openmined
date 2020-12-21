@@ -6,7 +6,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Image,
   List,
   ListIcon,
@@ -18,21 +17,19 @@ import {
 import { Link } from 'react-router-dom';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 // TODO: On the course overview page, make sure the "walk away being able to" items have images for icons instead of Font Awesome icons
 // TODO: On the course overview page, make sure to have the project show up at the end in the syllabus
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
-    {/* SEE TODO (#3) */}
-    <ChakraIcon icon={faCheckCircle} size="2x" />
+    <Icon icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -43,8 +40,7 @@ const Detail = ({ title, value }) => (
 const LearnHow = ({ value }) => (
   <Box>
     <Circle bg="white" size={8} display={{ base: 'none', md: 'block' }}>
-      {/* SEE TODO (#3) */}
-      <ChakraIcon icon={faCheckCircle} size="2x" />
+      <Icon icon={faCheckCircle} size="2x" />
     </Circle>
     <Heading
       as="h3"
@@ -87,9 +83,8 @@ export default ({ course, page }) => {
       color: 'gray.600',
     };
 
-    // SEE TODO (#3)
-    const IncompleteConcept = () => <ChakraIcon {...iconProps} icon={faCircle} />;
-    const CompleteConcept = () => <ChakraIcon {...iconProps} icon={faCheckCircle} />;
+    const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
+    const CompleteConcept = () => <Icon {...iconProps} icon={faCheckCircle} />;
 
     return (
       <Box bg="gray.200" p={8}>

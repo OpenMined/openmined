@@ -8,13 +8,12 @@ import {
   Link,
 } from '@chakra-ui/react';
 import { useUser } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRss } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
 
 import GridContainer from '../../components/GridContainer';
 import Signup from '../../components/forms/users/SignUp';
-import ChakraIcon from '../../components/ChakraIcon';
+import Icon from '../../components/Icon';
 
 export default ({ signup, signedup }) => {
   const user = useUser();
@@ -65,8 +64,7 @@ export default ({ signup, signedup }) => {
                   align="center"
                   justify="center"
                 >
-                  {/* SEE TODO (#3) */}
-                  <ChakraIcon icon={icon} size="2x" />
+                  <Icon icon={icon} size="2x" />
                   <Text
                     fontWeight="bold"
                     fontSize="lg"

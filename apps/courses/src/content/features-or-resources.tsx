@@ -1,6 +1,4 @@
 import React from 'react';
-import { Icon } from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCommentAlt,
   faPencilAlt,
@@ -13,7 +11,7 @@ import realWorld from '../assets/homepage/real-world.svg';
 import instructors from '../assets/homepage/instructors.svg';
 import like from '../assets/homepage/like.svg';
 import technicalMentor from '../assets/homepage/technical-mentor.svg';
-import ChakraIcon from '../components/ChakraIcon';
+import Icon from '../components/Icon';
 
 export const features = {
   title: 'Course Features',
@@ -55,8 +53,7 @@ export const resources = {
       description:
         'Take your learning to the next level and discuss it with the community!',
       icon: (
-        // SEE TODO (#3)
-        <ChakraIcon
+        <Icon
           icon={faCommentAlt}
           size="2x"
           color="magenta.600"
@@ -72,8 +69,7 @@ export const resources = {
       description:
         'Join the conversation with over 10,000 others in Slack community!',
       icon: (
-        // SEE TODO (#3)
-        <ChakraIcon
+        <Icon
           icon={faSlack}
           size="2x"
           color="magenta.600"
@@ -89,8 +85,7 @@ export const resources = {
       description:
         'For the latest news and info on the OpenMined community, visit our blog!',
       icon: (
-        // SEE TODO (#3)
-        <ChakraIcon
+        <Icon
           icon={faPencilAlt}
           size="2x"
           color="magenta.600"
@@ -106,8 +101,7 @@ export const resources = {
       description:
         'Our mentors provide feedback on your projects and help you at every step!',
       icon: (
-        // SEE TODO (#3)
-        <ChakraIcon
+        <Icon
           icon={faUser}
           size="2x"
           color="magenta.600"

@@ -19,7 +19,7 @@ import {
   getNextAvailablePage,
   hasCompletedLesson,
 } from '../routes/courses/_helpers';
-import ChakraIcon from './ChakraIcon';
+import Icon from './Icon';
 
 export default ({ content, ...props }) => {
   const { title, slug, level, length, lessons, project, progress } = content;
@@ -72,15 +72,13 @@ export default ({ content, ...props }) => {
 
             return (
               <Flex align="center" mt={i === 0 ? 0 : 2} key={i}>
-                {/* SEE TODO (#3) */}
-                <ChakraIcon {...iconProps} mr={3} size="lg" />
+                <Icon {...iconProps} mr={3} size="lg" />
                 <Text color="gray.700">{l.title}</Text>
               </Flex>
             );
           })}
           <Flex align="center" mt={2}>
-            {/* SEE TODO (#3) */}
-            <ChakraIcon
+            <Icon
               icon={faShapes}
               mr={3}
               color="gray.600"
@@ -95,8 +93,7 @@ export default ({ content, ...props }) => {
               <Text fontWeight="bold" mr={3}>
                 Resume
               </Text>
-              {/* SEE TODO (#3) */}
-              <ChakraIcon icon={faArrowRight} />
+              <Icon icon={faArrowRight} />
             </Flex>
           </Link>
         </Flex>

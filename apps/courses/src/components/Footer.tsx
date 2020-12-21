@@ -1,14 +1,13 @@
 import React from 'react';
-import { Box, Text, Button, Flex, Divider, Link, Icon } from '@chakra-ui/react';
+import { Box, Text, Button, Flex, Divider, Link } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from './GridContainer';
 
 import content from '../content/footer';
 
 import { getLinkPropsFromLink } from '../helpers';
-import ChakraIcon from './ChakraIcon';
+import Icon from './Icon';
 
 const { about, links, copyright } = content;
 
@@ -48,8 +47,7 @@ export default (props) => (
             boxShadow="0px 4px 16px rgba(0, 0, 0, 0.3)"
           >
             <Text mr={2}>{about.button.text}</Text>
-            {/* SEE TODO (#3) */}
-            <ChakraIcon
+            <Icon
               color="gray.200"
               icon={about.button.icon}
               ml={2}

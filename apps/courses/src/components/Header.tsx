@@ -25,7 +25,6 @@ import {
 import { Link as RRDLink } from 'react-router-dom';
 import useToast, { toastConfig } from './Toast';
 import useScrollPosition from '@react-hook/window-scroll';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTimes,
   faBars,
@@ -39,7 +38,7 @@ import GridContainer from './GridContainer';
 
 import logo from '../assets/logo.svg';
 import { handleErrors } from '../helpers';
-import ChakraIcon from './ChakraIcon';
+import Icon from './Icon';
 
 interface LinkProps {
   title: string;
@@ -177,8 +176,7 @@ export default ({ noScrolling }) => {
           <MenuList>
             {user && (
               <MenuItem as={RRDLink} to={`/users/${user.uid}`}>
-                {/* SEE TODO (#3) */}
-                <ChakraIcon
+                <Icon
                   icon={faUserCircle}
                   size="lg"
                   color="gray.400"
@@ -188,8 +186,7 @@ export default ({ noScrolling }) => {
               </MenuItem>
             )}
             <MenuItem as={RRDLink} to="/users/settings">
-              {/* SEE TODO (#3) */}
-              <ChakraIcon
+              <Icon
                 icon={faCog}
                 size="lg"
                 color="gray.400"
@@ -204,8 +201,7 @@ export default ({ noScrolling }) => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {/* SEE TODO (#3) */}
-              <ChakraIcon
+              <Icon
                 icon={faCommentAlt}
                 size="lg"
                 color="gray.400"
@@ -276,11 +272,10 @@ export default ({ noScrolling }) => {
             />
           </RRDLink>
           <Box display={['block', null, 'none']} onClick={() => setShow(!show)}>
-            {/* SEE TODO (#3) */}
             {show ? (
-              <ChakraIcon icon={faTimes} {...iconStyles} />
+              <Icon icon={faTimes} {...iconStyles} />
             ) : (
-              <ChakraIcon icon={faBars} {...iconStyles} />
+              <Icon icon={faBars} {...iconStyles} />
             )}
           </Box>
           <Box

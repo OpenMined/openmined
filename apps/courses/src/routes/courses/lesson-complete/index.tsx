@@ -7,12 +7,10 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Link,
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRight,
   faBullhorn,
@@ -26,7 +24,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
 import { handleErrors } from '../../../helpers';
 import { handleLessonComplete, handleProvideFeedback } from '../_firebase';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -35,8 +33,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
-    {/* SEE TODO (#3) */}
-    <ChakraIcon icon={icon} size="lg" mb={4} />
+    <Icon icon={icon} size="lg" mb={4} />
     <Text>{children}</Text>
   </Box>
 );
@@ -98,8 +95,7 @@ export default ({ progress, page, user, ts, course, lesson }) => {
       <GridContainer isInitial py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
-            {/* SEE TODO (#3) */}
-            <ChakraIcon
+            <Icon
               icon={faCheckCircle}
               color="teal.300"
               size="3x"
@@ -131,8 +127,7 @@ export default ({ progress, page, user, ts, course, lesson }) => {
               p={6}
               mb={8}
             >
-              {/* SEE TODO (#3) */}
-              <ChakraIcon
+              <Icon
                 icon={typeof nextLesson === 'string' ? faShapes : faArrowRight}
                 color="orange.200"
                 size="lg"

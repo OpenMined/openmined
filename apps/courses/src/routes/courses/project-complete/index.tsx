@@ -6,7 +6,6 @@ import {
   CloseButton,
   Flex,
   Heading,
-  Icon,
   Image,
   Link,
   Text,
@@ -29,7 +28,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
 import { handleErrors } from '../../../helpers';
 import { handleProjectComplete, handleProvideFeedback } from '../_firebase';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -38,8 +37,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
-    {/* SEE TODO (#3) */}
-    <ChakraIcon icon={icon} size="lg" mb={4} />
+    <Icon icon={icon} size="lg" mb={4} />
     <Text>{children}</Text>
   </Box>
 );
@@ -121,8 +119,7 @@ export default ({ progress, page, user, ts, course }) => {
               p={6}
               mb={8}
             >
-              {/* SEE TODO (#3) */}
-              <ChakraIcon
+              <Icon
                 icon={status === 'passed' ? faCheckCircle : faTimesCircle}
                 color={status === 'passed' ? 'green.400' : 'magenta.400'}
                 size="lg"

@@ -5,7 +5,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Link,
   ListItem,
   Tag,
@@ -14,7 +13,6 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 import { useFirestore } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBug,
   faCheckCircle,
@@ -40,13 +38,12 @@ import { getLinkPropsFromLink, useQueryState } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
 import { handleAttemptSubmission, handleProjectPartBegin } from '../_firebase';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
-    {/* SEE TODO (#3) */}
-    <ChakraIcon icon={faCheckCircle} size="2x" />
+    <Icon icon={faCheckCircle} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -230,8 +227,7 @@ export default ({ course, page, progress, user, ts }) => {
             {courseTitle}
           </Text>
           <Box position="relative" mb={4}>
-            {/* SEE TODO (#3) */}
-            <ChakraIcon
+            <Icon
               icon={faShapes}
               size="2x"
               position="absolute"
@@ -243,9 +239,8 @@ export default ({ course, page, progress, user, ts }) => {
             </Heading>
           </Box>
           <Tag {...statusStyles}>
-            {/* SEE TODO (#3) */}
             {statusIcon && (
-              <ChakraIcon icon={statusIcon} mr={2} />
+              <Icon icon={statusIcon} mr={2} />
             )}
             <TagLabel fontWeight="bold">{statusText}</TagLabel>
           </Tag>
@@ -329,8 +324,7 @@ export default ({ course, page, progress, user, ts }) => {
                 {...getLinkPropsFromLink(link)}
               >
                 <Flex align="center">
-                  {/* SEE TODO (#3) */}
-                  <ChakraIcon icon={icon} size="lg" mr={4} />
+                  <Icon icon={icon} size="lg" mr={4} />
                   <Text>{title}</Text>
                 </Flex>
               </Link>

@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Heading, Text, Button, Link, Icon } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, Button, Link } from '@chakra-ui/react';
 import {
   ComposableMap,
   Geographies,
   Geography,
   Marker,
 } from 'react-simple-maps';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from '../../components/GridContainer';
-import ChakraIcon from '../../components/ChakraIcon';
+import Icon from '../../components/Icon';
 import theme from '../../theme';
 
 const geoUrl =
@@ -164,9 +163,8 @@ export default ({ title, description, buttons, links }) => (
                 mr={i === 0 ? 4 : 0}
                 colorScheme="gray"
               >
-                {/* SEE TODO (#3) */}
                 {title}{' '}
-                <ChakraIcon
+                <Icon
                   icon={icon}
                   ml={2}
                   boxSize={4}

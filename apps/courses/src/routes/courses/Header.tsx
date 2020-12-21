@@ -3,7 +3,6 @@ import {
   Box,
   Flex,
   Link,
-  Icon,
   Stack,
   Avatar,
   Menu,
@@ -23,7 +22,6 @@ import {
   useFirestoreDocDataOnce,
 } from 'reactfire';
 import { Link as RRDLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars,
   faUserCircle,
@@ -42,7 +40,7 @@ import useToast, { toastConfig } from '../../components/Toast';
 import { getLinkPropsFromLink, handleErrors } from '../../helpers';
 import logo from '../../assets/logo.svg';
 import { getUserRef } from './_firebase';
-import ChakraIcon from '../../components/ChakraIcon';
+import Icon from '../../components/Icon';
 
 type LinkProps = {
   title: string;
@@ -185,9 +183,8 @@ export default ({
                       if (onClick) onClick();
                     }}
                   >
-                    {/* SEE TODO (#3) */}
                     {icon && (
-                      <ChakraIcon
+                      <Icon
                         icon={icon}
                         size="lg"
                         color="gray.400"
@@ -236,8 +233,7 @@ export default ({
     >
       <Flex as="nav" align="center" justify="space-between">
         <Box width={{ base: 6, [BREAK]: 1 / 4 }}>
-          {/* SEE TODO (#3) */}
-          <ChakraIcon
+          <Icon
             icon={faBars}
             color="white"
             cursor="pointer"
@@ -247,9 +243,8 @@ export default ({
         <Box width={{ base: 'full', [BREAK]: 1 / 2 }} mx={4}>
           {!noTitle && (
             <Flex justify="center" align="center">
-              {/* SEE TODO (#3) */}
               {icon && (
-                <ChakraIcon
+                <Icon
                   icon={icon}
                   color="gray.700"
                   size="lg"
@@ -277,8 +272,7 @@ export default ({
           justify="flex-end"
           display={{ base: 'flex', [BREAK]: 'none' }}
         >
-          {/* SEE TODO (#3) */}
-          <ChakraIcon
+          <Icon
             icon={faHome}
             size="lg"
             color="white"

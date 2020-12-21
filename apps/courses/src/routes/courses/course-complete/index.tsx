@@ -6,19 +6,17 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Image,
   Link,
   SimpleGrid,
   Text,
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GridContainer from '../../../components/GridContainer';
 import projectIcon from '../../../assets/project-icon.svg';
 import { faBookOpen, faCertificate } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
-import ChakraIcon from '../../../components/ChakraIcon';
+import Icon from '../../../components/Icon';
 
 export default ({ page }) => {
   const {
@@ -137,8 +135,7 @@ export default ({ page }) => {
                     align="center"
                   >
                     <Circle p={1} mb={2} bg={iconBg} boxSize={12}>
-                      {/* SEE TODO (#3) */}
-                      <ChakraIcon
+                      <Icon
                         icon={icon}
                         size="lg"
                         color={iconColor}

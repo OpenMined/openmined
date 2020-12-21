@@ -8,7 +8,6 @@ import {
   Button,
   Circle,
   Flex,
-  Icon,
   Text,
   Link,
   Image,
@@ -19,11 +18,11 @@ import {
   faTimesCircle,
   faPaperPlane,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import SubmissionInline from './SubmissionInline';
 
 import { PROJECT_PART_SUBMISSIONS } from '../_helpers';
+import Icon from '../../../components/Icon';
 
 // As we did on the main file, we need to get some basic styles for the <AccordionItem /> according to this part's status
 const getStatusStyles = (status) => {
@@ -223,9 +222,8 @@ export default ({
                 onClick={() => openIndex(index)}
               >
                 <Flex flex="1" align="center">
-                  {/* SEE TODO (#3) */}
                   {typeof icon !== 'string' && (
-                    <ChakraIcon
+                    <Icon
                       size="lg"
                       icon={icon}
                       color={text}

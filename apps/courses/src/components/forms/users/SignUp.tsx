@@ -3,7 +3,6 @@ import {
   Button,
   Divider,
   Flex,
-  Icon,
   Text,
   Link,
   BoxProps,
@@ -13,7 +12,6 @@ import {
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAuth, useFirestore } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import Form from '../_form';
@@ -34,7 +32,7 @@ import {
 import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
 import Modal from '../../Modal';
-import ChakraIcon from '../../ChakraIcon';
+import Icon from '../../Icon';
 
 interface SignUpFormProps extends BoxProps {
   callback?: () => void;
@@ -253,9 +251,8 @@ export default ({ callback, ...props }: SignUpFormProps) => {
                 colorScheme="black"
                 isLoading={isSubmitting}
               >
-                {/* SEE TODO (#3) */}
                 Sign Up with Github{' '}
-                <ChakraIcon
+                <Icon
                   icon={faGithub}
                   ml={2}
                   boxSize={4}

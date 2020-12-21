@@ -172,7 +172,9 @@ export default () => {
                 {(!mentorMode || !dbMentor) && (
                   <StudentContext courses={data} progress={dbCourses} />
                 )}
-                {mentorMode && dbMentor && <MentorContext uid={user.uid} />}
+                {mentorMode && dbMentor && (
+                  <MentorContext courses={data} mentor={dbMentor} />
+                )}
               </Box>
               <Box mt={6} ml={[0, null, 6, 12]} minW={240}>
                 <Heading as="p" size="md">
@@ -190,7 +192,9 @@ export default () => {
               {(!mentorMode || !dbMentor) && (
                 <StudentTabs courses={data} progress={dbCourses} />
               )}
-              {mentorMode && dbMentor && <MentorTabs uid={user.uid} />}
+              {mentorMode && dbMentor && (
+                <MentorTabs courses={data} mentor={dbMentor} />
+              )}
             </Box>
           </GridItem>
         </Grid>

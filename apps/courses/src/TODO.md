@@ -28,16 +28,17 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Manually navigating to a part page (with no attempt) allows a user to write another submission when they have one pending OR when they have none remaining
-- Redo the permissions gate to allow for projects and project parts with or without attempts. We probably need a "configuration" based strategy for this. Might be good to write some tests!!
 - Build the mentorship dashboard
+- Clicking on a `<SubmissionInline />` from the 3rd tab (`<RichTextEditor />`) causes an error (maybe consider a total refactor of this page (break it out into multiple components/files) and ensure that it can handle any possible situation (think about in preparation for mentors))
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
 - Convert everything to cyan
 - Find some way to designate "cyan" as the primary color in Chakra
 - Re-add text underline to all links
 - Figure out what to do about `<Menu />` and `<Popover />` and `<RichTextEditor />`
+- Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course material
+- Redo the permissions gate to allow for projects and project parts with or without attempts. We probably need a "configuration" based strategy for this. Might be good to write some tests!!
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same
-- Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course materials
+- Wrap up all TS errors if they exist
 - TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
 - TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
 

@@ -51,13 +51,40 @@ export namespace OpenMinded {
     started_at?: firebase.firestore.Timestamp;
     completed_at?: firebase.firestore.Timestamp;
     project?: Project;
+    lessons?: Lessons;
   };
+
+  export type Lessons = {
+    [lessonId: string]: Lesson;
+  }
+
+  export type Lesson = {
+    started_at: firebase.firestore.Timestamp;
+    completed_at?: firebase.firestore.Timestamp;
+    concepts?: LessonConcepts;
+  }
+
+  export type LessonConcepts = {
+    [conceptId: string]: LessonConcept;
+  }
+
+  export type LessonConcept = {
+    started_at?: firebase.firestore.Timestamp;
+    completed_at?: firebase.firestore.Timestamp;
+    quizzes?: LessonConceptQuiz[];
+  }
+
+  export type LessonConceptQuiz = {
+    correct: number;
+    percentage: number;
+    total: number;
+  }
 
   export type Project = {
     started_at: firebase.firestore.DocumentReference;
-    status: string;
-    completed_at: firebase.firestore.DocumentReference;
-    parts: ProjectParts;
+    completed_at?: firebase.firestore.DocumentReference;
+    status?: string;
+    parts?: ProjectParts;
   };
 
   export type ProjectParts = {

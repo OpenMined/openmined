@@ -4,6 +4,7 @@ import { createBrowserHistory } from 'history';
 import {
   preloadAuth,
   preloadFirestore,
+  preloadFunctions,
   useAnalytics,
   useFirebaseApp,
 } from 'reactfire';
@@ -30,13 +31,25 @@ const Analytics = ({ location }) => {
 
 const history = createBrowserHistory();
 
-const preloadSDKs = (firebaseApp) => {
-  return Promise.all([
+const preloadSDKs = (firebaseApp) =>
+  Promise.all([
+    preloadAuth({
+      firebaseApp,
+      setup: (auth) => {
+        auth().useEmulator('http://localhost:5500/');
+      },
+    }),
+    preloadFunctions({
+      firebaseApp,
+      setup: (functions) => {
+        functions().useFunctionsEmulator('http://localhost:5501');
+      },
+    }),
     preloadFirestore({
       firebaseApp,
       setup: (firestore) => {
         const initalizedStore = firestore();
-        initalizedStore.settings({ host: 'localhost:8080', ssl: false });
+        initalizedStore.settings({ host: 'localhost:5502', ssl: false });
         firestore().enablePersistence({ experimentalForceOwningTab: true });
       },
     }),
@@ -48,14 +61,7 @@ const preloadSDKs = (firebaseApp) => {
     //     storage('gs://put-a-bucket-here');
     //   },
     // }),
-    preloadAuth({
-      firebaseApp,
-      setup: (auth) => {
-        auth().useEmulator('http://localhost:9099/');
-      },
-    }),
   ]);
-};
 
 const App = () => {
   const [cookiePrefs, setCookiePrefs] = useState(
@@ -98,11 +104,11 @@ const App = () => {
     location.pathname.split('/').length > 4 &&
     !location.pathname.includes('/project');
 
-  const firebaseApp = useFirebaseApp();
+  // const firebaseApp = useFirebaseApp();
 
-  if (process.env.NODE_ENV === 'development') {
-    preloadSDKs(firebaseApp);
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  //   preloadSDKs(firebaseApp);
+  // }
 
   return (
     <Router action={action} location={location} navigator={history}>

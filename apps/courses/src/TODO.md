@@ -6,6 +6,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
+- TODO (HARD): Build Typescript interfaces for the course and use them throughout the various Firebase API calls file (see above), helpers file, and various views
 - TODO (HARD): Add a ton of security rules (make sure to reference the \_helpers.ts file!!!)
 - TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
 - Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass
@@ -43,7 +44,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 ### Available issues (general)
 
 - TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
-- TODO (HARD): Build Typescript interfaces for the course and use them throughout the various Firebase API calls file (see above), helpers file, and various views
 - TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
 - TODO (HARD): [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-counter) to count a variety of metrics to a `metrics` collection at the top-level. Make sure to block this collection from being written to by anyone else except the function. This should include a variety of useful information, such as, but not limited to: number of user signups (through Github, through email, and total), number of user deletions, number of courses started, number of lessons started, number of concepts started, number of courses completed, number of lessons completed, number of concepts completed, number of projects started, number of projects passed, number of projects failed, etc. Maybe work with Patrick on this.
 

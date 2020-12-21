@@ -4,7 +4,11 @@
 import * as functions from 'firebase-functions';
 
 // import ssr from './app/ssr';
+import review from './app/review';
 import sanity from './app/sanity';
+
+// Pick review for assignment
+exports.assignReview = functions.region('europe-west1').https.onCall(review);
 
 // Set up Sanity API requests
 exports.sanity = functions.region('europe-west1').https.onCall(sanity);

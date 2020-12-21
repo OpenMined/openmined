@@ -1,5 +1,5 @@
 import React from 'react';
 
-export default () => {
+export default (props: any) => {
   return <div>Mentor</div>;
 };

@@ -18,8 +18,9 @@ import {
   handleConceptStarted,
   handleProvideFeedback,
 } from '../_firebase';
+import { OpenMinded } from '@openmined/shared/types';
 
-export default ({ progress, page, user, ts, course, lesson, concept }) => {
+export default ({ progress, page, user, ts, course, lesson, concept }: OpenMinded.CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
 

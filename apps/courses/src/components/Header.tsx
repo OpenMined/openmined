@@ -34,7 +34,7 @@ import {
   faCog,
   faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import { User } from '@openmined/shared/types';
+import { OpenMinded } from '@openmined/shared/types';
 
 import GridContainer from './GridContainer';
 
@@ -113,7 +113,7 @@ const UserAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+  const dbUser: OpenMinded.User = useFirestoreDocDataOnce(dbUserRef);
 
   return (
     <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />

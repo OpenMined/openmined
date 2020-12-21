@@ -5,10 +5,12 @@ import Student from './Student';
 import Mentor from './Mentor';
 
 import GridContainer from '../../../components/GridContainer';
+import { OpenMinded } from '@openmined/shared/types';
 
-export default (props) => {
+export default (props: OpenMinded.CoursePagesProp) => {
   // TODO: Figure out which layout it should be
   const isStudentLayout = true;
+  console.log(props)
 
   return (
     <Box bg="gray.50">

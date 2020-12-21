@@ -7,8 +7,9 @@ import Sidebar from './Sidebar';
 import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
 import { useFunctions } from 'reactfire';
+import { OpenMinded } from '@openmined/shared/types';
 
-export default ({ page }) => {
+export default ({ page }: OpenMinded.CoursePagesProp) => {
   const functions = useFunctions();
   functions.region = 'europe-west1';
 

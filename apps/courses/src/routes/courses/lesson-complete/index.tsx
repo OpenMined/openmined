@@ -26,6 +26,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
 import { handleErrors } from '../../../helpers';
 import { handleLessonComplete, handleProvideFeedback } from '../_firebase';
+import { OpenMinded } from '@openmined/shared/types';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -40,7 +41,7 @@ const DetailLink = ({ icon, children, ...props }) => (
   </Box>
 );
 
-export default ({ progress, page, user, ts, course, lesson }) => {
+export default ({ progress, page, user, ts, course, lesson }: OpenMinded.CoursePagesProp) => {
   const db = useFirestore();
 
   const {

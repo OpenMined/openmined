@@ -36,8 +36,12 @@ service cloud.firestore {
     }
 
     match /users/{user} {
+      // Anyone can read
       allow read;
+
+      // Owner can only write except is_mentor
       allow write: if isSameUser(user)
+        && !('is_mentor' in incomingData())
 
       // *-----*
       // NOTE: If you're writing security rules, MAKE SURE that you fully understand the data model posted in apps/courses/src/DATA-MODEL.md
@@ -45,8 +49,7 @@ service cloud.firestore {
       // NOTE: Please use the Firebase emulator for running tests
       // *-----*
 
-      // TODO: Cannot write to "is_mentor" field on user object
-
+      // Only owner can read/write
       match /private/{privateUserVar} {
         allow read, write: if isSameUser(user)
       }
@@ -57,6 +60,14 @@ service cloud.firestore {
       }
 
       match /courses/{course} {
+        function hasStartedCourse(u) {
+          return (started_at in u) && !!u.started_at;
+        }
+
+        function hasCompletedCourse(u) {
+          return hasStartedCourse(u) && !!u.completed_at
+        }
+
         allow read, write: if isSameUser(user)
 
         // TODO: Cannot complete course if there are incomplete concepts, lessons, or projects

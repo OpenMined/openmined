@@ -175,11 +175,19 @@
             "lintFilePatterns": ["apps/firebase-api/**/*.ts"]
           }
         },
-        "test": {
+        "run-test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/firebase-api/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "test": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "firebase emulators:exec --only firestore \"nx run-test firebase-api\""
+            ]
           }
         },
         "deploy": {

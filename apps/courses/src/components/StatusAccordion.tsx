@@ -140,7 +140,7 @@ export default ({ content, ...props }) => {
                 {/* SEE TODO (#3) */}
                 {typeof icon !== 'string' && (
                   <Icon
-                    size="lg"
+                    size="2x"
                     as={FontAwesomeIcon}
                     icon={icon}
                     color={text}

@@ -30,7 +30,7 @@ const AttemptedView = ({
     {submissions.map((submission, index) => (
       <SubmissionInline
         key={index}
-        link={`/courses/${course}/project/${part}/${index}`}
+        link={`/courses/${course}/project/${part}/${index + 1}`}
         {...submission}
       />
     ))}
@@ -69,9 +69,7 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
   const projectContent = content.map((i) => {
     const { _key, description, status, submissions } = i;
 
-    const hasActiveSubmission =
-      submissions.findIndex(({ status }) => status === 'pending') !== -1;
-
+    // TODO: We could and should refactor this section to be a lot cleaner
     const panel = () => (
       <>
         {status !== 'passed' && status !== 'failed' && (
@@ -94,37 +92,37 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                 mb={6}
               />
             )}
-            {!hasActiveSubmission && (
-              <Flex align="center">
-                <Button
-                  onClick={() => {
-                    if (status === 'not-started') {
-                      onBeginProjectPart(_key).then(() => {
-                        window.location.href = `/courses/${course}/project/${_key}`;
-                      });
-                    } else {
+            <Flex align="center">
+              <Button
+                onClick={() => {
+                  if (status === 'not-started') {
+                    onBeginProjectPart(_key).then(() => {
                       window.location.href = `/courses/${course}/project/${_key}`;
+                    });
+                  } else {
+                    window.location.href = `/courses/${course}/project/${_key}`;
 
-                      if (status === 'submitted') {
-                        const attempt = submissions.findIndex(
-                          ({ status }) => status === 'pending'
-                        );
+                    if (status === 'submitted') {
+                      const attempt = submissions.findIndex(
+                        ({ status }) => status === 'pending'
+                      );
 
-                        window.location.href = `/courses/${course}/project/${_key}/${attempt}`;
-                      }
+                      window.location.href = `/courses/${course}/project/${_key}/${
+                        attempt + 1
+                      }`;
                     }
-                  }}
-                  colorScheme="black"
-                  mr={4}
-                >
-                  {getButtonText(status)}
-                </Button>
-                <Text color="gray.700" fontSize="sm">
-                  {submissions.filter(({ status }) => status !== 'none').length}{' '}
-                  of {PROJECT_PART_SUBMISSIONS} attempts
-                </Text>
-              </Flex>
-            )}
+                  }
+                }}
+                colorScheme="black"
+                mr={4}
+              >
+                {getButtonText(status)}
+              </Button>
+              <Text color="gray.700" fontSize="sm">
+                {submissions.filter(({ status }) => status !== 'none').length}{' '}
+                of {PROJECT_PART_SUBMISSIONS} attempts
+              </Text>
+            </Flex>
           </>
         )}
         {status === 'failed' && (

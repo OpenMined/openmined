@@ -26,11 +26,9 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Allow for reviews to be submitted by assigned mentors
-- Clicking on a `<SubmissionInline />` from the 3rd tab (`<RichTextEditor />`) causes an error (maybe consider a total refactor of this page (break it out into multiple components/files) and ensure that it can handle any possible situation (think about in preparation for mentors))
-- Creating a submission doesn't give you a button to review your submission
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
 - Make sure a mentor cannot be assigned their own submission
+- Make sure a mentor cannot report a review after the time is up
 - Figure out what to do about `<Menu />` and `<Popover />`
 - Figure out how to reassign a review after 4 hour time limit is reached
 - Convert everything to cyan
@@ -61,6 +59,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
+- Do an overview of the entire website to see how many calls we're making on each page
 - Take down Discourse and integate Spectrum with Slack (https://spectrum.chat/openmined/settings) and then invite the entire Slack community - make sure to replace all the https://discussion.openmined.org links with the Spectrum link
 - Make sure to test the site on dev deployment
 - Make sure all functions and rules are deployed to production

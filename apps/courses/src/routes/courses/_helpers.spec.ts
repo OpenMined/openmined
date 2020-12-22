@@ -162,12 +162,16 @@ describe('project helpers', () => {
           [part]: {
             started_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
-              { status: 'failed', reviewed_at: Date.now() },
-              { status: 'passed', reviewed_at: Date.now() },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
+              {
+                submitted_at: Date.now(),
+                status: 'passed',
+                reviewed_at: Date.now(),
+              },
             ],
             completed_at: Date.now(),
           },
@@ -206,9 +210,9 @@ describe('project helpers', () => {
         parts: {
           [part]: {
             started_at: Date.now(),
-            submissions: [{ submitted_at: Date.now() }],
-            reviews: [
+            submissions: [
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
@@ -232,9 +236,9 @@ describe('project helpers', () => {
         parts: {
           [firstPart]: {
             started_at: Date.now(),
-            submissions: [{ submitted_at: Date.now() }],
-            reviews: [
+            submissions: [
               {
+                submitted_at: Date.now(),
                 status: 'passed',
                 reviewed_at: Date.now(),
               },
@@ -243,20 +247,18 @@ describe('project helpers', () => {
           [secondPart]: {
             started_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
@@ -280,15 +282,13 @@ describe('project helpers', () => {
           [part]: {
             started_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
               {
+                submitted_at: Date.now(),
                 status: 'passed',
                 reviewed_at: Date.now(),
               },
@@ -314,15 +314,13 @@ describe('project helpers', () => {
           [part]: {
             started_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
               {
+                submitted_at: Date.now(),
                 status: 'passed',
                 reviewed_at: Date.now(),
               },
@@ -400,20 +398,18 @@ describe('project helpers', () => {
           [part]: {
             started_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
@@ -436,15 +432,13 @@ describe('project helpers', () => {
           [part]: {
             started_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
@@ -467,15 +461,13 @@ describe('project helpers', () => {
           [part]: {
             started_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
               {
+                submitted_at: Date.now(),
                 status: 'failed',
                 reviewed_at: Date.now(),
               },
               {
+                submitted_at: Date.now(),
                 status: 'passed',
                 reviewed_at: Date.now(),
               },
@@ -515,8 +507,13 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            submissions: [{ submitted_at: Date.now() }],
-            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
+            submissions: [
+              {
+                submitted_at: Date.now(),
+                status: 'passed',
+                reviewed_at: Date.now(),
+              },
+            ],
           },
           '2nd-project-part': {
             started_at: Date.now(),
@@ -532,18 +529,27 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            submissions: [{ submitted_at: Date.now() }],
-            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
+            submissions: [
+              {
+                submitted_at: Date.now(),
+                status: 'passed',
+                reviewed_at: Date.now(),
+              },
+            ],
           },
           '2nd-project-part': {
             started_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
-              { status: 'failed', reviewed_at: Date.now() },
-              { status: 'failed', reviewed_at: Date.now() },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
             ],
           },
         },
@@ -557,19 +563,28 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            submissions: [{ submitted_at: Date.now() }],
-            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
+            submissions: [
+              {
+                submitted_at: Date.now(),
+                status: 'passed',
+                reviewed_at: Date.now(),
+              },
+            ],
           },
           '2nd-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
-              { status: 'failed', reviewed_at: Date.now() },
-              { status: 'passed', reviewed_at: Date.now() },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
+              {
+                submitted_at: Date.now(),
+                status: 'passed',
+                reviewed_at: Date.now(),
+              },
             ],
           },
         },
@@ -595,33 +610,49 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            submissions: [{ submitted_at: Date.now() }],
-            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
+            submissions: [
+              {
+                submitted_at: Date.now(),
+                status: 'passed',
+                reviewed_at: Date.now(),
+              },
+            ],
           },
           '2nd-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
-              { status: 'failed', reviewed_at: Date.now() },
-              { status: 'passed', reviewed_at: Date.now() },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
+              {
+                submitted_at: Date.now(),
+                status: 'passed',
+                reviewed_at: Date.now(),
+              },
             ],
           },
           '3rd-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
-              { status: 'failed', reviewed_at: Date.now() },
-              { status: 'failed', reviewed_at: Date.now() },
-              { status: 'passed', reviewed_at: Date.now() },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
+              {
+                submitted_at: Date.now(),
+                status: 'passed',
+                reviewed_at: Date.now(),
+              },
             ],
           },
         },
@@ -645,20 +676,32 @@ describe('project helpers', () => {
           '1st-project-part': {
             started_at: Date.now(),
             completed_at: Date.now(),
-            submissions: [{ submitted_at: Date.now() }],
-            reviews: [{ status: 'passed', reviewed_at: Date.now() }],
+            submissions: [
+              {
+                submitted_at: Date.now(),
+                status: 'passed',
+                reviewed_at: Date.now(),
+              },
+            ],
           },
           '2nd-project-part': {
             started_at: Date.now(),
             submissions: [
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-              { submitted_at: Date.now() },
-            ],
-            reviews: [
-              { status: 'failed', reviewed_at: Date.now() },
-              { status: 'failed', reviewed_at: Date.now() },
-              { status: 'failed', reviewed_at: Date.now() },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
+              {
+                submitted_at: Date.now(),
+                status: 'failed',
+                reviewed_at: Date.now(),
+              },
             ],
           },
         },

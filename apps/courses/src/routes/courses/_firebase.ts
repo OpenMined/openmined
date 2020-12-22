@@ -196,7 +196,6 @@ export const handleProjectPartBegin = (
   data.project.parts[part] = {
     started_at: ts(),
     submissions: [], // Make sure to set the submissions array up
-    reviews: [], // Make sure to also set the reviews array up
   };
 
   return updateCourse(db, uId, courseId, data);
@@ -243,7 +242,7 @@ export const handleAttemptSubmission = async (
 
   // If we have less than the total number of allowed submissions
   if (submissions.length < PROJECT_PART_SUBMISSIONS) {
-    // Get the current time (see where this function is defined above)
+    // Get the current time
     const time = currentTime();
 
     // First, submit the submissions to the submissions subcollection
@@ -280,6 +279,67 @@ export const handleAttemptSubmission = async (
   } else {
     return false;
   }
+};
+
+export const handleReviewSubmission = async (
+  db: firebase.firestore.Firestore,
+  currentTime,
+  studentId: string,
+  mentorId: string,
+  courseId: string,
+  partId: string,
+  attemptId: string,
+  submissionId: string,
+  status: string,
+  progress: OpenMined.Course,
+  content: string
+) => {
+  // Get the current time
+  const time = currentTime();
+
+  // First, update the submission in the submissions subcollection
+  await getSubmissionsRef(db, studentId, courseId).doc(submissionId).set(
+    {
+      status,
+      review_content: content,
+      review_ended_at: time,
+    },
+    { merge: true }
+  );
+
+  // Get the current submissions
+  const submissions = progress.project.parts[partId].submissions;
+
+  // Change the status and reviewed_at time of this specific attempt
+  submissions[+attemptId - 1].status = status;
+  submissions[+attemptId - 1].reviewed_at = time;
+
+  // Once that's done, update the submissions array
+  await updateCourse(db, studentId, courseId, {
+    project: {
+      parts: {
+        [partId]: {
+          submissions,
+        },
+      },
+    },
+  });
+
+  // And lastly, update the mentor's record of the events
+  await db
+    .collection('users')
+    .doc(mentorId)
+    .collection('reviews')
+    .doc(submissionId)
+    .set(
+      {
+        status: 'reviewed',
+        completed_at: time,
+      },
+      { merge: true }
+    );
+
+  return true;
 };
 
 export const handleProjectComplete = async (

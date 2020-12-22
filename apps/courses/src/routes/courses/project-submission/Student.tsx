@@ -24,9 +24,8 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link as RRDLink, useNavigate } from 'react-router-dom';
-import { useFirestore, useFirestoreDocDataOnce } from 'reactfire';
-import { OpenMined } from '@openmined/shared/types';
+import { Link as RRDLink } from 'react-router-dom';
+import { useFirestore } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
@@ -34,10 +33,8 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 
 import { PROJECT_PART_SUBMISSIONS, getProjectPartNumber } from '../_helpers';
 import { handleAttemptSubmission } from '../_firebase';
-import { prepAccordionAndStatus } from '../project';
 import { Content } from '../concept/content';
 import { handleErrors } from '../../../helpers';
-import GridContainer from '../../../components/GridContainer';
 import SubmissionInline from '../../../components/SubmissionInline';
 import RichTextEditor, {
   EDITOR_STORAGE_STRING,
@@ -50,7 +47,6 @@ dayjs.extend(relativeTime);
 const genTabsContent = (
   part,
   attemptData,
-  reviewData,
   hasStartedSubmission,
   hasPendingSubmission,
   setHasStartedSubmission
@@ -117,7 +113,7 @@ const genTabsContent = (
     },
   ];
 
-  if (reviewData) {
+  if (attemptData.review_content) {
     content.push({
       title: '4. Feedback',
       panel: () => (
@@ -128,7 +124,7 @@ const genTabsContent = (
           <Divider />
           <RichTextEditor
             mt={8}
-            content={JSON.parse(reviewData.review_content)}
+            content={JSON.parse(attemptData.review_content)}
             readOnly
           />
         </>
@@ -185,37 +181,28 @@ const SubmissionBoxes = ({ submissions, ...props }) => (
   </SimpleGrid>
 );
 
-export default ({ page, progress, course, part, attempt, user }) => {
+export default ({
+  page,
+  progress,
+  course,
+  part,
+  attempt,
+  user,
+  content,
+  attemptData,
+}) => {
   const db = useFirestore();
-  const navigate = useNavigate();
   const toast = useToast();
 
   const {
     project: { title: projectTitle, parts },
   } = page;
 
-  // Make sure to get the content for each of the parts
-  const { content: allCombinedContent } = prepAccordionAndStatus(
-    progress,
-    parts
-  );
-  const content =
-    allCombinedContent[allCombinedContent.findIndex((p) => p._key === part)];
   const { _key, title, submissions } = content;
   const number = getProjectPartNumber(parts, part);
 
   const hasPendingSubmission =
     submissions.findIndex(({ status }) => status === 'pending') !== -1;
-
-  // If we've been asked to load an attempt for this page
-  const attemptRef = attempt ? submissions[attempt].submission : null;
-  const attemptData: OpenMined.ProjectPartSubmission = attemptRef
-    ? useFirestoreDocDataOnce(attemptRef)
-    : null;
-
-  // If we've been asked to load a review for this page
-  const reviewRef = attemptRef ? submissions[attempt].review : null;
-  const reviewData: any = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
 
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const preSubmitModal = useDisclosure();
@@ -320,13 +307,13 @@ export default ({ page, progress, course, part, attempt, user }) => {
               {submissions.map((submission, index) => (
                 <SubmissionInline
                   key={index}
-                  link={`/courses/${course}/project/${part}/${index}`}
+                  link={`/courses/${course}/project/${part}/${index + 1}`}
                   {...submission}
                 />
               ))}
             </Box>
           )}
-          {reviewData && (
+          {attemptData.review_content && (
             <Box mb={6}>
               <Flex align="center" mb={3} color="gray.700">
                 <Text>
@@ -334,10 +321,11 @@ export default ({ page, progress, course, part, attempt, user }) => {
                 </Text>
                 <Text mx={4}>|</Text>
                 <Text>
-                  Reviewed {dayjs(reviewData.reviewed_at.toDate()).fromNow()}
+                  Reviewed{' '}
+                  {dayjs(attemptData.review_ended_at.toDate()).fromNow()}
                 </Text>
               </Flex>
-              <ReviewStatus status={reviewData.status} />
+              <ReviewStatus status={attemptData.status} />
             </Box>
           )}
           <ColoredTabs
@@ -345,7 +333,6 @@ export default ({ page, progress, course, part, attempt, user }) => {
             content={genTabsContent(
               content,
               attemptData,
-              reviewData,
               hasStartedSubmission,
               hasPendingSubmission,
               setHasStartedSubmission

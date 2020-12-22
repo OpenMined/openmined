@@ -38,6 +38,8 @@ dayjs.extend(relativeTime);
 
 // TODO: Do a responsive overview of this entire page
 
+export const MENTOR_STUDENT_TOKEN = '@openmined/mentor-student-token';
+
 const getMentorableCourses = (courses, mentor) =>
   mentor.courses.map((id) => {
     const courseIndex = courses.findIndex(({ slug }) => slug === id);
@@ -45,6 +47,12 @@ const getMentorableCourses = (courses, mentor) =>
     if (courseIndex !== -1) return courses[courseIndex];
     return null;
   });
+
+const setupUserTokenAndGoToSubmission = (studentId, url) => {
+  localStorage.setItem(MENTOR_STUDENT_TOKEN, studentId);
+
+  window.location.href = url;
+};
 
 export const MentorContext = ({ courses, mentor }) => {
   const toast = useToast();
@@ -57,7 +65,8 @@ export const MentorContext = ({ courses, mentor }) => {
 
   const activeReviewsRef = db
     .collectionGroup('submissions')
-    .where('mentor', '==', db.doc(`/users/${user.uid}`));
+    .where('mentor', '==', db.doc(`/users/${user.uid}`))
+    .where('status', '==', null);
   const activeReviewsData = useFirestoreCollectionData(activeReviewsRef);
 
   const activeReviews = activeReviewsData.map((r) => {
@@ -147,8 +156,12 @@ export const MentorContext = ({ courses, mentor }) => {
                 </Button>
                 <Button
                   colorScheme="black"
-                  as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}`}
+                  onClick={() => {
+                    setupUserTokenAndGoToSubmission(
+                      review.student.id,
+                      `/courses/${review.course.slug}/project/${review.part}/${review.attempt}`
+                    );
+                  }}
                 >
                   Review
                 </Button>
@@ -424,8 +437,12 @@ export const MentorTabs = ({ courses, mentor }) => {
                 <Button
                   variant="outline"
                   colorScheme="black"
-                  as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}`}
+                  onClick={() => {
+                    setupUserTokenAndGoToSubmission(
+                      review.student.id,
+                      `/courses/${review.course.slug}/project/${review.part}/${review.attempt}`
+                    );
+                  }}
                 >
                   See Review
                 </Button>
@@ -433,8 +450,12 @@ export const MentorTabs = ({ courses, mentor }) => {
               {review.status === 'pending' && (
                 <Button
                   colorScheme="black"
-                  as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}`}
+                  onClick={() => {
+                    setupUserTokenAndGoToSubmission(
+                      review.student.id,
+                      `/courses/${review.course.slug}/project/${review.part}/${review.attempt}`
+                    );
+                  }}
                 >
                   Finish Review
                 </Button>

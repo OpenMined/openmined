@@ -70,6 +70,7 @@ service cloud.firestore {
 
         match /submissions/{submission} {
           allow read, create: if isSameUser(user)
+          allow update: if get(existingData().mentor).id == request.auth.uid;
           // TODO: Nobody may edit or delete a submission
           // TODO: Deny read unless it's the same user... see "match /{path=**}/submissions/{submission}" below for where you need to write the rules for mentor read access
         }

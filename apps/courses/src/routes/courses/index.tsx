@@ -2,16 +2,16 @@ import React, { lazy } from 'react';
 import { useParams } from 'react-router-dom';
 import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import { useSanity } from '@openmined/shared/data-access-sanity';
+import { OpenMined } from '@openmined/shared/types';
 
 import { usePageAvailabilityRedirect } from './_helpers';
 import * as queries from './_queries';
 import * as configs from './_configs';
-
 import CourseWrap from './Wrapper';
-
-import Loading from '../../components/Loading';
 import { getCourseRef } from './_firebase';
-import { OpenMined } from '@openmined/shared/types';
+
+import { MENTOR_STUDENT_TOKEN } from '../users/dashboard/Mentor';
+import Loading from '../../components/Loading';
 
 // SEE TODO (#11)
 
@@ -58,20 +58,28 @@ const PermissionsGate = ({ children, progress, which, page, ...params }) => {
 };
 
 type PropType = {
-  which: OpenMined.CoursePageWhich,
-}
+  which: OpenMined.CoursePageWhich;
+};
 
 export default ({ which }: PropType) => {
   // Get all the URL params
   const params: any = useParams();
 
+  // The mentor/student token is created when a mentor wants to view the submission page of a student
+  // Since they will have different ID's, we need to ensure that IF we're a mentor trying to leave a review
+  // That the "dbCourseRef" is referencing the right user
+  // If we're not a mentor in the process of a review, we can assume it's a student trying to get their own "dbCourseRef"
+  const mentorStudentToken = localStorage.getItem(MENTOR_STUDENT_TOKEN);
+
   // Get the user's current progress on their courses
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbCourseRef = params.course
-    ? getCourseRef(db, user.uid, params.course)
+    ? getCourseRef(db, mentorStudentToken || user.uid, params.course)
     : null;
-  const dbCourse: OpenMined.Course = dbCourseRef ? useFirestoreDocDataOnce(dbCourseRef) : null;
+  const dbCourse: OpenMined.Course = dbCourseRef
+    ? useFirestoreDocDataOnce(dbCourseRef)
+    : null;
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference

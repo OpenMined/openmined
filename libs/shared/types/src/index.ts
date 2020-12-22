@@ -92,13 +92,13 @@ export namespace OpenMined {
   };
 
   export type ProjectPart = {
-    reviews: ProjectPartReview[];
     started_at?: firebase.firestore.Timestamp;
     completed_at?: firebase.firestore.Timestamp;
     submissions: ProjectPartSubmission[];
   };
 
   export type ProjectPartSubmission = {
+    id: string;
     course: string;
     part: string;
     attempt: number;
@@ -110,14 +110,12 @@ export namespace OpenMined {
     review_content: string | null;
     review_started_at: firebase.firestore.Timestamp | null;
     review_ended_at: firebase.firestore.Timestamp | null;
-    id: string;
   };
-
-  export type ProjectPartReview = {};
 
   export type ProjectAttempt = {
     submitted_at: firebase.firestore.Timestamp;
     submission: firebase.firestore.DocumentReference;
-    content: any;
+    reviewed_at?: firebase.firestore.Timestamp;
+    status?: string;
   };
 }

@@ -94,21 +94,24 @@ export const hasSubmittedProjectPart = (u, p) =>
   u.project.parts[p].submissions.length > 0;
 export const hasReceivedProjectPartReview = (u, p) =>
   hasSubmittedProjectPart(u, p) &&
-  !!u.project.parts[p].reviews &&
-  u.project.parts[p].reviews.length > 0;
+  u.project.parts[p].submissions.filter((s) => s.status).length > 0;
 export const hasRemainingProjectPartSubmissions = (u, p) =>
   hasReceivedProjectPartReview(u, p) &&
-  u.project.parts[p].reviews.length < PROJECT_PART_SUBMISSIONS;
+  u.project.parts[p].submissions.filter((s) => s.status).length <
+    PROJECT_PART_SUBMISSIONS;
 export const SUBMISSION_REVIEW_HOURS = 4;
 export const getSubmissionReviewEndTime = (started) =>
   started.add(SUBMISSION_REVIEW_HOURS, 'hour');
 export const hasReceivedPassingProjectPartReview = (u, p) => {
   if (!hasReceivedProjectPartReview(u, p)) return false;
 
-  for (let i = 0; i < u.project.parts[p].reviews.length; i++) {
-    const currentReview = u.project.parts[p].reviews[i];
+  for (let i = 0; i < u.project.parts[p].submissions.length; i++) {
+    const currentSubmission = u.project.parts[p].submissions[i];
 
-    if (currentReview.status === 'passed' && currentReview.reviewed_at) {
+    if (
+      currentSubmission.status === 'passed' &&
+      currentSubmission.reviewed_at
+    ) {
       return true;
     }
   }
@@ -118,10 +121,13 @@ export const hasReceivedPassingProjectPartReview = (u, p) => {
 export const hasReceivedFailingProjectPartReview = (u, p) => {
   if (!hasReceivedProjectPartReview(u, p)) return false;
 
-  for (let i = 0; i < u.project.parts[p].reviews.length; i++) {
-    const currentReview = u.project.parts[p].reviews[i];
+  for (let i = 0; i < u.project.parts[p].submissions.length; i++) {
+    const currentSubmission = u.project.parts[p].submissions[i];
 
-    if (currentReview.status === 'failed' && currentReview.reviewed_at) {
+    if (
+      currentSubmission.status === 'failed' &&
+      currentSubmission.reviewed_at
+    ) {
       return true;
     }
   }

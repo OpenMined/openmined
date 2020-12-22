@@ -48,10 +48,7 @@ The following is the theoretical, and incomplete, data structure for the user's 
               - status
               - submissions (array)
                 - submitted_at
-                - REF: submission
-              - reviews (array)
-                <!-- Start added by mentor -->
                 - reviewed_at
                 - status
                 - REF: submission
-                <!-- End added by mentor -->
+                

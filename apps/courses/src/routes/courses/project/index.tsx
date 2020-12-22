@@ -52,19 +52,11 @@ const Detail = ({ title, value }) => (
   </Flex>
 );
 
-// Intelligently combine the submissions array and the reviews array so they're easier to work with
-const combineSubmissionsAndReviews = (submissions, reviews) =>
+// Make sure that the submissions array always has a status
+const ensurePopulatedSubmissionsArray = (submissions) =>
   submissions && submissions.length > 0
     ? [
-        ...submissions.map((s, i) => {
-          const equivalentReview = reviews[i];
-
-          if (equivalentReview && equivalentReview.status) {
-            return { ...s, ...equivalentReview };
-          }
-
-          return { ...s, status: 'pending' };
-        }),
+        ...submissions,
         ...Array(PROJECT_PART_SUBMISSIONS - submissions.length).fill({
           status: 'none',
         }),
@@ -73,15 +65,13 @@ const combineSubmissionsAndReviews = (submissions, reviews) =>
 
 // Tell us the status the entire project
 // ... and go through the user's progress and tell us the status of each part
-// ... and return all the relevant submissions and reviews
 export const prepAccordionAndStatus = (progress, parts) => {
   const content = parts.map((part) => ({
     ...part,
     status: getProjectPartStatus(progress, part._key),
     submissions: hasStartedProjectPart(progress, part._key)
-      ? combineSubmissionsAndReviews(
-          progress.project.parts[part._key].submissions,
-          progress.project.parts[part._key].reviews
+      ? ensurePopulatedSubmissionsArray(
+          progress.project.parts[part._key].submissions
         )
       : [],
   }));
@@ -116,7 +106,13 @@ const getStatusStyles = (status) => {
   }
 };
 
-export default ({ course, page, progress, user, ts }: OpenMined.CoursePagesProp) => {
+export default ({
+  course,
+  page,
+  progress,
+  user,
+  ts,
+}: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
 

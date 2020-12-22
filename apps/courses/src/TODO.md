@@ -26,15 +26,17 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
+- Migrate the root-level mentors collection... move the courses field for this document into the user's public data and rename it "mentorable_courses". Make sure to remove the mentors collections from the firebase rules as well.
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
-- Make sure a mentor cannot be assigned their own submission
-- Make sure a mentor cannot report a review after the time is up
+- Do responsive check on two remaining pages
 - Figure out what to do about `<Menu />` and `<Popover />`
-- Figure out how to reassign a review after 4 hour time limit is reached
 - Convert everything to cyan
 - Find some way to designate "cyan" as the primary color in Chakra
 - Re-add text underline to all links
 - Figure out what to do about `<RichTextEditor />`
+- Make sure a mentor cannot be assigned their own submission
+- Make sure a mentor cannot report a review after the time is up
+- Figure out how to reassign a review after 4 hour time limit is reached
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course material
 - Redo the permissions gate to allow for projects and project parts with or without attempts. We probably need a "configuration" based strategy for this. Might be good to write some tests!!
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same

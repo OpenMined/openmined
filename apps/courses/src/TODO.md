@@ -6,7 +6,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
-- TODO (HARD): Build Typescript interfaces for the course and use them throughout the various Firebase API calls file (see above), helpers file, and various views
 - TODO (HARD): Add a ton of security rules (make sure to reference the \_helpers.ts file!!!)
 - TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
 - Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass

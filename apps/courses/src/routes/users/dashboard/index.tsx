@@ -14,7 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
-import { User } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 import {
   useUser,
   useFirestoreDocDataOnce,
@@ -61,7 +61,7 @@ export default () => {
   const db = useFirestore();
 
   const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+  const dbUser: OpenMined.User = useFirestoreDocDataOnce(dbUserRef);
 
   const dbCoursesRef = db
     .collection('users')
@@ -74,7 +74,7 @@ export default () => {
   const dbMentorRef = dbUser.is_mentor
     ? db.collection('mentors').doc(user.uid)
     : null;
-  const dbMentor: User = dbMentorRef
+  const dbMentor: OpenMined.User = dbMentorRef
     ? useFirestoreDocDataOnce(dbMentorRef)
     : null;
 

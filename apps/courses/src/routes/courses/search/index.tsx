@@ -6,8 +6,9 @@ import Sidebar from './Sidebar';
 
 import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
+import { OpenMined } from '@openmined/shared/types';
 
-export default ({ page }) => {
+export default ({ page }: OpenMined.CoursePagesProp) => {
   const FIXED_SIDEBAR_WIDTH = 250;
   const FIXED_SIDEBAR_MD_WIDTH = 200;
 

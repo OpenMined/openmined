@@ -1,3 +1,4 @@
+import { OpenMined } from '@openmined/shared/types';
 import {
   hasCompletedConcept,
   hasCompletedCourse,
@@ -31,9 +32,9 @@ export const handleConceptStarted = async (
   uId: string,
   courseId: string,
   ts,
-  progress,
-  lesson,
-  concept
+  progress: OpenMined.Course,
+  lesson: string,
+  concept: string
 ) => {
   if (!hasStartedConcept(progress, lesson, concept)) {
     const data = progress;
@@ -53,9 +54,9 @@ export const handleConceptComplete = (
   uId: string,
   courseId: string,
   ts,
-  progress,
-  lesson,
-  concept
+  progress: OpenMined.Course,
+  lesson: string,
+  concept: string
 ) =>
   new Promise((resolve, reject) => {
     // If we haven't already completed this concept...
@@ -84,9 +85,9 @@ export const handleQuizFinish = async (
   uId: string,
   courseId: string,
   arrayUnion,
-  progress,
-  lesson,
-  concept,
+  progress: OpenMined.Course,
+  lesson: string,
+  concept: string,
   numQuizzes,
   correctAnswers,
   quiz
@@ -121,8 +122,8 @@ export const handleLessonStart = async (
   uId: string,
   courseId: string,
   ts,
-  progress,
-  lesson
+  progress: OpenMined.Course,
+  lesson: string
 ) => {
   const isCourseStarted = hasStartedCourse(progress);
   const isLessonStarted = hasStartedLesson(progress, lesson);
@@ -152,8 +153,8 @@ export const handleLessonComplete = (
   uId: string,
   courseId: string,
   ts,
-  progress,
-  lesson
+  progress: OpenMined.Course,
+  lesson: string,
 ) =>
   new Promise((resolve, reject) => {
     // If we haven't already completed this lesson...
@@ -178,8 +179,8 @@ export const handleProjectPartBegin = (
   uId: string,
   courseId: string,
   ts,
-  progress,
-  part
+  progress: OpenMined.Course,
+  part: string,
 ) => {
   const data = progress;
 
@@ -226,9 +227,9 @@ export const handleAttemptSubmission = async (
   courseId: string,
   arrayUnion,
   currentTime,
-  progress,
-  part,
-  content
+  progress: OpenMined.Course,
+  part: string,
+  content: string,
 ) => {
   // Get their current submissions
   const submissions = progress.project.parts[part].submissions;
@@ -279,8 +280,8 @@ export const handleProjectComplete = async (
   uId: string,
   courseId: string,
   ts,
-  progress,
-  status
+  progress: OpenMined.Course,
+  status: string
 ) => {
   return new Promise((resolve, reject) => {
     // If we haven't already completed this project and course...
@@ -327,9 +328,9 @@ export const handleProvideFeedback = async (
   uId: string,
   courseId: string,
   feedbackId: string,
-  value,
-  feedback,
-  type
+  value: number,
+  feedback: string | null,
+  type: 'concept' | 'lesson' | 'project',
 ) =>
   updateFeedback(db, uId, courseId, feedbackId, {
     value,

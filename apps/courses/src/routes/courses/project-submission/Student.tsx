@@ -26,7 +26,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useFirestore, useFirestoreDocDataOnce } from 'reactfire';
-import { Course } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
@@ -209,13 +209,13 @@ export default ({ page, progress, course, part, attempt, user }) => {
 
   // If we've been asked to load an attempt for this page
   const attemptRef = attempt ? submissions[attempt].submission : null;
-  const attemptData: Course.ProjectSubmission = attemptRef
+  const attemptData: OpenMined.ProjectPartSubmission = attemptRef
     ? useFirestoreDocDataOnce(attemptRef)
     : null;
 
   // If we've been asked to load a review for this page
   const reviewRef = attemptRef ? submissions[attempt].review : null;
-  const reviewData = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
+  const reviewData: any = reviewRef ? useFirestoreDocDataOnce(reviewRef) : null;
 
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const preSubmitModal = useDisclosure();

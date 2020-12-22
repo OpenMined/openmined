@@ -29,6 +29,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
 import { handleErrors } from '../../../helpers';
 import { handleProjectComplete, handleProvideFeedback } from '../_firebase';
+import { OpenMined } from '@openmined/shared/types';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -43,7 +44,7 @@ const DetailLink = ({ icon, children, ...props }) => (
   </Box>
 );
 
-export default ({ progress, page, user, ts, course }) => {
+export default ({ progress, page, user, ts, course }: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
 
   const {

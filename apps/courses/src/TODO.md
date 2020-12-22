@@ -26,15 +26,17 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Build the mentorship dashboard
+- Allow for reviews to be submitted by assigned mentors
 - Clicking on a `<SubmissionInline />` from the 3rd tab (`<RichTextEditor />`) causes an error (maybe consider a total refactor of this page (break it out into multiple components/files) and ensure that it can handle any possible situation (think about in preparation for mentors))
 - Creating a submission doesn't give you a button to review your submission
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
 - Make sure a mentor cannot be assigned their own submission
+- Figure out what to do about `<Menu />` and `<Popover />`
+- Figure out how to reassign a review after 4 hour time limit is reached
 - Convert everything to cyan
 - Find some way to designate "cyan" as the primary color in Chakra
 - Re-add text underline to all links
-- Figure out what to do about `<Menu />` and `<Popover />` and `<RichTextEditor />`
+- Figure out what to do about `<RichTextEditor />`
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course material
 - Redo the permissions gate to allow for projects and project parts with or without attempts. We probably need a "configuration" based strategy for this. Might be good to write some tests!!
 - Refactor all of the "complete" pages to share a bunch of logic, because they all basically look the same

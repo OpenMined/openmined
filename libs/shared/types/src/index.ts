@@ -56,29 +56,29 @@ export namespace OpenMined {
 
   export type Lessons = {
     [lessonId: string]: Lesson;
-  }
+  };
 
   export type Lesson = {
     started_at: firebase.firestore.Timestamp;
     completed_at?: firebase.firestore.Timestamp;
     concepts?: LessonConcepts;
-  }
+  };
 
   export type LessonConcepts = {
     [conceptId: string]: LessonConcept;
-  }
+  };
 
   export type LessonConcept = {
     started_at?: firebase.firestore.Timestamp;
     completed_at?: firebase.firestore.Timestamp;
     quizzes?: LessonConceptQuiz[];
-  }
+  };
 
   export type LessonConceptQuiz = {
     correct: number;
     percentage: number;
     total: number;
-  }
+  };
 
   export type Project = {
     started_at: firebase.firestore.Timestamp;
@@ -99,12 +99,18 @@ export namespace OpenMined {
   };
 
   export type ProjectPartSubmission = {
-    attempt: number;
-    content: string;
     course: string;
     part: string;
+    attempt: number;
     student: firebase.firestore.DocumentReference;
     submitted_at: firebase.firestore.Timestamp;
+    submission_content: string;
+    mentor: firebase.firestore.DocumentReference | null;
+    status: string | null;
+    review_content: string | null;
+    review_started_at: firebase.firestore.Timestamp | null;
+    review_ended_at: firebase.firestore.Timestamp | null;
+    id: string;
   };
 
   export type ProjectPartReview = {};

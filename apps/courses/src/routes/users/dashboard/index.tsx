@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
 import { OpenMined } from '@openmined/shared/types';
+import { useSanity } from '@openmined/shared/data-access-sanity';
 import {
   useUser,
   useFirestoreDocDataOnce,
@@ -30,7 +31,6 @@ import { MentorContext, MentorTabs, mentorResources } from './Mentor';
 
 import GridContainer from '../../../components/GridContainer';
 import { getLinkPropsFromLink } from '../../../helpers';
-import { useSanity } from '@openmined/shared/data-access-sanity';
 
 dayjs.extend(relativeTime);
 

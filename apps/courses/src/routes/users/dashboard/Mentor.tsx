@@ -13,22 +13,25 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
-import { faGithub, faSlack } from '@fortawesome/free-brands-svg-icons';
-import { faCommentAlt, faShapes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
-
-import ColoredTabs from '../../../components/ColoredTabs';
-import useToast, { toastConfig } from '../../../components/Toast';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import {
   useFirestore,
   useFirestoreCollectionData,
   useFunctions,
   useUser,
 } from 'reactfire';
-import { getSubmissionReviewEndTime } from '../../courses/_helpers';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithub, faSlack } from '@fortawesome/free-brands-svg-icons';
+import { faCommentAlt, faShapes } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+import {
+  getSubmissionReviewEndTime,
+  SUBMISSION_REVIEW_HOURS,
+} from '../../courses/_helpers';
+import ColoredTabs from '../../../components/ColoredTabs';
+import useToast, { toastConfig } from '../../../components/Toast';
 import Countdown from '../../../components/Countdown';
 
 dayjs.extend(relativeTime);
@@ -44,6 +47,7 @@ const getMentorableCourses = (courses, mentor) =>
   });
 
 export const MentorContext = ({ courses, mentor }) => {
+  const toast = useToast();
   const user = useUser();
   const db = useFirestore();
   const functions = useFunctions();
@@ -118,12 +122,25 @@ export const MentorContext = ({ courses, mentor }) => {
                   mr={3}
                   onClick={() => {
                     requestResignation({
-                      course: review.course.slug,
-                      part: review.part,
-                      attempt: review.attempt,
-                      mentor: review.mentor,
-                      student: review.student,
-                    }).then((d) => console.log(d));
+                      submission: review.id,
+                      mentor: review.mentor.id,
+                    }).then(({ data }) => {
+                      if (data && !data.error) {
+                        toast({
+                          ...toastConfig,
+                          title: 'Resigned from review',
+                          description: 'You have resigned from this review',
+                          status: 'success',
+                        });
+                      } else {
+                        toast({
+                          ...toastConfig,
+                          title: 'Error resigning from review',
+                          description: data.error,
+                          status: 'error',
+                        });
+                      }
+                    });
                   }}
                 >
                   Resign
@@ -261,6 +278,13 @@ export const MentorTabs = ({ courses, mentor }) => {
                         if (data && !data.error) {
                           setHasRequestedReview(false);
 
+                          toast({
+                            ...toastConfig,
+                            title: 'Review assigned',
+                            description: `You have been assigned a review, you have ${SUBMISSION_REVIEW_HOURS} hours to complete this review`,
+                            status: 'success',
+                          });
+
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                         } else {
                           toast({
@@ -316,7 +340,7 @@ export const MentorTabs = ({ courses, mentor }) => {
 
     return (
       <Box>
-        <SimpleGrid
+        {/* <SimpleGrid
           columns={[1, null, 2]}
           spacing={0}
           width="full"
@@ -350,7 +374,7 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Heading>
             <Text color="magenta.200">Reviews Resigned</Text>
           </Flex>
-        </SimpleGrid>
+        </SimpleGrid> */}
         <Heading as="p" size="md" color="gray.700" mb={3}>
           History
         </Heading>
@@ -381,7 +405,8 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Box>
             {review.completed_at && (
               <Text color="gray.700">
-                Completed {dayjs(review.completed_at.toDate()).fromNow()}
+                {review.status === 'resigned' ? 'Resigned' : 'Reviewed'}{' '}
+                {dayjs(review.completed_at.toDate()).fromNow()}
               </Text>
             )}
             {!review.completed_at && (

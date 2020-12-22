@@ -99,7 +99,9 @@ export const hasReceivedProjectPartReview = (u, p) =>
 export const hasRemainingProjectPartSubmissions = (u, p) =>
   hasReceivedProjectPartReview(u, p) &&
   u.project.parts[p].reviews.length < PROJECT_PART_SUBMISSIONS;
-export const getSubmissionReviewEndTime = (started) => started.add(4, 'hour');
+export const SUBMISSION_REVIEW_HOURS = 4;
+export const getSubmissionReviewEndTime = (started) =>
+  started.add(SUBMISSION_REVIEW_HOURS, 'hour');
 export const hasReceivedPassingProjectPartReview = (u, p) => {
   if (!hasReceivedProjectPartReview(u, p)) return false;
 

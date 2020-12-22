@@ -154,7 +154,7 @@ export const handleLessonComplete = (
   courseId: string,
   ts,
   progress: OpenMined.Course,
-  lesson: string,
+  lesson: string
 ) =>
   new Promise((resolve, reject) => {
     // If we haven't already completed this lesson...
@@ -180,7 +180,7 @@ export const handleProjectPartBegin = (
   courseId: string,
   ts,
   progress: OpenMined.Course,
-  part: string,
+  part: string
 ) => {
   const data = progress;
 
@@ -219,7 +219,14 @@ export const addSubmission = (
   uId: string,
   courseId: string,
   data: any
-) => getSubmissionsRef(db, uId, courseId).add(data);
+) => {
+  const submission = getSubmissionsRef(db, uId, courseId).doc().id;
+  const submissionRef = getSubmissionsRef(db, uId, courseId).doc(submission);
+
+  submissionRef.set({ ...data, id: submission });
+
+  return submissionRef;
+};
 
 export const handleAttemptSubmission = async (
   db: firebase.firestore.Firestore,
@@ -229,7 +236,7 @@ export const handleAttemptSubmission = async (
   currentTime,
   progress: OpenMined.Course,
   part: string,
-  content: string,
+  content: string
 ) => {
   // Get their current submissions
   const submissions = progress.project.parts[part].submissions;
@@ -330,7 +337,7 @@ export const handleProvideFeedback = async (
   feedbackId: string,
   value: number,
   feedback: string | null,
-  type: 'concept' | 'lesson' | 'project',
+  type: 'concept' | 'lesson' | 'project'
 ) =>
   updateFeedback(db, uId, courseId, feedbackId, {
     value,

@@ -8,6 +8,7 @@ The following is the theoretical, and incomplete, data structure for the user's 
       - D: [course]
         - C: submissions
           - D: [submission]
+            - id (copied from [submission])
             - course
             - part
             - attempt
@@ -21,6 +22,19 @@ The following is the theoretical, and incomplete, data structure for the user's 
             - review_started_at (review started time)
             - review_ended_at (review ended time)
             <!-- End added by mentor -->
+        <!-- Start: If they're also a mentor -->
+        - C: reviews
+          - D: [review]
+            - id (copied from [review])
+            - REF: submission
+            - REF: student
+            - course
+            - part
+            - attempt
+            - status (reviewed, resigned, orpending)
+            - started_at (review started time)
+            - completed_at (review ended time, filled in when review is either reviewed or resigned)
+        <!-- End: If they're also a mentor -->
         - started_at
         - completed_at
         - project

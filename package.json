@@ -30,12 +30,15 @@
     "update": "nx migrate latest",
     "workspace-schematic": "nx workspace-schematic",
     "dep-graph": "nx dep-graph",
-    "help": "nx help"
+    "help": "nx help",
+    "firebase-api:emulators-start-firestore": "nx run firebase-api:emulators-start-firestore",
+    "firebase-api:test-firestore": "nx run firebase-api:test-firestore"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.0.3",
     "@emotion/react": "^11.1.2",
     "@emotion/styled": "^11.0.0",
+    "@firebase/rules-unit-testing": "^1.1.6",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-brands-svg-icons": "^5.15.1",
     "@fortawesome/free-regular-svg-icons": "^5.15.1",
@@ -60,6 +63,7 @@
     "firebase": "7.24.0",
     "firebase-admin": "^9.3.0",
     "firebase-functions": "^3.11.0",
+    "firebase-tools": "^9.1.0",
     "framer-motion": "^2.9.5",
     "fuse.js": "^6.4.3",
     "history": "^5.0.0",

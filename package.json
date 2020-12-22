@@ -30,9 +30,7 @@
     "update": "nx migrate latest",
     "workspace-schematic": "nx workspace-schematic",
     "dep-graph": "nx dep-graph",
-    "help": "nx help",
-    "firebase-api:emulators-start-firestore": "nx run firebase-api:emulators-start-firestore",
-    "firebase-api:test-firestore": "nx run firebase-api:test-firestore"
+    "help": "nx help"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.0.3",

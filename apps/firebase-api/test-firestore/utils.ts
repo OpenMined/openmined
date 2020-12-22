@@ -37,5 +37,5 @@ export const afterAllTests = async () => {
   console.log(`View firestore rule coverage information at ${coverageFile}\n`);
 };
 
-export const getCourseDocRef = (db, userId, courseId) =>
+export const getCourseRef = (db, userId, courseId) =>
   db.collection('users').doc(userId).collection('courses').doc(courseId);

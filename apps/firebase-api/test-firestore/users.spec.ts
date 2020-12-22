@@ -3,12 +3,11 @@ import * as firebase from '@firebase/rules-unit-testing';
 import {
   PROJECT_ID,
   getAuthedFirestore,
-  loadFirebaseRules,
-  afterAllTests,
 } from './utils';
 
 const ALICE_ID = 'alice';
 const BOB_ID = 'bob';
+
 describe('users/{{userID}}', () => {
   beforeEach(async () => {
     await firebase.clearFirestoreData({ projectId: PROJECT_ID });
@@ -38,10 +37,16 @@ describe('users/{{userID}}', () => {
     const forceIsMentorData = { is_mentor: true };
     await firebase.assertFails(aliceProfile.set(forceIsMentorData));
 
-    // others cannnot read
+    // others cannnot write
     const anyoneDb = getAuthedFirestore(null);
     await firebase.assertFails(
       anyoneDb.collection('users').doc(ALICE_ID).set(profileData)
+    );
+
+    // bob cannnot write alice user doc
+    const bobDb = getAuthedFirestore({ uid: BOB_ID });
+    await firebase.assertFails(
+      bobDb.collection('users').doc(ALICE_ID).set(profileData)
     );
   });
   describe('/private/{{userId}}', () => {
@@ -61,6 +66,13 @@ describe('users/{{userID}}', () => {
       await firebase.assertFails(getPrivateDocRef(anyoneDb, ALICE_ID).get());
       await firebase.assertFails(
         getPrivateDocRef(anyoneDb, ALICE_ID).set(profileData)
+      );
+
+      // bob cannot read/write alics private
+      const bobDb = getAuthedFirestore({ uid: BOB_ID });
+      await firebase.assertFails(getPrivateDocRef(bobDb, ALICE_ID).get());
+      await firebase.assertFails(
+        getPrivateDocRef(bobDb, ALICE_ID).set(profileData)
       );
     });
   });

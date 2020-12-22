@@ -61,6 +61,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. T
 
 - Take down Discourse and integate Spectrum with Slack (https://spectrum.chat/openmined/settings) and then invite the entire Slack community - make sure to replace all the https://discussion.openmined.org links with the Spectrum link
 - Make sure to test the site on dev deployment
+- Make sure all functions and rules are deployed to production
 - Make sure to search for any configurations, Firebase extensions, or anything that needs to be enabled on the production account first (to make it identical to the dev Firebase)
 - Make an "intro to the CMS" video to give to Mat, Andrew, and Emma (and make sure to explain that filling in EVERY field is critical - if they can't fill in some, tell them to ask Patrick what to do)
 - Go back through the designs and make sure things are as accurate as possible, get final approval from Kyoko

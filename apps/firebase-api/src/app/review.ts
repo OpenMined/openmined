@@ -59,19 +59,31 @@ export const assignReview = async (data, context) => {
       // Get the ID of the user who made the submission
       const studentId = assignment.student._path.segments[1];
 
-      // Write the assignment to the DB
-      await admin
+      const submissionRef = admin
         .firestore()
         .doc(
           `/users/${studentId}/courses/${course}/submissions/${assignment.id}`
-        )
-        .set(
-          {
-            mentor: admin.firestore().doc(`/users/${user}`),
-            review_started_at: admin.firestore.FieldValue.serverTimestamp(),
-          },
-          { merge: true }
         );
+
+      // Write the assignment to the submission
+      await submissionRef.set(
+        {
+          mentor: admin.firestore().doc(`/users/${user}`),
+          review_started_at: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      // Write the assignment to the mentor's reviews subcollection
+      await admin.firestore().collection(`/users/${user}/reviews`).add({
+        submission: submissionRef,
+        student: assignment.student,
+        course: assignment.course,
+        part: assignment.part,
+        attempt: assignment.attempt,
+        status: 'pending',
+        started_at: admin.firestore.FieldValue.serverTimestamp(),
+      });
 
       // Return it to the user
       return assignment;
@@ -86,10 +98,11 @@ export const resignReview = async (data, context) => {
   const user = context.auth.uid;
   const course = data.course;
   const part = data.part;
+  const attempt = data.attempt;
   const mentor = data.mentor;
   const student = data.student;
 
-  console.log(course, part, mentor, student);
+  console.log(course, part, attempt, mentor, student);
 
   // If there isn't a user...
   if (!context.auth || !user) return { error: 'Not signed in' };

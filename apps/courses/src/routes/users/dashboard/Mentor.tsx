@@ -21,6 +21,7 @@ import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import ColoredTabs from '../../../components/ColoredTabs';
 import useToast, { toastConfig } from '../../../components/Toast';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import {
   useFirestore,
   useFirestoreCollectionData,
@@ -29,6 +30,8 @@ import {
 } from 'reactfire';
 import { getSubmissionReviewEndTime } from '../../courses/_helpers';
 import Countdown from '../../../components/Countdown';
+
+dayjs.extend(relativeTime);
 
 // TODO: Do a responsive overview of this entire page
 
@@ -117,6 +120,7 @@ export const MentorContext = ({ courses, mentor }) => {
                     requestResignation({
                       course: review.course.slug,
                       part: review.part,
+                      attempt: review.attempt,
                       mentor: review.mentor,
                       student: review.student,
                     }).then((d) => console.log(d));
@@ -127,7 +131,7 @@ export const MentorContext = ({ courses, mentor }) => {
                 <Button
                   colorScheme="black"
                   as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}`}
+                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}`}
                 >
                   Review
                 </Button>
@@ -283,48 +287,32 @@ export const MentorTabs = ({ courses, mentor }) => {
   };
 
   const MyActivity = () => {
-    // TODO: Fill this in correctly
-    const reviewHistory = [
-      {
-        title: 'Project name',
-        part: 'Project part name',
-        ended_at: 'January 4th, 2020',
-        resigned: false,
-      },
-      {
-        title: 'Project name',
-        part: 'Project part name 2',
-        ended_at: 'January 4th, 2020',
-        resigned: false,
-      },
-      {
-        title: 'Project name',
-        part: 'Project part name 2',
-        ended_at: 'January 2nd, 2020',
-        resigned: true,
-      },
-      {
-        title: 'Project name',
-        part: 'Project part name',
-        ended_at: 'January 2nd, 2020',
-        resigned: true,
-      },
-      {
-        title: 'Project name',
-        part: 'Project part name 3',
-        ended_at: 'January 1st, 2020',
-        resigned: false,
-      },
-    ];
+    const user = useUser();
+    const db = useFirestore();
+    const dbReviewsRef = db
+      .collection('users')
+      .doc(user.uid)
+      .collection('reviews')
+      // .where('status', '!=', 'pending')
+      .orderBy('started_at', 'desc')
+      .limit(10);
+    const dbReviews = useFirestoreCollectionData(dbReviewsRef);
+
+    const reviewHistory = dbReviews.map((r) => {
+      const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
+
+      if (courseIndex !== -1) return { ...r, course: courses[courseIndex] };
+      return null;
+    });
+
+    // TODO: We don't currently support pagination here - although we need to at some point
+    const hasMoreReviews = false;
 
     // TODO: Fill this in correctly
-    const hasMoreReviews = true;
+    const numReviewed = 0;
 
     // TODO: Fill this in correctly
-    const numReviewed = 4;
-
-    // TODO: Fill this in correctly
-    const numResigned = 1;
+    const numResigned = 0;
 
     return (
       <Box>
@@ -379,20 +367,51 @@ export const MentorTabs = ({ courses, mentor }) => {
           >
             <Box>
               <Heading as="p" size="sm" mb={2}>
-                {review.title}
+                {review.course.title}
               </Heading>
-              <Text color="gray.700">{review.part}</Text>
+              <Text color="gray.700">
+                {
+                  review.course.project.parts[
+                    review.course.project.parts.findIndex(
+                      (p) => p._key === review.part
+                    )
+                  ].title
+                }
+              </Text>
             </Box>
-            <Text color="gray.700">{review.ended_at}</Text>
+            {review.completed_at && (
+              <Text color="gray.700">
+                Completed {dayjs(review.completed_at.toDate()).fromNow()}
+              </Text>
+            )}
+            {!review.completed_at && (
+              <Text color="gray.700">
+                Started {dayjs(review.started_at.toDate()).fromNow()}
+              </Text>
+            )}
             <Flex justify="center" align="center" width={200}>
-              {review.resigned && (
+              {review.status === 'resigned' && (
                 <Text color="gray.700" fontStyle="italic">
                   Resigned
                 </Text>
               )}
-              {!review.resigned && (
-                <Button variant="outline" colorScheme="black">
+              {review.status === 'reviewed' && (
+                <Button
+                  variant="outline"
+                  colorScheme="black"
+                  as={RRDLink}
+                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}`}
+                >
                   See Review
+                </Button>
+              )}
+              {review.status === 'pending' && (
+                <Button
+                  colorScheme="black"
+                  as={RRDLink}
+                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}`}
+                >
+                  Finish Review
                 </Button>
               )}
             </Flex>

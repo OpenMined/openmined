@@ -30,6 +30,7 @@ service cloud.firestore {
       return isLoggedIn() && request.auth.uid == user;
     }
 
+    // TODO: Should write stricter rules here
     match /mentors/{mentor} {
       allow read: if isSameUser(mentor) && isMentor(mentor);
     }
@@ -48,6 +49,11 @@ service cloud.firestore {
 
       match /private/{privateUserVar} {
         allow read, write: if isSameUser(user)
+      }
+
+      match /reviews/{review} {
+        allow read: if isSameUser(user)
+        allow create, update: if isSameUser(user)
       }
 
       match /courses/{course} {

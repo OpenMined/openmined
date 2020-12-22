@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
 import { useParams, Link as RRDLink, Navigate } from 'react-router-dom';
-import { OpenMinded } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 import { useUser, useFirestoreDocDataOnce, useFirestore } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -75,7 +75,7 @@ export default () => {
   const { uid } = useParams();
 
   const dbUserRef = db.collection('users').doc(uid);
-  const dbUser: OpenMinded.User = useFirestoreDocDataOnce(dbUserRef);
+  const dbUser: OpenMined.User = useFirestoreDocDataOnce(dbUserRef);
 
   const isSameUser = user && uid === user.uid;
   const name = `${dbUser.first_name} ${dbUser.last_name}`;

@@ -38,7 +38,7 @@ import GridContainer from '../../../components/GridContainer';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
-import { OpenMinded } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
@@ -116,7 +116,7 @@ const getStatusStyles = (status) => {
   }
 };
 
-export default ({ course, page, progress, user, ts }: OpenMinded.CoursePagesProp) => {
+export default ({ course, page, progress, user, ts }: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
 

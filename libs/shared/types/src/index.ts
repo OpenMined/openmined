@@ -81,8 +81,8 @@ export namespace OpenMinded {
   }
 
   export type Project = {
-    started_at: firebase.firestore.DocumentReference;
-    completed_at?: firebase.firestore.DocumentReference;
+    started_at: firebase.firestore.Timestamp;
+    completed_at?: firebase.firestore.Timestamp;
     status?: string;
     parts?: ProjectParts;
   };
@@ -93,7 +93,8 @@ export namespace OpenMinded {
 
   export type ProjectPart = {
     reviews: ProjectPartReview[];
-    started_at: firebase.firestore.DocumentReference;
+    started_at?: firebase.firestore.Timestamp;
+    completed_at?: firebase.firestore.Timestamp;
     submissions: ProjectPartSubmission[];
   };
 

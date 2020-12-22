@@ -2,7 +2,7 @@ import React from 'react';
 import { BoxProps, Flex, Link } from '@chakra-ui/react';
 import * as yup from 'yup';
 import { useUser, useFirestore, useFirestoreDocData, useAuth } from 'reactfire';
-import { OpenMinded } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 
 import Form from '../_form';
 import {
@@ -48,7 +48,7 @@ export default ({
   const toast = useToast();
 
   const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: OpenMinded.User = useFirestoreDocData(dbUserRef);
+  const dbUser: OpenMined.User = useFirestoreDocData(dbUserRef);
 
   const onSuccess = () => {
     toast({
@@ -70,7 +70,7 @@ export default ({
     if (callback) callback();
   };
 
-  const onSubmit = (data: OpenMinded.User) =>
+  const onSubmit = (data: OpenMined.User) =>
     db
       .collection('users')
       .doc(user.uid)

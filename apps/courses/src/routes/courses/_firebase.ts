@@ -1,4 +1,4 @@
-import { OpenMinded } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 import {
   hasCompletedConcept,
   hasCompletedCourse,
@@ -32,7 +32,7 @@ export const handleConceptStarted = async (
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMinded.Course,
+  progress: OpenMined.Course,
   lesson: string,
   concept: string
 ) => {
@@ -54,7 +54,7 @@ export const handleConceptComplete = (
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMinded.Course,
+  progress: OpenMined.Course,
   lesson: string,
   concept: string
 ) =>
@@ -85,7 +85,7 @@ export const handleQuizFinish = async (
   uId: string,
   courseId: string,
   arrayUnion,
-  progress: OpenMinded.Course,
+  progress: OpenMined.Course,
   lesson: string,
   concept: string,
   numQuizzes,
@@ -122,7 +122,7 @@ export const handleLessonStart = async (
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMinded.Course,
+  progress: OpenMined.Course,
   lesson: string
 ) => {
   const isCourseStarted = hasStartedCourse(progress);
@@ -153,7 +153,7 @@ export const handleLessonComplete = (
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMinded.Course,
+  progress: OpenMined.Course,
   lesson: string,
 ) =>
   new Promise((resolve, reject) => {
@@ -179,7 +179,7 @@ export const handleProjectPartBegin = (
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMinded.Course,
+  progress: OpenMined.Course,
   part: string,
 ) => {
   const data = progress;
@@ -227,7 +227,7 @@ export const handleAttemptSubmission = async (
   courseId: string,
   arrayUnion,
   currentTime,
-  progress: OpenMinded.Course,
+  progress: OpenMined.Course,
   part: string,
   content: string,
 ) => {
@@ -275,7 +275,7 @@ export const handleProjectComplete = async (
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMinded.Course,
+  progress: OpenMined.Course,
   status: string
 ) => {
   return new Promise((resolve, reject) => {

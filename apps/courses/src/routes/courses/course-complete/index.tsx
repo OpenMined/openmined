@@ -18,9 +18,9 @@ import GridContainer from '../../../components/GridContainer';
 import projectIcon from '../../../assets/project-icon.svg';
 import { faBookOpen, faCertificate } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
-import { OpenMinded } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 
-export default ({ page }: OpenMinded.CoursePagesProp) => {
+export default ({ page }: OpenMined.CoursePagesProp) => {
   const {
     title,
     certification: { link: certificationLink },

@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Firestore Rule Coverage Report</title>
+<style>
+.coverage-expr {
+  padding-bottom: 4px;
+  display: inline-block;
+  border-bottom: 3px solid black;
+  vertical-align: top;
+}
+.coverage-expr:hover {
+  background-color: rgba(255, 100, 100, 0.2);
+  cursor: default;
+  border-bottom: 3px solid red;
+}
+</style>
+
+<script>
+// Populated by the emulator at runtime
+const data = {
+  "rules": {
+    "files": [{
+      "content": "rules_version \u003d \u00272\u0027;\n\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    function existingData() {\n      return resource.data;\n    }\n\n    function incomingData() {\n      return request.resource.data;\n    }\n\n    function getUserData(user) {\n      return get(/databases/$(database)/documents/users/$(user));\n    }\n\n    function isAdmin(user) {\n      return exists(/databases/$(database)/documents/admins/$(user));\n    }\n\n    function isMentor(user) {\n      return exists(/databases/$(database)/documents/mentors/$(user));\n    }\n\n    function isLoggedIn() {\n      return request.auth !\u003d null;\n    }\n\n    function isSameUser(user) {\n      return isLoggedIn() \u0026\u0026 request.auth.uid \u003d\u003d user;\n    }\n\n    match /mentors/{mentor} {\n      allow read: if isSameUser(mentor) \u0026\u0026 isMentor(mentor);\n    }\n\n    match /users/{user} {\n      // Anyone can read\n      allow read;\n\n      // Owner can only write except is_mentor\n      allow write: if isSameUser(user)\n        \u0026\u0026 !(\u0027is_mentor\u0027 in incomingData())\n\n      // *-----*\n      // NOTE: If you\u0027re writing security rules, MAKE SURE that you fully understand the data model posted in apps/courses/src/DATA-MODEL.md\n      // NOTE: All rules that are written must have at least one intentionally passing and one intentionally failing test... the more tests, the better!\n      // NOTE: Please use the Firebase emulator for running tests\n      // *-----*\n\n      // Only owner can read/write\n      match /private/{privateUserVar} {\n        allow read, write: if isSameUser(user)\n      }\n\n      match /courses/{course} {\n        function hasStartedCourse(u) {\n          return (started_at in u) \u0026\u0026 !!u.started_at;\n        }\n\n        function hasCompletedCourse(u) {\n          return hasStartedCourse(u) \u0026\u0026 !!u.completed_at\n        }\n\n        function isthatpossible(u) {\n          return { possible: true }\n        }\n\n        allow read, write: if (possible in isthatpossible(user))\n\n        // TODO: Cannot complete course if there are incomplete concepts, lessons, or projects\n        // TODO: Cannot start or complete lesson without previous lessons being completed\n        // TODO: Cannot start or complete concept without previous concepts (and also previous lessons) being completed\n        // TODO: Cannot start project without completing previous lessons and all concepts therein\n        // TODO: Cannot start or complete project or set the project status without all previous parts being passed OR without one part being failed without any remaining attempts\n        // TODO: Student cannot complete a project part or set the project part status, this can only be done by their mentor and requires either the part being passed OR with the part being failed without any remaining attempts\n        // TODO: Student cannot write to their own reviews array on the project part\n        // TODO: Cannot \"restart\" or \"recomplete\" any course, lesson, concept, project, or project part (these values are immutable)\n\n        match /submissions/{submission} {\n          allow read, create: if isSameUser(user)\n          // TODO: Nobody may edit or delete a submission\n          // TODO: Deny read unless it\u0027s the same user OR if it\u0027s an assigned mentor (if possible)\n        }\n\n        // TODO: Create a reviews subcollection\n        // TODO: Students who don\u0027t have a role of mentor cannot create records on the reviews subcollection\n        // TODO: Students who are also mentors cannot review their own submission\n        // TODO: Students who are also mentors cannot create a review for a course they are not allowed to mentor (mentors can only review courses they\u0027re allowed to review)\n        // TODO: Students who are also mentors cannot edit or delete a review, only read and create\n        // TODO: The only students who are allowed to read a review should be a) the mentor who created the review and b) the student whom the review was written for\n\n        match /feedback/{conceptOrLesson} {\n          allow read, write: if isSameUser(user)\n        }\n      }\n    }\n\n    match /{document\u003d**} {\n      allow read, write: if false;\n    }\n  }\n}\n"
+    }]
+  },
+  "report": [{
+    "sourcePosition": {
+      "line": 6,
+      "column": 14,
+      "currentOffset": 133,
+      "endOffset": 145
+    },
+    "children": [{
+      "sourcePosition": {
+        "line": 6,
+        "column": 14,
+        "currentOffset": 133,
+        "endOffset": 140
+      }
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 10,
+      "column": 14,
+      "currentOffset": 198,
+      "endOffset": 218
+    },
+    "values": [{
+      "value": {
+        "mapValue": {
+          "fields": {
+            "first_name": {
+              "stringValue": "Alice"
+            }
+          }
+        }
+      },
+      "count": 2
+    }, {
+      "value": {
+        "mapValue": {
+          "fields": {
+            "is_mentor": {
+              "boolValue": true
+            }
+          }
+        }
+      },
+      "count": 2
+    }],
+    "children": [{
+      "sourcePosition": {
+        "line": 10,
+        "column": 14,
+        "currentOffset": 198,
+        "endOffset": 213
+      },
+      "values": [{
+        "value": {
+          "mapValue": {
+            "fields": {
+              "data": {
+                "mapValue": {
+                  "fields": {
+                    "first_name": {
+                      "stringValue": "Alice"
+                    }
+                  }
+                }
+              },
+              "__name__": {
+                "pathValue": {
+                  "segments": [{
+                    "simple": "databases"
+                  }, {
+                    "simple": "(default)"
+                  }, {
+                    "simple": "documents"
+                  }, {
+                    "simple": "users"
+                  }, {
+                    "simple": "alice"
+                  }]
+                }
+              },
+              "id": {
+                "stringValue": "alice"
+              }
+            }
+          }
+        },
+        "count": 2
+      }, {
+        "value": {
+          "mapValue": {
+            "fields": {
+              "data": {
+                "mapValue": {
+                  "fields": {
+                    "is_mentor": {
+                      "boolValue": true
+                    }
+                  }
+                }
+              },
+              "__name__": {
+                "pathValue": {
+                  "segments": [{
+                    "simple": "databases"
+                  }, {
+                    "simple": "(default)"
+                  }, {
+                    "simple": "documents"
+                  }, {
+                    "simple": "users"
+                  }, {
+                    "simple": "alice"
+                  }]
+                }
+              },
+              "id": {
+                "stringValue": "alice"
+              }
+            }
+          }
+        },
+        "count": 2
+      }],
+      "children": [{
+        "sourcePosition": {
+          "line": 10,
+          "column": 14,
+          "currentOffset": 198,
+          "endOffset": 204
+        },
+        "values": [{
+          "value": {
+            "mapValue": {
+              "fields": {
+                "time": {
+                  "timestampValue": "2020-12-22T08:43:53.867Z"
+                },
+                "auth": {
+                  "mapValue": {
+                    "fields": {
+                      "uid": {
+                        "stringValue": "alice"
+                      },
+                      "token": {
+                        "mapValue": {
+                          "fields": {
+                            "iss": {
+                              "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                            },
+                            "aud": {
+                              "stringValue": "firestore-emulator-example"
+                            },
+                            "iat": {
+                              "intValue": "0"
+                            },
+                            "exp": {
+                              "intValue": "3600"
+                            },
+                            "auth_time": {
+                              "intValue": "0"
+                            },
+                            "sub": {
+                              "stringValue": "alice"
+                            },
+                            "user_id": {
+                              "stringValue": "alice"
+                            },
+                            "firebase": {
+                              "mapValue": {
+                                "fields": {
+                                  "sign_in_provider": {
+                                    "stringValue": "custom"
+                                  },
+                                  "identities": {
+                                    "mapValue": {
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "headers": {
+                  "mapValue": {
+                  }
+                },
+                "inTransaction": {
+                  "boolValue": true
+                },
+                "path": {
+                  "pathValue": {
+                    "segments": [{
+                      "simple": "databases"
+                    }, {
+                      "simple": "(default)"
+                    }, {
+                      "simple": "documents"
+                    }, {
+                      "simple": "users"
+                    }, {
+                      "simple": "alice"
+                    }]
+                  }
+                },
+                "transforms": {
+                  "nullValue": null
+                },
+                "writeFields": {
+                  "nullValue": null
+                },
+                "readFields": {
+                  "nullValue": null
+                },
+                "resource": {
+                  "mapValue": {
+                    "fields": {
+                      "data": {
+                        "mapValue": {
+                          "fields": {
+                            "first_name": {
+                              "stringValue": "Alice"
+                            }
+                          }
+                        }
+                      },
+                      "__name__": {
+                        "pathValue": {
+                          "segments": [{
+                            "simple": "databases"
+                          }, {
+                            "simple": "(default)"
+                          }, {
+                            "simple": "documents"
+                          }, {
+                            "simple": "users"
+                          }, {
+                            "simple": "alice"
+                          }]
+                        }
+                      },
+                      "id": {
+                        "stringValue": "alice"
+                      }
+                    }
+                  }
+                },
+                "method": {
+                  "stringValue": "create"
+                }
+              }
+            }
+          },
+          "count": 2
+        }, {
+          "value": {
+            "mapValue": {
+              "fields": {
+                "time": {
+                  "timestampValue": "2020-12-22T08:43:53.873Z"
+                },
+                "auth": {
+                  "mapValue": {
+                    "fields": {
+                      "uid": {
+                        "stringValue": "alice"
+                      },
+                      "token": {
+                        "mapValue": {
+                          "fields": {
+                            "iss": {
+                              "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                            },
+                            "aud": {
+                              "stringValue": "firestore-emulator-example"
+                            },
+                            "iat": {
+                              "intValue": "0"
+                            },
+                            "exp": {
+                              "intValue": "3600"
+                            },
+                            "auth_time": {
+                              "intValue": "0"
+                            },
+                            "sub": {
+                              "stringValue": "alice"
+                            },
+                            "user_id": {
+                              "stringValue": "alice"
+                            },
+                            "firebase": {
+                              "mapValue": {
+                                "fields": {
+                                  "sign_in_provider": {
+                                    "stringValue": "custom"
+                                  },
+                                  "identities": {
+                                    "mapValue": {
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "headers": {
+                  "mapValue": {
+                  }
+                },
+                "inTransaction": {
+                  "boolValue": true
+                },
+                "path": {
+                  "pathValue": {
+                    "segments": [{
+                      "simple": "databases"
+                    }, {
+                      "simple": "(default)"
+                    }, {
+                      "simple": "documents"
+                    }, {
+                      "simple": "users"
+                    }, {
+                      "simple": "alice"
+                    }]
+                  }
+                },
+                "transforms": {
+                  "nullValue": null
+                },
+                "writeFields": {
+                  "nullValue": null
+                },
+                "readFields": {
+                  "nullValue": null
+                },
+                "resource": {
+                  "mapValue": {
+                    "fields": {
+                      "data": {
+                        "mapValue": {
+                          "fields": {
+                            "is_mentor": {
+                              "boolValue": true
+                            }
+                          }
+                        }
+                      },
+                      "__name__": {
+                        "pathValue": {
+                          "segments": [{
+                            "simple": "databases"
+                          }, {
+                            "simple": "(default)"
+                          }, {
+                            "simple": "documents"
+                          }, {
+                            "simple": "users"
+                          }, {
+                            "simple": "alice"
+                          }]
+                        }
+                      },
+                      "id": {
+                        "stringValue": "alice"
+                      }
+                    }
+                  }
+                },
+                "method": {
+                  "stringValue": "update"
+                }
+              }
+            }
+          },
+          "count": 2
+        }]
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 14,
+      "column": 14,
+      "currentOffset": 274,
+      "endOffset": 322
+    },
+    "children": [{
+      "sourcePosition": {
+        "line": 14,
+        "column": 18,
+        "currentOffset": 278,
+        "endOffset": 322
+      },
+      "children": [{
+        "sourcePosition": {
+          "line": 14,
+          "column": 31,
+          "currentOffset": 291,
+          "endOffset": 298
+        }
+      }, {
+        "sourcePosition": {
+          "line": 14,
+          "column": 59,
+          "currentOffset": 319,
+          "endOffset": 322
+        }
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 18,
+      "column": 14,
+      "currentOffset": 376,
+      "endOffset": 428
+    },
+    "children": [{
+      "sourcePosition": {
+        "line": 18,
+        "column": 21,
+        "currentOffset": 383,
+        "endOffset": 428
+      },
+      "children": [{
+        "sourcePosition": {
+          "line": 18,
+          "column": 34,
+          "currentOffset": 396,
+          "endOffset": 403
+        }
+      }, {
+        "sourcePosition": {
+          "line": 18,
+          "column": 63,
+          "currentOffset": 425,
+          "endOffset": 428
+        }
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 22,
+      "column": 14,
+      "currentOffset": 483,
+      "endOffset": 536
+    },
+    "children": [{
+      "sourcePosition": {
+        "line": 22,
+        "column": 21,
+        "currentOffset": 490,
+        "endOffset": 536
+      },
+      "children": [{
+        "sourcePosition": {
+          "line": 22,
+          "column": 34,
+          "currentOffset": 503,
+          "endOffset": 510
+        }
+      }, {
+        "sourcePosition": {
+          "line": 22,
+          "column": 64,
+          "currentOffset": 533,
+          "endOffset": 536
+        }
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 26,
+      "column": 14,
+      "currentOffset": 589,
+      "endOffset": 608
+    },
+    "values": [{
+      "value": {
+        "boolValue": true
+      },
+      "count": 8
+    }, {
+      "value": {
+        "boolValue": false
+      },
+      "count": 6
+    }],
+    "children": [{
+      "sourcePosition": {
+        "line": 26,
+        "column": 14,
+        "currentOffset": 589,
+        "endOffset": 600
+      },
+      "values": [{
+        "value": {
+          "mapValue": {
+            "fields": {
+              "uid": {
+                "stringValue": "alice"
+              },
+              "token": {
+                "mapValue": {
+                  "fields": {
+                    "iss": {
+                      "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                    },
+                    "aud": {
+                      "stringValue": "firestore-emulator-example"
+                    },
+                    "iat": {
+                      "intValue": "0"
+                    },
+                    "exp": {
+                      "intValue": "3600"
+                    },
+                    "auth_time": {
+                      "intValue": "0"
+                    },
+                    "sub": {
+                      "stringValue": "alice"
+                    },
+                    "user_id": {
+                      "stringValue": "alice"
+                    },
+                    "firebase": {
+                      "mapValue": {
+                        "fields": {
+                          "sign_in_provider": {
+                            "stringValue": "custom"
+                          },
+                          "identities": {
+                            "mapValue": {
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "count": 8
+      }, {
+        "value": {
+          "nullValue": null
+        },
+        "count": 6
+      }],
+      "children": [{
+        "sourcePosition": {
+          "line": 26,
+          "column": 14,
+          "currentOffset": 589,
+          "endOffset": 595
+        },
+        "values": [{
+          "value": {
+            "mapValue": {
+              "fields": {
+                "time": {
+                  "timestampValue": "2020-12-22T08:43:53.867Z"
+                },
+                "auth": {
+                  "mapValue": {
+                    "fields": {
+                      "uid": {
+                        "stringValue": "alice"
+                      },
+                      "token": {
+                        "mapValue": {
+                          "fields": {
+                            "iss": {
+                              "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                            },
+                            "aud": {
+                              "stringValue": "firestore-emulator-example"
+                            },
+                            "iat": {
+                              "intValue": "0"
+                            },
+                            "exp": {
+                              "intValue": "3600"
+                            },
+                            "auth_time": {
+                              "intValue": "0"
+                            },
+                            "sub": {
+                              "stringValue": "alice"
+                            },
+                            "user_id": {
+                              "stringValue": "alice"
+                            },
+                            "firebase": {
+                              "mapValue": {
+                                "fields": {
+                                  "sign_in_provider": {
+                                    "stringValue": "custom"
+                                  },
+                                  "identities": {
+                                    "mapValue": {
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "headers": {
+                  "mapValue": {
+                  }
+                },
+                "inTransaction": {
+                  "boolValue": true
+                },
+                "path": {
+                  "pathValue": {
+                    "segments": [{
+                      "simple": "databases"
+                    }, {
+                      "simple": "(default)"
+                    }, {
+                      "simple": "documents"
+                    }, {
+                      "simple": "users"
+                    }, {
+                      "simple": "alice"
+                    }]
+                  }
+                },
+                "transforms": {
+                  "nullValue": null
+                },
+                "writeFields": {
+                  "nullValue": null
+                },
+                "readFields": {
+                  "nullValue": null
+                },
+                "resource": {
+                  "mapValue": {
+                    "fields": {
+                      "data": {
+                        "mapValue": {
+                          "fields": {
+                            "first_name": {
+                              "stringValue": "Alice"
+                            }
+                          }
+                        }
+                      },
+                      "__name__": {
+                        "pathValue": {
+                          "segments": [{
+                            "simple": "databases"
+                          }, {
+                            "simple": "(default)"
+                          }, {
+                            "simple": "documents"
+                          }, {
+                            "simple": "users"
+                          }, {
+                            "simple": "alice"
+                          }]
+                        }
+                      },
+                      "id": {
+                        "stringValue": "alice"
+                      }
+                    }
+                  }
+                },
+                "method": {
+                  "stringValue": "create"
+                }
+              }
+            }
+          },
+          "count": 2
+        }, {
+          "value": {
+            "mapValue": {
+              "fields": {
+                "time": {
+                  "timestampValue": "2020-12-22T08:43:53.873Z"
+                },
+                "auth": {
+                  "mapValue": {
+                    "fields": {
+                      "uid": {
+                        "stringValue": "alice"
+                      },
+                      "token": {
+                        "mapValue": {
+                          "fields": {
+                            "iss": {
+                              "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                            },
+                            "aud": {
+                              "stringValue": "firestore-emulator-example"
+                            },
+                            "iat": {
+                              "intValue": "0"
+                            },
+                            "exp": {
+                              "intValue": "3600"
+                            },
+                            "auth_time": {
+                              "intValue": "0"
+                            },
+                            "sub": {
+                              "stringValue": "alice"
+                            },
+                            "user_id": {
+                              "stringValue": "alice"
+                            },
+                            "firebase": {
+                              "mapValue": {
+                                "fields": {
+                                  "sign_in_provider": {
+                                    "stringValue": "custom"
+                                  },
+                                  "identities": {
+                                    "mapValue": {
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "headers": {
+                  "mapValue": {
+                  }
+                },
+                "inTransaction": {
+                  "boolValue": true
+                },
+                "path": {
+                  "pathValue": {
+                    "segments": [{
+                      "simple": "databases"
+                    }, {
+                      "simple": "(default)"
+                    }, {
+                      "simple": "documents"
+                    }, {
+                      "simple": "users"
+                    }, {
+                      "simple": "alice"
+                    }]
+                  }
+                },
+                "transforms": {
+                  "nullValue": null
+                },
+                "writeFields": {
+                  "nullValue": null
+                },
+                "readFields": {
+                  "nullValue": null
+                },
+                "resource": {
+                  "mapValue": {
+                    "fields": {
+                      "data": {
+                        "mapValue": {
+                          "fields": {
+                            "is_mentor": {
+                              "boolValue": true
+                            }
+                          }
+                        }
+                      },
+                      "__name__": {
+                        "pathValue": {
+                          "segments": [{
+                            "simple": "databases"
+                          }, {
+                            "simple": "(default)"
+                          }, {
+                            "simple": "documents"
+                          }, {
+                            "simple": "users"
+                          }, {
+                            "simple": "alice"
+                          }]
+                        }
+                      },
+                      "id": {
+                        "stringValue": "alice"
+                      }
+                    }
+                  }
+                },
+                "method": {
+                  "stringValue": "update"
+                }
+              }
+            }
+          },
+          "count": 2
+        }, {
+          "value": {
+            "mapValue": {
+              "fields": {
+                "time": {
+                  "timestampValue": "2020-12-22T08:43:53.923Z"
+                },
+                "auth": {
+                  "nullValue": null
+                },
+                "headers": {
+                  "mapValue": {
+                  }
+                },
+                "inTransaction": {
+                  "boolValue": true
+                },
+                "path": {
+                  "pathValue": {
+                    "segments": [{
+                      "simple": "databases"
+                    }, {
+                      "simple": "(default)"
+                    }, {
+                      "simple": "documents"
+                    }, {
+                      "simple": "users"
+                    }, {
+                      "simple": "alice"
+                    }]
+                  }
+                },
+                "transforms": {
+                  "nullValue": null
+                },
+                "writeFields": {
+                  "nullValue": null
+                },
+                "readFields": {
+                  "nullValue": null
+                },
+                "resource": {
+                  "mapValue": {
+                    "fields": {
+                      "data": {
+                        "mapValue": {
+                          "fields": {
+                            "first_name": {
+                              "stringValue": "Alice"
+                            }
+                          }
+                        }
+                      },
+                      "__name__": {
+                        "pathValue": {
+                          "segments": [{
+                            "simple": "databases"
+                          }, {
+                            "simple": "(default)"
+                          }, {
+                            "simple": "documents"
+                          }, {
+                            "simple": "users"
+                          }, {
+                            "simple": "alice"
+                          }]
+                        }
+                      },
+                      "id": {
+                        "stringValue": "alice"
+                      }
+                    }
+                  }
+                },
+                "method": {
+                  "stringValue": "update"
+                }
+              }
+            }
+          },
+          "count": 2
+        }, {
+          "value": {
+            "mapValue": {
+              "fields": {
+                "time": {
+                  "timestampValue": "2020-12-22T08:43:54.001Z"
+                },
+                "auth": {
+                  "mapValue": {
+                    "fields": {
+                      "uid": {
+                        "stringValue": "alice"
+                      },
+                      "token": {
+                        "mapValue": {
+                          "fields": {
+                            "iss": {
+                              "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                            },
+                            "aud": {
+                              "stringValue": "firestore-emulator-example"
+                            },
+                            "iat": {
+                              "intValue": "0"
+                            },
+                            "exp": {
+                              "intValue": "3600"
+                            },
+                            "auth_time": {
+                              "intValue": "0"
+                            },
+                            "sub": {
+                              "stringValue": "alice"
+                            },
+                            "user_id": {
+                              "stringValue": "alice"
+                            },
+                            "firebase": {
+                              "mapValue": {
+                                "fields": {
+                                  "sign_in_provider": {
+                                    "stringValue": "custom"
+                                  },
+                                  "identities": {
+                                    "mapValue": {
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "headers": {
+                  "mapValue": {
+                  }
+                },
+                "inTransaction": {
+                  "boolValue": true
+                },
+                "path": {
+                  "pathValue": {
+                    "segments": [{
+                      "simple": "databases"
+                    }, {
+                      "simple": "(default)"
+                    }, {
+                      "simple": "documents"
+                    }, {
+                      "simple": "users"
+                    }, {
+                      "simple": "alice"
+                    }, {
+                      "simple": "private"
+                    }, {
+                      "simple": "alice"
+                    }]
+                  }
+                },
+                "transforms": {
+                  "nullValue": null
+                },
+                "writeFields": {
+                  "nullValue": null
+                },
+                "readFields": {
+                  "nullValue": null
+                },
+                "resource": {
+                  "mapValue": {
+                    "fields": {
+                      "data": {
+                        "mapValue": {
+                          "fields": {
+                            "github_id": {
+                              "stringValue": "token"
+                            }
+                          }
+                        }
+                      },
+                      "__name__": {
+                        "pathValue": {
+                          "segments": [{
+                            "simple": "databases"
+                          }, {
+                            "simple": "(default)"
+                          }, {
+                            "simple": "documents"
+                          }, {
+                            "simple": "users"
+                          }, {
+                            "simple": "alice"
+                          }, {
+                            "simple": "private"
+                          }, {
+                            "simple": "alice"
+                          }]
+                        }
+                      },
+                      "id": {
+                        "stringValue": "alice"
+                      }
+                    }
+                  }
+                },
+                "method": {
+                  "stringValue": "create"
+                }
+              }
+            }
+          },
+          "count": 2
+        }, {
+          "value": {
+            "mapValue": {
+              "fields": {
+                "time": {
+                  "timestampValue": "2020-12-22T08:43:54.007Z"
+                },
+                "auth": {
+                  "mapValue": {
+                    "fields": {
+                      "uid": {
+                        "stringValue": "alice"
+                      },
+                      "token": {
+                        "mapValue": {
+                          "fields": {
+                            "iss": {
+                              "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                            },
+                            "aud": {
+                              "stringValue": "firestore-emulator-example"
+                            },
+                            "iat": {
+                              "intValue": "0"
+                            },
+                            "exp": {
+                              "intValue": "3600"
+                            },
+                            "auth_time": {
+                              "intValue": "0"
+                            },
+                            "sub": {
+                              "stringValue": "alice"
+                            },
+                            "user_id": {
+                              "stringValue": "alice"
+                            },
+                            "firebase": {
+                              "mapValue": {
+                                "fields": {
+                                  "sign_in_provider": {
+                                    "stringValue": "custom"
+                                  },
+                                  "identities": {
+                                    "mapValue": {
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "headers": {
+                  "mapValue": {
+                  }
+                },
+                "inTransaction": {
+                  "boolValue": false
+                },
+                "path": {
+                  "pathValue": {
+                    "segments": [{
+                      "simple": "databases"
+                    }, {
+                      "simple": "(default)"
+                    }, {
+                      "simple": "documents"
+                    }, {
+                      "simple": "users"
+                    }, {
+                      "simple": "alice"
+                    }, {
+                      "simple": "private"
+                    }, {
+                      "simple": "alice"
+                    }]
+                  }
+                },
+                "fields": {
+                  "nullValue": null
+                },
+                "method": {
+                  "stringValue": "get"
+                }
+              }
+            }
+          },
+          "count": 2
+        }, {
+          "value": {
+            "mapValue": {
+              "fields": {
+                "time": {
+                  "timestampValue": "2020-12-22T08:43:54.067Z"
+                },
+                "auth": {
+                  "nullValue": null
+                },
+                "headers": {
+                  "mapValue": {
+                  }
+                },
+                "inTransaction": {
+                  "boolValue": false
+                },
+                "path": {
+                  "pathValue": {
+                    "segments": [{
+                      "simple": "databases"
+                    }, {
+                      "simple": "(default)"
+                    }, {
+                      "simple": "documents"
+                    }, {
+                      "simple": "users"
+                    }, {
+                      "simple": "alice"
+                    }, {
+                      "simple": "private"
+                    }, {
+                      "simple": "alice"
+                    }]
+                  }
+                },
+                "fields": {
+                  "nullValue": null
+                },
+                "method": {
+                  "stringValue": "get"
+                }
+              }
+            }
+          },
+          "count": 2
+        }, {
+          "value": {
+            "mapValue": {
+              "fields": {
+                "time": {
+                  "timestampValue": "2020-12-22T08:43:54.085Z"
+                },
+                "auth": {
+                  "nullValue": null
+                },
+                "headers": {
+                  "mapValue": {
+                  }
+                },
+                "inTransaction": {
+                  "boolValue": true
+                },
+                "path": {
+                  "pathValue": {
+                    "segments": [{
+                      "simple": "databases"
+                    }, {
+                      "simple": "(default)"
+                    }, {
+                      "simple": "documents"
+                    }, {
+                      "simple": "users"
+                    }, {
+                      "simple": "alice"
+                    }, {
+                      "simple": "private"
+                    }, {
+                      "simple": "alice"
+                    }]
+                  }
+                },
+                "transforms": {
+                  "nullValue": null
+                },
+                "writeFields": {
+                  "nullValue": null
+                },
+                "readFields": {
+                  "nullValue": null
+                },
+                "resource": {
+                  "mapValue": {
+                    "fields": {
+                      "data": {
+                        "mapValue": {
+                          "fields": {
+                            "github_id": {
+                              "stringValue": "token"
+                            }
+                          }
+                        }
+                      },
+                      "__name__": {
+                        "pathValue": {
+                          "segments": [{
+                            "simple": "databases"
+                          }, {
+                            "simple": "(default)"
+                          }, {
+                            "simple": "documents"
+                          }, {
+                            "simple": "users"
+                          }, {
+                            "simple": "alice"
+                          }, {
+                            "simple": "private"
+                          }, {
+                            "simple": "alice"
+                          }]
+                        }
+                      },
+                      "id": {
+                        "stringValue": "alice"
+                      }
+                    }
+                  }
+                },
+                "method": {
+                  "stringValue": "update"
+                }
+              }
+            }
+          },
+          "count": 2
+        }]
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 30,
+      "column": 14,
+      "currentOffset": 663,
+      "endOffset": 702
+    },
+    "values": [{
+      "value": {
+        "boolValue": true
+      },
+      "count": 8
+    }, {
+      "value": {
+        "boolValue": false
+      },
+      "count": 6
+    }],
+    "children": [{
+      "sourcePosition": {
+        "line": 30,
+        "column": 14,
+        "currentOffset": 663,
+        "endOffset": 672
+      },
+      "values": [{
+        "value": {
+          "boolValue": true
+        },
+        "count": 8
+      }, {
+        "value": {
+          "boolValue": false
+        },
+        "count": 6
+      }]
+    }, {
+      "sourcePosition": {
+        "line": 30,
+        "column": 30,
+        "currentOffset": 679,
+        "endOffset": 702
+      },
+      "values": [{
+        "value": {
+          "boolValue": true
+        },
+        "count": 8
+      }, {
+        "value": {
+        },
+        "count": 6
+      }],
+      "children": [{
+        "sourcePosition": {
+          "line": 30,
+          "column": 30,
+          "currentOffset": 679,
+          "endOffset": 694
+        },
+        "values": [{
+          "value": {
+            "stringValue": "alice"
+          },
+          "count": 8
+        }, {
+          "value": {
+          },
+          "count": 6
+        }],
+        "children": [{
+          "sourcePosition": {
+            "line": 30,
+            "column": 30,
+            "currentOffset": 679,
+            "endOffset": 690
+          },
+          "values": [{
+            "value": {
+              "mapValue": {
+                "fields": {
+                  "uid": {
+                    "stringValue": "alice"
+                  },
+                  "token": {
+                    "mapValue": {
+                      "fields": {
+                        "iss": {
+                          "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                        },
+                        "aud": {
+                          "stringValue": "firestore-emulator-example"
+                        },
+                        "iat": {
+                          "intValue": "0"
+                        },
+                        "exp": {
+                          "intValue": "3600"
+                        },
+                        "auth_time": {
+                          "intValue": "0"
+                        },
+                        "sub": {
+                          "stringValue": "alice"
+                        },
+                        "user_id": {
+                          "stringValue": "alice"
+                        },
+                        "firebase": {
+                          "mapValue": {
+                            "fields": {
+                              "sign_in_provider": {
+                                "stringValue": "custom"
+                              },
+                              "identities": {
+                                "mapValue": {
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "count": 8
+          }, {
+            "value": {
+            },
+            "count": 6
+          }],
+          "children": [{
+            "sourcePosition": {
+              "line": 30,
+              "column": 30,
+              "currentOffset": 679,
+              "endOffset": 685
+            },
+            "values": [{
+              "value": {
+                "mapValue": {
+                  "fields": {
+                    "time": {
+                      "timestampValue": "2020-12-22T08:43:53.867Z"
+                    },
+                    "auth": {
+                      "mapValue": {
+                        "fields": {
+                          "uid": {
+                            "stringValue": "alice"
+                          },
+                          "token": {
+                            "mapValue": {
+                              "fields": {
+                                "iss": {
+                                  "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                                },
+                                "aud": {
+                                  "stringValue": "firestore-emulator-example"
+                                },
+                                "iat": {
+                                  "intValue": "0"
+                                },
+                                "exp": {
+                                  "intValue": "3600"
+                                },
+                                "auth_time": {
+                                  "intValue": "0"
+                                },
+                                "sub": {
+                                  "stringValue": "alice"
+                                },
+                                "user_id": {
+                                  "stringValue": "alice"
+                                },
+                                "firebase": {
+                                  "mapValue": {
+                                    "fields": {
+                                      "sign_in_provider": {
+                                        "stringValue": "custom"
+                                      },
+                                      "identities": {
+                                        "mapValue": {
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "headers": {
+                      "mapValue": {
+                      }
+                    },
+                    "inTransaction": {
+                      "boolValue": true
+                    },
+                    "path": {
+                      "pathValue": {
+                        "segments": [{
+                          "simple": "databases"
+                        }, {
+                          "simple": "(default)"
+                        }, {
+                          "simple": "documents"
+                        }, {
+                          "simple": "users"
+                        }, {
+                          "simple": "alice"
+                        }]
+                      }
+                    },
+                    "transforms": {
+                      "nullValue": null
+                    },
+                    "writeFields": {
+                      "nullValue": null
+                    },
+                    "readFields": {
+                      "nullValue": null
+                    },
+                    "resource": {
+                      "mapValue": {
+                        "fields": {
+                          "data": {
+                            "mapValue": {
+                              "fields": {
+                                "first_name": {
+                                  "stringValue": "Alice"
+                                }
+                              }
+                            }
+                          },
+                          "__name__": {
+                            "pathValue": {
+                              "segments": [{
+                                "simple": "databases"
+                              }, {
+                                "simple": "(default)"
+                              }, {
+                                "simple": "documents"
+                              }, {
+                                "simple": "users"
+                              }, {
+                                "simple": "alice"
+                              }]
+                            }
+                          },
+                          "id": {
+                            "stringValue": "alice"
+                          }
+                        }
+                      }
+                    },
+                    "method": {
+                      "stringValue": "create"
+                    }
+                  }
+                }
+              },
+              "count": 2
+            }, {
+              "value": {
+                "mapValue": {
+                  "fields": {
+                    "time": {
+                      "timestampValue": "2020-12-22T08:43:53.873Z"
+                    },
+                    "auth": {
+                      "mapValue": {
+                        "fields": {
+                          "uid": {
+                            "stringValue": "alice"
+                          },
+                          "token": {
+                            "mapValue": {
+                              "fields": {
+                                "iss": {
+                                  "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                                },
+                                "aud": {
+                                  "stringValue": "firestore-emulator-example"
+                                },
+                                "iat": {
+                                  "intValue": "0"
+                                },
+                                "exp": {
+                                  "intValue": "3600"
+                                },
+                                "auth_time": {
+                                  "intValue": "0"
+                                },
+                                "sub": {
+                                  "stringValue": "alice"
+                                },
+                                "user_id": {
+                                  "stringValue": "alice"
+                                },
+                                "firebase": {
+                                  "mapValue": {
+                                    "fields": {
+                                      "sign_in_provider": {
+                                        "stringValue": "custom"
+                                      },
+                                      "identities": {
+                                        "mapValue": {
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "headers": {
+                      "mapValue": {
+                      }
+                    },
+                    "inTransaction": {
+                      "boolValue": true
+                    },
+                    "path": {
+                      "pathValue": {
+                        "segments": [{
+                          "simple": "databases"
+                        }, {
+                          "simple": "(default)"
+                        }, {
+                          "simple": "documents"
+                        }, {
+                          "simple": "users"
+                        }, {
+                          "simple": "alice"
+                        }]
+                      }
+                    },
+                    "transforms": {
+                      "nullValue": null
+                    },
+                    "writeFields": {
+                      "nullValue": null
+                    },
+                    "readFields": {
+                      "nullValue": null
+                    },
+                    "resource": {
+                      "mapValue": {
+                        "fields": {
+                          "data": {
+                            "mapValue": {
+                              "fields": {
+                                "is_mentor": {
+                                  "boolValue": true
+                                }
+                              }
+                            }
+                          },
+                          "__name__": {
+                            "pathValue": {
+                              "segments": [{
+                                "simple": "databases"
+                              }, {
+                                "simple": "(default)"
+                              }, {
+                                "simple": "documents"
+                              }, {
+                                "simple": "users"
+                              }, {
+                                "simple": "alice"
+                              }]
+                            }
+                          },
+                          "id": {
+                            "stringValue": "alice"
+                          }
+                        }
+                      }
+                    },
+                    "method": {
+                      "stringValue": "update"
+                    }
+                  }
+                }
+              },
+              "count": 2
+            }, {
+              "value": {
+              },
+              "count": 6
+            }, {
+              "value": {
+                "mapValue": {
+                  "fields": {
+                    "time": {
+                      "timestampValue": "2020-12-22T08:43:54.001Z"
+                    },
+                    "auth": {
+                      "mapValue": {
+                        "fields": {
+                          "uid": {
+                            "stringValue": "alice"
+                          },
+                          "token": {
+                            "mapValue": {
+                              "fields": {
+                                "iss": {
+                                  "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                                },
+                                "aud": {
+                                  "stringValue": "firestore-emulator-example"
+                                },
+                                "iat": {
+                                  "intValue": "0"
+                                },
+                                "exp": {
+                                  "intValue": "3600"
+                                },
+                                "auth_time": {
+                                  "intValue": "0"
+                                },
+                                "sub": {
+                                  "stringValue": "alice"
+                                },
+                                "user_id": {
+                                  "stringValue": "alice"
+                                },
+                                "firebase": {
+                                  "mapValue": {
+                                    "fields": {
+                                      "sign_in_provider": {
+                                        "stringValue": "custom"
+                                      },
+                                      "identities": {
+                                        "mapValue": {
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "headers": {
+                      "mapValue": {
+                      }
+                    },
+                    "inTransaction": {
+                      "boolValue": true
+                    },
+                    "path": {
+                      "pathValue": {
+                        "segments": [{
+                          "simple": "databases"
+                        }, {
+                          "simple": "(default)"
+                        }, {
+                          "simple": "documents"
+                        }, {
+                          "simple": "users"
+                        }, {
+                          "simple": "alice"
+                        }, {
+                          "simple": "private"
+                        }, {
+                          "simple": "alice"
+                        }]
+                      }
+                    },
+                    "transforms": {
+                      "nullValue": null
+                    },
+                    "writeFields": {
+                      "nullValue": null
+                    },
+                    "readFields": {
+                      "nullValue": null
+                    },
+                    "resource": {
+                      "mapValue": {
+                        "fields": {
+                          "data": {
+                            "mapValue": {
+                              "fields": {
+                                "github_id": {
+                                  "stringValue": "token"
+                                }
+                              }
+                            }
+                          },
+                          "__name__": {
+                            "pathValue": {
+                              "segments": [{
+                                "simple": "databases"
+                              }, {
+                                "simple": "(default)"
+                              }, {
+                                "simple": "documents"
+                              }, {
+                                "simple": "users"
+                              }, {
+                                "simple": "alice"
+                              }, {
+                                "simple": "private"
+                              }, {
+                                "simple": "alice"
+                              }]
+                            }
+                          },
+                          "id": {
+                            "stringValue": "alice"
+                          }
+                        }
+                      }
+                    },
+                    "method": {
+                      "stringValue": "create"
+                    }
+                  }
+                }
+              },
+              "count": 2
+            }, {
+              "value": {
+                "mapValue": {
+                  "fields": {
+                    "time": {
+                      "timestampValue": "2020-12-22T08:43:54.007Z"
+                    },
+                    "auth": {
+                      "mapValue": {
+                        "fields": {
+                          "uid": {
+                            "stringValue": "alice"
+                          },
+                          "token": {
+                            "mapValue": {
+                              "fields": {
+                                "iss": {
+                                  "stringValue": "https://securetoken.google.com/firestore-emulator-example"
+                                },
+                                "aud": {
+                                  "stringValue": "firestore-emulator-example"
+                                },
+                                "iat": {
+                                  "intValue": "0"
+                                },
+                                "exp": {
+                                  "intValue": "3600"
+                                },
+                                "auth_time": {
+                                  "intValue": "0"
+                                },
+                                "sub": {
+                                  "stringValue": "alice"
+                                },
+                                "user_id": {
+                                  "stringValue": "alice"
+                                },
+                                "firebase": {
+                                  "mapValue": {
+                                    "fields": {
+                                      "sign_in_provider": {
+                                        "stringValue": "custom"
+                                      },
+                                      "identities": {
+                                        "mapValue": {
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "headers": {
+                      "mapValue": {
+                      }
+                    },
+                    "inTransaction": {
+                      "boolValue": false
+                    },
+                    "path": {
+                      "pathValue": {
+                        "segments": [{
+                          "simple": "databases"
+                        }, {
+                          "simple": "(default)"
+                        }, {
+                          "simple": "documents"
+                        }, {
+                          "simple": "users"
+                        }, {
+                          "simple": "alice"
+                        }, {
+                          "simple": "private"
+                        }, {
+                          "simple": "alice"
+                        }]
+                      }
+                    },
+                    "fields": {
+                      "nullValue": null
+                    },
+                    "method": {
+                      "stringValue": "get"
+                    }
+                  }
+                }
+              },
+              "count": 2
+            }]
+          }]
+        }]
+      }, {
+        "sourcePosition": {
+          "line": 30,
+          "column": 50,
+          "currentOffset": 699,
+          "endOffset": 702
+        },
+        "values": [{
+          "value": {
+            "stringValue": "alice"
+          },
+          "count": 8
+        }, {
+          "value": {
+          },
+          "count": 6
+        }]
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 34,
+      "column": 22,
+      "currentOffset": 763,
+      "endOffset": 799
+    },
+    "children": [{
+      "sourcePosition": {
+        "line": 34,
+        "column": 22,
+        "currentOffset": 763,
+        "endOffset": 779
+      },
+      "children": [{
+        "sourcePosition": {
+          "line": 34,
+          "column": 33,
+          "currentOffset": 774,
+          "endOffset": 779
+        }
+      }]
+    }, {
+      "sourcePosition": {
+        "line": 34,
+        "column": 44,
+        "currentOffset": 785,
+        "endOffset": 799
+      },
+      "children": [{
+        "sourcePosition": {
+          "line": 34,
+          "column": 53,
+          "currentOffset": 794,
+          "endOffset": 799
+        }
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 53,
+      "column": 31,
+      "currentOffset": 1511,
+      "endOffset": 1525
+    },
+    "values": [{
+      "value": {
+        "boolValue": true
+      },
+      "count": 4
+    }, {
+      "value": {
+        "boolValue": false
+      },
+      "count": 4
+    }],
+    "children": [{
+      "sourcePosition": {
+        "line": 53,
+        "column": 42,
+        "currentOffset": 1522,
+        "endOffset": 1525
+      },
+      "values": [{
+        "value": {
+          "stringValue": "alice"
+        },
+        "count": 8
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 58,
+      "column": 18,
+      "currentOffset": 1625,
+      "endOffset": 1659
+    },
+    "children": [{
+      "sourcePosition": {
+        "line": 58,
+        "column": 18,
+        "currentOffset": 1625,
+        "endOffset": 1640
+      },
+      "children": [{
+        "sourcePosition": {
+          "line": 58,
+          "column": 33,
+          "currentOffset": 1640,
+          "endOffset": 1640
+        }
+      }, {
+        "sourcePosition": {
+          "line": 58,
+          "column": 19,
+          "currentOffset": 1626,
+          "endOffset": 1635
+        }
+      }]
+    }, {
+      "sourcePosition": {
+        "line": 58,
+        "column": 39,
+        "currentOffset": 1646,
+        "endOffset": 1659
+      },
+      "children": [{
+        "sourcePosition": {
+          "line": 58,
+          "column": 40,
+          "currentOffset": 1647,
+          "endOffset": 1659
+        },
+        "children": [{
+          "sourcePosition": {
+            "line": 58,
+            "column": 41,
+            "currentOffset": 1648,
+            "endOffset": 1659
+          },
+          "children": [{
+            "sourcePosition": {
+              "line": 58,
+              "column": 41,
+              "currentOffset": 1648,
+              "endOffset": 1648
+            }
+          }]
+        }]
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 62,
+      "column": 18,
+      "currentOffset": 1731,
+      "endOffset": 1769
+    },
+    "children": [{
+      "sourcePosition": {
+        "line": 62,
+        "column": 18,
+        "currentOffset": 1731,
+        "endOffset": 1748
+      },
+      "children": [{
+        "sourcePosition": {
+          "line": 62,
+          "column": 35,
+          "currentOffset": 1748,
+          "endOffset": 1748
+        }
+      }]
+    }, {
+      "sourcePosition": {
+        "line": 62,
+        "column": 41,
+        "currentOffset": 1754,
+        "endOffset": 1769
+      },
+      "children": [{
+        "sourcePosition": {
+          "line": 62,
+          "column": 42,
+          "currentOffset": 1755,
+          "endOffset": 1769
+        },
+        "children": [{
+          "sourcePosition": {
+            "line": 62,
+            "column": 43,
+            "currentOffset": 1756,
+            "endOffset": 1769
+          },
+          "children": [{
+            "sourcePosition": {
+              "line": 62,
+              "column": 43,
+              "currentOffset": 1756,
+              "endOffset": 1756
+            }
+          }]
+        }]
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 66,
+      "column": 18,
+      "currentOffset": 1836,
+      "endOffset": 1851
+    },
+    "values": [{
+      "value": {
+        "undefined": {
+          "sourcePosition": {
+            "line": 66,
+            "column": 20,
+            "currentOffset": 1838,
+            "endOffset": 1845
+          },
+          "causeMessage": "Null value error."
+        }
+      },
+      "count": 2
+    }],
+    "children": [{
+      "sourcePosition": {
+        "line": 66,
+        "column": 20,
+        "currentOffset": 1838,
+        "endOffset": 1845
+      },
+      "values": [{
+        "value": {
+          "undefined": {
+            "sourcePosition": {
+              "line": 66,
+              "column": 20,
+              "currentOffset": 1838,
+              "endOffset": 1845
+            },
+            "causeMessage": "Null value error."
+          }
+        },
+        "count": 2
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 81,
+      "column": 34,
+      "currentOffset": 3039,
+      "endOffset": 3053
+    },
+    "children": [{
+      "sourcePosition": {
+        "line": 81,
+        "column": 45,
+        "currentOffset": 3050,
+        "endOffset": 3053
+      }
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 94,
+      "column": 33,
+      "currentOffset": 3980,
+      "endOffset": 3994
+    },
+    "children": [{
+      "sourcePosition": {
+        "line": 94,
+        "column": 44,
+        "currentOffset": 3991,
+        "endOffset": 3994
+      }
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 69,
+      "column": 31,
+      "currentOffset": 1896,
+      "endOffset": 1927
+    },
+    "values": [{
+      "value": {
+        "undefined": {
+          "sourcePosition": {
+            "line": 66,
+            "column": 20,
+            "currentOffset": 1838,
+            "endOffset": 1845
+          },
+          "causeMessage": "Null value error."
+        }
+      },
+      "count": 2
+    }],
+    "children": [{
+      "sourcePosition": {
+        "line": 69,
+        "column": 44,
+        "currentOffset": 1909,
+        "endOffset": 1927
+      },
+      "values": [{
+        "value": {
+          "undefined": {
+            "sourcePosition": {
+              "line": 66,
+              "column": 20,
+              "currentOffset": 1838,
+              "endOffset": 1845
+            },
+            "causeMessage": "Null value error."
+          }
+        },
+        "count": 2
+      }],
+      "children": [{
+        "sourcePosition": {
+          "line": 69,
+          "column": 59,
+          "currentOffset": 1924,
+          "endOffset": 1927
+        },
+        "values": [{
+          "value": {
+            "stringValue": "alice"
+          },
+          "count": 2
+        }]
+      }]
+    }, {
+      "sourcePosition": {
+        "line": 69,
+        "column": 32,
+        "currentOffset": 1897,
+        "endOffset": 1904
+      },
+      "values": [{
+        "value": {
+          "undefined": {
+            "sourcePosition": {
+              "line": 69,
+              "column": 32,
+              "currentOffset": 1897,
+              "endOffset": 1904
+            },
+            "causeMessage": "Null value error."
+          }
+        },
+        "count": 2
+      }]
+    }]
+  }, {
+    "sourcePosition": {
+      "line": 42,
+      "column": 23,
+      "currentOffset": 949,
+      "endOffset": 1005
+    },
+    "values": [{
+      "value": {
+        "boolValue": true
+      },
+      "count": 2
+    }, {
+      "value": {
+        "boolValue": false
+      },
+      "count": 4
+    }],
+    "children": [{
+      "sourcePosition": {
+        "line": 42,
+        "column": 23,
+        "currentOffset": 949,
+        "endOffset": 963
+      },
+      "values": [{
+        "value": {
+          "boolValue": true
+        },
+        "count": 4
+      }, {
+        "value": {
+          "boolValue": false
+        },
+        "count": 2
+      }],
+      "children": [{
+        "sourcePosition": {
+          "line": 42,
+          "column": 34,
+          "currentOffset": 960,
+          "endOffset": 963
+        },
+        "values": [{
+          "value": {
+            "stringValue": "alice"
+          },
+          "count": 6
+        }]
+      }]
+    }, {
+      "sourcePosition": {
+        "line": 43,
+        "column": 12,
+        "currentOffset": 977,
+        "endOffset": 1005
+      },
+      "values": [{
+        "value": {
+          "boolValue": true
+        },
+        "count": 2
+      }, {
+        "value": {
+          "boolValue": false
+        },
+        "count": 2
+      }, {
+        "value": {
+        },
+        "count": 2
+      }],
+      "children": [{
+        "sourcePosition": {
+          "line": 43,
+          "column": 13,
+          "currentOffset": 978,
+          "endOffset": 1005
+        },
+        "values": [{
+          "value": {
+            "boolValue": false
+          },
+          "count": 2
+        }, {
+          "value": {
+            "boolValue": true
+          },
+          "count": 2
+        }, {
+          "value": {
+          },
+          "count": 2
+        }],
+        "children": [{
+          "sourcePosition": {
+            "line": 43,
+            "column": 29,
+            "currentOffset": 994,
+            "endOffset": 1005
+          },
+          "values": [{
+            "value": {
+              "mapValue": {
+                "fields": {
+                  "first_name": {
+                    "stringValue": "Alice"
+                  }
+                }
+              }
+            },
+            "count": 2
+          }, {
+            "value": {
+              "mapValue": {
+                "fields": {
+                  "is_mentor": {
+                    "boolValue": true
+                  }
+                }
+              }
+            },
+            "count": 2
+          }, {
+            "value": {
+            },
+            "count": 2
+          }]
+        }]
+      }]
+    }]
+  }]
+};
+
+const REPORT_LIMIT_SIZE = 15
+
+window.onload = function() {
+  if (data.rules.files.length == 1) {
+    document.body.appendChild(buildFormattedReport(data.report || [], data.rules.files[0].content))
+  } else {
+    document.body.appendChild(document.createTextNode('Only single-file rules supported. ' +
+    'If you encounter this please visit https://github.com/firebase/firebase-tools/issues'))
+  }
+};
+
+/**
+ * Builds the html block with span elements for rule visualization.
+ *
+ * @param expressionList The list of expression blocks.
+ * @param ruleString The full text of the rules with newlines and special characters escaped.
+ * @return A <pre> html element with <span></span> around expressions and subexpressions within
+ *     .write, .read, and .validate tokens so that they can be selected.
+ */
+function buildFormattedReport(expressionList, ruleString) {
+  const elements = Object.keys(expressionList).map((key) => {
+    return mapExpressionBlock(expressionList[key], ruleString)
+  })
+  const withText = interpolateTextNodes(
+    elements,
+    ruleString,
+    0,
+    ruleString.length
+  )
+  var preElement = document.createElement('pre')
+  withText.forEach((element) => preElement.appendChild(element.element))
+  return preElement
+}
+
+/**
+ * Traverses an expression block.
+ *
+ * Each expression needs to be wrapped in a span and so it's children need to be immediately
+ * resolved so they can be added to the element.
+ *
+ * @param expressionBlock The current recursive chunk of expression data.
+ * @param ruleString The full text of the rules with newlines and special characters escaped.
+ * @return A single object with at least the keys start, end, and element. Element is the span
+ *    element for that [sub]expression. The span element should have all it's children
+ *    already added.
+ */
+function mapExpressionBlock(expressionBlock, ruleString) {
+  const start = expressionBlock.sourcePosition.currentOffset
+  const end = expressionBlock.sourcePosition.endOffset + 1
+  const onlyChildSpans = (expressionBlock.children || []).map(
+    (child) => mapExpressionBlock(child, ruleString)
+  )
+  const allChildren = interpolateTextNodes(
+    onlyChildSpans,
+    ruleString,
+    start,
+    end,
+    true
+  )
+  var span = document.createElement('span')
+  allChildren.forEach((child) => {
+    span.appendChild(child.element)
+  })
+  span.classList.add('coverage-expr')
+  span.title = buildValueString(expressionBlock.values);
+  return {
+    element: span,
+    start: start,
+    end: end
+  }
+}
+
+/**
+ * The formatted report data has information about where subexpression are located. It does not,
+ * however, have information about text around these expressions. This function takes a formatted
+ * list of spans (representing expressions) and puts surrounding text into text elements and
+ * returns the list of all elements in that given text-area.
+ *
+ * @param objs the list of spans to have their bounds interpolated. Each element in the list should
+ *    formatted with the keys start, end, and element.
+ * @param ruleString The full text of the rules with newlines and special characters escaped.
+ * @param optStart An optional start index to start gathering text-elements from.
+ * @param optEnd An optional end index to finish gathering text-elements at.
+ * @param whether to remove newlines from the text values.
+ * @return An interpolated list with all indices from start to end of the ruleString being
+ *    included in either a span or a text element.
+ */
+function interpolateTextNodes(objs, ruleString, start = null, end = null, removeNewLines = false) {
+  // Arrays so null objects aren't appended (options)
+  const expressionStart = start !== null ? [{'end': start}] : []
+  const expressionEnd = end !== null ? [{'start': end}] : []
+  const sortedInnerBlocks = (objs || []).sort((a, b) => (a['start'] - b['start']))
+  const blocksWithBounds = [].concat(expressionStart, sortedInnerBlocks, expressionEnd)
+  const interpolatedBlocks = blocksWithBounds.reduce((allChildren, child, idx) => {
+    if (allChildren && allChildren.length) {
+      const lastEnd = allChildren[allChildren.length - 1]['end']
+      const thisStart = child['start']
+      // This is an array so that we don't append null objects
+      if (lastEnd < thisStart) {
+        const text = ruleString.substring(lastEnd, thisStart)
+        const textElement = [{
+          element: document.createTextNode(removeNewLines ? text.replace(/\n\s*/g,' ') : text),
+          'start': allChildren[allChildren.length - 1]['end'],
+          'end': child['start']
+        }]
+        return allChildren.concat(textElement, child)
+      }
+    }
+    return allChildren.concat(child)
+  }, [])
+  return interpolatedBlocks.filter(
+    (child) => child['start'] !== undefined && child['end'] !== undefined
+  )
+}
+
+/**
+ * Creates the mouse-over text for each span.
+ *
+ * @param values The array of value objects formatted as {value: **, count: **}.
+ * @return A single string for the mouse-over text.
+ */
+function buildValueString(values) {
+  if (!values || !values.length) {
+    return 'Expression never evaluated'
+  } else if (values.length >= REPORT_LIMIT_SIZE) {
+    const allCounts = values.reduce((acc, obj) => acc + obj.count, 0)
+    return `${values.length} distinct items returned over ${allCounts} times`
+  } else {
+    return values.map(({value, count}) => {
+      const allowedTypes = ['nullValue', 'boolValue', 'intValue', 'floatValue', 'stringValue',
+        'bytesValue', 'durationValue', 'timestampValue', 'latlngValue', 'pathValue']
+      const compressedTypes = ['mapValue', 'listValue', 'constraintValue']
+      const typeAllowed = allowedTypes.filter(type => value[type] !== undefined).length == 1
+      const typeCompressed = compressedTypes.filter(type => value[type] !== undefined).length >= 1
+      // Format is value = {returnType: returnValue}
+      // A returnType of undefined is an error. Unfortunately the field is called undefined.
+      if (value['undefined']) {
+        // Expression evaluated to error
+        return `Error '${value.undefined.causeMessage}' occurred ${count} time(s)`
+      } else if (typeCompressed) {
+        // These types are recursive and are hard to read
+        return `[object Object] returned ${count} time(s)`
+      } else if (typeAllowed) {
+        // The response is a simple literal
+        // Object.values is not ES2015
+        const realValue = Object.keys(value).map((key) => value[key])[0]
+        return `Value ${JSON.stringify(realValue)} returned ${count} time(s)`
+      } else if (Object.keys(value).length === 0) {
+        // Clause not evaluated because of short-circuit.
+        return `Expression short-circuited ${count} time(s)`
+      } else {
+        // For a properly formatted response each value should have one type.
+        console.error('Found invalid expression-return type.')
+      }
+    }).join('\n')
+  }
+}
+</script>

@@ -30,7 +30,7 @@ import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
 import { handleLessonStart } from '../_firebase';
-import { OpenMinded } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
@@ -43,7 +43,7 @@ const Detail = ({ title, value }) => (
   </Flex>
 );
 
-export default ({ page, progress, user, ts, course, lesson }: OpenMinded.CoursePagesProp) => {
+export default ({ page, progress, user, ts, course, lesson }: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
 

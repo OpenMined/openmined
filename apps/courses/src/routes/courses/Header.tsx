@@ -34,7 +34,7 @@ import {
   faSignOutAlt,
   faUserGraduate,
 } from '@fortawesome/free-solid-svg-icons';
-import { OpenMinded } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 
 import CourseDrawer from './Drawer';
 
@@ -88,7 +88,7 @@ const UserAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = getUserRef(db, user.uid);
-  const dbUser: OpenMinded.User = useFirestoreDocDataOnce(dbUserRef);
+  const dbUser: OpenMined.User = useFirestoreDocDataOnce(dbUserRef);
 
   return (
     <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />

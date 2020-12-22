@@ -11,7 +11,7 @@ import CourseWrap from './Wrapper';
 
 import Loading from '../../components/Loading';
 import { getCourseRef } from './_firebase';
-import { OpenMinded } from '@openmined/shared/types';
+import { OpenMined } from '@openmined/shared/types';
 
 // SEE TODO (#11)
 
@@ -58,7 +58,7 @@ const PermissionsGate = ({ children, progress, which, page, ...params }) => {
 };
 
 type PropType = {
-  which: OpenMinded.CoursePageWhich,
+  which: OpenMined.CoursePageWhich,
 }
 
 export default ({ which }: PropType) => {
@@ -71,7 +71,7 @@ export default ({ which }: PropType) => {
   const dbCourseRef = params.course
     ? getCourseRef(db, user.uid, params.course)
     : null;
-  const dbCourse: OpenMinded.Course = dbCourseRef ? useFirestoreDocDataOnce(dbCourseRef) : null;
+  const dbCourse: OpenMined.Course = dbCourseRef ? useFirestoreDocDataOnce(dbCourseRef) : null;
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
@@ -88,7 +88,7 @@ export default ({ which }: PropType) => {
   const { data, loading } = useSanity(query);
 
   // Define the props we'll be passing to each page (and to the permission hook)
-  const props: OpenMinded.CoursePagesProp = {
+  const props: OpenMined.CoursePagesProp = {
     ...params,
     page: data,
     which,

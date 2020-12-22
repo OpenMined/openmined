@@ -49,6 +49,7 @@ describe('users/{{userID}}', () => {
       bobDb.collection('users').doc(ALICE_ID).set(profileData)
     );
   });
+  
   describe('/private/{{userId}}', () => {
     it('Only owner can read/write', async () => {
       const getPrivateDocRef = (db, userId) =>

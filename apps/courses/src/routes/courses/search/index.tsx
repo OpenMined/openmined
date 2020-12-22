@@ -6,18 +6,9 @@ import Sidebar from './Sidebar';
 
 import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
-import { useFunctions } from 'reactfire';
 import { OpenMined } from '@openmined/shared/types';
 
 export default ({ page }: OpenMined.CoursePagesProp) => {
-  const functions = useFunctions();
-  functions.region = 'europe-west1';
-
-  const submissions = functions.httpsCallable('assignReview');
-  submissions({ text: 'hello world' }).then((r) => {
-    console.log('RESULT', r);
-  });
-
   const FIXED_SIDEBAR_WIDTH = 250;
   const FIXED_SIDEBAR_MD_WIDTH = 200;
 

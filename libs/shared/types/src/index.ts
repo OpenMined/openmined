@@ -1,6 +1,6 @@
 import * as firebase from 'firebase/app';
 
-export namespace OpenMinded {
+export namespace OpenMined {
   export type CoursePageWhich =
     | 'search'
     | 'overview'

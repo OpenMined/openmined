@@ -29,7 +29,9 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 - Build the mentorship dashboard
 - Clicking on a `<SubmissionInline />` from the 3rd tab (`<RichTextEditor />`) causes an error (maybe consider a total refactor of this page (break it out into multiple components/files) and ensure that it can handle any possible situation (think about in preparation for mentors))
+- Creating a submission doesn't give you a button to review your submission
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
+- Make sure a mentor cannot be assigned their own submission
 - Convert everything to cyan
 - Find some way to designate "cyan" as the primary color in Chakra
 - Re-add text underline to all links

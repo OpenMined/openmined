@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -19,7 +19,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 
 import ColoredTabs from '../../../components/ColoredTabs';
+import useToast, { toastConfig } from '../../../components/Toast';
 import dayjs from 'dayjs';
+import {
+  useFirestore,
+  useFirestoreCollectionData,
+  useFunctions,
+  useUser,
+} from 'reactfire';
+import { getSubmissionReviewEndTime } from '../../courses/_helpers';
+import Countdown from '../../../components/Countdown';
 
 // TODO: Do a responsive overview of this entire page
 
@@ -32,13 +41,24 @@ const getMentorableCourses = (courses, mentor) =>
   });
 
 export const MentorContext = ({ courses, mentor }) => {
-  // TODO: Populate this
-  const activeReviews = [
-    {
-      title: 'Project Name',
-      ends_at: dayjs().add(3, 'hour'),
-    },
-  ];
+  const user = useUser();
+  const db = useFirestore();
+  const functions = useFunctions();
+  functions.region = 'europe-west1';
+
+  const requestResignation = functions.httpsCallable('resignReview');
+
+  const activeReviewsRef = db
+    .collectionGroup('submissions')
+    .where('mentor', '==', db.doc(`/users/${user.uid}`));
+  const activeReviewsData = useFirestoreCollectionData(activeReviewsRef);
+
+  const activeReviews = activeReviewsData.map((r) => {
+    const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
+
+    if (courseIndex !== -1) return { ...r, course: courses[courseIndex] };
+    return null;
+  });
 
   return (
     <Box width="full" borderRadius="md" boxShadow="lg" overflow="hidden" p={6}>
@@ -52,10 +72,14 @@ export const MentorContext = ({ courses, mentor }) => {
       )}
       {activeReviews.length > 0 &&
         activeReviews.map((review, index) => (
-          <Box mt={activeReviews.length > 1 && index !== 0 ? 4 : 0}>
-            {/* TODO: Do this */}
+          <Box key={index} mt={activeReviews.length > 1 && index !== 0 ? 4 : 0}>
             <Text fontFamily="mono" color="gray.700">
-              Time Remaining: {review.ends_at.toString()}
+              Time Remaining:{' '}
+              <Countdown
+                time={getSubmissionReviewEndTime(
+                  dayjs(review.review_started_at.toDate())
+                )}
+              />
             </Text>
             <Flex
               p={3}
@@ -75,14 +99,38 @@ export const MentorContext = ({ courses, mentor }) => {
                   mr={4}
                 />
                 <Heading as="p" size="sm">
-                  {review.title}
+                  {
+                    review.course.project.parts[
+                      review.course.project.parts.findIndex(
+                        (p) => p._key === review.part
+                      )
+                    ].title
+                  }
                 </Heading>
               </Flex>
               <Flex align="center">
-                <Button variant="ghost" colorScheme="gray" mr={3}>
+                <Button
+                  variant="ghost"
+                  colorScheme="gray"
+                  mr={3}
+                  onClick={() => {
+                    requestResignation({
+                      course: review.course.slug,
+                      part: review.part,
+                      mentor: review.mentor,
+                      student: review.student,
+                    }).then((d) => console.log(d));
+                  }}
+                >
                   Resign
                 </Button>
-                <Button colorScheme="black">Review</Button>
+                <Button
+                  colorScheme="black"
+                  as={RRDLink}
+                  to={`/courses/${review.course.slug}/project/${review.part}`}
+                >
+                  Review
+                </Button>
               </Flex>
             </Flex>
           </Box>
@@ -136,6 +184,14 @@ export const MentorContext = ({ courses, mentor }) => {
 
 export const MentorTabs = ({ courses, mentor }) => {
   const ProjectQueue = () => {
+    const toast = useToast();
+    const functions = useFunctions();
+    functions.region = 'europe-west1';
+
+    const requestReview = functions.httpsCallable('assignReview');
+
+    const [hasRequestedReview, setHasRequestedReview] = useState(false);
+
     const mentorableCourses = getMentorableCourses(courses, mentor);
 
     return (
@@ -153,9 +209,9 @@ export const MentorTabs = ({ courses, mentor }) => {
                 <Heading as="p" size="md" mb={4}>
                   {title}
                 </Heading>
-                <Image src={full} alt={title} mb={4} />
+                <Image src={full} alt={title} />
                 {/* TODO: Fill this value in */}
-                <Text color="gray.400">X in queue</Text>
+                {/* <Text color="gray.400" mt={4}>X in queue</Text> */}
               </Flex>
               <Flex p={6} direction="column" align="center">
                 <Box mt={-3} mb={8} width="full">
@@ -165,6 +221,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                       p={3}
                       borderBottom="1px solid"
                       borderBottomColor="gray.400"
+                      key={index}
                     >
                       <Circle
                         bg="gray.800"
@@ -189,8 +246,33 @@ export const MentorTabs = ({ courses, mentor }) => {
                   >
                     Project Overview
                   </Link>
-                  {/* TODO: Make this button actionable */}
-                  <Button colorScheme="black">Review</Button>
+                  <Button
+                    colorScheme="black"
+                    disabled={hasRequestedReview}
+                    isLoading={hasRequestedReview}
+                    onClick={() => {
+                      setHasRequestedReview(true);
+
+                      requestReview({ course: slug }).then(({ data }) => {
+                        if (data && !data.error) {
+                          setHasRequestedReview(false);
+
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else {
+                          toast({
+                            ...toastConfig,
+                            title: 'Error assigning review',
+                            description: data.error,
+                            status: 'error',
+                          });
+
+                          setHasRequestedReview(false);
+                        }
+                      });
+                    }}
+                  >
+                    Review
+                  </Button>
                 </Flex>
               </Flex>
             </Box>
@@ -284,7 +366,7 @@ export const MentorTabs = ({ courses, mentor }) => {
         <Heading as="p" size="md" color="gray.700" mb={3}>
           History
         </Heading>
-        {reviewHistory.map((review) => (
+        {reviewHistory.map((review, index) => (
           <Flex
             direction={['column', null, 'row']}
             justify={{ md: 'space-between' }}
@@ -293,6 +375,7 @@ export const MentorTabs = ({ courses, mentor }) => {
             boxShadow="md"
             mb={3}
             p={4}
+            key={index}
           >
             <Box>
               <Heading as="p" size="sm" mb={2}>

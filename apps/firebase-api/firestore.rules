@@ -65,7 +65,7 @@ service cloud.firestore {
         match /submissions/{submission} {
           allow read, create: if isSameUser(user)
           // TODO: Nobody may edit or delete a submission
-          // TODO: Deny read unless it's the same user OR if it's an assigned mentor (if possible)
+          // TODO: Deny read unless it's the same user... see "match /{path=**}/submissions/{submission}" below for where you need to write the rules for mentor read access
         }
 
         // TODO: Create a reviews subcollection
@@ -79,6 +79,12 @@ service cloud.firestore {
           allow read, write: if isSameUser(user)
         }
       }
+    }
+
+    // TODO: This is where you'll write the queries for the mentor being able to READ their active submissions
+    // TODO: This is different from where you'll allow a mentor to update a submission, or even read an individual submission
+    match /{path=**}/submissions/{submission} {
+      allow read: if true;
     }
 
     match /{document=**} {

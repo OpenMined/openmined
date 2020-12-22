@@ -105,7 +105,7 @@ const genTabsContent = (
               <Divider />
               <RichTextEditor
                 mt={8}
-                content={JSON.parse(attemptData.content)}
+                content={JSON.parse(attemptData.submission_content)}
                 readOnly
               />
             </Box>
@@ -128,7 +128,7 @@ const genTabsContent = (
           <Divider />
           <RichTextEditor
             mt={8}
-            content={JSON.parse(reviewData.content)}
+            content={JSON.parse(reviewData.review_content)}
             readOnly
           />
         </>

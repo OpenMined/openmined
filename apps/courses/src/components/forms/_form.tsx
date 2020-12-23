@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useForm, useFieldArray, UseFormOptions } from 'react-hook-form';
+import {
+  Controller,
+  useForm,
+  useFieldArray,
+  UseFormOptions,
+} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
@@ -19,7 +24,6 @@ import {
   Icon,
   RadioGroup,
   Stack,
-  Radio,
   Flex,
 } from '@chakra-ui/react';
 import { ObjectSchema } from 'yup';
@@ -27,6 +31,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { capitalize } from '../../helpers';
+import TempRadio from '../TempRadio';
 
 interface Field {
   name: string;
@@ -56,7 +61,12 @@ interface FormProps {
 const SIZE = 'lg';
 const VARIANT = 'filled';
 
-const createInput = ({ options, left, right, ...input }, register, control) => {
+const createInput = (
+  { options, left, right, ...input },
+  register,
+  control,
+  setValue
+) => {
   let elem;
 
   if (input.type === 'select') {
@@ -86,40 +96,45 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   } else if (input.type === 'read-only') {
     elem = <Text color="gray.700">{input.defaultValue}</Text>;
   } else if (input.type === 'radio') {
-    // SEE TODO (#4)
     elem = (
-      <RadioGroup {...input}>
-        <Stack spacing={2} direction="column">
-          {options.map((option) => {
-            if (typeof option === 'string') {
-              return (
-                <Radio
-                  key={option}
-                  value={option}
-                  id={`option-${option.toLowerCase().split(' ').join('-')}`}
-                  ref={register}
-                >
-                  {option}
-                </Radio>
-              );
-            } else {
-              return (
-                <Radio
-                  key={option.label}
-                  value={option.value}
-                  id={`option-${option.value
-                    .toLowerCase()
-                    .split(' ')
-                    .join('-')}`}
-                  ref={register}
-                >
-                  {option.label}
-                </Radio>
-              );
-            }
-          })}
-        </Stack>
-      </RadioGroup>
+      <Controller
+        control={control}
+        as={
+          <RadioGroup {...input}>
+            <Stack spacing={2} direction="column">
+              {options.map((option) => {
+                if (typeof option === 'string') {
+                  return (
+                    <TempRadio
+                      key={option}
+                      value={option}
+                      id={`option-${option.toLowerCase().split(' ').join('-')}`}
+                      onChange={(v) => setValue(input.name, v)}
+                    >
+                      {option}
+                    </TempRadio>
+                  );
+                } else {
+                  return (
+                    <TempRadio
+                      key={option.label}
+                      value={option.value}
+                      id={`option-${option.value
+                        .toLowerCase()
+                        .split(' ')
+                        .join('-')}`}
+                      onChange={(v) => setValue(input.name, v)}
+                    >
+                      {option.label}
+                    </TempRadio>
+                  );
+                }
+              })}
+            </Stack>
+          </RadioGroup>
+        }
+        name={input.name}
+      />
     );
   } else {
     elem = <Input {...input} variant={VARIANT} size={SIZE} ref={register} />;
@@ -136,7 +151,15 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   );
 };
 
-const FieldArray = ({ name, max, fields, control, register, defaultValue }: any) => {
+const FieldArray = ({
+  name,
+  max,
+  fields,
+  control,
+  register,
+  setValue,
+  defaultValue,
+}: any) => {
   const fieldArray = useFieldArray({
     control,
     name,
@@ -161,7 +184,8 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }: any)
                 {createInput(
                   { ...input, name: inputName, defaultValue: item.value },
                   register,
-                  control
+                  control,
+                  setValue
                 )}
                 <InputRightElement cursor="pointer">
                   {/* SEE TODO (#3) */}
@@ -213,6 +237,7 @@ export default ({
     control,
     handleSubmit,
     errors,
+    setValue,
     formState: { isDirty, isValid, isSubmitting },
   } = useForm({
     ...settings,
@@ -245,7 +270,7 @@ export default ({
           )}
           {helper && helper({ fontSize: 'sm' })}
         </Flex>
-        {createInput(input, register, control)}
+        {createInput(input, register, control, setValue)}
         {hasErrors && (
           <FormErrorMessage>
             {capitalize(errors[input.name].message.split('_').join(' '))}

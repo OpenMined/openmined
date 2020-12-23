@@ -33,7 +33,6 @@ import { OpenMined } from '@openmined/shared/types';
 import CourseDrawer from './Drawer';
 import { getUserRef } from './_firebase';
 
-import useToast, { toastConfig } from '../../components/Toast';
 import Icon from '../../components/Icon';
 import { getLinkPropsFromLink, handleErrors } from '../../helpers';
 import useToast, { toastConfig } from '../../components/Toast';

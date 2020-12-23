@@ -126,18 +126,6 @@ export default extendTheme({
       800: '#267D28',
       900: '#034F0C',
     },
-    teal: {
-      50: '#DFF1F1',
-      100: '#AEDEDC',
-      200: '#79C9C5',
-      300: '#3EB3AD',
-      400: '#00A39B',
-      500: '#009289',
-      600: '#00837C',
-      700: '#006F6A',
-      800: '#005C59',
-      900: '#004A48',
-    },
     cyan: {
       50: '#DFF5F8',
       100: '#AAE9F1',
@@ -307,10 +295,16 @@ export default extendTheme({
     },
     Link: {
       baseStyle: {
-        color: 'blue.500',
+        color: 'cyan.600',
+        textDecoration: 'underline',
         _hover: {
-          color: 'blue.800',
+          color: 'cyan.800',
+        },
+      },
+      variants: {
+        flat: {
           textDecoration: 'none',
+          _hover: { textDecoration: 'none' },
         },
       },
     },

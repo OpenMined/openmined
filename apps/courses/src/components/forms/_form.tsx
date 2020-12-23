@@ -204,7 +204,7 @@ const FieldArray = ({
       <Button
         onClick={fieldArray.append}
         disabled={!canAppend}
-        colorScheme="blue"
+        colorScheme="cyan"
         mt={2}
       >
         {/* SEE TODO (#3) */}
@@ -320,7 +320,7 @@ export default ({
         {typeof submit === 'string' && (
           <Button
             mt={spacing}
-            colorScheme="blue"
+            colorScheme="cyan"
             disabled={!isDirty || (isDirty && !isValid)}
             isLoading={isSubmitting}
             type="submit"

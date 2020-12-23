@@ -7,11 +7,11 @@ import {
   AccordionIcon,
   RadioGroup,
   Alert,
-  Button,
   Box,
   Text,
   CheckboxGroup,
   Stack,
+  Link,
 } from '@chakra-ui/react';
 import TempRadio from '../../../components/TempRadio';
 import TempCheckbox from '../../../components/TempCheckbox';
@@ -79,14 +79,13 @@ export default ({ filters, numCourses, clearFilters }) => {
           <Text mb={4} color="cyan.800">
             {numCourses} results
           </Text>
-          <Button
+          <Link
             color="cyan.800"
-            variant="link"
+            _hover={{ color: 'cyan.900' }}
             onClick={clearFilters}
-            textDecoration="underline"
           >
             Clear filters ({numFilters})
-          </Button>
+          </Link>
         </Alert>
       )}
       <Accordion allowMultiple allowToggle>

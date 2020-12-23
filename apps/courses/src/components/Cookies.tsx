@@ -28,7 +28,15 @@ export default ({ callback }) => {
   );
 
   return (
-    <Box id="cookies" position="fixed" bottom={0} left={0} width="full" bg="gray.100" p={4}>
+    <Box
+      id="cookies"
+      position="fixed"
+      bottom={0}
+      left={0}
+      width="full"
+      bg="gray.100"
+      p={4}
+    >
       <GridContainer>
         <Heading as="p" size="md" mb={2}>
           Let's talk about cookies...
@@ -43,13 +51,8 @@ export default ({ callback }) => {
         >
           Click me for {isOpen ? 'less' : 'more'} information
         </Text>
-        <Box
-          display={{ base: 'block', md: 'none' }}
-        >
-          <Collapse
-            in={isOpen}
-            animateOpacity
-          >
+        <Box display={{ base: 'block', md: 'none' }}>
+          <Collapse in={isOpen} animateOpacity>
             <Justification />
           </Collapse>
         </Box>
@@ -64,7 +67,7 @@ export default ({ callback }) => {
           <Button
             onClick={() => callback('all')}
             size="sm"
-            colorScheme="blue"
+            colorScheme="cyan"
             mt={2}
           >
             Accept all cookies

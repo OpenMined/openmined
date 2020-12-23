@@ -56,7 +56,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
       bg="white"
       color="gray.700"
       borderRadius="md"
-      _hover={{ bg: 'indigo.50', color: 'indigo.500' }}
+      _hover={{ bg: 'cyan.50', color: 'cyan.500' }}
       transitionProperty="background color"
       transitionDuration="normal"
       transitionTimingFunction="ease-in-out"

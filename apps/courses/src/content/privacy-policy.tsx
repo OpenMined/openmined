@@ -33,9 +33,8 @@ export default {
       <Text>
         Not seeing an answer to your specific question? Go to our{' '}
         <Link
-          color="indigo.500"
-          _hover={{ color: 'indigo.700' }}
-          textDecoration="underline"
+          color="cyan.500"
+          _hover={{ color: 'cyan.700' }}
           target="_blank"
           rel="noopener noreferrer"
           href="https://discussion.openmined.org"

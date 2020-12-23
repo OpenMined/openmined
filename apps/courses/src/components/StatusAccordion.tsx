@@ -11,9 +11,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import {
-  faCheckCircle,
-  faTimesCircle,
   faPaperPlane,
+  faTimes,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -42,21 +42,21 @@ const getStatusStyles = (status) => {
     };
   } else if (status === 'failed-but-pending') {
     return {
-      icon: faTimesCircle,
+      icon: faTimes,
       color: 'cyan',
       bg: 50,
       text: 700,
     };
   } else if (status === 'passed') {
     return {
-      icon: faCheckCircle,
+      icon: faCheck,
       color: 'green',
       bg: 50,
       text: 600,
     };
   } else if (status === 'failed') {
     return {
-      icon: faTimesCircle,
+      icon: faTimes,
       color: 'magenta',
       bg: 50,
       text: 500,
@@ -137,20 +137,18 @@ export default ({ content, ...props }) => {
           >
             <AccordionButton {...buttonStyles} onClick={() => openIndex(index)}>
               <Flex flex="1" align="center">
-                {/* SEE TODO (#3) */}
-                {typeof icon !== 'string' && (
-                  <Icon
-                    size="2x"
-                    as={FontAwesomeIcon}
-                    icon={icon}
-                    color={text}
-                  />
-                )}
-                {typeof icon === 'string' && (
-                  <Circle bg={text} color={bg} size={8}>
-                    {index + 1}
-                  </Circle>
-                )}
+                <Circle bg={text} color={bg} size={8}>
+                  {typeof icon === 'string' && index + 1}
+                  {/* SEE TODO (#3) */}
+                  {typeof icon !== 'string' && (
+                    <Icon
+                      size="1x"
+                      as={FontAwesomeIcon}
+                      icon={icon}
+                      color={bg}
+                    />
+                  )}
+                </Circle>
                 <Text as="span" ml={4}>
                   {title}
                 </Text>

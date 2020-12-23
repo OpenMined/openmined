@@ -63,6 +63,11 @@ export default () => {
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: OpenMined.User = useFirestoreDocDataOnce(dbUserRef);
 
+  const userIsMentor =
+    dbUser.is_mentor &&
+    dbUser.mentorable_courses &&
+    dbUser.mentorable_courses.length > 0;
+
   const dbCoursesRef = db
     .collection('users')
     .doc(user.uid)
@@ -71,20 +76,13 @@ export default () => {
     idField: 'uid',
   });
 
-  const dbMentorRef = dbUser.is_mentor
-    ? db.collection('mentors').doc(user.uid)
-    : null;
-  const dbMentor: OpenMined.User = dbMentorRef
-    ? useFirestoreDocDataOnce(dbMentorRef)
-    : null;
-
   const mentorModeCache = JSON.parse(localStorage.getItem(MENTOR_MODE_KEY));
   const [mentorMode, setMentorMode] = useState(
     (mentorModeCache && mentorModeCache.enabled) || false
   );
 
   const resources =
-    !mentorMode || !dbMentor ? studentResources : mentorResources;
+    !mentorMode || !userIsMentor ? studentResources : mentorResources;
 
   const { data, loading } = useSanity(`
     *[_type == "course" && visible == true] {
@@ -126,7 +124,7 @@ export default () => {
                 Welcome, {dbUser.first_name}!
               </Heading>
               <Flex align="center" ml={[0, null, null, 6]}>
-                {dbMentor && (
+                {userIsMentor && (
                   <>
                     <FormControl display="flex" alignItems="center">
                       <Switch
@@ -169,12 +167,10 @@ export default () => {
           <GridItem colStart={[1, null, null, 3]} colEnd={13}>
             <Flex direction={['column', null, 'row']} justify="space-between">
               <Box mt={6} width="full">
-                {(!mentorMode || !dbMentor) && (
+                {(!mentorMode || !userIsMentor) && (
                   <StudentContext courses={data} progress={dbCourses} />
                 )}
-                {mentorMode && dbMentor && (
-                  <MentorContext courses={data} mentor={dbMentor} />
-                )}
+                {mentorMode && userIsMentor && <MentorContext courses={data} />}
               </Box>
               <Box mt={6} ml={[0, null, 6, 12]} minW={240}>
                 <Heading as="p" size="md">
@@ -189,11 +185,11 @@ export default () => {
           </GridItem>
           <GridItem colSpan={12}>
             <Box mt={[8, null, 12, 24]}>
-              {(!mentorMode || !dbMentor) && (
+              {(!mentorMode || !userIsMentor) && (
                 <StudentTabs courses={data} progress={dbCourses} />
               )}
-              {mentorMode && dbMentor && (
-                <MentorTabs courses={data} mentor={dbMentor} />
+              {mentorMode && userIsMentor && (
+                <MentorTabs courses={data} mentor={dbUser} />
               )}
             </Box>
           </GridItem>

@@ -88,7 +88,7 @@ export default () => {
                 <Heading as="h2" size="2xl" mb={4}>
                   {title}
                 </Heading>
-                <Text color="indigo.500" fontSize="md" fontFamily="mono">
+                <Text color="cyan.500" fontSize="md" fontFamily="mono">
                   Last Updated: {last_updated}
                 </Text>
                 {disclaimer && (
@@ -96,8 +96,8 @@ export default () => {
                     mt={8}
                     px={8}
                     py={4}
-                    bg="indigo.50"
-                    color="indigo.500"
+                    bg="cyan.50"
+                    color="cyan.500"
                     borderRadius="md"
                   >
                     {disclaimer}
@@ -144,7 +144,7 @@ export default () => {
                     onClick={() =>
                       window.scrollTo({ top: 0, behavior: 'smooth' })
                     }
-                    color="indigo.500"
+                    color="cyan.500"
                     textAlign="center"
                   >
                     {/* SEE TODO (#3) */}

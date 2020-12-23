@@ -304,9 +304,8 @@ export default ({
             <Link
               as={RRDLink}
               to={`/courses/${course}`}
-              textDecoration="underline"
-              color="magenta.200"
-              _hover={{ color: 'magenta.400' }}
+              color="cyan.200"
+              _hover={{ color: 'cyan.400' }}
             >
               View Full Syllabus
             </Link>

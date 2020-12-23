@@ -32,8 +32,6 @@ import SubmissionInline from '../../../components/SubmissionInline';
 import { handleErrors } from '../../../helpers';
 import { MENTOR_STUDENT_TOKEN } from '../../users/dashboard/Mentor';
 
-// TODO: Do a responsive overview of this entire page
-
 const genTabsContent = (
   part,
   attemptData,
@@ -164,7 +162,7 @@ export default ({ progress, attemptData, content, course, part, attempt }) => {
   return (
     <Box>
       <Flex justify="space-between" align="center" mb={6}>
-        <Text fontFamily="mono" color="gray.700">
+        <Text fontFamily="mono" color="gray.700" mr={6}>
           Time Remaining:{' '}
           <Countdown
             time={getSubmissionReviewEndTime(

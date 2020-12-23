@@ -11,32 +11,37 @@ export const assignReview = async (data, context) => {
   if (!context.auth || !user) return { error: 'Sorry, you are not signed in' };
 
   try {
-    // Try to get this user from the list of mentors
-    const dbMentor = await admin
-      .firestore()
-      .collection('mentors')
-      .doc(user)
-      .get();
+    // Try to get this user from the list of users
+    const dbUserRef = admin.firestore().collection('users').doc(user);
+    const dbUser = await dbUserRef.get();
 
-    // If they're not a mentor...
-    if (!dbMentor.exists) return { error: 'Sorry, you are not a mentor' };
+    // If they're not a user...
+    if (!dbUser.exists) return { error: 'Sorry, you are not a user' };
 
     // Otherwise, get their data
-    const dbMentorData = dbMentor.data();
+    const dbUserData = dbUser.data();
+
+    // If they're a user, but not a mentor
+    if (!dbUserData.is_mentor) return { error: 'Sorry, you are not a mentor' };
 
     // If they can't review the course they're asking to review...
-    if (!dbMentorData.courses.includes(course)) {
+    if (!dbUserData.mentorable_courses.includes(course)) {
       return { error: 'Sorry, you are not allowed review this course' };
     }
 
     // Otherwise, this is a legitimate request
     else {
-      // Get 1 submission that's ordered by oldest for this course that doesn't currently have a mentor assigned
+      // Get 1 submission that's ordered by oldest for this course
+      // ... that doesn't currently have a mentor assigned
+      // ... and the student isn't also the mentor
+      // NOTE: Since we're using an inequality filter on student, Firebase requires the first "sort" statement to be on this field
       const dbSubmissions = await admin
         .firestore()
         .collectionGroup('submissions')
+        .orderBy('student')
         .where('course', '==', course)
         .where('mentor', '==', null)
+        .where('student', '!=', dbUserRef)
         .orderBy('submitted_at', 'asc')
         .limit(1)
         .get();
@@ -147,7 +152,7 @@ export const resignReview = async (data, context) => {
     // And update the statistics on the mentorship array
     // TODO: Perhaps keep two arrays of submission id's that the mentor completely reviews and resigns from
     // We can use this on their mentor activity list to get the number, but ALSO to make sure they can't be reassigned a submission they've previously resigned from
-    // This may or may not be a needed feature, if not... just increment a counter on the mentors/[mentor] document
+    // This may or may not be a needed feature, if not... just increment a counter on the users/[user]/private[user] document
 
     // Return the resigned review to the mentor
     return dbReview;

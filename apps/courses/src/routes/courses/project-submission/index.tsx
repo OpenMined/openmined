@@ -34,7 +34,7 @@ export default (props: OpenMined.CoursePagesProp) => {
   const attemptRef = attempt
     ? content.submissions[+attempt - 1].submission
     : null;
-  const attemptData: OpenMined.ProjectPartSubmission = attemptRef
+  const attemptData: OpenMined.CourseProjectSubmission = attemptRef
     ? useFirestoreDocDataOnce(attemptRef)
     : null;
 

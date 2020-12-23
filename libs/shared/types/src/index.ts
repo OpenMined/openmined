@@ -41,10 +41,11 @@ export namespace OpenMined {
     country?: string;
     timezone?: string;
     is_mentor?: boolean;
+    mentorable_courses?: string[];
   }
 
   export interface UserPrivate {
-    github_access_token: string;
+    github_access_token: string | null;
   }
 
   export type Course = {
@@ -83,7 +84,7 @@ export namespace OpenMined {
   export type Project = {
     started_at: firebase.firestore.Timestamp;
     completed_at?: firebase.firestore.Timestamp;
-    status?: string;
+    status?: 'passed' | 'failed';
     parts?: ProjectParts;
   };
 
@@ -94,14 +95,21 @@ export namespace OpenMined {
   export type ProjectPart = {
     started_at?: firebase.firestore.Timestamp;
     completed_at?: firebase.firestore.Timestamp;
-    submissions: ProjectPartSubmission[];
+    submissions: ProjectAttempt[];
   };
 
-  export type ProjectPartSubmission = {
+  export type ProjectAttempt = {
+    submitted_at: firebase.firestore.Timestamp;
+    submission: firebase.firestore.DocumentReference;
+    reviewed_at?: firebase.firestore.Timestamp;
+    status?: 'passed' | 'failed';
+  };
+
+  export type CourseProjectSubmission = {
     id: string;
     course: string;
     part: string;
-    attempt: number;
+    attempt: string | number;
     student: firebase.firestore.DocumentReference;
     submitted_at: firebase.firestore.Timestamp;
     submission_content: string;
@@ -112,10 +120,16 @@ export namespace OpenMined {
     review_ended_at: firebase.firestore.Timestamp | null;
   };
 
-  export type ProjectAttempt = {
-    submitted_at: firebase.firestore.Timestamp;
+  export type MentorReview = {
+    attempt: string | number;
+    started_at: firebase.firestore.Timestamp;
+    completed_at: firebase.firestore.Timestamp | null;
     submission: firebase.firestore.DocumentReference;
-    reviewed_at?: firebase.firestore.Timestamp;
-    status?: string;
+    id: string;
+    student: firebase.firestore.DocumentReference;
+    course: string;
+    part: string;
+    attempt: string | number;
+    status: 'pending' | 'resigned' | 'reviewed';
   };
 }

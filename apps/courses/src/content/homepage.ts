@@ -84,11 +84,5 @@ export default {
         link: 'https://opencollective.com/openmined',
       },
     ],
-    links: [
-      {
-        title: 'OpenMined.org',
-        link: 'https://openmined.org',
-      },
-    ],
   },
 };

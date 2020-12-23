@@ -196,7 +196,7 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
               </UnorderedList>
               {!isTakingCourse && (
                 <Button
-                  colorScheme="blue"
+                  colorScheme="cyan"
                   size="lg"
                   as={courseStartLink ? Link : null}
                   to={courseStartLink}

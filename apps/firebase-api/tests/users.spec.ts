@@ -1,9 +1,6 @@
 import * as firebase from '@firebase/rules-unit-testing';
 
-import {
-  PROJECT_ID,
-  getAuthedFirestore,
-} from './utils';
+import { PROJECT_ID, getAuthedFirestore } from './utils';
 
 const ALICE_ID = 'alice';
 const BOB_ID = 'bob';
@@ -26,7 +23,7 @@ describe('users/{{userID}}', () => {
     );
   });
 
-  it('Owner can only write except is_mentor', async () => {
+  it('Owner can only write except is_mentor and mentorable_courses', async () => {
     // alice can write
     const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
     const aliceProfile = aliceDb.collection('users').doc(ALICE_ID);
@@ -36,6 +33,12 @@ describe('users/{{userID}}', () => {
     // alice cannot write is_mentor field
     const forceIsMentorData = { is_mentor: true };
     await firebase.assertFails(aliceProfile.set(forceIsMentorData));
+
+    // alice cannot write mentorable_courses field
+    const forceMentorableCoursesData = {
+      mentorable_courses: ['some-course', 'some-other-course'],
+    };
+    await firebase.assertFails(aliceProfile.set(forceMentorableCoursesData));
 
     // others cannnot write
     const anyoneDb = getAuthedFirestore(null);
@@ -49,7 +52,7 @@ describe('users/{{userID}}', () => {
       bobDb.collection('users').doc(ALICE_ID).set(profileData)
     );
   });
-  
+
   describe('/private/{{userId}}', () => {
     it('Only owner can read/write', async () => {
       const getPrivateDocRef = (db, userId) =>

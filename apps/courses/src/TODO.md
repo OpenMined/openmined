@@ -16,8 +16,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 - TODO (#1): Define configuration for main routes file to determine which routes receive the main header and main footer. Have this done in an RouteWrapper component where you can pass the appropriate props for each route.
 - TODO (#3): Create a custom `<Icon />` component that automates the `as` prop and also prefers the sizing of the Chakra theme using `boxSize` instead of the `size` props provided by React-FontAwesome. Convert all icons to use this custom component and then swap out their `size` for the appropriate `boxSize` in Chakra.
-- TODO (#4): All radios and checkboxes require a double click for some reason... have no idea what's going on here, but Chakra doesn't natively have this problem. It's something we're doing wrong here.
-- Figure out what to do about `<RichTextEditor />`
 - TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
 - TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension

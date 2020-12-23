@@ -6,15 +6,15 @@ import {
   AccordionPanel,
   AccordionIcon,
   RadioGroup,
-  Radio,
   Alert,
   Box,
   Text,
-  Checkbox,
   CheckboxGroup,
   Stack,
   Link,
 } from '@chakra-ui/react';
+import TempRadio from '../../../components/TempRadio';
+import TempCheckbox from '../../../components/TempCheckbox';
 
 const SidebarItem = ({
   title,
@@ -37,24 +37,22 @@ const SidebarItem = ({
     </AccordionButton>
     <AccordionPanel pb={4}>
       {multiple ? (
-        // SEE TODO (#4)
         <CheckboxGroup colorScheme="cyan" onChange={setter} value={value}>
           <Stack direction="column" align="flex-start">
             {options.map((item) => (
-              <Checkbox key={item} value={item}>
+              <TempCheckbox key={item} value={item} onChange={setter}>
                 {item}
-              </Checkbox>
+              </TempCheckbox>
             ))}
           </Stack>
         </CheckboxGroup>
       ) : (
-        // SEE TODO (#4)
-        <RadioGroup colorScheme="cyan" onChange={setter} value={value}>
+        <RadioGroup colorScheme="cyan" value={value}>
           <Stack>
             {options.map((item) => (
-              <Radio key={item} value={item}>
+              <TempRadio onChange={setter} value={item} key={item}>
                 {item}
-              </Radio>
+              </TempRadio>
             ))}
           </Stack>
         </RadioGroup>

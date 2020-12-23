@@ -1,12 +1,12 @@
 import React from 'react';
-import { Flex, Stack, Checkbox, Text } from '@chakra-ui/react';
+import { Flex, Stack, Text } from '@chakra-ui/react';
+import TempCheckbox from '../../../../components/TempCheckbox';
 
 export default ({ tasks, spacing }: any) => (
   <Flex justify="center" my={spacing}>
     <Stack spacing={4}>
       {tasks.map((t, i) => (
-        // SEE TODO (#4)
-        <Checkbox
+        <TempCheckbox
           key={i}
           spacing={4}
           colorScheme="magenta"
@@ -16,7 +16,7 @@ export default ({ tasks, spacing }: any) => (
             <Text mr={4}>{i + 1}.</Text>
             <Text>{t}</Text>
           </Flex>
-        </Checkbox>
+        </TempCheckbox>
       ))}
     </Stack>
   </Flex>

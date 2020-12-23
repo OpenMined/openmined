@@ -15,20 +15,18 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  Icon,
   Link,
   Stack,
   Text,
 } from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheckCircle,
   faExternalLinkAlt,
   faFile,
   faPlayCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { getLinkPropsFromLink } from '../../helpers';
+import Icon from '../../components/Icon';
 
 const DrawerItem = ({
   index,
@@ -47,8 +45,7 @@ const DrawerItem = ({
       onClick={() => toggleAccordionItem(index)}
     >
       <Flex flex="1" textAlign="left" align="center">
-        {/* SEE TODO (#3) */}
-        <Icon as={FontAwesomeIcon} icon={icon} mr={6} size="lg" />
+        <Icon icon={icon} mr={6} boxSize={5} size="lg" />
         <Text fontWeight="bold">{title}</Text>
       </Flex>
       <AccordionIcon color="gray.600" />
@@ -79,21 +76,12 @@ const DrawerItem = ({
                 >
                   <Flex justify="space-between" align="center">
                     <Flex align="center">
-                      {/* SEE TODO (#3) */}
                       {icon && (
-                        <Icon
-                          as={FontAwesomeIcon}
-                          icon={icon}
-                          size="lg"
-                          mr={6}
-                        />
+                        <Icon icon={icon} boxSize={5} size="lg" mr={6} />
                       )}
                       <Text>{title}</Text>
                     </Flex>
-                    {/* SEE TODO (#3) */}
-                    {isExternal && (
-                      <Icon as={FontAwesomeIcon} icon={faExternalLinkAlt} />
-                    )}
+                    {isExternal && <Icon icon={faExternalLinkAlt} />}
                   </Flex>
                 </Link>
               );
@@ -141,12 +129,11 @@ const DrawerItem = ({
                     width={5}
                     mr={6}
                   >
-                    {/* SEE TODO (#3) */}
                     {icon && (
                       <Icon
-                        as={FontAwesomeIcon}
                         icon={icon}
                         color={status === 'completed' ? 'cyan.300' : 'inherit'}
+                        boxSize={5}
                         size="lg"
                       />
                     )}

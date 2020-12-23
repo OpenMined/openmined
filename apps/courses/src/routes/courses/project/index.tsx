@@ -5,7 +5,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Link,
   ListItem,
   Tag,
@@ -14,7 +13,6 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 import { useFirestore } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBug,
   faCheckCircle,
@@ -35,6 +33,7 @@ import {
 } from '../_helpers';
 import { handleProjectPartBegin } from '../_firebase';
 import GridContainer from '../../../components/GridContainer';
+import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
@@ -43,8 +42,7 @@ import { OpenMined } from '@openmined/shared/types';
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
-    {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+    <Icon icon={faCheckCircle} boxSize={8} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -175,10 +173,9 @@ export default ({
             {courseTitle}
           </Text>
           <Box position="relative" mb={4}>
-            {/* SEE TODO (#3) */}
             <Icon
-              as={FontAwesomeIcon}
               icon={faShapes}
+              boxSize={8}
               size="2x"
               position="absolute"
               top={1}
@@ -190,9 +187,7 @@ export default ({
           </Box>
           <Tag {...statusStyles}>
             {/* SEE TODO (#3) */}
-            {statusIcon && (
-              <Icon as={FontAwesomeIcon} icon={statusIcon} mr={2} />
-            )}
+            {statusIcon && <Icon icon={statusIcon} mr={2} />}
             <TagLabel fontWeight="bold">{statusText}</TagLabel>
           </Tag>
           <Divider my={6} />
@@ -274,8 +269,7 @@ export default ({
                 {...getLinkPropsFromLink(link)}
               >
                 <Flex align="center">
-                  {/* SEE TODO (#3) */}
-                  <Icon as={FontAwesomeIcon} icon={icon} size="lg" mr={4} />
+                  <Icon icon={icon} boxSize={5} size="lg" mr={4} />
                   <Text>{title}</Text>
                 </Flex>
               </Link>

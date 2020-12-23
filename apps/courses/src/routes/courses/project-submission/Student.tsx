@@ -11,7 +11,6 @@ import {
   Grid,
   GridItem,
   Heading,
-  Icon,
   Image,
   Link,
   Modal,
@@ -26,7 +25,6 @@ import {
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import { useFirestore } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleRight, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -36,6 +34,7 @@ import { handleAttemptSubmission } from '../_firebase';
 import { Content } from '../concept/content';
 import { handleErrors } from '../../../helpers';
 import SubmissionInline from '../../../components/SubmissionInline';
+import Icon from '../../../components/Icon';
 import RichTextEditor, {
   EDITOR_STORAGE_STRING,
 } from '../../../components/RichTextEditor';
@@ -240,13 +239,10 @@ export default ({
         justify="space-between"
         align="center"
       >
-        {/* SEE TODO (#3) */}
         <Breadcrumb
           spacing={2}
           color="gray.700"
-          separator={
-            <Icon as={FontAwesomeIcon} icon={faAngleRight} color="gray.400" />
-          }
+          separator={<Icon icon={faAngleRight} color="gray.400" />}
         >
           <BreadcrumbItem>
             <BreadcrumbLink as={RRDLink} to={`/courses/${course}/project`}>
@@ -267,8 +263,7 @@ export default ({
           mt={[2, null, 0]}
         >
           <Flex align="center">
-            {/* SEE TODO (#3) */}
-            <Icon as={FontAwesomeIcon} icon={faCommentAlt} mr={2} />
+            <Icon icon={faCommentAlt} mr={2} />
             <Text>Get Help</Text>
           </Flex>
         </Link>

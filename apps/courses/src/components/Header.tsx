@@ -5,7 +5,6 @@ import {
   Flex,
   Link,
   Button,
-  Icon,
   Stack,
   Divider,
   Avatar,
@@ -20,7 +19,6 @@ import {
 import { Link as RRDLink } from 'react-router-dom';
 import useToast, { toastConfig } from './Toast';
 import useScrollPosition from '@react-hook/window-scroll';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTimes,
   faBars,
@@ -32,6 +30,7 @@ import { OpenMined } from '@openmined/shared/types';
 
 import { Popover } from './Popover';
 import GridContainer from './GridContainer';
+import Icon from './Icon';
 
 import logo from '../assets/logo.svg';
 import { handleErrors } from '../helpers';
@@ -175,10 +174,9 @@ export default ({ noScrolling }) => {
           <Stack spacing={3}>
             {user && (
               <Flex align="center" as={RRDLink} to={`/users/${user.uid}`}>
-                {/* SEE TODO (#3) */}
                 <Icon
-                  as={FontAwesomeIcon}
                   icon={faUserCircle}
+                  boxSize={5}
                   size="lg"
                   color="gray.400"
                   mr={4}
@@ -187,10 +185,9 @@ export default ({ noScrolling }) => {
               </Flex>
             )}
             <Flex align="center" as={RRDLink} to="/users/settings">
-              {/* SEE TODO (#3) */}
               <Icon
-                as={FontAwesomeIcon}
                 icon={faCog}
+                boxSize={5}
                 size="lg"
                 color="gray.400"
                 mr={4}
@@ -205,10 +202,9 @@ export default ({ noScrolling }) => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {/* SEE TODO (#3) */}
               <Icon
-                as={FontAwesomeIcon}
                 icon={faCommentAlt}
+                boxSize={5}
                 size="lg"
                 color="gray.400"
                 mr={4}
@@ -278,11 +274,10 @@ export default ({ noScrolling }) => {
             />
           </RRDLink>
           <Box display={['block', null, 'none']} onClick={() => setShow(!show)}>
-            {/* SEE TODO (#3) */}
             {show ? (
-              <Icon as={FontAwesomeIcon} icon={faTimes} {...iconStyles} />
+              <Icon icon={faTimes} {...iconStyles} />
             ) : (
-              <Icon as={FontAwesomeIcon} icon={faBars} {...iconStyles} />
+              <Icon icon={faBars} {...iconStyles} />
             )}
           </Box>
           <Box

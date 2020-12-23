@@ -33,7 +33,6 @@ import { getLinkPropsFromLink } from '../../../helpers';
 
 const BREAK = 'md';
 
-// SEE TODO (#18)
 const Feedback = ({
   feedbackOpen,
   setFeedbackOpen,
@@ -135,7 +134,6 @@ const Feedback = ({
   );
 };
 
-// SEE TODO (#18)
 const Help = ({ helpOpen, setHelpOpen }) => {
   const helpLinks = [
     {

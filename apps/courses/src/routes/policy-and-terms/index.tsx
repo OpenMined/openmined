@@ -88,7 +88,7 @@ export default () => {
                 <Heading as="h2" size="2xl" mb={4}>
                   {title}
                 </Heading>
-                <Text color="cyan.500" fontSize="md" fontFamily="mono">
+                <Text color="gray.700" fontSize="md" fontFamily="mono">
                   Last Updated: {last_updated}
                 </Text>
                 {disclaimer && (
@@ -97,7 +97,7 @@ export default () => {
                     px={8}
                     py={4}
                     bg="cyan.50"
-                    color="cyan.500"
+                    color="cyan.700"
                     borderRadius="md"
                   >
                     {disclaimer}
@@ -138,14 +138,14 @@ export default () => {
                   mb={2}
                 />
                 {discussion}
-                <Flex mt={16} mr={4} justify="flex-end">
+                <Flex mt={12} justify="flex-start">
                   <Box
                     cursor="pointer"
+                    textAlign="center"
+                    color="gray.700"
                     onClick={() =>
                       window.scrollTo({ top: 0, behavior: 'smooth' })
                     }
-                    color="cyan.500"
-                    textAlign="center"
                   >
                     {/* SEE TODO (#3) */}
                     <Icon as={FontAwesomeIcon} icon={faChevronUp} />

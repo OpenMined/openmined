@@ -11,8 +11,8 @@ export default () => (
     <GridContainer isInitial pt={8} pb={16}>
       <Flex direction="column" align="center" textAlign="center">
         <Image src={FourOhFour} alt="Page Not Found" width={320} mb={8} />
-        <Heading as="h1" size="2xl" mb={4}>
-          Page not found...
+        <Heading as="h1" size="xl" mb={4}>
+          We could not find that page...
         </Heading>
         <Text color="gray.700" fontSize="lg" mb={8}>
           There is an empty set between the page you're requesting and the pages

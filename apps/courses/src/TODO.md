@@ -9,23 +9,27 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - TODO (HARD): Add a ton of security rules (make sure to reference the \_helpers.ts file!!!)
 - TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
 - Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass
-- We have a ton of problems with network requests and race conditions. For instance, signing up will redirect to the profile page where your name is empty. If you refresh the page, your name shows up. This type of behavior is present on basically every single page and is why we use window.location.href in a lot of places. It would be better to rely on client-side navigation if we could ensure that all rendering logic properly waited for the appropriate network requests to load. Can we implement this?
 - Add a ton of Cypress tests
+- We have a ton of problems with network requests and race conditions. For instance, signing up will redirect to the profile page where your name is empty. If you refresh the page, your name shows up. This type of behavior is present on basically every single page and is why we use window.location.href in a lot of places. It would be better to rely on client-side navigation if we could ensure that all rendering logic properly waited for the appropriate network requests to load. Can we implement this?
 
 ### Thiago
 
 - TODO (#1): Define configuration for main routes file to determine which routes receive the main header and main footer. Have this done in an RouteWrapper component where you can pass the appropriate props for each route.
 - TODO (#3): Create a custom `<Icon />` component that automates the `as` prop and also prefers the sizing of the Chakra theme using `boxSize` instead of the `size` props provided by React-FontAwesome. Convert all icons to use this custom component and then swap out their `size` for the appropriate `boxSize` in Chakra.
 - TODO (#4): All radios and checkboxes require a double click for some reason... have no idea what's going on here, but Chakra doesn't natively have this problem. It's something we're doing wrong here.
-- TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.
-- TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
+- Figure out what to do about `<RichTextEditor />`
+- TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
+- TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
+- TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
+- TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)
 
 ### Patrick
 
 - Fix remaining link underlines and ALL visual descrepancies on the site between the code and the designs
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
 - Figure out what to do about `<Menu />` and `<Popover />`
-- Figure out what to do about `<RichTextEditor />`
+- TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.
+- TODO (#7): Find a way to change the background color of a page. We know that the following code works: `` <Page body={{ style: `background: ${gray50};` }} /> ``, but that's really bad. Ideally we don't set the background color on the body element at all and we can remove this from the `<Page /> component entirely. It might be better to just set on the top most element for that page instead.
 - Make sure a mentor cannot report a review after the time is up
 - Figure out how to reassign a review after 4 hour time limit is reached
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course material
@@ -37,16 +41,12 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Available issues (general)
 
-- TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
-- TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
 - TODO (HARD): [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-counter) to count a variety of metrics to a `metrics` collection at the top-level. Make sure to block this collection from being written to by anyone else except the function. This should include a variety of useful information, such as, but not limited to: number of user signups (through Github, through email, and total), number of user deletions, number of courses started, number of lessons started, number of concepts started, number of courses completed, number of lessons completed, number of concepts completed, number of projects started, number of projects passed, number of projects failed, etc. Maybe work with Patrick on this.
 
 ### Available issues (specific)
 
-- TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
-- TODO (#7): Find a way to change the background color of a page. We know that the following code works: `` <Page body={{ style: `background: ${gray50};` }} /> ``, but that's really bad. Ideally we don't set the background color on the body element at all and we can remove this from the `<Page /> component entirely. It might be better to just set on the top most element for that page instead.
+- TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
 - TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
-- TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)
 
 ## Pre-Launch Checklist
 

@@ -113,17 +113,34 @@ export default ({ callback, ...props }: SignInFormProps) => {
                 />
               </Button>
             </Flex>
-            <Link onClick={onOpen} mt={4} display="block">
+            <Link
+              onClick={onOpen}
+              mt={4}
+              display="block"
+              variant="flat"
+              color="gray.700"
+              _hover={{ color: 'gray.800' }}
+            >
               Reset your password
             </Link>
             <Divider my={6} />
             <Text fontSize="sm" color="gray.700">
               By signing in you agree to our{' '}
-              <Link as={RRDLink} to="/terms">
+              <Link
+                as={RRDLink}
+                to="/terms"
+                color="gray.700"
+                _hover={{ color: 'gray.800' }}
+              >
                 Terms of Use
               </Link>{' '}
               and{' '}
-              <Link as={RRDLink} to="/policy">
+              <Link
+                as={RRDLink}
+                to="/policy"
+                color="gray.700"
+                _hover={{ color: 'gray.800' }}
+              >
                 Privacy Policy
               </Link>
               .

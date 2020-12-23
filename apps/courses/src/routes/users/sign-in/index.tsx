@@ -28,7 +28,11 @@ export default () => {
           backgroundSize: 'contain',
         }}
       >
-        <GridContainer isInitial pt={8} pb={16}>
+        <GridContainer
+          isInitial
+          pt={[8, null, null, 16]}
+          pb={[16, null, null, 36]}
+        >
           <Flex
             direction="column"
             align={{ base: 'flex-start', md: 'center' }}

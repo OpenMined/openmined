@@ -10,16 +10,15 @@ import {
   Button,
   Flex,
   Heading,
-  Icon,
   Link,
   Text,
 } from '@chakra-ui/react';
 import * as yup from 'yup';
 import { useAuth, useFirestore, useUser } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
+import Icon from '../../Icon';
 import Form from '../_form';
 import { validEmail } from '../_validation';
 import { emailField } from '../_fields';
@@ -182,8 +181,7 @@ export default ({
         Manage Linked Accounts
       </Heading>
       <Flex align="center">
-        {/* SEE TODO (#3) */}
-        <Icon as={FontAwesomeIcon} icon={faEnvelope} size="2x" />
+        <Icon icon={faEnvelope} boxSize={8} size="2x" />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Email
         </Text>
@@ -192,8 +190,7 @@ export default ({
         )}
       </Flex>
       <Flex align="center" mt={4}>
-        {/* SEE TODO (#3) */}
-        <Icon as={FontAwesomeIcon} icon={faGithub} size="2x" />
+        <Icon icon={faGithub} boxSize={8} size="2x" />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Github
         </Text>

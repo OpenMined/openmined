@@ -40,8 +40,8 @@ dayjs.extend(relativeTime);
 
 export const MENTOR_STUDENT_TOKEN = '@openmined/mentor-student-token';
 
-const getMentorableCourses = (courses, mentor) =>
-  mentor.courses.map((id) => {
+const getMentorableCourses = (courses, user) =>
+  user.mentorable_courses.map((id) => {
     const courseIndex = courses.findIndex(({ slug }) => slug === id);
 
     if (courseIndex !== -1) return courses[courseIndex];
@@ -54,7 +54,7 @@ const setupUserTokenAndGoToSubmission = (studentId, url) => {
   window.location.href = url;
 };
 
-export const MentorContext = ({ courses, mentor }) => {
+export const MentorContext = ({ courses }) => {
   const toast = useToast();
   const user = useUser();
   const db = useFirestore();

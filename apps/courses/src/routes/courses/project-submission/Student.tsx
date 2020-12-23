@@ -113,7 +113,7 @@ const genTabsContent = (
     },
   ];
 
-  if (attemptData.review_content) {
+  if (attemptData && attemptData.review_content) {
     content.push({
       title: '4. Feedback',
       panel: () => (
@@ -313,7 +313,7 @@ export default ({
               ))}
             </Box>
           )}
-          {attemptData.review_content && (
+          {attemptData && attemptData.review_content && (
             <Box mb={6}>
               <Flex align="center" mb={3} color="gray.700">
                 <Text>

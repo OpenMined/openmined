@@ -9,8 +9,10 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - TODO (HARD): Add a ton of security rules (make sure to reference the \_helpers.ts file!!!)
 - TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
 - Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass
+- We have a ton of problems with network requests and race conditions. For instance, signing up will redirect to the profile page where your name is empty. If you refresh the page, your name shows up. This type of behavior is present on basically every single page and is why we use window.location.href in a lot of places. It would be better to rely on client-side navigation if we could ensure that all rendering logic properly waited for the appropriate network requests to load. Can we implement this?
+- Add a ton of Cypress tests
 
-### Bren
+### Thiago
 
 - TODO (#18): Resizing the window on any page with the main `<Header />` causes a call stack overflow to happen which crashes the page. It looks like this is related to the `<Avatar />` being reloaded multiple times? This also will probably happen on the Course Header.
 - TODO (#19): Click on any one of the "Get Help" items in the Course `<Footer />` will trigger an infinite update logic (same as #18, but in a different place). We also have this same problem when resizing any concept page, often it's related to a similar problem in the "Feedback" section instead of "Get Help", but both elements have roughly the same problem.
@@ -20,13 +22,8 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.
 - TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
 
-### Hericles
-
-- Add a ton of Cypress tests
-
 ### Patrick
 
-- Migrate the root-level mentors collection... move the courses field for this document into the user's public data and rename it "mentorable_courses". Make sure to remove the mentors collections from the firebase rules as well.
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
 - Do responsive check on two remaining pages
 - Figure out what to do about `<Menu />` and `<Popover />`
@@ -34,7 +31,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - Find some way to designate "cyan" as the primary color in Chakra
 - Re-add text underline to all links
 - Figure out what to do about `<RichTextEditor />`
-- Make sure a mentor cannot be assigned their own submission
 - Make sure a mentor cannot report a review after the time is up
 - Figure out how to reassign a review after 4 hour time limit is reached
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course material

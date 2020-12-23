@@ -14,14 +14,6 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/users/$(user));
     }
 
-    function isAdmin(user) {
-      return exists(/databases/$(database)/documents/admins/$(user));
-    }
-
-    function isMentor(user) {
-      return exists(/databases/$(database)/documents/mentors/$(user));
-    }
-
     function isLoggedIn() {
       return request.auth != null;
     }
@@ -30,18 +22,12 @@ service cloud.firestore {
       return isLoggedIn() && request.auth.uid == user;
     }
 
-    // Admin-level mentors metadata
-    match /mentors/{mentor} {
-      allow read: if isSameUser(mentor) && isMentor(mentor);
-      allow write: if false;
-    }
-
     match /users/{user} {
       // Anyone can read
       allow read;
 
       // Owner can only write all fields except "is_mentor"
-      allow write: if isSameUser(user) && !('is_mentor' in incomingData())
+      allow write: if isSameUser(user) && !('is_mentor' in incomingData()) && !('mentorable_courses' in incomingData())
 
       // Only owner can read/write
       match /private/{privateUserVar} {
@@ -59,23 +45,16 @@ service cloud.firestore {
       }
 
       match /courses/{course} {
-        function hasStartedCourse(u) {
-          return (started_at in u) && !!u.started_at;
-        }
-
-        function hasCompletedCourse(u) {
-          return hasStartedCourse(u) && !!u.completed_at
-        }
-
-        // TODO: Mentor will need to be able to edit the submissions array with the status and reviewed_at time (project->part->submissions)
-        // TODO: Mentors should always be able to read any user that they are assigned to review
+        // TODO: Mentor will need to be able to edit the submissions array of any user's course object with the status and reviewed_at time (course->project->part->submissions)
+        // TODO: Mentors should always be able to read any user's course object that they are assigned to review
         // TODO (MAYBE): Student should not be able to mark their submissions with the data of "status" or "reviewed_at"
         allow read, write: if isSameUser(user)
 
         // These are submissions of a student
         // But remember, this DOES NOT affect how a mentor would read this submission
         match /submissions/{submission} {
-          allow read, create: if isSameUser(user)
+          allow read: if isSameUser(user) || get(existingData().mentor).id == request.auth.uid;
+          allow create: if isSameUser(user)
           allow update: if get(existingData().mentor).id == request.auth.uid;
           allow delete: if false;
         }

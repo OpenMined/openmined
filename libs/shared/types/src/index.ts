@@ -41,6 +41,7 @@ export namespace OpenMined {
     country?: string;
     timezone?: string;
     is_mentor?: boolean;
+    mentorable_courses?: string[];
   }
 
   export interface UserPrivate {

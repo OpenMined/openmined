@@ -8,6 +8,7 @@ import {
   Link,
   useDisclosure,
   BoxProps,
+  Box,
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
@@ -22,7 +23,7 @@ import { emailField, passwordField } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
 import Modal from '../../Modal';
-import { handleErrors } from '../../../helpers';
+import { handleErrors, useGithubAuthProvider } from '../../../helpers';
 
 interface SignInFormProps extends BoxProps {
   callback?: () => void;
@@ -33,12 +34,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // SEE TODO (#5)
-  const githubProvider = new useAuth.GithubAuthProvider();
-
-  githubProvider.addScope('public_repo');
-  githubProvider.addScope('read:user');
-  githubProvider.addScope('user.email');
+  const githubProvider = useGithubAuthProvider();
 
   const onSuccess = () => {
     toast({
@@ -113,34 +109,41 @@ export default ({ callback, ...props }: SignInFormProps) => {
                 />
               </Button>
             </Flex>
-            <Link
-              onClick={onOpen}
+            <Flex
+              direction={['column', null, 'row']}
+              justify="center"
+              align={['flex-start', null, 'center']}
               mt={4}
-              display="block"
-              variant="flat"
-              color="gray.700"
-              _hover={{ color: 'gray.800' }}
             >
-              Reset your password
-            </Link>
-            <Divider my={6} />
+              <Link onClick={onOpen} display="block" variant="flat">
+                Forgot your password?
+              </Link>
+              <Divider
+                orientation="vertical"
+                height={6}
+                mx={4}
+                display={['none', null, 'block']}
+              />
+              <Text fontWeight="bold">
+                Don't have an account?{' '}
+                <Link
+                  as={RRDLink}
+                  to="/signup"
+                  fontWeight="normal"
+                  variant="flat"
+                >
+                  Sign up for free!
+                </Link>
+              </Text>
+            </Flex>
+            <Divider my={6} maxWidth={540} mx="auto" />
             <Text fontSize="sm" color="gray.700">
               By signing in you agree to our{' '}
-              <Link
-                as={RRDLink}
-                to="/terms"
-                color="gray.700"
-                _hover={{ color: 'gray.800' }}
-              >
+              <Link as={RRDLink} to="/terms" variant="flat">
                 Terms of Use
               </Link>{' '}
               and{' '}
-              <Link
-                as={RRDLink}
-                to="/policy"
-                color="gray.700"
-                _hover={{ color: 'gray.800' }}
-              >
+              <Link as={RRDLink} to="/policy" variant="flat">
                 Privacy Policy
               </Link>
               .
@@ -149,7 +152,9 @@ export default ({ callback, ...props }: SignInFormProps) => {
         )}
       />
       <Modal isOpen={isOpen} onClose={onClose} title="Reset Password">
-        <ResetPassword />
+        <Box p={8}>
+          <ResetPassword />
+        </Box>
       </Modal>
     </>
   );

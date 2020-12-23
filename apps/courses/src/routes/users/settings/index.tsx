@@ -9,7 +9,6 @@ import {
   Divider,
   Box,
   Heading,
-  useToken,
 } from '@chakra-ui/react';
 import { useUser } from 'reactfire';
 
@@ -30,7 +29,7 @@ const StickyTabPanel = ({ title, children }) => (
       borderBottom="1px"
       borderColor="gray.400"
     >
-      <Heading as="h3" size="lg" color="cyan.500">
+      <Heading as="h3" size="lg">
         {title}
       </Heading>
     </Box>
@@ -41,7 +40,6 @@ const StickyTabPanel = ({ title, children }) => (
 export default () => {
   const user = useUser();
   const [tabIndex, setTabIndex] = useState(0);
-  const cyan50 = useToken('colors', 'cyan.50');
 
   // @ts-ignore
   const hasPasswordAccount = !!user.providerData.filter(
@@ -49,57 +47,59 @@ export default () => {
   ).length;
 
   return (
-    <Page title="Account Settings" body={{ style: `background: ${cyan50};` }}>
-      <GridContainer isInitial py={{ base: 8, lg: 16 }}>
-        <Tabs
-          index={tabIndex}
-          onChange={(index) => setTabIndex(index)}
-          variant="sticky"
-        >
-          <TabList>
-            <Text fontWeight="bold" color="gray.700">
-              Account Settings
-            </Text>
-            <Divider my={3} />
-            <Tab>Basic Information</Tab>
-            {hasPasswordAccount && <Tab>Change Password</Tab>}
-            {!hasPasswordAccount && <Tab>Add Password</Tab>}
-            <Tab>Manage Account</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <StickyTabPanel title="Basic Information">
-                <BasicInformation
-                  onChangeEmailOrGithub={() => setTabIndex(2)}
-                  onAddPassword={() => setTabIndex(1)}
-                />
-              </StickyTabPanel>
-            </TabPanel>
-            {hasPasswordAccount && (
+    <Page title="Account Settings">
+      <Box bg="gray.50">
+        <GridContainer isInitial py={{ base: 8, lg: 16 }}>
+          <Tabs
+            index={tabIndex}
+            onChange={(index) => setTabIndex(index)}
+            variant="sticky"
+          >
+            <TabList>
+              <Text fontWeight="bold" color="gray.700">
+                Account Settings
+              </Text>
+              <Divider my={3} />
+              <Tab>Basic Information</Tab>
+              {hasPasswordAccount && <Tab>Change Password</Tab>}
+              {!hasPasswordAccount && <Tab>Add Password</Tab>}
+              <Tab>Manage Account</Tab>
+            </TabList>
+            <TabPanels>
               <TabPanel>
-                <StickyTabPanel title="Change Password">
-                  <ChangePassword />
+                <StickyTabPanel title="Basic Information">
+                  <BasicInformation
+                    onChangeEmailOrGithub={() => setTabIndex(2)}
+                    onAddPassword={() => setTabIndex(1)}
+                  />
                 </StickyTabPanel>
               </TabPanel>
-            )}
-            {!hasPasswordAccount && (
+              {hasPasswordAccount && (
+                <TabPanel>
+                  <StickyTabPanel title="Change Password">
+                    <ChangePassword />
+                  </StickyTabPanel>
+                </TabPanel>
+              )}
+              {!hasPasswordAccount && (
+                <TabPanel>
+                  <StickyTabPanel title="Add Password">
+                    <AddPassword callback={() => setTabIndex(0)} />
+                  </StickyTabPanel>
+                </TabPanel>
+              )}
               <TabPanel>
-                <StickyTabPanel title="Add Password">
-                  <AddPassword callback={() => setTabIndex(0)} />
+                <StickyTabPanel title="Manage Account">
+                  <ManageAccount
+                    onAddPassword={() => setTabIndex(1)}
+                    callback={() => setTabIndex(0)}
+                  />
                 </StickyTabPanel>
               </TabPanel>
-            )}
-            <TabPanel>
-              <StickyTabPanel title="Manage Account">
-                <ManageAccount
-                  onAddPassword={() => setTabIndex(1)}
-                  callback={() => setTabIndex(0)}
-                />
-              </StickyTabPanel>
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
-      </GridContainer>
+            </TabPanels>
+          </Tabs>
+        </GridContainer>
+      </Box>
     </Page>
   );
 };

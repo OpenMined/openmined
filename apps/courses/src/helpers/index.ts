@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import { Link as RRDLink } from 'react-router-dom';
+import { useAuth } from 'reactfire';
+
 import { toastConfig } from '../components/Toast';
-import { Link as RRDLink, useSearchParams } from 'react-router-dom';
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
@@ -27,6 +29,16 @@ export const useWindowSize = () => {
   }, []);
 
   return windowSize;
+};
+
+export const useGithubAuthProvider = () => {
+  const githubProvider = new useAuth.GithubAuthProvider();
+
+  githubProvider.addScope('public_repo');
+  githubProvider.addScope('read:user');
+  githubProvider.addScope('user.email');
+
+  return githubProvider;
 };
 
 export const handleErrors = (toast, error) =>

@@ -20,8 +20,13 @@ import {
   useUser,
 } from 'reactfire';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub, faSlack } from '@fortawesome/free-brands-svg-icons';
-import { faCommentAlt, faShapes } from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import {
+  faCommentAlt,
+  faMoneyBillWave,
+  faQuestion,
+  faShapes,
+} from '@fortawesome/free-solid-svg-icons';
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -503,9 +508,16 @@ export const mentorResources = [
     link: 'https://discussion.openmined.org',
   },
   {
-    title: 'Slack',
-    icon: faSlack,
-    link: 'https://slack.openmined.org',
+    title: 'Rates',
+    icon: faMoneyBillWave,
+    link:
+      'https://www.notion.so/openmined/822b6f0510a644bab826eccb1ac3a477?v=69f88b18cdbd4410af89615043c1b983',
+  },
+  {
+    title: 'FAQ',
+    icon: faQuestion,
+    link:
+      'https://www.notion.so/openmined/FAQs-ddb46eca6ab143f6af3a6314f30ff1b5',
   },
   {
     title: 'Code of Conduct',

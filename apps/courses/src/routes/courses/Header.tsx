@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import {
   Box,
   Flex,
@@ -6,15 +6,11 @@ import {
   Icon,
   Stack,
   Avatar,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   Text,
-  MenuDivider,
   Heading,
   Image,
   useDisclosure,
+  Divider,
 } from '@chakra-ui/react';
 import {
   useAuth,
@@ -37,11 +33,12 @@ import {
 import { OpenMined } from '@openmined/shared/types';
 
 import CourseDrawer from './Drawer';
-
-import useToast, { toastConfig } from '../../components/Toast';
-import { getLinkPropsFromLink, handleErrors } from '../../helpers';
-import logo from '../../assets/logo.svg';
 import { getUserRef } from './_firebase';
+
+import { getLinkPropsFromLink, handleErrors } from '../../helpers';
+import useToast, { toastConfig } from '../../components/Toast';
+import { Popover } from '../../components/Popover';
+import logo from '../../assets/logo.svg';
 
 type LinkProps = {
   title: string;
@@ -83,16 +80,14 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
     );
   });
 
-const UserAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
+const UserAvatar = () => {
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = getUserRef(db, user.uid);
   const dbUser: OpenMined.User = useFirestoreDocDataOnce(dbUserRef);
 
-  return (
-    <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
-  );
-});
+  return <Avatar src={dbUser.photo_url} cursor="pointer" />;
+};
 
 // SEE TODO (#10)
 
@@ -120,6 +115,8 @@ export default ({
     onOpen: onRightDrawerOpen,
     onClose: onRightDrawerClose,
   } = useDisclosure();
+
+  const BREAK = 'md';
 
   const menuLinks = [
     {
@@ -168,15 +165,20 @@ export default ({
       title: 'User',
       type: 'element',
       element: (
-        <Menu placement="bottom-end">
-          <MenuButton as={UserAvatar} />
-          <MenuList>
+        <Popover
+          trigger={UserAvatar}
+          position="bottom"
+          alignment={{ base: 'start', [BREAK]: 'end' }}
+          clickShouldCloseContent
+        >
+          <Stack spacing={3}>
             {menuLinks.map(
               ({ type, link = '', onClick, title, icon }, index) => {
-                if (type === 'divider') return <MenuDivider key={index} />;
+                if (type === 'divider') return <Divider key={index} />;
 
                 return (
-                  <MenuItem
+                  <Flex
+                    align="center"
                     key={index}
                     {...getLinkPropsFromLink(link)}
                     onClick={() => {
@@ -194,12 +196,12 @@ export default ({
                       />
                     )}
                     <Text color="gray.700">{title}</Text>
-                  </MenuItem>
+                  </Flex>
                 );
               }
             )}
-          </MenuList>
-        </Menu>
+          </Stack>
+        </Popover>
       ),
     },
   ];
@@ -218,8 +220,6 @@ export default ({
       ],
     },
   ];
-
-  const BREAK = 'md';
 
   return (
     <Box

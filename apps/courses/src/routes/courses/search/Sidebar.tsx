@@ -37,7 +37,7 @@ const SidebarItem = ({
     </AccordionButton>
     <AccordionPanel pb={4}>
       {multiple ? (
-        <CheckboxGroup colorScheme="cyan" onChange={setter} value={value}>
+        <CheckboxGroup colorScheme="blue" onChange={setter} value={value}>
           <Stack direction="column" align="flex-start">
             {options.map((item) => (
               <TempCheckbox key={item} value={item} onChange={setter}>
@@ -47,7 +47,7 @@ const SidebarItem = ({
           </Stack>
         </CheckboxGroup>
       ) : (
-        <RadioGroup colorScheme="cyan" value={value}>
+        <RadioGroup colorScheme="blue" value={value}>
           <Stack>
             {options.map((item) => (
               <TempRadio onChange={setter} value={item} key={item}>

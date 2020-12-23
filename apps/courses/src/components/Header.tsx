@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Image,
@@ -9,13 +9,7 @@ import {
   Stack,
   Divider,
   Avatar,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   Text,
-  MenuDivider,
-  useDisclosure,
 } from '@chakra-ui/react';
 import {
   useAuth,
@@ -36,6 +30,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { OpenMined } from '@openmined/shared/types';
 
+import { Popover } from './Popover';
 import GridContainer from './GridContainer';
 
 import logo from '../assets/logo.svg';
@@ -110,16 +105,14 @@ const createLinks = (
     });
 };
 
-const UserAvatar = forwardRef((props, ref: React.Ref<HTMLElement>) => {
+const UserAvatar = () => {
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: OpenMined.User = useFirestoreDocDataOnce(dbUserRef);
 
-  return (
-    <Avatar ref={ref} {...props} src={dbUser.photo_url} cursor="pointer" />
-  );
-});
+  return <Avatar src={dbUser.photo_url} cursor="pointer" />;
+};
 
 export default ({ noScrolling }) => {
   const user: firebase.User = useUser();
@@ -139,7 +132,7 @@ export default ({ noScrolling }) => {
     }
   }, [scrollY, isScrolled, noScrolling]);
 
-  const menuDisclosure = useDisclosure();
+  const BREAK = 'md';
 
   const LEFT_LINKS = [
     {
@@ -173,11 +166,15 @@ export default ({ noScrolling }) => {
       type: 'element',
       auth: true,
       element: (
-        <Menu placement="bottom-end">
-          <MenuButton as={UserAvatar} />
-          <MenuList>
+        <Popover
+          trigger={UserAvatar}
+          position="bottom"
+          alignment={{ base: 'start', [BREAK]: 'end' }}
+          clickShouldCloseContent
+        >
+          <Stack spacing={3}>
             {user && (
-              <MenuItem as={RRDLink} to={`/users/${user.uid}`}>
+              <Flex align="center" as={RRDLink} to={`/users/${user.uid}`}>
                 {/* SEE TODO (#3) */}
                 <Icon
                   as={FontAwesomeIcon}
@@ -187,9 +184,9 @@ export default ({ noScrolling }) => {
                   mr={4}
                 />
                 <Text color="gray.700">Profile</Text>
-              </MenuItem>
+              </Flex>
             )}
-            <MenuItem as={RRDLink} to="/users/settings">
+            <Flex align="center" as={RRDLink} to="/users/settings">
               {/* SEE TODO (#3) */}
               <Icon
                 as={FontAwesomeIcon}
@@ -199,9 +196,10 @@ export default ({ noScrolling }) => {
                 mr={4}
               />
               <Text color="gray.700">Account Settings</Text>
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
+            </Flex>
+            <Divider />
+            <Flex
+              align="center"
               as="a"
               href="https://discussion.openmined.org"
               target="_blank"
@@ -216,9 +214,10 @@ export default ({ noScrolling }) => {
                 mr={4}
               />
               <Text color="gray.700">Forum</Text>
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
+            </Flex>
+            <Divider />
+            <Flex
+              align="center"
               onClick={() =>
                 auth
                   .signOut()
@@ -234,14 +233,13 @@ export default ({ noScrolling }) => {
               }
             >
               <Text color="gray.700">Logout</Text>
-            </MenuItem>
-          </MenuList>
-        </Menu>
+            </Flex>
+          </Stack>
+        </Popover>
       ),
     },
   ];
 
-  const BREAK = 'md';
   const iconStyles = {
     color: isScrolled ? 'white' : 'black',
     transitionProperty: 'color',

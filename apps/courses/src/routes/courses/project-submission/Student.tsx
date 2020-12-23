@@ -381,7 +381,7 @@ export default ({
                 </ModalBody>
                 <ModalFooter>
                   <Button
-                    colorScheme="cyan"
+                    colorScheme="blue"
                     mr={3}
                     onClick={() => {
                       // Submit the attempt with the _key of the part and the content of the editor

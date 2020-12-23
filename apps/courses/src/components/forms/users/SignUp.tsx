@@ -32,7 +32,7 @@ import {
 } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
-import { handleErrors } from '../../../helpers';
+import { handleErrors, useGithubAuthProvider } from '../../../helpers';
 import Modal from '../../Modal';
 
 interface SignUpFormProps extends BoxProps {
@@ -56,13 +56,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
   const [tempCredentials, setTempCredentials] = useState<CredentialProps>({});
 
   const emailProvider = useAuth.EmailAuthProvider;
-
-  // SEE TODO (#5)
-  const githubProvider = new useAuth.GithubAuthProvider();
-
-  githubProvider.addScope('public_repo');
-  githubProvider.addScope('read:user');
-  githubProvider.addScope('user.email');
+  const githubProvider = useGithubAuthProvider();
 
   // When we successfully create an account
   const onSuccess = () => {
@@ -266,11 +260,11 @@ export default ({ callback, ...props }: SignUpFormProps) => {
             <Divider my={6} />
             <Text fontSize="sm" color="gray.700">
               By signing up you agree to our{' '}
-              <Link as={RRDLink} to="/terms">
+              <Link as={RRDLink} to="/terms" variant="flat">
                 Terms of Use
               </Link>{' '}
               and{' '}
-              <Link as={RRDLink} to="/policy">
+              <Link as={RRDLink} to="/policy" variant="flat">
                 Privacy Policy
               </Link>
               .
@@ -295,7 +289,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         <Button
           onClick={() => handleAccountAlreadyExists(tempCredentials)}
           type="submit"
-          colorScheme="cyan"
+          colorScheme="blue"
         >
           Submit
         </Button>

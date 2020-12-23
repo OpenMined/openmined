@@ -46,6 +46,11 @@ export default extendTheme({
       '.chakra-progress[variant="controlled-motion"] .chakra-progress__indicator': {
         transition: 'none',
       },
+      // TODO: We can delete this component once the following issue is fixed:
+      // https://github.com/chakra-ui/chakra-ui/issues/2531
+      '.react-tiny-popover-container': {
+        zIndex: 2,
+      },
       'pre, code': {
         textShadow: 'none !important',
         fontFamily: `${mono} !important`,
@@ -295,10 +300,10 @@ export default extendTheme({
     },
     Link: {
       baseStyle: {
-        color: 'cyan.600',
+        color: 'blue.500',
         textDecoration: 'underline',
         _hover: {
-          color: 'cyan.800',
+          color: 'blue.700',
         },
       },
       variants: {
@@ -335,8 +340,8 @@ export default extendTheme({
             color: 'gray.700',
             mb: 2,
             _selected: {
-              bg: 'indigo.500',
-              color: 'indigo.50',
+              bg: 'blue.500',
+              color: 'blue.50',
               fontWeight: 'bold',
             },
           },

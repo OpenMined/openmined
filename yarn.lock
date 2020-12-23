@@ -17056,6 +17056,11 @@ react-textarea-autosize@^6.1.0:
   dependencies:
     prop-types "^15.6.0"
 
+react-tiny-popover@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/react-tiny-popover/-/react-tiny-popover-6.0.3.tgz#bc51456de682074bc3d6ea2ad0d900f64ead31fd"
+  integrity sha512-IxHtBZPPhGPwX2N073FP9+S+h4G1+B4M+3m3frUrrujTNR19uKctZInoHGMmuuAcKkG0IBhhF73IHPcn0VUI9g==
+
 react-tiny-virtual-list@^2.0.5:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/react-tiny-virtual-list/-/react-tiny-virtual-list-2.2.0.tgz#eafb6fcf764e4ed41150ff9752cdaad8b35edf4a"

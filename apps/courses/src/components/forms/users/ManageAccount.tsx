@@ -25,7 +25,7 @@ import { validEmail } from '../_validation';
 import { emailField } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
-import { handleErrors } from '../../../helpers';
+import { handleErrors, useGithubAuthProvider } from '../../../helpers';
 
 interface ManageAccountFormProps extends BoxProps {
   callback?: () => void;
@@ -46,12 +46,7 @@ export default ({
   const onClose = () => setIsOpen(false);
   const cancelRef = useRef();
 
-  // SEE TODO (#5)
-  const githubProvider = new useAuth.GithubAuthProvider();
-
-  githubProvider.addScope('public_repo');
-  githubProvider.addScope('read:user');
-  githubProvider.addScope('user.email');
+  const githubProvider = useGithubAuthProvider();
 
   const onSuccess = () => {
     toast({

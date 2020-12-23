@@ -1,23 +1,12 @@
 import React, { useState } from 'react';
-import { Link as RRDLink } from 'react-router-dom';
 import {
   Box,
   Button,
   Flex,
   Icon,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
   Progress,
+  Stack,
   Text,
   Textarea,
 } from '@chakra-ui/react';
@@ -29,6 +18,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import useToast, { toastConfig } from '../../../components/Toast';
+import { Popover } from '../../../components/Popover';
 import { getLinkPropsFromLink } from '../../../helpers';
 
 const BREAK = 'md';
@@ -52,13 +42,11 @@ const Feedback = ({
   ];
 
   return (
-    <Popover isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)}>
-      <PopoverTrigger>
-        <Link
-          onClick={() => setFeedbackOpen(true)}
-          color="gray.400"
-          _hover={{ color: 'gray.200' }}
-        >
+    <Popover
+      isOpen={feedbackOpen}
+      onOpen={setFeedbackOpen}
+      trigger={() => (
+        <Link color="gray.400" _hover={{ color: 'gray.200' }} variant="flat">
           <Flex align="center">
             {/* SEE TODO (#3) */}
             <Icon as={FontAwesomeIcon} icon={faBullhorn} />
@@ -67,69 +55,66 @@ const Feedback = ({
             </Text>
           </Flex>
         </Link>
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverCloseButton />
-        <PopoverHeader>Provide Feedback</PopoverHeader>
-        <PopoverBody>
-          <Flex justify="space-around" align="center" mb={3}>
-            {votes.map(({ text, val }) => (
-              <Text
-                fontSize="3xl"
-                key={val}
-                cursor="pointer"
-                onClick={() => setVote(val)}
-                opacity={vote !== null && vote !== val ? 0.5 : 1}
-              >
-                {text}
-              </Text>
-            ))}
-          </Flex>
-          <Textarea
-            placeholder="Type whatever you'd like..."
-            onChange={({ target }) => setFeedback(target.value)}
-            resize="none"
-            variant="filled"
-            mb={1}
-          />
-          <Flex justify="flex-end">
-            <Button
-              onClick={() => {
-                onProvideFeedback(vote, feedback).then(() => {
-                  setFeedbackOpen(false);
+      )}
+      position="top"
+      alignment="start"
+    >
+      <Flex justify="space-around" align="center" mb={3}>
+        {votes.map(({ text, val }) => (
+          <Text
+            fontSize="3xl"
+            key={val}
+            cursor="pointer"
+            onClick={() => setVote(val)}
+            opacity={vote !== null && vote !== val ? 0.5 : 1}
+          >
+            {text}
+          </Text>
+        ))}
+      </Flex>
+      <Textarea
+        placeholder="Type whatever you'd like..."
+        onChange={({ target }) => setFeedback(target.value)}
+        resize="none"
+        variant="filled"
+        bg="white"
+        _hover={{ bg: 'white' }}
+        mb={2}
+      />
+      <Flex justify="flex-end">
+        <Button
+          colorScheme="blue"
+          onClick={() => {
+            onProvideFeedback(vote, feedback).then(() => {
+              setFeedbackOpen(false);
 
-                  if (vote === 1) {
-                    toast({
-                      ...toastConfig,
-                      title: 'Feedback sent',
-                      description:
-                        "We appreciate you telling us how we're doing!",
-                      status: 'success',
-                    });
-                  } else {
-                    toast({
-                      ...toastConfig,
-                      title: 'Feedback sent',
-                      description:
-                        "Thanks for the note - if you've found something wrong, would you like to file a bug report?",
-                      status: 'success',
-                    });
-
-                    setTimeout(() => {
-                      setHelpOpen(true);
-                    }, 1000);
-                  }
+              if (vote === 1) {
+                toast({
+                  ...toastConfig,
+                  title: 'Feedback sent',
+                  description: "We appreciate you telling us how we're doing!",
+                  status: 'success',
                 });
-              }}
-              disabled={vote === null}
-              colorScheme="magenta"
-            >
-              Submit
-            </Button>
-          </Flex>
-        </PopoverBody>
-      </PopoverContent>
+              } else {
+                toast({
+                  ...toastConfig,
+                  title: 'Feedback sent',
+                  description:
+                    "Thanks for the note - if you've found something wrong, would you like to file a bug report?",
+                  status: 'success',
+                });
+
+                setTimeout(() => {
+                  setHelpOpen(true);
+                }, 1000);
+              }
+            });
+          }}
+          disabled={vote === null}
+        >
+          Submit
+        </Button>
+      </Flex>
     </Popover>
   );
 };
@@ -149,28 +134,28 @@ const Help = ({ helpOpen, setHelpOpen }) => {
   ];
 
   return (
-    <Menu
+    <Popover
       isOpen={helpOpen}
-      onOpen={() => setHelpOpen(true)}
-      onClose={() => setHelpOpen(false)}
+      onOpen={setHelpOpen}
+      trigger={() => (
+        <Link color="gray.400" _hover={{ color: 'gray.200' }} variant="flat">
+          <Flex align="center">
+            {/* SEE TODO (#3) */}
+            <Icon as={FontAwesomeIcon} icon={faCommentAlt} />
+            <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
+              Get Help
+            </Text>
+          </Flex>
+        </Link>
+      )}
+      position="top"
+      alignment="end"
+      clickShouldCloseContent
     >
-      <MenuButton
-        onClick={() => setHelpOpen(true)}
-        color="gray.400"
-        _hover={{ color: 'gray.200' }}
-      >
-        <Flex align="center">
-          {/* SEE TODO (#3) */}
-          <Icon as={FontAwesomeIcon} icon={faCommentAlt} />
-          <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
-            Get Help
-          </Text>
-        </Flex>
-      </MenuButton>
-      <MenuList>
+      <Stack spacing={3}>
         {helpLinks.map(({ title, link, icon }, index) => {
           return (
-            <MenuItem key={index} {...getLinkPropsFromLink(link)}>
+            <Flex align="center" key={index} {...getLinkPropsFromLink(link)}>
               {/* SEE TODO (#3) */}
               {icon && (
                 <Icon
@@ -182,11 +167,11 @@ const Help = ({ helpOpen, setHelpOpen }) => {
                 />
               )}
               <Text color="gray.700">{title}</Text>
-            </MenuItem>
+            </Flex>
           );
         })}
-      </MenuList>
-    </Menu>
+      </Stack>
+    </Popover>
   );
 };
 

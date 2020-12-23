@@ -315,7 +315,7 @@ export default ({ progress, attemptData, content, course, part, attempt }) => {
             </ModalBody>
             <ModalFooter>
               <Button
-                colorScheme="cyan"
+                colorScheme="blue"
                 mr={3}
                 onClick={() => {
                   // TODO: When finishing a review, make sure to reset the MENTOR_STUDENT_TOKEN

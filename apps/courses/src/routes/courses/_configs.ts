@@ -5,7 +5,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { getLessonNumber } from './_helpers';
 
-// SEE TODO #7
 export const search = () => ({
   page: {
     title: 'Courses',

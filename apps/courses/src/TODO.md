@@ -23,11 +23,8 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Fix remaining link underlines and ALL visual descrepancies on the site between the code and the designs
+- Fix remaining visual descrepancies on the site between the code and the designs
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
-- Figure out what to do about `<Menu />` and `<Popover />`
-- TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.
-- TODO (#7): Find a way to change the background color of a page. We know that the following code works: `` <Page body={{ style: `background: ${gray50};` }} /> ``, but that's really bad. Ideally we don't set the background color on the body element at all and we can remove this from the `<Page /> component entirely. It might be better to just set on the top most element for that page instead.
 - Make sure a mentor cannot report a review after the time is up
 - Figure out how to reassign a review after 4 hour time limit is reached
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course material

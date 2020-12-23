@@ -61,56 +61,58 @@ export default ({ page }: OpenMined.CoursePagesProp) => {
   };
 
   return (
-    <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
-      <Flex
-        justifyContent="space-around"
-        flexDirection={['column', 'column', 'row', 'row']}
-      >
-        <Box w={['100%', null, '40%', '30%']} px={[0, null, 8, 16]}>
-          <Box
-            w={[
-              null,
-              null,
-              FIXED_SIDEBAR_WIDTH,
-              FIXED_SIDEBAR_MD_WIDTH,
-              FIXED_SIDEBAR_WIDTH,
-            ]}
-            position={[null, null, 'fixed']}
-          >
-            <Sidebar
-              filters={filters}
-              numCourses={results.length}
-              clearFilters={clearFilters}
-            />
-          </Box>
-        </Box>
-        <Box w={['100%', null, '60%', '70%']}>
-          <Input
-            w={['100%', null, null, '70%']}
-            placeholder="Start typing something..."
-            onChange={(e) => setSearch(e.target.value)}
-            type="search"
-            size="lg"
-            mt={[4, null, 0]}
-          />
-          {results.length === 0 && (
-            <Box py={4}>
-              <Text fontSize="3xl" px={2} fontWeight="bold">
-                Sorry, there are no search results for that query
-              </Text>
+    <Box bg="gray.50">
+      <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
+        <Flex
+          justifyContent="space-around"
+          flexDirection={['column', 'column', 'row', 'row']}
+        >
+          <Box w={['100%', null, '40%', '30%']} px={[0, null, 8, 16]}>
+            <Box
+              w={[
+                null,
+                null,
+                FIXED_SIDEBAR_WIDTH,
+                FIXED_SIDEBAR_MD_WIDTH,
+                FIXED_SIDEBAR_WIDTH,
+              ]}
+              position={[null, null, 'fixed']}
+            >
+              <Sidebar
+                filters={filters}
+                numCourses={results.length}
+                clearFilters={clearFilters}
+              />
             </Box>
-          )}
-          <SimpleGrid
-            py={5}
-            columns={[1, null, 1, 2]}
-            spacing={[4, null, 6]}
-            color="white"
-          >
-            {results &&
-              results.map((course, i) => <Course key={i} content={course} />)}
-          </SimpleGrid>
-        </Box>
-      </Flex>
-    </GridContainer>
+          </Box>
+          <Box w={['100%', null, '60%', '70%']}>
+            <Input
+              w={['100%', null, null, '70%']}
+              placeholder="Start typing something..."
+              onChange={(e) => setSearch(e.target.value)}
+              type="search"
+              size="lg"
+              mt={[4, null, 0]}
+            />
+            {results.length === 0 && (
+              <Box py={4}>
+                <Text fontSize="3xl" px={2} fontWeight="bold">
+                  Sorry, there are no search results for that query
+                </Text>
+              </Box>
+            )}
+            <SimpleGrid
+              py={5}
+              columns={[1, null, 1, 2]}
+              spacing={[4, null, 6]}
+              color="white"
+            >
+              {results &&
+                results.map((course, i) => <Course key={i} content={course} />)}
+            </SimpleGrid>
+          </Box>
+        </Flex>
+      </GridContainer>
+    </Box>
   );
 };

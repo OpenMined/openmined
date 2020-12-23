@@ -47,7 +47,6 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
       by discussing this project on our{' '}
       <Link
         as="a"
-        textDecoration="underline"
         href="https://discussion.openmined.org"
         target="_blank"
         rel="noopener noreferrer"
@@ -139,7 +138,6 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                   href="https://mentorship.openmined.org"
                   target="_blank"
                   rel="noopener noreferrer"
-                  textDecoration="underline"
                   color="magenta.500"
                   _hover={{ color: 'magenta.700' }}
                 >

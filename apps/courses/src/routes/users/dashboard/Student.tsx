@@ -157,7 +157,6 @@ export const StudentTabs = ({ courses, progress }) => {
           <Link
             as={RRDLink}
             to="/courses"
-            textDecoration="underline"
             color="cyan.700"
             _hover={{ color: 'cyan.800' }}
           >

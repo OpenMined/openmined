@@ -30,7 +30,7 @@ const StickyTabPanel = ({ title, children }) => (
       borderBottom="1px"
       borderColor="gray.400"
     >
-      <Heading as="h3" size="lg" color="indigo.500">
+      <Heading as="h3" size="lg" color="cyan.500">
         {title}
       </Heading>
     </Box>
@@ -41,7 +41,7 @@ const StickyTabPanel = ({ title, children }) => (
 export default () => {
   const user = useUser();
   const [tabIndex, setTabIndex] = useState(0);
-  const indigo50 = useToken('colors', 'indigo.50');
+  const cyan50 = useToken('colors', 'cyan.50');
 
   // @ts-ignore
   const hasPasswordAccount = !!user.providerData.filter(
@@ -49,7 +49,7 @@ export default () => {
   ).length;
 
   return (
-    <Page title="Account Settings" body={{ style: `background: ${indigo50};` }}>
+    <Page title="Account Settings" body={{ style: `background: ${cyan50};` }}>
       <GridContainer isInitial py={{ base: 8, lg: 16 }}>
         <Tabs
           index={tabIndex}

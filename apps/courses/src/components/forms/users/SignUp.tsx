@@ -295,7 +295,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         <Button
           onClick={() => handleAccountAlreadyExists(tempCredentials)}
           type="submit"
-          colorScheme="blue"
+          colorScheme="cyan"
         >
           Submit
         </Button>

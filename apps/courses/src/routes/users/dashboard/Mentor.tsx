@@ -273,7 +273,6 @@ export const MentorTabs = ({ courses, mentor }) => {
                   <Link
                     as={RRDLink}
                     to={`/courses/${slug}`}
-                    textDecoration="underline"
                     color="gray.700"
                     _hover={{ color: 'gray.800' }}
                   >

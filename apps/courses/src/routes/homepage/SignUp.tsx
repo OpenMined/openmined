@@ -59,6 +59,7 @@ export default ({ signup, signedup }) => {
                 rel="noopener noreferrer"
                 href={link}
                 mt={{ base: 4, md: 0 }}
+                variant="flat"
               >
                 <Flex
                   direction={{ base: 'row', md: 'column' }}

@@ -136,7 +136,14 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   );
 };
 
-const FieldArray = ({ name, max, fields, control, register, defaultValue }: any) => {
+const FieldArray = ({
+  name,
+  max,
+  fields,
+  control,
+  register,
+  defaultValue,
+}: any) => {
   const fieldArray = useFieldArray({
     control,
     name,
@@ -180,7 +187,7 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }: any)
       <Button
         onClick={fieldArray.append}
         disabled={!canAppend}
-        colorScheme="blue"
+        colorScheme="cyan"
         mt={2}
       >
         {/* SEE TODO (#3) */}
@@ -295,7 +302,7 @@ export default ({
         {typeof submit === 'string' && (
           <Button
             mt={spacing}
-            colorScheme="blue"
+            colorScheme="cyan"
             disabled={!isDirty || (isDirty && !isValid)}
             isLoading={isSubmitting}
             type="submit"

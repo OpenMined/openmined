@@ -26,9 +26,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
 - Figure out what to do about `<Menu />` and `<Popover />`
-- Convert everything to cyan
-- Find some way to designate "cyan" as the primary color in Chakra
-- Re-add text underline to all links
 - Figure out what to do about `<RichTextEditor />`
 - Make sure a mentor cannot report a review after the time is up
 - Figure out how to reassign a review after 4 hour time limit is reached
@@ -71,6 +68,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. T
 
 We can do the following items after the launch of the first course on December 31st, 2020.
 
+- Change all links to use colorScheme instead of color once this issue is fixed: https://github.com/chakra-ui/chakra-ui/issues/2870
 - TODO (#8 HARD): Write the course helpers functions in the order in which they need to appear (per the flow of the course, not grouped by topic). That will make those rules much more readable. Secondly, you should ensure that the tests build on each other (i.e. testing completion of a lesson means testing the completion of all previous lessons and their respective concepts). You may need to modify the tests for this significantly.
 - TODO (#9 HARD): Because the tests for the helpers are so long, perhaps write a few functions in the test logic to generate the users, courses, lessons, etc. It should save a lot on the number of lines of code in the file and make it much more readable.
 - TODO (#10): Try to share a lot of logic between the courses' header and the main header. They share a LOT of logic and it would be good to make these reusable or combine them somehow.

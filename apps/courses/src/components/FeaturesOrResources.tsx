@@ -28,7 +28,6 @@ const Feature = ({ title, description, icon, link }) => (
         color="gray.700"
         _hover={{ color: 'gray.800' }}
         fontWeight="bold"
-        textDecoration="underline"
         display="block"
         mt={4}
       >

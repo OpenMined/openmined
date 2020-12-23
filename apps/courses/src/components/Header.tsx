@@ -61,6 +61,7 @@ const createLinks = (
     (l.auth && user) || (l.unauth && !user) || (!l.auth && !l.unauth);
 
   const linkStyles = {
+    variant: 'flat',
     color: isScrolled ? 'gray.400' : 'gray.600',
     _hover: {
       color: isScrolled ? 'white' : 'black',

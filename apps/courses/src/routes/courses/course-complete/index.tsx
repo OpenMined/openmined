@@ -157,11 +157,7 @@ export default ({ page }: OpenMined.CoursePagesProp) => {
                       {description}
                     </Text>
                   </Flex>
-                  <Link
-                    {...navigateLinkProps(link)}
-                    textDecoration="underline"
-                    {...linkProps}
-                  >
+                  <Link {...navigateLinkProps(link)} {...linkProps}>
                     {linkTitle}
                   </Link>
                 </Flex>

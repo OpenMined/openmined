@@ -248,7 +248,6 @@ export default ({
                       {...getLinkPropsFromLink(link)}
                       color="gray.700"
                       _hover={{ color: 'gray.800' }}
-                      textDecoration="underline"
                     >
                       {title}
                     </Link>

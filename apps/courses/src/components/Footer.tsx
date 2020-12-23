@@ -68,6 +68,7 @@ export default (props) => (
                 {group.links.map((item, i) => (
                   <Link
                     key={i}
+                    variant="flat"
                     {...getLinkPropsFromLink(item.link)}
                     color="gray.400"
                     _hover={{ color: 'white' }}
@@ -96,6 +97,7 @@ export default (props) => (
                 as={RRDLink}
                 to={item.link}
                 fontSize="sm"
+                variant="flat"
                 color="gray.600"
                 _hover={{ color: 'white' }}
               >

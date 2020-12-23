@@ -146,7 +146,7 @@ const DrawerItem = ({
                       <Icon
                         as={FontAwesomeIcon}
                         icon={icon}
-                        color={status === 'completed' ? 'teal.300' : 'inherit'}
+                        color={status === 'completed' ? 'cyan.300' : 'inherit'}
                         size="lg"
                       />
                     )}

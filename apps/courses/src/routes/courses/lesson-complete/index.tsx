@@ -41,7 +41,14 @@ const DetailLink = ({ icon, children, ...props }) => (
   </Box>
 );
 
-export default ({ progress, page, user, ts, course, lesson }: OpenMined.CoursePagesProp) => {
+export default ({
+  progress,
+  page,
+  user,
+  ts,
+  course,
+  lesson,
+}: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
 
   const {
@@ -102,7 +109,7 @@ export default ({ progress, page, user, ts, course, lesson }: OpenMined.CoursePa
             <Icon
               as={FontAwesomeIcon}
               icon={faCheckCircle}
-              color="teal.300"
+              color="cyan.300"
               size="3x"
               mb={4}
             />
@@ -172,7 +179,6 @@ export default ({ progress, page, user, ts, course, lesson }: OpenMined.CoursePa
                   rel="noopener noreferrer"
                   color="gray.400"
                   _hover={{ color: 'gray.600' }}
-                  textDecoration="underline"
                 >
                   discussion board
                 </Link>
@@ -184,7 +190,6 @@ export default ({ progress, page, user, ts, course, lesson }: OpenMined.CoursePa
                   onClick={() => setFeedbackActive(true)}
                   color="gray.400"
                   _hover={{ color: 'gray.600' }}
-                  textDecoration="underline"
                 >
                   give feedback
                 </Link>

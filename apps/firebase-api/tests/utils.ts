@@ -13,6 +13,10 @@ export const getAuthedFirestore = (auth) => {
     .initializeTestApp({ projectId: PROJECT_ID, auth })
     .firestore();
 };
+export const getAdminFirestore = () => {
+  return firebase.initializeAdminApp({ projectId: PROJECT_ID }).firestore();
+};
+
 export const loadFirebaseRules = async () => {
   const rules = fs.readFileSync(
     path.join(__dirname, '../firestore.rules'),
@@ -20,6 +24,7 @@ export const loadFirebaseRules = async () => {
   );
   await firebase.loadFirestoreRules({ projectId: PROJECT_ID, rules });
 };
+
 export const afterAllTests = async () => {
   await Promise.all(firebase.apps().map((app) => app.delete()));
 
@@ -37,5 +42,22 @@ export const afterAllTests = async () => {
   console.log(`View firestore rule coverage information at ${coverageFile}\n`);
 };
 
+export const getUserRef = (db, userId) => db.collection('users').doc(userId);
+
 export const getCourseRef = (db, userId, courseId) =>
   db.collection('users').doc(userId).collection('courses').doc(courseId);
+
+export const getUserReviewRef = (db, userId, reviewId) =>
+  db.collection('users').doc(userId).collection('reviews').doc(reviewId);
+
+export const getUserSubmissionRef = (db, userId, courseId, submissionId) =>
+  db
+    .collection('users')
+    .doc(userId)
+    .collection('courses')
+    .doc(courseId)
+    .collection('submissions')
+    .doc(submissionId);
+
+export const updateUser = (userId, data) =>
+  getUserRef(getAdminFirestore(), userId).update(data, { merge: true });

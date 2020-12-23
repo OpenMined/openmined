@@ -22,39 +22,85 @@ service cloud.firestore {
       return isLoggedIn() && request.auth.uid == user;
     }
 
+    function incomingDataContains(field) {
+      return (field in incomingData())
+    }
+
+    function isMentor(userId) {
+      return getUserData(userId).data.is_mentor
+    }
+
     match /users/{user} {
       // Anyone can read
       allow read;
 
       // Owner can only write all fields except "is_mentor"
-      allow write: if isSameUser(user) && !('is_mentor' in incomingData()) && !('mentorable_courses' in incomingData())
+      allow write: if isSameUser(user) &&
+        !incomingDataContains('is_mentor') &&
+        !incomingDataContains('mentorable_courses');
 
       // Only owner can read/write
       match /private/{privateUserVar} {
-        allow read, write: if isSameUser(user)
+        allow read, write: if isSameUser(user);
       }
 
       // Only for mentors
       match /reviews/{review} {
-        // TODO: Students who don't have a role of mentor cannot create records on the reviews subcollection
-        // TODO: Students who are also mentors cannot review their own submission
-        // TODO: Students who are also mentors cannot create a review for a course they are not allowed to mentor (mentors can only review courses they're allowed to review)
-        // TODO: Students who are also mentors cannot edit or delete a review, only read and create
-        allow read: if isSameUser(user)
-        allow create, update: if isSameUser(user)
+        function isCourseAssigned(userId) {
+          let mentorable_courses = getUserData(userId).data.mentorable_courses;
+          return mentorable_courses.hasAll([incomingData().course]) ||
+            mentorable_courses.hasAll([existingData().course]);
+        }
+        
+        allow create: if
+          // Only mentor can create
+          isMentor(request.auth.uid) &&
+          // Only owner can create on his reviews collection
+          isSameUser(user) &&
+          // Students who are also mentors cannot create a review for a course they are 
+          // not allowed to mentor (mentors can only review courses they're allowed to review)
+          isCourseAssigned(user);
+
+        allow read: if isSameUser(user);
+
+        // Students who are also mentors can update 'status' and 'completed_at'
+        allow update: if 
+          isMentor(request.auth.uid) &&
+          ['status', 'completed_at'].toSet().hasAll(incomingData().diff(existingData()).affectedKeys());
+
+        // Students who are also mentors delete a review
+        allow delete: if false;
       }
 
       match /courses/{course} {
-        // TODO: Mentor will need to be able to edit the submissions array of any user's course object with the status and reviewed_at time (course->project->part->submissions)
-        // TODO: Mentors should always be able to read any user's course object that they are assigned to review
-        // TODO (MAYBE): Student should not be able to mark their submissions with the data of "status" or "reviewed_at"
-        allow read, write: if isSameUser(user)
+        // Mentor will need to be able to edit the submissions array of any user's course object with the status and reviewed_at time (course->project->part->submissions)
+        allow update: if
+          isMentor(request.auth.uid) &&
+          ['project'].toSet().hasAll(incomingData().diff(existingData()).affectedKeys());
+
+
+        function isCourseAssignedToMentor() {
+          let mentorable_courses = getUserData(request.auth.uid).data.mentorable_courses;
+          return mentorable_courses.hasAll([course]);
+        }
+        // Mentors should always be able to read any user's course object that they are assigned to review
+        allow read: if
+          isMentor(request.auth.uid) &&
+          isCourseAssignedToMentor();
+
+        // Student shuld not be able to mark their submissions owith the data of "status" or "reviewed_at"
+        // Student can read/write
+        allow read, write: if isSameUser(user);
 
         // These are submissions of a student
         // But remember, this DOES NOT affect how a mentor would read this submission
         match /submissions/{submission} {
-          allow read: if isSameUser(user) || get(existingData().mentor).id == request.auth.uid;
-          allow create: if isSameUser(user)
+          allow create: if isSameUser(user);
+
+          allow read: if
+            isSameUser(user) ||
+            get(existingData().mentor).id == request.auth.uid;
+
           allow update: if get(existingData().mentor).id == request.auth.uid;
           allow delete: if false;
         }
@@ -67,9 +113,10 @@ service cloud.firestore {
 
     // This allows for the collectionGroup queries to be read by mentors
     match /{path=**}/submissions/{submission} {
-      // TODO: The only users who should be able to hit this endpoint must be mentors (the code below should work, but needs testing)
       // NOTE: This should only be triggered from line 66 of the users/dashboard/Mentor.tsx file
-      allow read: if isLoggedIn() && getUserData(request.auth.uid).data.is_mentor;
+      allow read: if isLoggedIn() &&
+        isMentor(request.auth.uid) &&
+        get(existingData().mentor).id == request.auth.uid;
       allow read: if false;
     }
 

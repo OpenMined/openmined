@@ -50,7 +50,6 @@ const ProgressButton = ({ value, direction, onClick }) => (
     {direction === 'forward' && (
       <Icon icon={faArrowRight} onClick={onClick} style={absolute} />
     )}
-    {/* SEE TODO (#3) */}
     {direction === 'back' && (
       <Icon icon={faArrowLeft} onClick={onClick} style={absolute} />
     )}

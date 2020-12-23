@@ -7,12 +7,10 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Link,
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRight,
   faBullhorn,
@@ -24,6 +22,7 @@ import {
 import { getLessonIndex, hasCompletedLesson } from '../_helpers';
 import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
+import Icon from '../../../components/Icon';
 import { handleErrors } from '../../../helpers';
 import { handleLessonComplete, handleProvideFeedback } from '../_firebase';
 import { OpenMined } from '@openmined/shared/types';
@@ -35,8 +34,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
-    {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={icon} size="lg" mb={4} />
+    <Icon icon={icon} boxSize={5} size="lg" mb={4} />
     <Text>{children}</Text>
   </Box>
 );
@@ -105,11 +103,10 @@ export default ({
       <GridContainer isInitial py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
-            {/* SEE TODO (#3) */}
             <Icon
-              as={FontAwesomeIcon}
               icon={faCheckCircle}
               color="cyan.300"
+              boxSize={12}
               size="3x"
               mb={4}
             />
@@ -139,11 +136,10 @@ export default ({
               p={6}
               mb={8}
             >
-              {/* SEE TODO (#3) */}
               <Icon
-                as={FontAwesomeIcon}
                 icon={typeof nextLesson === 'string' ? faShapes : faArrowRight}
                 color="orange.200"
+                boxSize={5}
                 size="lg"
                 mr={6}
               />

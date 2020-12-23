@@ -186,7 +186,6 @@ export default ({
             </Heading>
           </Box>
           <Tag {...statusStyles}>
-            {/* SEE TODO (#3) */}
             {statusIcon && <Icon icon={statusIcon} mr={2} />}
             <TagLabel fontWeight="bold">{statusText}</TagLabel>
           </Tag>

@@ -12,13 +12,11 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Link,
   ListItem,
   Text,
   UnorderedList,
 } from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
   getLessonNumber,
@@ -26,6 +24,7 @@ import {
   hasStartedLesson,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
+import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
@@ -34,8 +33,7 @@ import { OpenMined } from '@openmined/shared/types';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
-    {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+    <Icon icon={faCheckCircle} boxSize={8} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -43,7 +41,14 @@ const Detail = ({ title, value }) => (
   </Flex>
 );
 
-export default ({ page, progress, user, ts, course, lesson }: OpenMined.CoursePagesProp) => {
+export default ({
+  page,
+  progress,
+  user,
+  ts,
+  course,
+  lesson,
+}: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
 
@@ -135,10 +140,7 @@ export default ({ page, progress, user, ts, course, lesson }: OpenMined.CoursePa
                       <Flex align="center">
                         <Text>{title}</Text>
                       </Flex>
-                      {/* SEE TODO (#3) */}
-                      {isExternal && (
-                        <Icon as={FontAwesomeIcon} icon={faExternalLinkAlt} />
-                      )}
+                      {isExternal && <Icon icon={faExternalLinkAlt} />}
                     </Flex>
                   </Link>
                 );

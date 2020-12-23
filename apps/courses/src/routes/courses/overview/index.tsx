@@ -6,7 +6,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Image,
   List,
   ListIcon,
@@ -18,11 +17,11 @@ import {
 import { Link } from 'react-router-dom';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
+import Icon from '../../../components/Icon';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 import { OpenMined } from '@openmined/shared/types';
 
@@ -31,8 +30,7 @@ import { OpenMined } from '@openmined/shared/types';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
-    {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+    <Icon icon={faCheckCircle} boxSize={8} size="2x" />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -43,8 +41,7 @@ const Detail = ({ title, value }) => (
 const LearnHow = ({ value }) => (
   <Box>
     <Circle bg="white" size={8} display={{ base: 'none', md: 'block' }}>
-      {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+      <Icon icon={faCheckCircle} boxSize={8} size="2x" />
     </Circle>
     <Heading
       as="h3"
@@ -82,13 +79,12 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
 
   const prepareLessonContent = (description, concepts) => {
     const iconProps: any = {
-      as: FontAwesomeIcon,
+      boxSize: 5,
       size: 'lg',
       mr: 2,
       color: 'gray.600',
     };
 
-    // SEE TODO (#3)
     const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
     const CompleteConcept = () => <Icon {...iconProps} icon={faCheckCircle} />;
 

@@ -7,10 +7,8 @@ import {
   ListItem,
   Divider,
   Flex,
-  Icon,
 } from '@chakra-ui/react';
 import { useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import Page from '@openmined/shared/util-page';
 
@@ -19,6 +17,7 @@ import NumberedAccordion, {
   CircledNumber,
 } from '../../components/NumberedAccordion';
 import GridContainer from '../../components/GridContainer';
+import Icon from '../../components/Icon';
 import policy from '../../content/privacy-policy';
 import terms from '../../content/terms-of-service';
 
@@ -130,13 +129,7 @@ export default () => {
                   ))}
                 </List>
                 <Divider my={8} />
-                {/* SEE TODO (#3) */}
-                <Icon
-                  as={FontAwesomeIcon}
-                  icon={faCommentAlt}
-                  size="2x"
-                  mb={2}
-                />
+                <Icon icon={faCommentAlt} boxSize={8} size="2x" mb={2} />
                 {discussion}
                 <Flex mt={12} justify="flex-start">
                   <Box
@@ -147,8 +140,7 @@ export default () => {
                       window.scrollTo({ top: 0, behavior: 'smooth' })
                     }
                   >
-                    {/* SEE TODO (#3) */}
-                    <Icon as={FontAwesomeIcon} icon={faChevronUp} />
+                    <Icon icon={faChevronUp} />
                     <Text textTransform="uppercase">Top</Text>
                   </Box>
                 </Flex>

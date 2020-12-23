@@ -36,8 +36,6 @@ import Countdown from '../../../components/Countdown';
 
 dayjs.extend(relativeTime);
 
-// TODO: Do a responsive overview of this entire page
-
 export const MENTOR_STUDENT_TOKEN = '@openmined/mentor-student-token';
 
 const getMentorableCourses = (courses, user) =>
@@ -102,6 +100,7 @@ export const MentorContext = ({ courses }) => {
               mt={2}
               bg="gray.200"
               borderRadius="md"
+              direction={['column', null, 'row']}
               justify="space-between"
               align="center"
             >
@@ -124,7 +123,7 @@ export const MentorContext = ({ courses }) => {
                   }
                 </Heading>
               </Flex>
-              <Flex align="center">
+              <Flex align="center" mt={[3, null, 0]}>
                 <Button
                   variant="ghost"
                   colorScheme="gray"
@@ -229,7 +228,7 @@ export const MentorTabs = ({ courses, mentor }) => {
     const mentorableCourses = getMentorableCourses(courses, mentor);
 
     return (
-      <SimpleGrid columns={3} spacing={6}>
+      <SimpleGrid columns={[1, null, 2, null, 3]} spacing={6} width="full">
         {mentorableCourses.map(
           ({ title, slug, visual: { full }, project: { parts } }) => (
             <Box key={title} borderRadius="md" boxShadow="lg" overflow="hidden">
@@ -394,7 +393,7 @@ export const MentorTabs = ({ courses, mentor }) => {
         {reviewHistory.map((review, index) => (
           <Flex
             direction={['column', null, 'row']}
-            justify={{ md: 'space-between' }}
+            justify="space-between"
             align="center"
             borderRadius="md"
             boxShadow="md"
@@ -427,7 +426,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                 Started {dayjs(review.started_at.toDate()).fromNow()}
               </Text>
             )}
-            <Flex justify="center" align="center" width={200}>
+            <Flex justify="center" align="center" width={200} mt={[3, null, 0]}>
               {review.status === 'resigned' && (
                 <Text color="gray.700" fontStyle="italic">
                   Resigned

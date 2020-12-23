@@ -25,7 +25,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 ### Patrick
 
 - Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
-- Do responsive check on two remaining pages
 - Figure out what to do about `<Menu />` and `<Popover />`
 - Convert everything to cyan
 - Find some way to designate "cyan" as the primary color in Chakra

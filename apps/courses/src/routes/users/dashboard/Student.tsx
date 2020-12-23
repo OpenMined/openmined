@@ -169,7 +169,7 @@ export const StudentTabs = ({ courses, progress }) => {
     }
 
     return (
-      <SimpleGrid columns={2} spacing={4} width="full">
+      <SimpleGrid columns={[1, null, null, 2]} spacing={6} width="full">
         {completedCourses.map((c) => (
           <CourseCompleteCard key={c.title} content={c} />
         ))}

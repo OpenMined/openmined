@@ -12,9 +12,8 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - We have a ton of problems with network requests and race conditions. For instance, signing up will redirect to the profile page where your name is empty. If you refresh the page, your name shows up. This type of behavior is present on basically every single page and is why we use window.location.href in a lot of places. It would be better to rely on client-side navigation if we could ensure that all rendering logic properly waited for the appropriate network requests to load. Can we implement this?
 - Add a ton of Cypress tests
 
-### Thiago
+### SLZ
 
-- TODO (#1): Define configuration for main routes file to determine which routes receive the main header and main footer. Have this done in an RouteWrapper component where you can pass the appropriate props for each route.
 - TODO (#3): Create a custom `<Icon />` component that automates the `as` prop and also prefers the sizing of the Chakra theme using `boxSize` instead of the `size` props provided by React-FontAwesome. Convert all icons to use this custom component and then swap out their `size` for the appropriate `boxSize` in Chakra.
 - TODO (#4): All radios and checkboxes require a double click for some reason... have no idea what's going on here, but Chakra doesn't natively have this problem. It's something we're doing wrong here.
 - TODO (#5): Centralize Github provider logic - currently, every time we need to do something with Github as a sign in/up provider, we have to define it as a provider AND list the scope. If the scope is changed in one file, and not another... this could have very bad consequences. Centralize this logic somehow and use it throughout.

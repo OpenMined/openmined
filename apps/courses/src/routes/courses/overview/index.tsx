@@ -26,6 +26,9 @@ import {
   getCourseProgress,
   getNextAvailablePage,
   hasCompletedConcept,
+  hasCompletedCourse,
+  hasCompletedLesson,
+  hasCompletedProject,
   hasCompletedProjectPart,
   hasStartedCourse,
 } from '../_helpers';
@@ -129,33 +132,6 @@ export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
     project,
   } = page;
 
-  const lessons = page.lessons
-    ? page.lessons.map(({ title, description, concepts, _id }) => ({
-        title,
-        content: prepareSyllabusContent(description, concepts, _id),
-      }))
-    : [];
-
-  if (project) {
-    lessons.push({
-      title: project.title,
-      content: prepareSyllabusContent(project.description, project.parts),
-    });
-  }
-
-  // TODO: Patrick, add projects to the list of "lessons"
-  // TODO: Patrick, add the hand icon for either the current lesson the user is on, or the first lesson
-  // TODO: Patrick, have the defaultly opened indexes to be either the current lesson the user is on, or the first lesson
-
-  const [indexes, setIndexes] = useState([]);
-
-  const toggleAccordionItem = (index) => {
-    const isActive = indexes.includes(index);
-
-    if (isActive) setIndexes(indexes.filter((i) => i !== index));
-    else setIndexes([...indexes, index]);
-  };
-
   const courseStartLink = live
     ? `/courses/${course}/${page.lessons[0]._id}`
     : null;
@@ -180,6 +156,49 @@ export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
   if (nextAvailablePage.concept) {
     resumeLink = `${resumeLink}/${nextAvailablePage.concept}`;
   }
+
+  const lessons = page.lessons
+    ? page.lessons.map(({ title, description, concepts, _id }) => ({
+        title,
+        content: prepareSyllabusContent(description, concepts, _id),
+      }))
+    : [];
+
+  if (project) {
+    lessons.push({
+      title: project.title,
+      content: prepareSyllabusContent(project.description, project.parts),
+    });
+  }
+
+  // TODO: Patrick, for the lesson that hasn't been finished yet and is currently in progress, add the resume link
+  // TODO: Patrick, add the concept type icons like in the drawer instead of the empty circles
+  // TODO: Patrick, if the user has started and not finished the course add the hand icon for either the current lesson the user is on
+  // TODO: Patrick, for the project, always have the project icon
+
+  const determineOpenLessons = () => {
+    if (!isTakingCourse) return [0];
+    if (hasCompletedCourse(progress)) return [];
+
+    for (let i = 0; i < page.lessons.length; i++) {
+      if (!hasCompletedLesson(progress, page.lessons[i]._id)) return [i];
+    }
+
+    if (!hasCompletedProject(progress)) return [page.lessons.length];
+
+    return [];
+  };
+
+  console.log('FINAL', determineOpenLessons());
+
+  const [indexes, setIndexes] = useState(determineOpenLessons());
+
+  const toggleAccordionItem = (index) => {
+    const isActive = indexes.includes(index);
+
+    if (isActive) setIndexes(indexes.filter((i) => i !== index));
+    else setIndexes([...indexes, index]);
+  };
 
   return (
     <>
@@ -359,7 +378,6 @@ export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
           {isTakingCourse && <FeaturesOrResources which="resources" />}
           {!isTakingCourse && <FeaturesOrResources which="features" />}
         </Box>
-        {/* TODO: Patrick, add the other courses here */}
       </Box>
     </>
   );

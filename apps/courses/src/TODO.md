@@ -23,8 +23,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Fix remaining visual descrepancies on the site between the code and the designs
-- Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
+- Finish doing a final design overview for the following pages: course overview, lesson, concept, lesson-complete, project, project-submissions, project-complete, and course-complete... after this, everything visual for the site will be "finished"
 - Make sure a mentor cannot report a review after the time is up
 - Figure out how to reassign a review after 4 hour time limit is reached
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course material

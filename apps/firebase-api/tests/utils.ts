@@ -42,22 +42,28 @@ export const afterAllTests = async () => {
   console.log(`View firestore rule coverage information at ${coverageFile}\n`);
 };
 
-export const getUserRef = (db, userId) => db.collection('users').doc(userId);
+export const getUserCourseRef = (db, userId) =>
+  db.collection('users').doc(userId);
+
+export const getCoursesRef = (db, userId) =>
+  db.collection('users').doc(userId).collection('courses');
 
 export const getCourseRef = (db, userId, courseId) =>
-  db.collection('users').doc(userId).collection('courses').doc(courseId);
+  getCoursesRef(db, userId).doc(courseId);
 
 export const getUserReviewRef = (db, userId, reviewId) =>
   db.collection('users').doc(userId).collection('reviews').doc(reviewId);
 
 export const getUserSubmissionRef = (db, userId, courseId, submissionId) =>
+  getUserSubmissionsRef(db, userId, courseId).doc(submissionId);
+
+export const getUserSubmissionsRef = (db, userId, courseId) =>
   db
     .collection('users')
     .doc(userId)
     .collection('courses')
     .doc(courseId)
-    .collection('submissions')
-    .doc(submissionId);
+    .collection('submissions');
 
 export const updateUser = (userId, data) =>
-  getUserRef(getAdminFirestore(), userId).update(data, { merge: true });
+  getUserCourseRef(getAdminFirestore(), userId).update(data, { merge: true });

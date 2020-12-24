@@ -1,15 +1,12 @@
 import * as firebase from '@firebase/rules-unit-testing';
 
-import {
-  PROJECT_ID,
-  getAuthedFirestore,
-  updateUser,
-} from './utils';
+import { PROJECT_ID, getAuthedFirestore, updateUser } from './utils';
 
 import { getUserReviewRef } from './utils';
 
 const ALICE_ID = 'alice';
 const BOB_ID = 'bob';
+const DAN_ID = 'dan';
 const RANDOM_REVIEW_ID = 'random_review';
 const COURSE_A = 'course_a';
 const COURSE_B = 'course_b';
@@ -20,27 +17,27 @@ describe('users/{{userID}}/reviews/{{reviewId}}', () => {
   });
 
   it('create, read', async () => {
-    // alice is mentor of course_a
-    await updateUser(ALICE_ID, {
+    // bob is mentor of course_a
+    await updateUser(BOB_ID, {
       is_mentor: true,
       mentorable_courses: [COURSE_A],
     });
 
-    // alice can read/write
-    const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
+    // bob can read/write
+    const bobDb = getAuthedFirestore({ uid: BOB_ID });
     const reviewData = { course: COURSE_A };
     await firebase.assertSucceeds(
-      getUserReviewRef(aliceDb, ALICE_ID, RANDOM_REVIEW_ID).set(reviewData)
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData)
     );
     await firebase.assertSucceeds(
-      getUserReviewRef(aliceDb, ALICE_ID, RANDOM_REVIEW_ID).get()
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).get()
     );
 
-    // alice cannot review on COURSE_B
-    const forceReviewCourseB = { course: COURSE_B }
-    const ANOTHER_REVIEW_ID = 'another_review_id'
+    // bob cannot review on COURSE_B
+    const forceReviewCourseB = { course: COURSE_B };
+    const ANOTHER_REVIEW_ID = 'another_review_id';
     await firebase.assertFails(
-      getUserReviewRef(aliceDb, ALICE_ID, ANOTHER_REVIEW_ID).set(forceReviewCourseB)
+      getUserReviewRef(bobDb, BOB_ID, ANOTHER_REVIEW_ID).set(forceReviewCourseB)
     );
 
     // others cannot read/write
@@ -52,76 +49,81 @@ describe('users/{{userID}}/reviews/{{reviewId}}', () => {
       getUserReviewRef(anyoneDb, ALICE_ID, RANDOM_REVIEW_ID).set(reviewData)
     );
 
-    // bob cannot read/write alice course doc
-    const bobDb = getAuthedFirestore({ uid: BOB_ID });
+    // dan cannot read/write alice course doc
+    const danDb = getAuthedFirestore({ uid: DAN_ID });
     await firebase.assertFails(
-      getUserReviewRef(bobDb, ALICE_ID, RANDOM_REVIEW_ID).get()
+      getUserReviewRef(danDb, BOB_ID, RANDOM_REVIEW_ID).get()
     );
     await firebase.assertFails(
-      getUserReviewRef(bobDb, ALICE_ID, RANDOM_REVIEW_ID).set(reviewData)
+      getUserReviewRef(danDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData)
     );
   });
 
-
-  it('update: Students who are also mentors can update \'status\' and \'completed_at\'', async () => {
-    // alice is mentor of course_a
-    await updateUser(ALICE_ID, {
+  it("update: Students who are also mentors can update 'status' and 'completed_at'", async () => {
+    // bob is mentor of course_a
+    await updateUser(BOB_ID, {
       is_mentor: true,
       mentorable_courses: [COURSE_A],
     });
 
-    // alice can read/write
-    const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
+    // bob can read/write
+    const bobDb = getAuthedFirestore({ uid: BOB_ID });
     const reviewData = { course: COURSE_A };
     await firebase.assertSucceeds(
-      getUserReviewRef(aliceDb, ALICE_ID, RANDOM_REVIEW_ID).set(reviewData)
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData)
     );
 
-    // alice can update status and completed_at
+    // bob can update status and completed_at
     await firebase.assertSucceeds(
-      getUserReviewRef(aliceDb, ALICE_ID, RANDOM_REVIEW_ID).update({
-        status: 'passed',
-        completed_at: new Date(),
-      }, { merge: true })
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).update(
+        {
+          status: 'passed',
+          completed_at: new Date(),
+        },
+        { merge: true }
+      )
     );
 
-    // alice cannot update other fields
+    // bob cannot update other fields
     await firebase.assertFails(
-      getUserReviewRef(aliceDb, ALICE_ID, RANDOM_REVIEW_ID).update({
-        course: 'another_course',
-      }, { merge: true })
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).update(
+        {
+          course: 'another_course',
+        },
+        { merge: true }
+      )
     );
   });
 
   it('delete', async () => {
-    // alice is mentor of course_a
-    await updateUser(ALICE_ID, {
+    // bob is mentor of course_a
+    await updateUser(BOB_ID, {
       is_mentor: true,
       mentorable_courses: [COURSE_A],
     });
 
-    // alice can read/write
-    const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
+    // bob can read/write
+    const bobDb = getAuthedFirestore({ uid: BOB_ID });
     const reviewData = { course: COURSE_A };
     await firebase.assertSucceeds(
-      getUserReviewRef(aliceDb, ALICE_ID, RANDOM_REVIEW_ID).set(reviewData)
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData)
     );
 
-    // alice cannot delete the review
+    // bob cannot delete the review
     await firebase.assertFails(
-      getUserReviewRef(aliceDb, ALICE_ID, RANDOM_REVIEW_ID).delete()
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).delete()
     );
 
     // others cannot delete
     const anyoneDb = getAuthedFirestore(null);
     await firebase.assertFails(
-      getUserReviewRef(anyoneDb, ALICE_ID, RANDOM_REVIEW_ID).delete()
+      getUserReviewRef(anyoneDb, BOB_ID, RANDOM_REVIEW_ID).delete()
     );
 
     // bob cannot delete
-    const bobDb = getAuthedFirestore({ uid: BOB_ID });
+    const aliceDb = getAuthedFirestore({ uid: BOB_ID });
     await firebase.assertFails(
-      getUserReviewRef(bobDb, ALICE_ID, RANDOM_REVIEW_ID).delete()
+      getUserReviewRef(aliceDb, BOB_ID, RANDOM_REVIEW_ID).delete()
     );
   });
 });

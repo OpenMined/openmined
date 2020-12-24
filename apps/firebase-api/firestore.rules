@@ -30,6 +30,14 @@ service cloud.firestore {
       return getUserData(userId).data.is_mentor
     }
 
+    function affectedKeys() {
+      return incomingData().diff(existingData()).affectedKeys()
+    }
+
+    function hasAllAffectedKeys(list) {
+      return list.toSet().hasAll(affectedKeys())
+    }
+
     match /users/{user} {
       // Anyone can read
       allow read;
@@ -48,8 +56,8 @@ service cloud.firestore {
       match /reviews/{review} {
         function isCourseAssigned(userId) {
           let mentorable_courses = getUserData(userId).data.mentorable_courses;
-          return mentorable_courses.hasAll([incomingData().course]) ||
-            mentorable_courses.hasAll([existingData().course]);
+          return incomingData().course in mentorable_courses ||
+            existingData().course in mentorable_courses;
         }
         
         allow create: if
@@ -66,7 +74,7 @@ service cloud.firestore {
         // Students who are also mentors can update 'status' and 'completed_at'
         allow update: if 
           isMentor(request.auth.uid) &&
-          ['status', 'completed_at'].toSet().hasAll(incomingData().diff(existingData()).affectedKeys());
+          hasAllAffectedKeys(['status', 'completed_at']);
 
         // Students who are also mentors delete a review
         allow delete: if false;
@@ -76,21 +84,21 @@ service cloud.firestore {
         // Mentor will need to be able to edit the submissions array of any user's course object with the status and reviewed_at time (course->project->part->submissions)
         allow update: if
           isMentor(request.auth.uid) &&
-          ['project'].toSet().hasAll(incomingData().diff(existingData()).affectedKeys());
-
+          hasAllAffectedKeys(['project']);
 
         function isCourseAssignedToMentor() {
           let mentorable_courses = getUserData(request.auth.uid).data.mentorable_courses;
           return mentorable_courses.hasAll([course]);
         }
-        // Mentors should always be able to read any user's course object that they are assigned to review
-        allow read: if
-          isMentor(request.auth.uid) &&
-          isCourseAssignedToMentor();
 
-        // Student shuld not be able to mark their submissions owith the data of "status" or "reviewed_at"
-        // Student can read/write
-        allow read, write: if isSameUser(user);
+        // Mentors should always be able to read any user's course object that they are assigned to review
+        // Or student can read his course
+        allow read: if
+          isSameUser(user) || 
+          (isMentor(request.auth.uid) && isCourseAssignedToMentor());
+
+        // Student can write
+        allow write: if isSameUser(user);
 
         // These are submissions of a student
         // But remember, this DOES NOT affect how a mentor would read this submission
@@ -102,7 +110,6 @@ service cloud.firestore {
             get(existingData().mentor).id == request.auth.uid;
 
           allow update: if get(existingData().mentor).id == request.auth.uid;
-          allow delete: if false;
         }
 
         match /feedback/{conceptOrLesson} {

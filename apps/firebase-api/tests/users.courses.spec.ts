@@ -1,13 +1,9 @@
 import * as firebase from '@firebase/rules-unit-testing';
 import * as firebaseApp from 'firebase/app';
 
-import {
-  PROJECT_ID,
-  getAuthedFirestore,
-  updateUser,
-} from './utils';
+import { PROJECT_ID, getAuthedFirestore, updateUser } from './utils';
 
-import { getCourseRef } from './utils';
+import { getCourseRef, getCoursesRef } from './utils';
 
 import { OpenMined } from '@openmined/shared/types';
 const ALICE_ID = 'alice';
@@ -46,8 +42,7 @@ describe('users/{{userID}}/courses/{{courseId}}', () => {
     );
   });
 
-
-  it('Mentor will need to be able to edit the submissions array of any user\'s course object with the status and reviewed_at time (course->project->part->submissions)', async () => {
+  it("Mentor will need to be able to edit the submissions array of any user's course object with the status and reviewed_at time (course->project->part->submissions)", async () => {
     const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
     const courseData = { started_at: new Date() };
     // alice can create course
@@ -64,28 +59,34 @@ describe('users/{{userID}}/courses/{{courseId}}', () => {
 
     // bob can update users/alice/course/{RANDOM_COURSE_ID}
     const updatedProject: OpenMined.Project = {
-      started_at: new Date() as any as firebaseApp.firestore.Timestamp,
       parts: {
         any_part: {
-          submissions: [{
-            submitted_at: new Date() as any as firebaseApp.firestore.Timestamp,
-            submission: getCourseRef(bobDb, ALICE_ID, RANDOM_COURSE_ID), 
-            reviewed_at: new Date() as any as firebaseApp.firestore.Timestamp,
-          }]
-        }
-      }
-    }
+          submissions: [
+            {
+              status: 'passed',
+              reviewed_at: (new Date() as any) as firebaseApp.firestore.Timestamp,
+            },
+          ],
+        },
+      },
+    };
     await firebase.assertSucceeds(
-      getCourseRef(bobDb, ALICE_ID, RANDOM_COURSE_ID).update({ project: updatedProject }, { merge: true})
+      getCourseRef(bobDb, ALICE_ID, RANDOM_COURSE_ID).update(
+        { project: updatedProject },
+        { merge: true }
+      )
     );
 
     // bob: mentor cannot update any other fields except project
     await firebase.assertFails(
-      getCourseRef(bobDb, ALICE_ID, RANDOM_COURSE_ID).update({ other_field: true }, { merge: true})
+      getCourseRef(bobDb, ALICE_ID, RANDOM_COURSE_ID).update(
+        { other_field: true },
+        { merge: true }
+      )
     );
   });
 
-  it('Mentors should always be able to read any user\'s course object that they are assigned to review', async () => {
+  it("Mentors should always be able to read any user's course object that they are assigned to review", async () => {
     const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
     const courseData = { started_at: new Date() };
     // alice can create course
@@ -101,19 +102,6 @@ describe('users/{{userID}}/courses/{{courseId}}', () => {
     const bobDb = getAuthedFirestore({ uid: BOB_ID });
     await firebase.assertSucceeds(
       getCourseRef(bobDb, ALICE_ID, RANDOM_COURSE_ID).get()
-    );
-  });  
-
-  it('Student shuld not be able to mark their submissions with the data of "status" or "reviewed_at"', async () => {
-    const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
-    const courseData = { started_at: new Date() };
-    // alice can create course
-    await firebase.assertSucceeds(
-      getCourseRef(aliceDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData)
-    );
-    // alice can update
-    await firebase.assertSucceeds(
-      getCourseRef(aliceDb, ALICE_ID, RANDOM_COURSE_ID).set({ reviewed_at: new Date() })
     );
   });
 });

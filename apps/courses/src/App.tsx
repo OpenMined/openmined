@@ -11,11 +11,8 @@ import {
 
 import Routes from './routes';
 
-import Header from './components/Header';
 import Loading from './components/Loading';
 import Cookies from './components/Cookies';
-import Footer from './components/Footer';
-import { Box } from '@chakra-ui/react';
 
 import { SuspenseWithPerf } from 'reactfire';
 
@@ -82,28 +79,6 @@ const App = () => {
     setCookiePrefs(preference);
   };
 
-  // SEE TODO (#1)
-
-  // If we're inside the course, don't show the <Header /> at all
-  // Instead, we'll show the <CourseHeader />
-  const isInsideCourse =
-    location.pathname.includes('/courses') &&
-    location.pathname.split('/').length > 3 &&
-    !location.pathname.includes('/complete');
-
-  // If we're on the course completion page, we want the header to default to black
-  const isOnCourseComplete =
-    location.pathname.includes('/courses') &&
-    location.pathname.split('/').length > 3 &&
-    location.pathname.includes('/complete');
-
-  // If we're inside the concept, we don't render the default <Footer />
-  // Instead, we'll show the <CourseFooter />
-  const isInsideConcept =
-    location.pathname.includes('/courses') &&
-    location.pathname.split('/').length > 4 &&
-    !location.pathname.includes('/project');
-
   // const firebaseApp = useFirebaseApp();
 
   // if (process.env.NODE_ENV === 'development') {
@@ -114,15 +89,7 @@ const App = () => {
     <Router action={action} location={location} navigator={history}>
       <SuspenseWithPerf fallback={<Loading />} traceId={location.pathname}>
         {cookiePrefs === 'all' && <Analytics location={location} />}
-        {!isInsideCourse && <Header noScrolling={isOnCourseComplete} />}
-        <Box
-          minHeight="100vh"
-          display="grid"
-          gridTemplateRows={isInsideConcept ? '1fr' : '1fr auto'}
-        >
-          <Routes />
-          {!isInsideConcept && <Footer />}
-        </Box>
+        <Routes />
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
       </SuspenseWithPerf>
     </Router>

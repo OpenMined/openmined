@@ -12,9 +12,8 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - Add a ton of Cypress tests
 - We have a ton of problems with network requests and race conditions. For instance, signing up will redirect to the profile page where your name is empty. If you refresh the page, your name shows up. This type of behavior is present on basically every single page and is why we use window.location.href in a lot of places. It would be better to rely on client-side navigation if we could ensure that all rendering logic properly waited for the appropriate network requests to load. Can we implement this?
 
-### Thiago
+### SLZ
 
-- TODO (#1): Define configuration for main routes file to determine which routes receive the main header and main footer. Have this done in an RouteWrapper component where you can pass the appropriate props for each route.
 - TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
 - TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension

@@ -12,6 +12,7 @@ interface OverrideProps {
   title?: string;
   description?: string;
   noIndex?: boolean;
+  body?: any;
 }
 
 export default ({ children, ...overrides }: OverrideProps) => {

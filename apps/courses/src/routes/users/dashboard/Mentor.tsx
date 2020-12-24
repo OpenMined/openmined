@@ -38,6 +38,7 @@ import {
 import ColoredTabs from '../../../components/ColoredTabs';
 import useToast, { toastConfig } from '../../../components/Toast';
 import Countdown from '../../../components/Countdown';
+import { OpenMined } from '@openmined/shared/types';
 
 dayjs.extend(relativeTime);
 
@@ -59,7 +60,7 @@ const setupUserTokenAndGoToSubmission = (studentId, url) => {
 
 export const MentorContext = ({ courses }) => {
   const toast = useToast();
-  const user = useUser();
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const functions = useFunctions();
   functions.region = 'europe-west1';
@@ -70,7 +71,7 @@ export const MentorContext = ({ courses }) => {
     .collectionGroup('submissions')
     .where('mentor', '==', db.doc(`/users/${user.uid}`))
     .where('status', '==', null);
-  const activeReviewsData = useFirestoreCollectionData(activeReviewsRef);
+  const activeReviewsData: OpenMined.CourseProjectSubmission[] = useFirestoreCollectionData(activeReviewsRef);
 
   const activeReviews = activeReviewsData.map((r) => {
     const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
@@ -238,7 +239,7 @@ const NullSetTabPanel = ({ children }) => (
 export const MentorTabs = ({ courses, mentor }) => {
   const ProjectQueue = () => {
     const toast = useToast();
-    const functions = useFunctions();
+    const functions: firebase.functions.Functions = useFunctions();
     functions.region = 'europe-west1';
 
     const requestReview = functions.httpsCallable('assignReview');
@@ -342,7 +343,7 @@ export const MentorTabs = ({ courses, mentor }) => {
   };
 
   const MyActivity = () => {
-    const user = useUser();
+    const user: firebase.User = useUser();
     const db = useFirestore();
     const dbReviewsRef = db
       .collection('users')
@@ -351,7 +352,7 @@ export const MentorTabs = ({ courses, mentor }) => {
       // .where('status', '!=', 'pending')
       .orderBy('started_at', 'desc')
       .limit(10);
-    const dbReviews = useFirestoreCollectionData(dbReviewsRef);
+    const dbReviews: OpenMined.MentorReview[] = useFirestoreCollectionData(dbReviewsRef);
 
     const reviewHistory = dbReviews.map((r) => {
       const courseIndex = courses.findIndex(({ slug }) => slug === r.course);

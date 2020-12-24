@@ -31,9 +31,8 @@ const UnauthRoute = (props) => {
 
 const RouteWrapper = ({
   noHeader = false,
-  noFooter = false,
   blackHeader = false,
-  inConcept = false,
+  noFooter = false,
   children,
 }) => (
   <>
@@ -41,7 +40,7 @@ const RouteWrapper = ({
     <Box
       minHeight="100vh"
       display="grid"
-      gridTemplateRows={!inConcept ? '1fr' : '1fr auto'}
+      gridTemplateRows={!noFooter ? '1fr' : '1fr auto'}
     >
       {children}
       {!noFooter && <Footer />}
@@ -140,7 +139,7 @@ export default () => (
           <AuthRoute
             path="complete"
             element={
-              <RouteWrapper blackHeader noFooter>
+              <RouteWrapper noHeader noFooter>
                 <CoursePage which="projectComplete" />
               </RouteWrapper>
             }
@@ -176,7 +175,7 @@ export default () => (
           <AuthRoute
             path="complete"
             element={
-              <RouteWrapper blackHeader inConcept noFooter>
+              <RouteWrapper noHeader noFooter>
                 <CoursePage which="lessonComplete" />
               </RouteWrapper>
             }
@@ -184,7 +183,7 @@ export default () => (
           <AuthRoute
             path=":concept"
             element={
-              <RouteWrapper noHeader inConcept noFooter>
+              <RouteWrapper noHeader noFooter>
                 <CoursePage which="concept" />
               </RouteWrapper>
             }

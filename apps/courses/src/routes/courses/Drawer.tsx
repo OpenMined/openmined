@@ -45,7 +45,7 @@ const DrawerItem = ({
       onClick={() => toggleAccordionItem(index)}
     >
       <Flex flex="1" textAlign="left" align="center">
-        <Icon icon={icon} mr={6} boxSize={5} size="lg" />
+        <Icon icon={icon} mr={6} boxSize={5} />
         <Text fontWeight="bold">{title}</Text>
       </Flex>
       <AccordionIcon color="gray.600" />
@@ -76,9 +76,7 @@ const DrawerItem = ({
                 >
                   <Flex justify="space-between" align="center">
                     <Flex align="center">
-                      {icon && (
-                        <Icon icon={icon} boxSize={5} size="lg" mr={6} />
-                      )}
+                      {icon && <Icon icon={icon} boxSize={5} mr={6} />}
                       <Text>{title}</Text>
                     </Flex>
                     {isExternal && <Icon icon={faExternalLinkAlt} />}
@@ -134,7 +132,6 @@ const DrawerItem = ({
                         icon={icon}
                         color={status === 'completed' ? 'cyan.300' : 'inherit'}
                         boxSize={5}
-                        size="lg"
                       />
                     )}
                     {!icon && (

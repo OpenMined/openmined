@@ -37,7 +37,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
-    <Icon icon={icon} boxSize={5} size="lg" mb={4} />
+    <Icon icon={icon} boxSize={5} mb={4} />
     <Text>{children}</Text>
   </Box>
 );
@@ -129,7 +129,6 @@ export default ({
                 icon={status === 'passed' ? faCheckCircle : faTimesCircle}
                 color={status === 'passed' ? 'green.400' : 'magenta.400'}
                 boxSize={5}
-                size="lg"
                 mr={6}
               />
               <Text fontSize="lg">{title}</Text>

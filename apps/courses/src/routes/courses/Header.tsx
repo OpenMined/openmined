@@ -185,13 +185,7 @@ export default ({
                     }}
                   >
                     {icon && (
-                      <Icon
-                        icon={icon}
-                        boxSize={5}
-                        size="lg"
-                        color="gray.400"
-                        mr={4}
-                      />
+                      <Icon icon={icon} boxSize={5} color="gray.400" mr={4} />
                     )}
                     <Text color="gray.700">{title}</Text>
                   </Flex>
@@ -243,15 +237,7 @@ export default ({
         <Box width={{ base: 'full', [BREAK]: 1 / 2 }} mx={4}>
           {!noTitle && (
             <Flex justify="center" align="center">
-              {icon && (
-                <Icon
-                  icon={icon}
-                  color="gray.700"
-                  boxSize={5}
-                  size="lg"
-                  mr={4}
-                />
-              )}
+              {icon && <Icon icon={icon} color="gray.700" boxSize={5} mr={4} />}
               <Heading as="span" size="md" color="white">
                 {subtitle}: {title}
               </Heading>
@@ -276,7 +262,6 @@ export default ({
           <Icon
             icon={faHome}
             boxSize={5}
-            size="lg"
             color="white"
             onClick={isRightDrawerOpen ? onRightDrawerClose : onRightDrawerOpen}
           />

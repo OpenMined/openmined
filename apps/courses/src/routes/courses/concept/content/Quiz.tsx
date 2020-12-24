@@ -103,7 +103,7 @@ const IncorrectAnswer = ({
     borderColor="red.300"
     onClick={() => setCurrentSelection(index)}
   >
-    <Icon icon={faTimes} color="red.300" boxSize={5} size="lg" mr={4} />
+    <Icon icon={faTimes} color="red.300" boxSize={5} mr={4} />
     <Box>
       <Text mb={1}>{value}</Text>
       <Text color="red.300" fontSize="sm" fontStyle="italic">
@@ -151,7 +151,6 @@ const UnansweredAnswer = ({
         icon={isHovering ? faDotCircle : faCircle}
         color={isHovering ? 'cyan.500' : 'gray.700'}
         boxSize={4}
-        size="1x"
         mr={4}
       />
       <Text color={isHovering ? 'gray.800' : 'gray.700'}>{value}</Text>
@@ -254,7 +253,7 @@ const QuizCard = ({
             <Text fontWeight="bold" mr={2}>
               {currentQuestion + 1 >= total ? 'Finish' : 'Next'}
             </Text>
-            <Icon icon={faArrowRight} boxSize={4} size="1x" />
+            <Icon icon={faArrowRight} boxSize={4} />
           </Flex>
         </Flex>
       )}

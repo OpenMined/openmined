@@ -129,7 +129,7 @@ export default () => {
                   ))}
                 </List>
                 <Divider my={8} />
-                <Icon icon={faCommentAlt} boxSize={8} size="2x" mb={2} />
+                <Icon icon={faCommentAlt} boxSize={8} mb={2} />
                 {discussion}
                 <Flex mt={12} justify="flex-start">
                   <Box

@@ -60,7 +60,6 @@ export default ({ code, language, spacing }: any) => {
       <Icon
         icon={faCopy}
         boxSize={5}
-        size="lg"
         color="whiteAlpha.500"
         _hover={{ color: 'white' }}
         transitionProperty="color"

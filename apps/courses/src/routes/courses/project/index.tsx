@@ -42,7 +42,7 @@ import { OpenMined } from '@openmined/shared/types';
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
-    <Icon icon={faCheckCircle} boxSize={8} size="2x" />
+    <Icon icon={faCheckCircle} boxSize={8} />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -176,7 +176,6 @@ export default ({
             <Icon
               icon={faShapes}
               boxSize={8}
-              size="2x"
               position="absolute"
               top={1}
               left={-16}
@@ -268,7 +267,7 @@ export default ({
                 {...getLinkPropsFromLink(link)}
               >
                 <Flex align="center">
-                  <Icon icon={icon} boxSize={5} size="lg" mr={4} />
+                  <Icon icon={icon} boxSize={5} mr={4} />
                   <Text>{title}</Text>
                 </Flex>
               </Link>

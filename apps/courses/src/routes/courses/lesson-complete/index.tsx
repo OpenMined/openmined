@@ -34,7 +34,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
-    <Icon icon={icon} boxSize={5} size="lg" mb={4} />
+    <Icon icon={icon} boxSize={5} mb={4} />
     <Text>{children}</Text>
   </Box>
 );
@@ -103,13 +103,7 @@ export default ({
       <GridContainer isInitial py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
-            <Icon
-              icon={faCheckCircle}
-              color="cyan.300"
-              boxSize={12}
-              size="3x"
-              mb={4}
-            />
+            <Icon icon={faCheckCircle} color="cyan.300" boxSize={12} mb={4} />
             <Heading as="p" size="xl" textAlign="center" mb={4}>
               Congratulations!
             </Heading>
@@ -140,7 +134,6 @@ export default ({
                 icon={typeof nextLesson === 'string' ? faShapes : faArrowRight}
                 color="orange.200"
                 boxSize={5}
-                size="lg"
                 mr={6}
               />
               <Text fontSize="lg">

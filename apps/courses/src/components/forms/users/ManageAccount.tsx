@@ -181,7 +181,7 @@ export default ({
         Manage Linked Accounts
       </Heading>
       <Flex align="center">
-        <Icon icon={faEnvelope} boxSize={8} size="2x" />
+        <Icon icon={faEnvelope} boxSize={8} />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Email
         </Text>
@@ -190,7 +190,7 @@ export default ({
         )}
       </Flex>
       <Flex align="center" mt={4}>
-        <Icon icon={faGithub} boxSize={8} size="2x" />
+        <Icon icon={faGithub} boxSize={8} />
         <Text ml={4} mr={8} fontWeight="bold" color="gray.700">
           Github
         </Text>

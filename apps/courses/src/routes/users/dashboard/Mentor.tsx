@@ -109,7 +109,7 @@ export const MentorContext = ({ courses }) => {
               align="center"
             >
               <Flex align="center">
-                <Icon icon={faShapes} boxSize={8} size="2x" ml={1} mr={4} />
+                <Icon icon={faShapes} boxSize={8} ml={1} mr={4} />
                 <Heading as="p" size="sm">
                   {
                     review.course.project.parts[
@@ -182,7 +182,7 @@ export const MentorContext = ({ courses }) => {
           _hover={{ color: 'gray.800' }}
         >
           <Flex align="center">
-            <Icon icon={faCalendarCheck} boxSize={5} size="lg" mr={3} />
+            <Icon icon={faCalendarCheck} boxSize={5} mr={3} />
             <Text fontWeight="bold">Shift Calendar</Text>
           </Flex>
         </Link>
@@ -196,7 +196,7 @@ export const MentorContext = ({ courses }) => {
           _hover={{ color: 'gray.800' }}
         >
           <Flex align="center">
-            <Icon icon={faCommentAlt} boxSize={5} size="lg" mr={3} />
+            <Icon icon={faCommentAlt} boxSize={5} mr={3} />
             <Text fontWeight="bold">Discussion Board</Text>
           </Flex>
         </Link>

@@ -138,8 +138,7 @@ const Help = ({ helpOpen, setHelpOpen }) => {
       trigger={() => (
         <Link color="gray.400" _hover={{ color: 'gray.200' }} variant="flat">
           <Flex align="center">
-            {/* SEE TODO (#3) */}
-            <Icon as={FontAwesomeIcon} icon={faCommentAlt} />
+            <Icon icon={faCommentAlt} />
             <Text display={{ base: 'none', [BREAK]: 'block' }} ml={4}>
               Get Help
             </Text>
@@ -154,15 +153,7 @@ const Help = ({ helpOpen, setHelpOpen }) => {
         {helpLinks.map(({ title, link, icon }, index) => {
           return (
             <Flex align="center" key={index} {...getLinkPropsFromLink(link)}>
-              {icon && (
-                <Icon
-                  icon={icon}
-                  boxSize={5}
-                  size="lg"
-                  color="gray.400"
-                  mr={4}
-                />
-              )}
+              {icon && <Icon icon={icon} boxSize={5} color="gray.400" mr={4} />}
               <Text color="gray.700">{title}</Text>
             </Flex>
           );

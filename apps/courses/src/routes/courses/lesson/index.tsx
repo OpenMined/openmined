@@ -33,7 +33,7 @@ import { OpenMined } from '@openmined/shared/types';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
-    <Icon icon={faCheckCircle} boxSize={8} size="2x" />
+    <Icon icon={faCheckCircle} boxSize={8} />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>

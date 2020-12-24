@@ -174,24 +174,12 @@ export default ({ noScrolling }) => {
           <Stack spacing={3}>
             {user && (
               <Flex align="center" as={RRDLink} to={`/users/${user.uid}`}>
-                <Icon
-                  icon={faUserCircle}
-                  boxSize={5}
-                  size="lg"
-                  color="gray.400"
-                  mr={4}
-                />
+                <Icon icon={faUserCircle} boxSize={5} color="gray.400" mr={4} />
                 <Text color="gray.700">Profile</Text>
               </Flex>
             )}
             <Flex align="center" as={RRDLink} to="/users/settings">
-              <Icon
-                icon={faCog}
-                boxSize={5}
-                size="lg"
-                color="gray.400"
-                mr={4}
-              />
+              <Icon icon={faCog} boxSize={5} color="gray.400" mr={4} />
               <Text color="gray.700">Account Settings</Text>
             </Flex>
             <Divider />
@@ -202,13 +190,7 @@ export default ({ noScrolling }) => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Icon
-                icon={faCommentAlt}
-                boxSize={5}
-                size="lg"
-                color="gray.400"
-                mr={4}
-              />
+              <Icon icon={faCommentAlt} boxSize={5} color="gray.400" mr={4} />
               <Text color="gray.700">Forum</Text>
             </Flex>
             <Divider />

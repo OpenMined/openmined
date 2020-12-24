@@ -139,7 +139,7 @@ export default ({ content, ...props }) => {
                 <Circle bg={text} color={bg} size={8}>
                   {typeof icon === 'string' && index + 1}
                   {typeof icon !== 'string' && (
-                    <Icon size="1x" boxSize={4} icon={icon} color={bg} />
+                    <Icon boxSize={4} icon={icon} color={bg} />
                   )}
                 </Circle>
                 <Text as="span" ml={4}>

@@ -48,7 +48,7 @@ export default ({ status, link, ...submission }) => {
   return (
     <Flex as={Link} to={link} {...props}>
       <Flex align="center">
-        <Icon icon={icon} color={iconColor} boxSize={5} size="lg" mr={4} />
+        <Icon icon={icon} color={iconColor} boxSize={5} mr={4} />
         <Text fontWeight="bold" mr={2}>
           {text}
         </Text>

@@ -136,12 +136,7 @@ export default ({ page }: OpenMined.CoursePagesProp) => {
                     align="center"
                   >
                     <Circle p={1} mb={2} bg={iconBg} boxSize={12}>
-                      <Icon
-                        icon={icon}
-                        boxSize={5}
-                        size="lg"
-                        color={iconColor}
-                      />
+                      <Icon icon={icon} boxSize={5} color={iconColor} />
                     </Circle>
                     <Text
                       color="gray.800"

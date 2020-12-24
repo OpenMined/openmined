@@ -58,7 +58,7 @@ export default ({ signup, signedup }) => {
                   align="center"
                   justify="center"
                 >
-                  <Icon icon={icon} boxSize={8} size="2x" />
+                  <Icon icon={icon} boxSize={8} />
                   <Text
                     fontWeight="bold"
                     fontSize="lg"

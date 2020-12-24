@@ -59,7 +59,7 @@ const LinkItem = ({ title, icon, link, ...props }) => {
       transitionDuration="normal"
       transitionTimingFunction="ease-in-out"
     >
-      <Icon icon={icon} boxSize={5} size="lg" color="inherit" mr={3} />
+      <Icon icon={icon} boxSize={5} color="inherit" mr={3} />
       <Text color="inherit">{title}</Text>
     </Flex>
   );

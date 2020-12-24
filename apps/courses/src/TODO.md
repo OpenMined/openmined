@@ -9,13 +9,14 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - TODO (HARD): Add a ton of security rules (make sure to reference the \_helpers.ts file!!!)
 - TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
 - Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass
+- Downgrade to React 17... make sure that we handle `<Suspense>` (which will now be unavailable) gracefully and show the loader. Also double check that the Slate editor is fixed when we downgrade. Also try to revert Thiago's PR related to Radios and Checkboxes if downgrading to React 17 fixes the problem: https://github.com/OpenMined/openmined/pull/31
+- TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - Add a ton of Cypress tests
 - We have a ton of problems with network requests and race conditions. For instance, signing up will redirect to the profile page where your name is empty. If you refresh the page, your name shows up. This type of behavior is present on basically every single page and is why we use window.location.href in a lot of places. It would be better to rely on client-side navigation if we could ensure that all rendering logic properly waited for the appropriate network requests to load. Can we implement this?
 
 ### SLZ
 
 - TODO (#3): Create a custom `<Icon />` component that automates the `as` prop and also prefers the sizing of the Chakra theme using `boxSize` instead of the `size` props provided by React-FontAwesome. Convert all icons to use this custom component and then swap out their `size` for the appropriate `boxSize` in Chakra.
-- TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
 - TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
 - TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)

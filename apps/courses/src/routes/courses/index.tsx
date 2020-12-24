@@ -74,12 +74,13 @@ export default ({ which }: PropType) => {
   // Get the user's current progress on their courses
   const user: firebase.User = useUser();
   const db = useFirestore();
-  const dbCourseRef = params.course
-    ? getCourseRef(db, mentorStudentToken || user.uid, params.course)
-    : null;
+  const dbCourseRef =
+    params.course && user
+      ? getCourseRef(db, mentorStudentToken || user.uid, params.course)
+      : null;
   const dbCourse: OpenMined.Course = dbCourseRef
     ? useFirestoreDocDataOnce(dbCourseRef)
-    : null;
+    : {};
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference

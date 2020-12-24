@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import {
   Box,
   Button,
-  Circle,
+  CircularProgress,
+  CircularProgressLabel,
   Divider,
   Flex,
   Heading,
@@ -19,15 +20,19 @@ import { Link } from 'react-router-dom';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { OpenMined } from '@openmined/shared/types';
 
+import {
+  getCourseProgress,
+  getNextAvailablePage,
+  hasCompletedConcept,
+  hasCompletedProjectPart,
+  hasStartedCourse,
+} from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
-import { OpenMined } from '@openmined/shared/types';
-
-// TODO: On the course overview page, make sure the "walk away being able to" items have images for icons instead of Font Awesome icons
-// TODO: On the course overview page, make sure to have the project show up at the end in the syllabus
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
@@ -40,12 +45,14 @@ const Detail = ({ title, value }) => (
   </Flex>
 );
 
-const LearnHow = ({ value }) => (
+const LearnHow = ({ title, image }) => (
   <Box>
-    <Circle bg="white" size={8} display={{ base: 'none', md: 'block' }}>
-      {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
-    </Circle>
+    <Image
+      src={image}
+      alt={title}
+      boxSize={16}
+      display={{ base: 'none', md: 'block' }}
+    />
     <Heading
       as="h3"
       size="md"
@@ -53,7 +60,7 @@ const LearnHow = ({ value }) => (
       mt={{ base: 0, md: 3 }}
       color="gray.700"
     >
-      {value}
+      {title}
     </Heading>
   </Box>
 );
@@ -70,17 +77,8 @@ const LearnFrom = ({ image, name, credential }) => (
   </Flex>
 );
 
-export default ({ course, page }: OpenMined.CoursePagesProp) => {
-  const [indexes, setIndexes] = useState([]);
-
-  const toggleAccordionItem = (index) => {
-    const isActive = indexes.includes(index);
-
-    if (isActive) setIndexes(indexes.filter((i) => i !== index));
-    else setIndexes([...indexes, index]);
-  };
-
-  const prepareLessonContent = (description, concepts) => {
+export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
+  const prepareSyllabusContent = (description, parts, lessonId = null) => {
     const iconProps: any = {
       as: FontAwesomeIcon,
       size: 'lg',
@@ -90,22 +88,29 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
 
     // SEE TODO (#3)
     const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
-    const CompleteConcept = () => <Icon {...iconProps} icon={faCheckCircle} />;
+    const CompleteConcept = () => (
+      <Icon {...iconProps} color="blue.500" icon={faCheckCircle} />
+    );
 
     return (
       <Box bg="gray.200" p={8}>
         <Text mb={4}>{description}</Text>
         <List spacing={2}>
-          {concepts.map(({ title, isComplete }, index) => (
-            <ListItem key={index}>
-              {/* TODO: Patrick, make the complete icons work */}
-              {isComplete && <ListIcon as={CompleteConcept} />}
-              {!isComplete && <ListIcon as={IncompleteConcept} />}
-              {title}
-            </ListItem>
-          ))}
+          {parts.map(({ title, _id, _key }, index) => {
+            const isComplete =
+              _id && !_key
+                ? hasCompletedConcept(progress, lessonId, _id)
+                : hasCompletedProjectPart(progress, _key);
+
+            return (
+              <ListItem key={index}>
+                {isComplete && <ListIcon as={CompleteConcept} />}
+                {!isComplete && <ListIcon as={IncompleteConcept} />}
+                {title}
+              </ListItem>
+            );
+          })}
         </List>
-        {/* TODO: Patrick, put the link to the course in here */}
       </Box>
     );
   };
@@ -121,21 +126,60 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
     certification,
     learnFrom,
     live,
+    project,
   } = page;
 
   const lessons = page.lessons
-    ? page.lessons.map(({ title, description, concepts }) => ({
+    ? page.lessons.map(({ title, description, concepts, _id }) => ({
         title,
-        content: prepareLessonContent(description, concepts),
+        content: prepareSyllabusContent(description, concepts, _id),
       }))
     : [];
+
+  if (project) {
+    lessons.push({
+      title: project.title,
+      content: prepareSyllabusContent(project.description, project.parts),
+    });
+  }
+
+  // TODO: Patrick, add projects to the list of "lessons"
+  // TODO: Patrick, add the hand icon for either the current lesson the user is on, or the first lesson
+  // TODO: Patrick, have the defaultly opened indexes to be either the current lesson the user is on, or the first lesson
+
+  const [indexes, setIndexes] = useState([]);
+
+  const toggleAccordionItem = (index) => {
+    const isActive = indexes.includes(index);
+
+    if (isActive) setIndexes(indexes.filter((i) => i !== index));
+    else setIndexes([...indexes, index]);
+  };
 
   const courseStartLink = live
     ? `/courses/${course}/${page.lessons[0]._id}`
     : null;
 
-  // TODO: Patrick, fill this variable in with the appropriate value
-  const isTakingCourse = false;
+  const isTakingCourse = hasStartedCourse(progress);
+
+  const stats = isTakingCourse
+    ? getCourseProgress(progress, page.lessons, project.parts)
+    : {};
+  const percentComplete =
+    ((stats.completedConcepts + stats.completedProjectParts) /
+      (stats.concepts + stats.projectParts)) *
+    100;
+
+  const nextAvailablePage = isTakingCourse
+    ? getNextAvailablePage(progress, page.lessons)
+    : {};
+  let resumeLink = isTakingCourse
+    ? `/courses/${course}/${nextAvailablePage.lesson}`
+    : '';
+
+  if (nextAvailablePage.concept) {
+    resumeLink = `${resumeLink}/${nextAvailablePage.concept}`;
+  }
 
   return (
     <>
@@ -205,6 +249,29 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
                   {courseStartLink ? 'Start Course' : 'Coming Soon'}
                 </Button>
               )}
+              {isTakingCourse && (
+                <Flex align="center">
+                  <CircularProgress
+                    value={percentComplete}
+                    color="blue.400"
+                    size="80px"
+                    thickness={8}
+                  >
+                    <CircularProgressLabel fontWeight="bold" fontSize="md">
+                      {percentComplete.toFixed(1)}%
+                    </CircularProgressLabel>
+                  </CircularProgress>
+                  <Button
+                    colorScheme="blue"
+                    size="lg"
+                    as={Link}
+                    to={resumeLink}
+                    ml={4}
+                  >
+                    Continue
+                  </Button>
+                </Flex>
+              )}
             </Box>
           </Flex>
         </GridContainer>
@@ -216,29 +283,27 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
               </Heading>
               <SimpleGrid columns={[1, null, 2, 3]} spacing={8}>
                 {learnHow.map((l) => (
-                  <LearnHow value={l} key={l} />
+                  <LearnHow {...l} key={l.title} />
                 ))}
               </SimpleGrid>
             </GridContainer>
           </Box>
         )}
-        {lessons.length !== 0 && (
-          <GridContainer my={[8, null, null, 12]}>
-            <Flex
-              width={{ lg: '80%' }}
-              mx="auto"
-              direction="column"
-              align="center"
-            >
-              <Heading as="h2" size="xl" mb={4}>
-                What You'll Learn
-              </Heading>
-              <Text color="gray.700">
-                Below you will find the entire course syllabus organized by
-                lessons and concepts.
-              </Text>
-              {/* TODO: Patrick, add the hand icon for either the current lesson the user is on, or the first lesson */}
-              {/* TODO: Patrick, have the defaultly opened indexes to be either the current lesson the user is on, or the first lesson */}
+        <GridContainer my={[8, null, null, 12]}>
+          <Flex
+            width={{ lg: '80%' }}
+            mx="auto"
+            direction="column"
+            align="center"
+          >
+            <Heading as="h2" size="xl" mb={4}>
+              What You'll Learn
+            </Heading>
+            <Text color="gray.700">
+              Below you will find the entire course syllabus organized by
+              lessons and concepts.
+            </Text>
+            {lessons.length !== 0 && (
               <NumberedAccordion
                 width="full"
                 mt={8}
@@ -246,9 +311,14 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
                 onToggleItem={toggleAccordionItem}
                 sections={lessons}
               />
-            </Flex>
-          </GridContainer>
-        )}
+            )}
+            {lessons.length === 0 && (
+              <Text fontWeight="bold" fontSize="lg" mt={8}>
+                Course syllabus coming soon!
+              </Text>
+            )}
+          </Flex>
+        </GridContainer>
         {!isTakingCourse && learnFrom && (
           <GridContainer my={[8, null, null, 12]}>
             <Heading as="h2" size="xl" mb={8} textAlign="center">
@@ -261,8 +331,8 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
             </SimpleGrid>
           </GridContainer>
         )}
-        {!isTakingCourse && (
-          <Flex justify="center">
+        <Flex justify="center">
+          {!isTakingCourse && (
             <Button
               colorScheme="black"
               size="lg"
@@ -272,8 +342,19 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
             >
               {courseStartLink ? 'Start Course' : 'Coming Soon'}
             </Button>
-          </Flex>
-        )}
+          )}
+          {isTakingCourse && (
+            <Button
+              colorScheme="black"
+              size="lg"
+              as={Link}
+              to={resumeLink}
+              ml={4}
+            >
+              Continue Course
+            </Button>
+          )}
+        </Flex>
         <Box my={[8, null, null, 12]}>
           {isTakingCourse && <FeaturesOrResources which="resources" />}
           {!isTakingCourse && <FeaturesOrResources which="features" />}

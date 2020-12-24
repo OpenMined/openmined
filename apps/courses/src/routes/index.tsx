@@ -2,6 +2,11 @@ import React, { lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useUser } from 'reactfire';
 
+import { Box } from '@chakra-ui/react';
+
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+
 const Homepage = lazy(() => import('./homepage'));
 const Signup = lazy(() => import('./users/sign-up'));
 const Signin = lazy(() => import('./users/sign-in'));
@@ -24,54 +29,191 @@ const UnauthRoute = (props) => {
   return !user ? <Route {...props} /> : <Navigate to="/users/dashboard" />;
 };
 
+const RouteWrapper = ({
+  noHeader = false,
+  blackHeader = false,
+  noFooter = false,
+  children,
+}) => (
+  <>
+    {!noHeader && <Header noScrolling={blackHeader} />}
+    <Box
+      minHeight="100vh"
+      display="grid"
+      gridTemplateRows={!noFooter ? '1fr' : '1fr auto'}
+    >
+      {children}
+      {!noFooter && <Footer />}
+    </Box>
+  </>
+);
+
 export default () => (
   <Routes>
-    <Route path="/" element={<Homepage />} />
-    <UnauthRoute path="signup" element={<Signup />} />
-    <UnauthRoute path="signin" element={<Signin />} />
+    <Route
+      path="/"
+      element={
+        <RouteWrapper>
+          <Homepage />
+        </RouteWrapper>
+      }
+    />
+    <UnauthRoute
+      path="signup"
+      element={
+        <RouteWrapper>
+          <Signup />
+        </RouteWrapper>
+      }
+    />
+    <UnauthRoute
+      path="signin"
+      element={
+        <RouteWrapper>
+          <Signin />
+        </RouteWrapper>
+      }
+    />
     <Route path="users">
       <Route path="/" element={<Navigate to="/" />} />
-      <AuthRoute path="dashboard" element={<Dashboard />} />
-      <AuthRoute path="settings" element={<Settings />} />
-      <Route path=":uid" element={<Profile />} />
+      <AuthRoute
+        path="dashboard"
+        element={
+          <RouteWrapper>
+            <Dashboard />
+          </RouteWrapper>
+        }
+      />
+      <AuthRoute
+        path="settings"
+        element={
+          <RouteWrapper>
+            <Settings />
+          </RouteWrapper>
+        }
+      />
+      <Route
+        path=":uid"
+        element={
+          <RouteWrapper>
+            <Profile />
+          </RouteWrapper>
+        }
+      />
     </Route>
     <Route path="courses">
-      <Route path="/" element={<CoursePage which="search" />} />
+      <Route
+        path="/"
+        element={
+          <RouteWrapper>
+            <CoursePage which="search" />
+          </RouteWrapper>
+        }
+      />
       <Route path=":course">
-        <Route path="/" element={<CoursePage which="overview" />} />
+        <Route
+          path="/"
+          element={
+            <RouteWrapper>
+              <CoursePage which="overview" />
+            </RouteWrapper>
+          }
+        />
         <AuthRoute
           path="complete"
-          element={<CoursePage which="courseComplete" />}
+          element={
+            <RouteWrapper blackHeader>
+              <CoursePage which="courseComplete" />
+            </RouteWrapper>
+          }
         />
         <AuthRoute path="project">
-          <AuthRoute path="/" element={<CoursePage which="project" />} />
+          <AuthRoute
+            path="/"
+            element={
+              <RouteWrapper noHeader>
+                <CoursePage which="project" />
+              </RouteWrapper>
+            }
+          />
           <AuthRoute
             path="complete"
-            element={<CoursePage which="projectComplete" />}
+            element={
+              <RouteWrapper noHeader noFooter>
+                <CoursePage which="projectComplete" />
+              </RouteWrapper>
+            }
           />
           <AuthRoute path=":part">
             <AuthRoute
               path="/"
-              element={<CoursePage which="projectSubmission" />}
+              element={
+                <RouteWrapper noHeader>
+                  <CoursePage which="projectSubmission" />
+                </RouteWrapper>
+              }
             />
             <AuthRoute
               path=":attempt"
-              element={<CoursePage which="projectSubmission" />}
+              element={
+                <RouteWrapper noHeader>
+                  <CoursePage which="projectSubmission" />
+                </RouteWrapper>
+              }
             />
           </AuthRoute>
         </AuthRoute>
         <AuthRoute path=":lesson">
-          <AuthRoute path="/" element={<CoursePage which="lesson" />} />
+          <AuthRoute
+            path="/"
+            element={
+              <RouteWrapper noHeader>
+                <CoursePage which="lesson" />
+              </RouteWrapper>
+            }
+          />
           <AuthRoute
             path="complete"
-            element={<CoursePage which="lessonComplete" />}
+            element={
+              <RouteWrapper noHeader noFooter>
+                <CoursePage which="lessonComplete" />
+              </RouteWrapper>
+            }
           />
-          <AuthRoute path=":concept" element={<CoursePage which="concept" />} />
+          <AuthRoute
+            path=":concept"
+            element={
+              <RouteWrapper noHeader noFooter>
+                <CoursePage which="concept" />
+              </RouteWrapper>
+            }
+          />
         </AuthRoute>
       </Route>
     </Route>
-    <Route path="policy" element={<PolicyAndTerms />} />
-    <Route path="terms" element={<PolicyAndTerms />} />
-    <Route path="*" element={<NoMatch />} />
+    <Route
+      path="policy"
+      element={
+        <RouteWrapper>
+          <PolicyAndTerms />
+        </RouteWrapper>
+      }
+    />
+    <Route
+      path="terms"
+      element={
+        <RouteWrapper>
+          <PolicyAndTerms />
+        </RouteWrapper>
+      }
+    />
+    <Route
+      path="*"
+      element={
+        <RouteWrapper>
+          <NoMatch />
+        </RouteWrapper>
+      }
+    />
   </Routes>
 );

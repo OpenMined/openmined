@@ -80,7 +80,6 @@ export default ({ course, page }: OpenMined.CoursePagesProp) => {
   const prepareLessonContent = (description, concepts) => {
     const iconProps: any = {
       boxSize: 5,
-      size: 'lg',
       mr: 2,
       color: 'gray.600',
     };

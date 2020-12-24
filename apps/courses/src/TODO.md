@@ -46,6 +46,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
+- Get real terms of service and privacy policy copy
 - Do an overview of the entire website to see how many calls we're making on each page
 - Take down Discourse and integate Spectrum with Slack (https://spectrum.chat/openmined/settings) and then invite the entire Slack community - make sure to replace all the https://discussion.openmined.org links with the Spectrum link
 - Make sure to test the site on dev deployment

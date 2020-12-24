@@ -50,7 +50,7 @@ export default ({ content, ...props }) => {
           <Heading as="h3" size="md">
             {title}
           </Heading>
-          <Text color="cyan.700" fontFamily="mono">
+          <Text color="blue.700" fontFamily="mono">
             {percentComplete.toFixed(1)}%
           </Text>
         </Flex>
@@ -59,7 +59,7 @@ export default ({ content, ...props }) => {
           <Divider orientation="vertical" height={4} mx={4} />
           <Text>{length}</Text>
         </Flex>
-        <Box bg="cyan.50" p={4} borderRadius="md" mb={4}>
+        <Box bg="blue.50" p={4} borderRadius="md" mb={4}>
           {lessons.map((l, i) => {
             const iconProps = hasCompletedLesson(progress, l._id)
               ? {
@@ -102,7 +102,7 @@ export default ({ content, ...props }) => {
           </Link>
         </Flex>
       </Box>
-      <Progress colorScheme="cyan" value={percentComplete} />
+      <Progress colorScheme="blue" value={percentComplete} />
     </Box>
   );
 };

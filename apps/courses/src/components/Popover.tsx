@@ -2,7 +2,7 @@
 // https://github.com/chakra-ui/chakra-ui/issues/2531
 
 import React, { useState } from 'react';
-import { Box, useTheme, useBreakpointValue } from '@chakra-ui/react';
+import { Box, useTheme, useBreakpointValue, SlideFade } from '@chakra-ui/react';
 import { Popover as TinyPopover } from 'react-tiny-popover';
 
 export const Popover = ({
@@ -43,20 +43,25 @@ export const Popover = ({
         else setShow(false);
       }}
       content={
-        <Box
-          bg={lightGray}
-          px={6}
-          py={4}
-          borderRadius="md"
-          onClick={() => {
-            if (clickShouldCloseContent) {
-              if (onOpen) onOpen(!show);
-              else setShow(!show);
-            }
-          }}
+        <SlideFade
+          offsetY={respPosition === 'top' ? '20px' : '-20px'}
+          in={isOpen !== null ? isOpen : show}
         >
-          {children}
-        </Box>
+          <Box
+            bg={lightGray}
+            px={6}
+            py={4}
+            borderRadius="md"
+            onClick={() => {
+              if (clickShouldCloseContent) {
+                if (onOpen) onOpen(!show);
+                else setShow(!show);
+              }
+            }}
+          >
+            {children}
+          </Box>
+        </SlideFade>
       }
     >
       <Box

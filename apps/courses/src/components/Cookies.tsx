@@ -67,7 +67,7 @@ export default ({ callback }) => {
           <Button
             onClick={() => callback('all')}
             size="sm"
-            colorScheme="cyan"
+            colorScheme="blue"
             mt={2}
           >
             Accept all cookies

@@ -29,23 +29,23 @@ const getStatusStyles = (status) => {
   } else if (status === 'in-progress') {
     return {
       icon: 'number',
-      color: 'cyan',
+      color: 'blue',
       bg: 50,
-      text: 700,
+      text: 500,
     };
   } else if (status === 'submitted') {
     return {
       icon: faPaperPlane,
-      color: 'cyan',
+      color: 'blue',
       bg: 50,
-      text: 700,
+      text: 500,
     };
   } else if (status === 'failed-but-pending') {
     return {
       icon: faTimes,
-      color: 'cyan',
+      color: 'blue',
       bg: 50,
-      text: 700,
+      text: 500,
     };
   } else if (status === 'passed') {
     return {

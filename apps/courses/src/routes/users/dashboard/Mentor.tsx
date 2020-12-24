@@ -24,7 +24,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faCommentAlt,
   faMoneyBillWave,
-  faQuestion,
+  faQuestionCircle,
   faShapes,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
@@ -188,6 +188,7 @@ export const MentorContext = ({ courses }) => {
           rel="noopener noreferrer"
           color="gray.700"
           _hover={{ color: 'gray.800' }}
+          variant="flat"
         >
           <Flex align="center">
             {/* SEE TODO (#3) */}
@@ -208,6 +209,7 @@ export const MentorContext = ({ courses }) => {
           mt={[2, null, null, 0]}
           color="gray.700"
           _hover={{ color: 'gray.800' }}
+          variant="flat"
         >
           <Flex align="center">
             {/* SEE TODO (#3) */}
@@ -219,6 +221,19 @@ export const MentorContext = ({ courses }) => {
     </Box>
   );
 };
+
+const NullSetTabPanel = ({ children }) => (
+  <Box
+    p={4}
+    bg="gray.100"
+    color="gray.700"
+    borderRadius="md"
+    textAlign="center"
+    fontStyle="italic"
+  >
+    {children}
+  </Box>
+);
 
 export const MentorTabs = ({ courses, mentor }) => {
   const ProjectQueue = () => {
@@ -353,6 +368,14 @@ export const MentorTabs = ({ courses, mentor }) => {
 
     // TODO: Fill this in correctly
     const numResigned = 0;
+
+    if (reviewHistory.length === 0) {
+      return (
+        <NullSetTabPanel>
+          You have no history of reviews at this time.
+        </NullSetTabPanel>
+      );
+    }
 
     return (
       <Box>
@@ -515,7 +538,7 @@ export const mentorResources = [
   },
   {
     title: 'FAQ',
-    icon: faQuestion,
+    icon: faQuestionCircle,
     link:
       'https://www.notion.so/openmined/FAQs-ddb46eca6ab143f6af3a6314f30ff1b5',
   },

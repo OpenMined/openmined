@@ -6,9 +6,8 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
-- TODO (HARD): Add a ton of security rules (make sure to reference the \_helpers.ts file!!!)
-- TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
-- Let's get the deployment working on the dev branch again... because of Typescript errors this hasn't been working in a while because our CI/CD won't pass
+- Downgrade to React 17... make sure that we handle `<Suspense>` (which will now be unavailable) gracefully and show the loader. Also double check that the Slate editor is fixed when we downgrade. Also try to revert Thiago's PR related to Radios and Checkboxes if downgrading to React 17 fixes the problem: https://github.com/OpenMined/openmined/pull/31
+- TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - Add a ton of Cypress tests
 - We have a ton of problems with network requests and race conditions. For instance, signing up will redirect to the profile page where your name is empty. If you refresh the page, your name shows up. This type of behavior is present on basically every single page and is why we use window.location.href in a lot of places. It would be better to rely on client-side navigation if we could ensure that all rendering logic properly waited for the appropriate network requests to load. Can we implement this?
 
@@ -21,8 +20,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Fix remaining visual descrepancies on the site between the code and the designs
-- Go back to relevant pages and add in functionality retroactively for course project, lesson completion, overview, and profile
+- Finish doing a final design overview for the following pages: lesson, concept, lesson-complete, project, project-submissions, project-complete, and course-complete... after this, everything visual for the site will be "finished"
 - Make sure a mentor cannot report a review after the time is up
 - Figure out how to reassign a review after 4 hour time limit is reached
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course material
@@ -45,6 +43,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
+- Get real terms of service and privacy policy copy
 - Do an overview of the entire website to see how many calls we're making on each page
 - Take down Discourse and integate Spectrum with Slack (https://spectrum.chat/openmined/settings) and then invite the entire Slack community - make sure to replace all the https://discussion.openmined.org links with the Spectrum link
 - Make sure to test the site on dev deployment

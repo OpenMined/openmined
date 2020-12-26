@@ -70,9 +70,9 @@ const submittedAnswerProps = {
 
 const CorrectAnswer = ({ setCurrentSelection, index, value, explanation }) => (
   <Flex
-    bg="cyan.50"
+    bg="green.50"
     {...submittedAnswerProps}
-    borderColor="cyan.500"
+    borderColor="green.500"
     onClick={() => setCurrentSelection(index)}
   >
     <Image
@@ -84,7 +84,7 @@ const CorrectAnswer = ({ setCurrentSelection, index, value, explanation }) => (
     />
     <Box>
       <Text mb={1}>{value}</Text>
-      <Text color="cyan.500" fontSize="sm" fontStyle="italic">
+      <Text color="green.500" fontSize="sm" fontStyle="italic">
         {explanation}
       </Text>
     </Box>
@@ -149,7 +149,7 @@ const UnansweredAnswer = ({
     >
       <Icon
         icon={isHovering ? faDotCircle : faCircle}
-        color={isHovering ? 'cyan.500' : 'gray.700'}
+        color={isHovering ? 'blue.500' : 'gray.700'}
         boxSize={4}
         mr={4}
       />
@@ -320,7 +320,7 @@ export default ({
       <Progress
         value={isFinished ? 100 : (currentQuestion / quiz.length) * 100}
         size="sm"
-        colorScheme="cyan"
+        colorScheme="blue"
         borderRadius="md"
         my={6}
       />

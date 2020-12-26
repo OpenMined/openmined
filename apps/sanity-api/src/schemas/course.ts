@@ -53,12 +53,23 @@ export default {
       title: 'Learn How',
       name: 'learnHow',
       type: 'array',
-      of: [{ type: 'string' }],
-    },
-    {
-      title: 'Color',
-      name: 'color',
-      type: 'string',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              title: 'Title',
+              name: 'title',
+              type: 'string',
+            },
+            {
+              title: 'Image',
+              name: 'image',
+              type: 'image',
+            },
+          ],
+        },
+      ],
     },
     {
       title: 'Visual',

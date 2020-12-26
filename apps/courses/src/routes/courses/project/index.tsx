@@ -87,7 +87,7 @@ const getStatusStyles = (status) => {
     return {
       text: 'In Progress',
       icon: faMinusCircle,
-      colorScheme: 'cyan',
+      colorScheme: 'blue',
     };
   } else if (status === 'passed') {
     return {

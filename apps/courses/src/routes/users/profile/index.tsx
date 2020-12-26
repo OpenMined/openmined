@@ -7,7 +7,6 @@ import {
   Heading,
   Text,
   Link,
-  useToken,
   Stack,
   Divider,
 } from '@chakra-ui/react';
@@ -66,7 +65,6 @@ const LinkItem = ({ title, icon, link, ...props }) => {
 };
 
 export default () => {
-  const gray50 = useToken('colors', 'gray.50');
   const user: firebase.User = useUser();
   const db = useFirestore();
   const { uid } = useParams();
@@ -80,13 +78,10 @@ export default () => {
   if (!Object.keys(dbUser).length) return <Navigate to="/" />;
 
   return (
-    <Page
-      title={name}
-      description={dbUser.description}
-      body={{ style: `background: ${gray50};` }}
-    >
+    <Page title={name} description={dbUser.description}>
       <Box
         position="relative"
+        bg="gray.50"
         _before={{
           content: '""',
           position: 'absolute',
@@ -94,7 +89,7 @@ export default () => {
           left: 0,
           width: '478px',
           height: '309px',
-          zIndex: -1,
+          zIndex: 0,
           backgroundImage: `url(${waveform})`,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: '0% 0%',

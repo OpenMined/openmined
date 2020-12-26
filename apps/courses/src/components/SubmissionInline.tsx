@@ -16,7 +16,7 @@ dayjs.extend(relativeTime);
 export default ({ status, link, ...submission }) => {
   if (status === 'none') return null;
 
-  const props = {
+  const props: any = {
     p: 3,
     mt: 2,
     cursor: 'pointer',

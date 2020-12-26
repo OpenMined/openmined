@@ -95,8 +95,8 @@ export default () => {
                     mt={8}
                     px={8}
                     py={4}
-                    bg="cyan.50"
-                    color="cyan.700"
+                    bg="blue.50"
+                    color="blue.700"
                     borderRadius="md"
                   >
                     {disclaimer}

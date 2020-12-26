@@ -290,7 +290,7 @@ export const handleReviewSubmission = async (
   partId: string,
   attemptId: string,
   submissionId: string,
-  status: string,
+  status: OpenMined.ProjectAttemptStatus,
   progress: OpenMined.Course,
   content: string
 ) => {

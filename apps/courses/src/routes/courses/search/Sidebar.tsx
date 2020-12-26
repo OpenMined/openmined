@@ -73,15 +73,15 @@ export default ({ filters, numCourses, clearFilters }) => {
           flexDirection="column"
           alignItems="start"
           borderRadius={4}
-          bgColor="cyan.50"
+          bgColor="blue.50"
           mb={4}
         >
-          <Text mb={4} color="cyan.800">
+          <Text mb={4} color="blue.800">
             {numCourses} results
           </Text>
           <Link
-            color="cyan.800"
-            _hover={{ color: 'cyan.900' }}
+            color="blue.800"
+            _hover={{ color: 'blue.900' }}
             onClick={clearFilters}
           >
             Clear filters ({numFilters})

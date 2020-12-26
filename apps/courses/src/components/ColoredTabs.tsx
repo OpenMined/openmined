@@ -10,12 +10,12 @@ const tabProps = {
   py: 4,
   mb: [2, null, 0],
   _selected: {
-    bg: 'cyan.50',
-    color: 'cyan.700',
+    bg: 'blue.50',
+    color: 'blue.700',
     border: '1px solid',
-    borderColor: 'cyan.100',
+    borderColor: 'blue.100',
     borderBottom: '2px solid',
-    borderBottomColor: ['cyan.100', null, 'cyan.700'],
+    borderBottomColor: ['blue.100', null, 'blue.700'],
   },
 };
 

@@ -37,7 +37,7 @@ const SidebarItem = ({
     </AccordionButton>
     <AccordionPanel pb={4}>
       {multiple ? (
-        <CheckboxGroup colorScheme="blue" onChange={(val) => setter(val)} value={value}>
+        <CheckboxGroup colorScheme="blue" value={value} onChange={(val) => setter(val)}>
           <Stack direction="column" align="flex-start">
             {options.map((item) => (
               <Checkbox key={item} value={item}>

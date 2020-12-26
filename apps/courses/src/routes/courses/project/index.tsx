@@ -38,6 +38,7 @@ import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
 import { OpenMined } from '@openmined/shared/types';
+import { useNavigate } from 'react-router-dom';
 
 // The detail links on the sidebar
 const Detail = ({ title, value }) => (
@@ -113,6 +114,7 @@ export default ({
 }: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const {
     title: courseTitle,
@@ -208,9 +210,7 @@ export default ({
           />
           <Button
             disabled={!(status === 'passed' || status === 'failed')}
-            onClick={() =>
-              (window.location.href = `/courses/${course}/project/complete`)
-            }
+            onClick={() => navigate(`/courses/${course}/project/complete`)}
             colorScheme="black"
           >
             Finish

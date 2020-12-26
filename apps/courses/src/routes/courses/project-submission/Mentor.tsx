@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as RRDLink } from 'react-router-dom';
+import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -124,6 +124,7 @@ const genTabsContent = (
 export default ({ progress, attemptData, content, course, part, attempt }) => {
   const toast = useToast();
   const db = useFirestore();
+  const navigate = useNavigate();
   const functions: firebase.functions.Functions = useFunctions();
   // @ts-ignore
   functions.region = 'europe-west1';
@@ -155,7 +156,7 @@ export default ({ progress, attemptData, content, course, part, attempt }) => {
     )
       .then(() => {
         // Once that's done, go back to the dashboard
-        window.location.href = `/users/dashboard`;
+        navigate(`/users/dashboard`);
       })
       .catch((error) => handleErrors(toast, error));
   };

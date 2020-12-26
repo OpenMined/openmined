@@ -79,21 +79,19 @@ export default ({ which }: PropType) => {
       ? getCourseRef(db, mentorStudentToken || user.uid, params.course)
       : null;
 
-  const firestore = useFirestore();
   // const dbCourse = dbCourseRef
   //  ? useFirestoreDocDataOnce(dbCourseRef)
   //  : {};
   // console.log(dbCourse)
-  const [ dbCourse, setDbCourse ] = useState(null);
+  const [dbCourse, setDbCourse] = useState(null);
 
   useEffect(() => {
     const fetchCourse = async () => {
-      const course = await dbCourseRef.get();
-      console.log('Course Reloaded');
-      setDbCourse(course.data());
-    }
+      const courseData = (await dbCourseRef.get()).data();
+
+      setDbCourse(courseData || {});
+    };
     setDbCourse(null);
-    console.log('xxxxxxxxxxxxxxxxxxx')
     dbCourseRef && fetchCourse();
   }, [params.course, params.lesson, params.concept]);
 
@@ -125,21 +123,17 @@ export default ({ which }: PropType) => {
     ts: serverTimestamp,
   };
 
-  console.log(loading, !dbCourse)
-  // If we're still waiting on the CMS, render the loader
-
-  const nowLoading = which === 'search'
-    ? loading
-    : (loading || !dbCourse);
+  // If we're still waiting on the CMS or latest course data is not loaded, render the loader
+  const nowLoading = which === 'search' ? loading : loading || !dbCourse;
 
   if (nowLoading) return <Loading />;
 
   // Prepare the configuration we'll send to the wrapper
-  let config: any = {}
+  let config: any = {};
   try {
     config = configs[which](props);
-  } catch(err) {
-    return <Loading />
+  } catch (err) {
+    return <Loading />;
   }
 
   // If the page being requested doesn't require the permission gate, render the component directly

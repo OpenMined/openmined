@@ -29,6 +29,7 @@ import GridContainer from '../../../components/GridContainer';
 import { handleErrors } from '../../../helpers';
 import { handleProjectComplete, handleProvideFeedback } from '../_firebase';
 import { OpenMined } from '@openmined/shared/types';
+import { useNavigate } from 'react-router-dom';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -50,6 +51,7 @@ export default ({
   course,
 }: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
+  const navigate = useNavigate();
 
   const {
     project: { title, parts },
@@ -139,7 +141,7 @@ export default ({
               colorScheme="magenta"
               onClick={() =>
                 onCompleteProject().then(() => {
-                  window.location.href = `/courses/${course}/complete`;
+                  navigate(`/courses/${course}/complete`);
                 })
               }
             >

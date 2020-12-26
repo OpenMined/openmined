@@ -23,7 +23,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link as RRDLink } from 'react-router-dom';
+import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useFirestore } from 'reactfire';
 import { faAngleRight, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
@@ -192,6 +192,7 @@ export default ({
 }) => {
   const db = useFirestore();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const {
     project: { title: projectTitle, parts },
@@ -227,7 +228,7 @@ export default ({
     )
       .then(() => {
         // Once that's done, reload the projects in the default viewing state
-        window.location.href = `/courses/${course}/project`;
+        navigate(`/courses/${course}/project`);
       })
       .catch((error) => handleErrors(toast, error));
   };

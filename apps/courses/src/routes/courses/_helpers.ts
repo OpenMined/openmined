@@ -303,13 +303,12 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
   const [status, setStatus] = useState(
     checkForPrevious(user, ls, l, c) ? 'previous' : 'loading'
   );
-  console.log(status)
+
   const navigate = useNavigate();
 
   useEffect(() => {
     // If we're still in the "loading" state
     if (status === 'loading') {
-      console.log(status)
       // Get the suggested page
       const suggestedPage = getNextAvailablePage(user, ls);
 

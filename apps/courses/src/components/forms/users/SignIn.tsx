@@ -3,7 +3,6 @@ import {
   Button,
   Divider,
   Flex,
-  Icon,
   Text,
   Link,
   useDisclosure,
@@ -13,9 +12,9 @@ import {
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAuth } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
+import Icon from '../../Icon';
 import ResetPassword from './ResetPassword';
 import Form from '../_form';
 import { validEmail, validPassword } from '../_validation';
@@ -98,15 +97,8 @@ export default ({ callback, ...props }: SignInFormProps) => {
                 colorScheme="black"
                 isLoading={isSubmitting}
               >
-                {/* SEE TODO (#3) */}
                 Sign In with Github{' '}
-                <Icon
-                  as={FontAwesomeIcon}
-                  icon={faGithub}
-                  ml={2}
-                  boxSize={4}
-                  color="white"
-                />
+                <Icon icon={faGithub} ml={2} boxSize={4} color="white" />
               </Button>
             </Flex>
             <Flex

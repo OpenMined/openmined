@@ -6,15 +6,14 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Image,
   Link,
   SimpleGrid,
   Text,
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import GridContainer from '../../../components/GridContainer';
+import Icon from '../../../components/Icon';
 import projectIcon from '../../../assets/project-icon.svg';
 import { faBookOpen, faCertificate } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
@@ -137,13 +136,7 @@ export default ({ page }: OpenMined.CoursePagesProp) => {
                     align="center"
                   >
                     <Circle p={1} mb={2} bg={iconBg} boxSize={12}>
-                      {/* SEE TODO (#3) */}
-                      <Icon
-                        as={FontAwesomeIcon}
-                        icon={icon}
-                        size="lg"
-                        color={iconColor}
-                      />
+                      <Icon icon={icon} boxSize={5} color={iconColor} />
                     </Circle>
                     <Text
                       color="gray.800"

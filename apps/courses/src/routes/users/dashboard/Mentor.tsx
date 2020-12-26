@@ -6,7 +6,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Image,
   Link,
   SimpleGrid,
@@ -19,17 +18,17 @@ import {
   useFunctions,
   useUser,
 } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import {
   faCommentAlt,
   faMoneyBillWave,
   faQuestionCircle,
   faShapes,
 } from '@fortawesome/free-solid-svg-icons';
+import { faGithub, faSlack } from '@fortawesome/free-brands-svg-icons';
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { OpenMined } from '@openmined/shared/types';
 
 import {
   getSubmissionReviewEndTime,
@@ -38,7 +37,7 @@ import {
 import ColoredTabs from '../../../components/ColoredTabs';
 import useToast, { toastConfig } from '../../../components/Toast';
 import Countdown from '../../../components/Countdown';
-import { OpenMined } from '@openmined/shared/types';
+import Icon from '../../../components/Icon';
 
 dayjs.extend(relativeTime);
 
@@ -114,14 +113,7 @@ export const MentorContext = ({ courses }) => {
               align="center"
             >
               <Flex align="center">
-                {/* SEE TODO (#3) */}
-                <Icon
-                  as={FontAwesomeIcon}
-                  icon={faShapes}
-                  size="2x"
-                  ml={1}
-                  mr={4}
-                />
+                <Icon icon={faShapes} boxSize={8} ml={1} mr={4} />
                 <Heading as="p" size="sm">
                   {
                     review.course.project.parts[
@@ -195,13 +187,7 @@ export const MentorContext = ({ courses }) => {
           variant="flat"
         >
           <Flex align="center">
-            {/* SEE TODO (#3) */}
-            <Icon
-              as={FontAwesomeIcon}
-              icon={faCalendarCheck}
-              size="lg"
-              mr={3}
-            />
+            <Icon icon={faCalendarCheck} boxSize={5} mr={3} />
             <Text fontWeight="bold">Shift Calendar</Text>
           </Flex>
         </Link>
@@ -216,8 +202,7 @@ export const MentorContext = ({ courses }) => {
           variant="flat"
         >
           <Flex align="center">
-            {/* SEE TODO (#3) */}
-            <Icon as={FontAwesomeIcon} icon={faCommentAlt} size="lg" mr={3} />
+            <Icon icon={faCommentAlt} boxSize={5} mr={3} />
             <Text fontWeight="bold">Discussion Board</Text>
           </Flex>
         </Link>

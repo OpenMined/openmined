@@ -1,6 +1,4 @@
 import React from 'react';
-import { Icon } from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCommentAlt,
   faPencilAlt,
@@ -8,6 +6,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
 
+import Icon from '../components/Icon';
 import star from '../assets/homepage/star.svg';
 import realWorld from '../assets/homepage/real-world.svg';
 import instructors from '../assets/homepage/instructors.svg';
@@ -53,15 +52,7 @@ export const resources = {
       title: 'Discussion Board',
       description:
         'Take your learning to the next level and discuss it with the community!',
-      icon: (
-        // SEE TODO (#3)
-        <Icon
-          as={FontAwesomeIcon}
-          icon={faCommentAlt}
-          size="2x"
-          color="magenta.600"
-        />
-      ),
+      icon: <Icon icon={faCommentAlt} boxSize={8} color="magenta.600" />,
       link: {
         title: 'Check it Out',
         link: 'https://discussion.openmined.org',
@@ -71,15 +62,7 @@ export const resources = {
       title: 'Slack Community',
       description:
         'Join the conversation with over 10,000 others in Slack community!',
-      icon: (
-        // SEE TODO (#3)
-        <Icon
-          as={FontAwesomeIcon}
-          icon={faSlack}
-          size="2x"
-          color="magenta.600"
-        />
-      ),
+      icon: <Icon icon={faSlack} boxSize={8} color="magenta.600" />,
       link: {
         title: 'Join Slack',
         link: 'https://slack.openmined.org',
@@ -89,15 +72,7 @@ export const resources = {
       title: 'Blog',
       description:
         'For the latest news and info on the OpenMined community, visit our blog!',
-      icon: (
-        // SEE TODO (#3)
-        <Icon
-          as={FontAwesomeIcon}
-          icon={faPencilAlt}
-          size="2x"
-          color="magenta.600"
-        />
-      ),
+      icon: <Icon icon={faPencilAlt} boxSize={8} color="magenta.600" />,
       link: {
         title: 'Check it Out',
         link: 'https://blog.openmined.org',
@@ -107,15 +82,7 @@ export const resources = {
       title: 'Mentors',
       description:
         'Our mentors provide feedback on your projects and help you at every step!',
-      icon: (
-        // SEE TODO (#3)
-        <Icon
-          as={FontAwesomeIcon}
-          icon={faUser}
-          size="2x"
-          color="magenta.600"
-        />
-      ),
+      icon: <Icon icon={faUser} boxSize={8} color="magenta.600" />,
     },
   ],
 };

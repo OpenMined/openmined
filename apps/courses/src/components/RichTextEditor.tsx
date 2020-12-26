@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Flex,
-  Icon,
   Text,
   Box,
   Divider,
@@ -22,7 +21,6 @@ import {
   Element as SlateElement,
 } from 'slate';
 import { withHistory } from 'slate-history';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBold,
   faCode,
@@ -34,6 +32,8 @@ import {
   faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
+
+import Icon from '../components/Icon';
 
 export const EDITOR_STORAGE_STRING = '@openmined/rich-text-editor';
 
@@ -334,8 +334,7 @@ const BlockButton = ({ format, icon, text }: any) => {
         toggleBlock(editor, format);
       }}
     >
-      {/* SEE TODO (#3) */}
-      {icon && <Icon as={FontAwesomeIcon} icon={icon} />}
+      {icon && <Icon icon={icon} />}
       {text && <Text fontWeight="bold">{text}</Text>}
     </Flex>
   );
@@ -357,8 +356,7 @@ const MarkButton = ({ format, icon }) => {
         toggleMark(editor, format);
       }}
     >
-      {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={icon} />
+      <Icon icon={icon} />
     </Flex>
   );
 };

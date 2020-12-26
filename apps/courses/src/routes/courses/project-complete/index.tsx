@@ -6,13 +6,11 @@ import {
   CloseButton,
   Flex,
   Heading,
-  Icon,
   Image,
   Link,
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBullhorn,
   faCheckCircle,
@@ -26,6 +24,7 @@ import {
   hasCompletedProject,
 } from '../_helpers';
 import useToast, { toastConfig } from '../../../components/Toast';
+import Icon from '../../../components/Icon';
 import GridContainer from '../../../components/GridContainer';
 import { handleErrors } from '../../../helpers';
 import { handleProjectComplete, handleProvideFeedback } from '../_firebase';
@@ -38,8 +37,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
-    {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={icon} size="lg" mb={4} />
+    <Icon icon={icon} boxSize={5} mb={4} />
     <Text>{children}</Text>
   </Box>
 );
@@ -127,12 +125,10 @@ export default ({
               p={6}
               mb={8}
             >
-              {/* SEE TODO (#3) */}
               <Icon
-                as={FontAwesomeIcon}
                 icon={status === 'passed' ? faCheckCircle : faTimesCircle}
                 color={status === 'passed' ? 'green.400' : 'magenta.400'}
-                size="lg"
+                boxSize={5}
                 mr={6}
               />
               <Text fontSize="lg">{title}</Text>

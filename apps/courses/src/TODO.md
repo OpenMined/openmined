@@ -13,7 +13,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### SLZ
 
-- TODO (#3): Create a custom `<Icon />` component that automates the `as` prop and also prefers the sizing of the Chakra theme using `boxSize` instead of the `size` props provided by React-FontAwesome. Convert all icons to use this custom component and then swap out their `size` for the appropriate `boxSize` in Chakra.
+- TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
 - TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
 - TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)

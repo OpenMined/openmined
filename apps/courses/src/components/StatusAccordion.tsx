@@ -7,7 +7,6 @@ import {
   AccordionPanel,
   Circle,
   Flex,
-  Icon,
   Text,
 } from '@chakra-ui/react';
 import {
@@ -15,7 +14,7 @@ import {
   faTimes,
   faCheck,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Icon from './Icon';
 
 // As we did on the main file, we need to get some basic styles for the <AccordionItem /> according to this part's status
 const getStatusStyles = (status) => {
@@ -139,14 +138,8 @@ export default ({ content, ...props }) => {
               <Flex flex="1" align="center">
                 <Circle bg={text} color={bg} size={8}>
                   {typeof icon === 'string' && index + 1}
-                  {/* SEE TODO (#3) */}
                   {typeof icon !== 'string' && (
-                    <Icon
-                      size="1x"
-                      as={FontAwesomeIcon}
-                      icon={icon}
-                      color={bg}
-                    />
+                    <Icon boxSize={4} icon={icon} color={bg} />
                   )}
                 </Circle>
                 <Text as="span" ml={4}>

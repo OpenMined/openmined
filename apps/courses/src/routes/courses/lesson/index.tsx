@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RRDLink } from 'react-router-dom';
+import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useFirestore } from 'reactfire';
 import {
   faCheckCircle,
@@ -51,6 +51,7 @@ export default ({
 }: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const {
     course: { title: courseTitle, lessons },
@@ -73,7 +74,7 @@ export default ({
   const onLessonStart = () => {
     handleLessonStart(db, user.uid, course, ts, progress, lesson)
       .then(() => {
-        window.location.href = `/courses/${course}/${lesson}/${firstConcept}`;
+        navigate(`/courses/${course}/${lesson}/${firstConcept}`);
       })
       .catch((error) => handleErrors(toast, error));
   };

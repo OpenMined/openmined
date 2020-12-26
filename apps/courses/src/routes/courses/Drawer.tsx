@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as RRDLink } from 'react-router-dom';
+import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import {
   Accordion,
   AccordionButton,
@@ -34,8 +34,10 @@ const DrawerItem = ({
   toggleAccordionItem,
   onClose,
   item: { title, icon, fields },
-}) => (
-  <AccordionItem border={0}>
+}) => {
+  const navigate = useNavigate();
+
+  return <AccordionItem border={0}>
     <AccordionButton
       px={8}
       py={6}
@@ -114,7 +116,7 @@ const DrawerItem = ({
                 linkProps.to = null;
                 linkProps.cursor = 'pointer';
                 linkProps.onClick = () => {
-                  window.location.href = link;
+                  navigate(link);
                 };
               }
 
@@ -149,7 +151,7 @@ const DrawerItem = ({
       </Stack>
     </AccordionPanel>
   </AccordionItem>
-);
+};
 
 export default ({ isOpen, onOpen, onClose, header, content, ...props }) => {
   const [sectionIndexes, setSectionIndexes] = useState([0]);

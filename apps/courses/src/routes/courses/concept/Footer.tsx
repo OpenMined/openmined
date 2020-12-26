@@ -19,6 +19,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import { Popover } from '../../../components/Popover';
 import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
+import { useNavigate } from 'react-router-dom';
 
 const BREAK = 'md';
 
@@ -171,11 +172,13 @@ const Controls = ({
   current,
   total,
   onCompleteConcept,
-}) => (
-  <Flex align="center">
+}) => {
+  const navigate = useNavigate();
+
+  return <Flex align="center">
     <Button
       onClick={() => {
-        window.location.href = backLink;
+        navigate(backLink);
       }}
       colorScheme={isBackAvailable ? 'magenta' : 'black'}
       disabled={!isBackAvailable}
@@ -188,7 +191,7 @@ const Controls = ({
     <Button
       onClick={() => {
         onCompleteConcept().then(() => {
-          window.location.href = nextLink;
+          navigate(nextLink);
         });
       }}
       colorScheme={isNextAvailable ? 'magenta' : 'black'}
@@ -197,7 +200,7 @@ const Controls = ({
       Next
     </Button>
   </Flex>
-);
+};
 
 export default ({
   current,

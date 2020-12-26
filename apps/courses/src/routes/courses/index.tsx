@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import { useSanity } from '@openmined/shared/data-access-sanity';
@@ -43,7 +43,7 @@ const pages = {
 const PermissionsGate = ({ children, progress, which, page, ...params }) => {
   // Check whether or not we're able to see this page
   const status = usePageAvailabilityRedirect(
-    progress, // The user's progress
+    progress || {}, // The user's progress
     page.lessons || page.course.lessons, // The CMS's list of lessons and concepts
     params.course, // The current course
     params.lesson || 'project', // The current lesson (or the "project" lesson)
@@ -78,9 +78,28 @@ export default ({ which }: PropType) => {
     params.course && user
       ? getCourseRef(db, mentorStudentToken || user.uid, params.course)
       : null;
-  const dbCourse: OpenMined.Course = dbCourseRef
-    ? useFirestoreDocDataOnce(dbCourseRef)
-    : {};
+
+  const firestore = useFirestore();
+  // const dbCourse = dbCourseRef
+  //  ? useFirestoreDocDataOnce(dbCourseRef)
+  //  : {};
+  // console.log(dbCourse)
+  const [ dbCourse, setDbCourse ] = useState(null);
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      const course = await dbCourseRef.get();
+      console.log('Course Reloaded');
+      setDbCourse(course.data());
+    }
+    setDbCourse(null);
+    console.log('xxxxxxxxxxxxxxxxxxx')
+    dbCourseRef && fetchCourse();
+  }, [params.course, params.lesson, params.concept]);
+
+  //  dbCourseRef
+  //   ? useFirestoreDocDataOnce(dbCourseRef)
+  //   : {};
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
@@ -106,11 +125,22 @@ export default ({ which }: PropType) => {
     ts: serverTimestamp,
   };
 
+  console.log(loading, !dbCourse)
   // If we're still waiting on the CMS, render the loader
-  if (loading) return <Loading />;
+
+  const nowLoading = which === 'search'
+    ? loading
+    : (loading || !dbCourse);
+
+  if (nowLoading) return <Loading />;
 
   // Prepare the configuration we'll send to the wrapper
-  const config = configs[which](props);
+  let config: any = {}
+  try {
+    config = configs[which](props);
+  } catch(err) {
+    return <Loading />
+  }
 
   // If the page being requested doesn't require the permission gate, render the component directly
   if (permissionlessPages.includes(which)) {

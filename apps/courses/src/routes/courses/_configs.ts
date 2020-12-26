@@ -3,6 +3,7 @@ import {
   faCube,
   faShapes,
 } from '@fortawesome/free-solid-svg-icons';
+import { OpenMined } from '@openmined/shared/types';
 import { getLessonNumber } from './_helpers';
 
 export const search = () => ({
@@ -12,7 +13,7 @@ export const search = () => ({
   header: false,
 });
 
-export const overview = ({ page }) => ({
+export const overview = ({ page }: OpenMined.CoursePagesProp) => ({
   page: {
     title: page.title,
     description: page.description,
@@ -20,7 +21,7 @@ export const overview = ({ page }) => ({
   header: false,
 });
 
-export const courseComplete = ({ page }) => ({
+export const courseComplete = ({ page }: OpenMined.CoursePagesProp) => ({
   page: {
     title: `${page.title} - Complete`,
     description: page.description,
@@ -28,7 +29,7 @@ export const courseComplete = ({ page }) => ({
   header: false,
 });
 
-export const project = ({ page, course, lesson, progress }) => ({
+export const project = ({ page, course, lesson, progress }: OpenMined.CoursePagesProp) => ({
   page: {
     title: `${page.title} - Final Project`,
     description: page.description,
@@ -49,7 +50,7 @@ export const project = ({ page, course, lesson, progress }) => ({
 
 export const projectSubmission = project;
 
-export const projectComplete = ({ page, course, lesson, progress }) => ({
+export const projectComplete = ({ page, course, lesson, progress }: OpenMined.CoursePagesProp) => ({
   page: {
     title: `${page.title} - Complete`,
     description: page.description,
@@ -70,7 +71,7 @@ export const projectComplete = ({ page, course, lesson, progress }) => ({
   },
 });
 
-export const lesson = ({ page, course, lesson, progress }) => ({
+export const lesson = ({ page, course, lesson, progress }: OpenMined.CoursePagesProp) => ({
   page: {
     title: `${page.course.title} - ${page.title}`,
     description: page.description,
@@ -90,7 +91,7 @@ export const lesson = ({ page, course, lesson, progress }) => ({
   },
 });
 
-export const lessonComplete = ({ page, course, lesson, progress }) => ({
+export const lessonComplete = ({ page, course, lesson, progress }: OpenMined.CoursePagesProp) => ({
   page: {
     title: `${page.title} - Complete`,
     description: page.description,
@@ -112,7 +113,7 @@ export const lessonComplete = ({ page, course, lesson, progress }) => ({
   },
 });
 
-export const concept = ({ page, course, lesson, concept, progress }) => ({
+export const concept = ({ page, course, lesson, concept, progress }: OpenMined.CoursePagesProp) => ({
   page: {
     title: `${page.title} - ${page.concept.title}`,
   },

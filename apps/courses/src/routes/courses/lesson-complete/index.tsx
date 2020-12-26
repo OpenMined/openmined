@@ -26,6 +26,7 @@ import Icon from '../../../components/Icon';
 import { handleErrors } from '../../../helpers';
 import { handleLessonComplete, handleProvideFeedback } from '../_firebase';
 import { OpenMined } from '@openmined/shared/types';
+import { useNavigate } from 'react-router-dom';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -48,6 +49,7 @@ export default ({
   lesson,
 }: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
+  const navigate = useNavigate();
 
   const {
     course: { lessons },
@@ -148,9 +150,10 @@ export default ({
               colorScheme="magenta"
               onClick={() =>
                 onCompleteLesson().then(() => {
-                  window.location.href = `/courses/${course}/${
+                  const url = `/courses/${course}/${
                     typeof nextLesson === 'string' ? nextLesson : nextLesson._id
                   }`;
+                  navigate(url);
                 })
               }
             >

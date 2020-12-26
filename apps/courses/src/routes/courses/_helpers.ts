@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface CourseProgress {
   lessons?: number;
@@ -302,10 +303,13 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
   const [status, setStatus] = useState(
     checkForPrevious(user, ls, l, c) ? 'previous' : 'loading'
   );
+  console.log(status)
+  const navigate = useNavigate();
 
   useEffect(() => {
     // If we're still in the "loading" state
     if (status === 'loading') {
+      console.log(status)
       // Get the suggested page
       const suggestedPage = getNextAvailablePage(user, ls);
 
@@ -321,7 +325,7 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
         let url = `/courses/${course}/${suggestedPage.lesson}`;
         if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
 
-        window.location.href = url;
+        navigate(url);
       }
     }
   }, [user, ls, course, l, c, status]);

@@ -6,6 +6,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
 
+import { blogLink, discussionLink, slackLink } from './links';
+
 import Icon from '../components/Icon';
 import star from '../assets/homepage/star.svg';
 import realWorld from '../assets/homepage/real-world.svg';
@@ -55,7 +57,7 @@ export const resources = {
       icon: <Icon icon={faCommentAlt} boxSize={8} color="magenta.600" />,
       link: {
         title: 'Check it Out',
-        link: 'https://discussion.openmined.org',
+        link: discussionLink,
       },
     },
     {
@@ -65,7 +67,7 @@ export const resources = {
       icon: <Icon icon={faSlack} boxSize={8} color="magenta.600" />,
       link: {
         title: 'Join Slack',
-        link: 'https://slack.openmined.org',
+        link: slackLink,
       },
     },
     {
@@ -75,7 +77,7 @@ export const resources = {
       icon: <Icon icon={faPencilAlt} boxSize={8} color="magenta.600" />,
       link: {
         title: 'Check it Out',
-        link: 'https://blog.openmined.org',
+        link: blogLink,
       },
     },
     {

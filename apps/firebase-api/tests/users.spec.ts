@@ -23,7 +23,7 @@ describe('users/{{userID}}', () => {
     );
   });
 
-  it('Owner can only write except is_mentor and mentorable_courses', async () => {
+  it('Owner can only write except a few fields', async () => {
     // alice can write
     const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
     const aliceProfile = aliceDb.collection('users').doc(ALICE_ID);
@@ -39,6 +39,17 @@ describe('users/{{userID}}', () => {
       mentorable_courses: ['some-course', 'some-other-course'],
     };
     await firebase.assertFails(aliceProfile.set(forceMentorableCoursesData));
+
+    // alice cannot write completed_courses field
+    const forceCompletedCoursesData = {
+      completed_courses: [
+        {
+          course: 'some-course',
+          completed_at: 'some-date',
+        },
+      ],
+    };
+    await firebase.assertFails(aliceProfile.set(forceCompletedCoursesData));
 
     // others cannnot write
     const anyoneDb = getAuthedFirestore(null);

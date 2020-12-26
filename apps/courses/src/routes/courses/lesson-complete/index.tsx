@@ -18,15 +18,16 @@ import {
   faCommentAlt,
   faShapes,
 } from '@fortawesome/free-solid-svg-icons';
+import { OpenMined } from '@openmined/shared/types';
 
-import { getLessonIndex, hasCompletedLesson } from '../_helpers';
+import { getLessonIndex } from '../_helpers';
+import { handleLessonComplete, handleProvideFeedback } from '../_firebase';
 import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
 import Icon from '../../../components/Icon';
 import { handleErrors } from '../../../helpers';
-import { handleLessonComplete, handleProvideFeedback } from '../_firebase';
-import { OpenMined } from '@openmined/shared/types';
 import { useNavigate } from 'react-router-dom';
+import { discussionLink } from '../../../content/links';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -35,9 +36,59 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
-    <Icon icon={icon} boxSize={5} mb={4} />
+    <Icon icon={icon} boxSize={8} mb={4} />
     <Text>{children}</Text>
   </Box>
+);
+
+const LessonLine = ({ status, title, isProjectNext = false }) => (
+  <Flex
+    bg="gray.800"
+    borderTop={status === 'current' ? 'none' : '1px solid'}
+    borderTopColor="gray.700"
+    justify="space-between"
+    align="center"
+    width="full"
+    p={6}
+  >
+    <Flex align="center">
+      <Icon
+        icon={
+          status === 'current'
+            ? faCheckCircle
+            : status === 'next'
+            ? faArrowRight
+            : faShapes
+        }
+        color={
+          status === 'current'
+            ? 'green.400'
+            : status === 'next'
+            ? 'cyan.500'
+            : isProjectNext
+            ? 'gray.400'
+            : 'gray.700'
+        }
+        boxSize={5}
+        mr={6}
+      />
+      <Text
+        fontSize="lg"
+        color={
+          (status === 'project' && isProjectNext) || status !== 'project'
+            ? 'white'
+            : 'gray.700'
+        }
+      >
+        {title}
+      </Text>
+    </Flex>
+    {status === 'next' && (
+      <Text color="gray.400" ml={6}>
+        Up Next
+      </Text>
+    )}
+  </Flex>
 );
 
 export default ({
@@ -52,7 +103,7 @@ export default ({
   const navigate = useNavigate();
 
   const {
-    course: { lessons },
+    course: { lessons, projectTitle },
     title,
   } = page;
 
@@ -109,8 +160,18 @@ export default ({
             <Heading as="p" size="xl" textAlign="center" mb={4}>
               Congratulations!
             </Heading>
-            <Heading as="p" size="lg" textAlign="center" mb={12}>
-              You just finished the "{title}" lesson.
+            <Heading
+              as="p"
+              size="md"
+              textAlign="center"
+              color="gray.400"
+              mb={12}
+            >
+              You just finished the{' '}
+              <Text as="span" color="white">
+                "{title}"
+              </Text>{' '}
+              lesson.
             </Heading>
             <Flex align="center" width="full" mb={8}>
               <Divider />
@@ -124,30 +185,21 @@ export default ({
               </Text>
               <Divider />
             </Flex>
-            <Flex
-              bg="gray.800"
-              borderRadius="md"
-              align="center"
-              width="full"
-              p={6}
-              mb={8}
-            >
-              <Icon
-                icon={typeof nextLesson === 'string' ? faShapes : faArrowRight}
-                color="orange.200"
-                boxSize={5}
-                mr={6}
+            <Box borderRadius="md" overflow="hidden" width="full" mb={8}>
+              <LessonLine status="current" title={title} />
+              {typeof nextLesson !== 'string' && (
+                <LessonLine status="next" title={nextLesson.title} />
+              )}
+              <LessonLine
+                status="project"
+                title={projectTitle}
+                isProjectNext={typeof nextLesson === 'string'}
               />
-              <Text fontSize="lg">
-                {typeof nextLesson === 'string'
-                  ? 'Final Project'
-                  : nextLesson.title}
-              </Text>
-            </Flex>
+            </Box>
             <Button
-              width="full"
               mb={12}
-              colorScheme="magenta"
+              colorScheme="cyan"
+              size="lg"
               onClick={() =>
                 onCompleteLesson().then(() => {
                   const url = `/courses/${course}/${
@@ -166,7 +218,7 @@ export default ({
               <DetailLink icon={faCommentAlt}>
                 Talk about this topic further in our{' '}
                 <Link
-                  href="https://discussion.openmined.org"
+                  href={discussionLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   color="gray.400"
@@ -227,8 +279,13 @@ export default ({
               <Textarea
                 placeholder="Type whatever you'd like..."
                 onChange={({ target }) => setFeedback(target.value)}
-                resize="none"
+                resize="vertical"
                 variant="filled"
+                bg="white"
+                _hover={{ bg: 'white' }}
+                _focus={{ bg: 'white' }}
+                color="gray.800"
+                py={3}
                 mb={4}
               />
               <Button
@@ -246,8 +303,8 @@ export default ({
                   });
                 }}
                 disabled={vote === null}
-                colorScheme="magenta"
-                width="full"
+                colorScheme="cyan"
+                size="lg"
               >
                 Submit
               </Button>

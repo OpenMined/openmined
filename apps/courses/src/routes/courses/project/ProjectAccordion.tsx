@@ -5,6 +5,7 @@ import { PROJECT_PART_SUBMISSIONS } from '../_helpers';
 import StatusAccordion from '../../../components/StatusAccordion';
 import SubmissionInline from '../../../components/SubmissionInline';
 import { useNavigate } from 'react-router-dom';
+import { discussionLink, mentorshipLink } from '../../../content/links';
 
 // This is a component that shows up when the user has made a failed attempt ("failed-but-pending")
 // ... has failed all attempts ("failed")
@@ -49,7 +50,7 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
       by discussing this project on our{' '}
       <Link
         as="a"
-        href="https://discussion.openmined.org"
+        href={discussionLink}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -100,19 +101,17 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                     onBeginProjectPart(_key).then(() => {
                       navigate(`/courses/${course}/project/${_key}`);
                     });
+                  } else if (status === 'submitted') {
+                    const attempt = submissions.findIndex(
+                      ({ status }) => status === 'pending'
+                    );
+
+                    const url = `/courses/${course}/project/${_key}/${
+                      attempt + 1
+                    }`;
+                    navigate(url);
                   } else {
                     navigate(`/courses/${course}/project/${_key}`);
-
-                    if (status === 'submitted') {
-                      const attempt = submissions.findIndex(
-                        ({ status }) => status === 'pending'
-                      );
-
-                      const url = `/courses/${course}/project/${_key}/${
-                        attempt + 1
-                      }`;
-                      navigate(url);
-                    }
                   }
                 }}
                 colorScheme="black"
@@ -138,7 +137,7 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                 to take your learning to the next level. Try applying for our{' '}
                 <Link
                   as="a"
-                  href="https://mentorship.openmined.org"
+                  href={mentorshipLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   color="magenta.500"

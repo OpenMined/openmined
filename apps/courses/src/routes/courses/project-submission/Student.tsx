@@ -25,7 +25,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useFirestore } from 'reactfire';
-import { faAngleRight, faCommentAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -40,6 +40,7 @@ import RichTextEditor, {
 } from '../../../components/RichTextEditor';
 import ColoredTabs from '../../../components/ColoredTabs';
 import useToast from '../../../components/Toast';
+import { discussionLink } from '../../../content/links';
 
 dayjs.extend(relativeTime);
 
@@ -185,7 +186,6 @@ export default ({
   progress,
   course,
   part,
-  attempt,
   user,
   content,
   attemptData,
@@ -240,11 +240,7 @@ export default ({
         justify="space-between"
         align="center"
       >
-        <Breadcrumb
-          spacing={2}
-          color="gray.700"
-          separator={<Icon icon={faAngleRight} color="gray.400" />}
-        >
+        <Breadcrumb spacing={2} color="gray.700">
           <BreadcrumbItem>
             <BreadcrumbLink as={RRDLink} to={`/courses/${course}/project`}>
               {projectTitle}
@@ -256,11 +252,12 @@ export default ({
         </Breadcrumb>
         <Link
           as="a"
-          href="https://discussion.openmined.org"
+          href={discussionLink}
           target="_blank"
           rel="noopener noreferrer"
           color="gray.600"
           _hover={{ color: 'gray.800' }}
+          variant="flat"
           mt={[2, null, 0]}
         >
           <Flex align="center">

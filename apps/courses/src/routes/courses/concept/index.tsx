@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useFirestore } from 'reactfire';
 import { Box } from '@chakra-ui/react';
-import useScrollPosition from '@react-hook/window-scroll';
 
 import CourseContent from './content';
 import CourseFooter from './Footer';
 
-import {
-  getConceptIndex,
-  hasCompletedConcept,
-  hasStartedConcept,
-} from '../_helpers';
+import { getConceptIndex, hasCompletedConcept } from '../_helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
 import {
@@ -20,7 +15,15 @@ import {
 } from '../_firebase';
 import { OpenMined } from '@openmined/shared/types';
 
-export default ({ progress, page, user, ts, course, lesson, concept }: OpenMined.CoursePagesProp) => {
+export default ({
+  progress,
+  page,
+  user,
+  ts,
+  course,
+  lesson,
+  concept,
+}: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
 
@@ -39,27 +42,13 @@ export default ({ progress, page, user, ts, course, lesson, concept }: OpenMined
       lesson,
       concept
     ).catch((error) => handleErrors(toast, error));
-  }, [user.uid, db, progress, ts, course, lessons, lesson, concept]);
+  }, [toast, user.uid, db, progress, ts, course, lessons, lesson, concept]);
 
   // We need to track the user's scroll progress, as well as whether or not they've hit the bottom at least once
-  const scrollY = useScrollPosition();
+  // This requires some weird computation with whether or not the parent container (in parentRef.current) has a height or not
   const [scrollProgress, setScrollProgress] = useState(0);
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
-
-  // This is the logic to track their scroll progress and so on
-  useEffect(() => {
-    const conceptHeight =
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight;
-    const progress =
-      conceptHeight <= 0 ? 100 : (scrollY / conceptHeight) * 100 || 0;
-
-    setScrollProgress(progress > 100 ? 100 : progress);
-
-    if (scrollProgress === 100 && !hasScrolledToBottom) {
-      setHasScrolledToBottom(true);
-    }
-  }, [scrollY, scrollProgress, hasScrolledToBottom]);
+  const parentRef = useRef(null);
 
   // We also need to track if the user has completed all quizzes for this concept
   const [hasCompletedAllQuizzes, setHasCompletedAllQuizzes] = useState(false);
@@ -130,7 +119,7 @@ export default ({ progress, page, user, ts, course, lesson, concept }: OpenMined
 
   return (
     <>
-      <Box bg="gray.800">
+      <Box bg="gray.800" ref={parentRef}>
         <CourseContent
           page={page}
           progress={progress}
@@ -151,6 +140,10 @@ export default ({ progress, page, user, ts, course, lesson, concept }: OpenMined
         nextLink={`/courses/${course}/${lesson}/${nextConceptId}`}
         onCompleteConcept={onCompleteConcept}
         onProvideFeedback={onProvideFeedback}
+        hasScrolledToBottom={hasScrolledToBottom}
+        setScrollProgress={setScrollProgress}
+        setHasScrolledToBottom={setHasScrolledToBottom}
+        parentRef={parentRef}
       />
     </>
   );

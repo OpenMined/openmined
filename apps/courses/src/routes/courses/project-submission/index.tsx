@@ -7,11 +7,13 @@ import Student from './Student';
 import Mentor from './Mentor';
 
 import { prepAccordionAndStatus } from '../project';
-import { MENTOR_STUDENT_TOKEN } from '../../users/dashboard/Mentor';
 import GridContainer from '../../../components/GridContainer';
+import { useSearchParams } from 'react-router-dom';
 
 export default (props: OpenMined.CoursePagesProp) => {
-  const isMentorLayout = !!localStorage.getItem(MENTOR_STUDENT_TOKEN);
+  const [searchParams] = useSearchParams();
+  const studentParam = searchParams.get('student');
+  const isMentorLayout = !!studentParam;
 
   const {
     progress,
@@ -40,12 +42,17 @@ export default (props: OpenMined.CoursePagesProp) => {
 
   return (
     <Box bg="gray.50">
-      <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
+      <GridContainer isInitial py={16}>
         {!isMentorLayout && (
           <Student {...props} content={content} attemptData={attemptData} />
         )}
         {isMentorLayout && (
-          <Mentor {...props} content={content} attemptData={attemptData} />
+          <Mentor
+            {...props}
+            content={content}
+            attemptData={attemptData}
+            student={studentParam}
+          />
         )}
       </GridContainer>
     </Box>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useFirestore } from 'reactfire';
+import { useFirestore, useFunctions } from 'reactfire';
 import {
   Box,
   Button,
@@ -17,19 +17,16 @@ import {
   faCommentAlt,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import { OpenMined } from '@openmined/shared/types';
 
-import {
-  getProjectPartStatus,
-  hasCompletedCourse,
-  hasCompletedProject,
-} from '../_helpers';
+import { getProjectPartStatus } from '../_helpers';
+import { handleProvideFeedback } from '../_firebase';
 import useToast, { toastConfig } from '../../../components/Toast';
 import Icon from '../../../components/Icon';
 import GridContainer from '../../../components/GridContainer';
 import { handleErrors } from '../../../helpers';
-import { handleProjectComplete, handleProvideFeedback } from '../_firebase';
-import { OpenMined } from '@openmined/shared/types';
 import { useNavigate } from 'react-router-dom';
+import { discussionLink } from '../../../content/links';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -38,7 +35,7 @@ const DetailLink = ({ icon, children, ...props }) => (
     textAlign="center"
     {...props}
   >
-    <Icon icon={icon} boxSize={5} mb={4} />
+    <Icon icon={icon} boxSize={8} mb={4} />
     <Text>{children}</Text>
   </Box>
 );
@@ -47,7 +44,6 @@ export default ({
   progress,
   page,
   user,
-  ts,
   course,
 }: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
@@ -55,10 +51,18 @@ export default ({
 
   const {
     project: { title, parts },
+    title: courseTitle,
   } = page;
 
   // Be able to push a toast message
   const toast = useToast();
+
+  const functions: firebase.functions.Functions = useFunctions();
+  // @ts-ignore
+  functions.region = 'europe-west1';
+
+  const [clickedContinue, setClickedContinue] = useState(false);
+  const handleCourseComplete = functions.httpsCallable('completeCourse');
 
   // Allow this component to capture the user's feedback
   const [isFeedbackActive, setFeedbackActive] = useState(false);
@@ -76,15 +80,24 @@ export default ({
   if (!status) status = 'passed';
 
   // Create a function that is triggered when the project is completed
-  const onCompleteProject = () =>
-    handleProjectComplete(
-      db,
-      user.uid,
+  const onCompleteCourse = () => {
+    setClickedContinue(true);
+
+    return handleCourseComplete({
       course,
-      ts,
-      progress,
-      status
-    ).catch((error) => handleErrors(toast, error));
+    })
+      .then(({ data }) => {
+        setClickedContinue(false);
+
+        if (data && !data.error) {
+          navigate(`/courses/${course}/complete`);
+        } else {
+          handleErrors(toast, data.error);
+        }
+      })
+      .catch((error) => handleErrors(toast, error));
+  };
+
   // We need a function to be able to provide feedback for this project
   const onProvideFeedback = (value, feedback = null) =>
     handleProvideFeedback(
@@ -116,8 +129,22 @@ export default ({
             <Heading as="p" size="xl" textAlign="center" mb={4}>
               Congratulations!
             </Heading>
-            <Heading as="p" size="lg" textAlign="center" mb={12}>
-              You just finished the final project.
+            <Heading
+              as="p"
+              size="md"
+              textAlign="center"
+              color="gray.400"
+              mb={12}
+            >
+              You just finished the project{' '}
+              <Text as="span" color="white">
+                "{title}"
+              </Text>{' '}
+              for the{' '}
+              <Text as="span" color="white">
+                "{courseTitle}"
+              </Text>{' '}
+              course.
             </Heading>
             <Flex
               bg="gray.800"
@@ -136,14 +163,12 @@ export default ({
               <Text fontSize="lg">{title}</Text>
             </Flex>
             <Button
-              width="full"
+              size="lg"
               mb={12}
-              colorScheme="magenta"
-              onClick={() =>
-                onCompleteProject().then(() => {
-                  navigate(`/courses/${course}/complete`);
-                })
-              }
+              colorScheme="cyan"
+              onClick={onCompleteCourse}
+              isDisabled={clickedContinue}
+              isLoading={clickedContinue}
             >
               Continue
             </Button>
@@ -154,7 +179,7 @@ export default ({
               <DetailLink icon={faCommentAlt}>
                 Talk about this topic further in our{' '}
                 <Link
-                  href="https://discussion.openmined.org"
+                  href={discussionLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   color="gray.400"
@@ -215,8 +240,13 @@ export default ({
               <Textarea
                 placeholder="Type whatever you'd like..."
                 onChange={({ target }) => setFeedback(target.value)}
-                resize="none"
+                resize="vertical"
                 variant="filled"
+                bg="white"
+                _hover={{ bg: 'white' }}
+                _focus={{ bg: 'white' }}
+                color="gray.800"
+                py={3}
                 mb={4}
               />
               <Button
@@ -234,8 +264,8 @@ export default ({
                   });
                 }}
                 disabled={vote === null}
-                colorScheme="magenta"
-                width="full"
+                colorScheme="cyan"
+                size="lg"
               >
                 Submit
               </Button>

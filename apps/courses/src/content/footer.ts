@@ -1,5 +1,13 @@
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
+import {
+  discussionLink,
+  githubLink,
+  openminedLink,
+  placementsLink,
+  slackLink,
+} from './links';
+
 export default {
   about: {
     title: 'About OpenMined',
@@ -8,7 +16,7 @@ export default {
     button: {
       text: 'OpenMined.org',
       icon: faArrowRight,
-      link: 'https://openmined.org',
+      link: openminedLink,
     },
   },
   links: [
@@ -38,19 +46,19 @@ export default {
       links: [
         {
           title: 'Discussion Board',
-          link: 'https://discussion.openmined.org/',
+          link: discussionLink,
         },
         {
           title: 'Slack',
-          link: 'https://slack.openmined.org/',
+          link: slackLink,
         },
         {
           title: 'Github',
-          link: 'https://github.com/OpenMined',
+          link: githubLink,
         },
         {
           title: 'Careers',
-          link: 'https://placements.openmined.org/',
+          link: placementsLink,
         },
       ],
     },

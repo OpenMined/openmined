@@ -1,6 +1,8 @@
 import React from 'react';
 import { Text, Link } from '@chakra-ui/react';
 
+import { discussionLink } from './links';
+
 export default {
   heading: {
     title: 'Courses.OpenMined Privacy Policy',
@@ -35,7 +37,7 @@ export default {
         <Link
           target="_blank"
           rel="noopener noreferrer"
-          href="https://discussion.openmined.org"
+          href={discussionLink}
           as="a"
         >
           discussion board

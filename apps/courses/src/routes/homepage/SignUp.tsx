@@ -7,6 +7,7 @@ import { faSlack } from '@fortawesome/free-brands-svg-icons';
 import GridContainer from '../../components/GridContainer';
 import Signup from '../../components/forms/users/SignUp';
 import Icon from '../../components/Icon';
+import { blogLink, slackLink } from '../../content/links';
 
 export default ({ signup, signedup }) => {
   const user = useUser();
@@ -16,12 +17,12 @@ export default ({ signup, signedup }) => {
     {
       icon: faRss,
       title: 'Check out our Blog!',
-      link: 'https://blog.openmined.org',
+      link: blogLink,
     },
     {
       icon: faSlack,
       title: 'Join our Slack Community!',
-      link: 'https://slack.openmined.org',
+      link: slackLink,
     },
   ];
 

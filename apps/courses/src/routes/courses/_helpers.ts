@@ -108,7 +108,9 @@ export const hasSubmittedProjectPart = (u, p) =>
   u.project.parts[p].submissions.length > 0;
 export const hasReceivedProjectPartReview = (u, p) =>
   hasSubmittedProjectPart(u, p) &&
-  u.project.parts[p].submissions.filter((s) => s.status).length > 0;
+  u.project.parts[p].submissions.filter((s) => s.status).length > 0 &&
+  u.project.parts[p].submissions.filter((s) => s.status).length ===
+    u.project.parts[p].submissions.length;
 export const hasRemainingProjectPartSubmissions = (u, p) =>
   hasReceivedProjectPartReview(u, p) &&
   u.project.parts[p].submissions.filter((s) => s.status).length <

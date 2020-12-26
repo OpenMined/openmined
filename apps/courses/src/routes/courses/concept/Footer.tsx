@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -14,12 +14,14 @@ import {
   faBullhorn,
   faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
+import useScrollPosition from '@react-hook/window-scroll';
 
 import useToast, { toastConfig } from '../../../components/Toast';
 import { Popover } from '../../../components/Popover';
 import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { useNavigate } from 'react-router-dom';
+import { discussionLink, issuesLink } from '../../../content/links';
 
 const BREAK = 'md';
 
@@ -74,10 +76,13 @@ const Feedback = ({
       <Textarea
         placeholder="Type whatever you'd like..."
         onChange={({ target }) => setFeedback(target.value)}
-        resize="none"
+        resize="vertical"
         variant="filled"
         bg="white"
         _hover={{ bg: 'white' }}
+        _focus={{ bg: 'white' }}
+        color="gray.800"
+        py={3}
         mb={2}
       />
       <Flex justify="flex-end">
@@ -122,12 +127,12 @@ const Help = ({ helpOpen, setHelpOpen }) => {
   const helpLinks = [
     {
       title: 'Report a Bug',
-      link: 'https://github.com/OpenMined/openmined/issues',
+      link: issuesLink,
       icon: faBug,
     },
     {
       title: 'Forum',
-      link: 'https://discussion.openmined.org',
+      link: discussionLink,
       icon: faCommentAlt,
     },
   ];
@@ -180,7 +185,7 @@ const Controls = ({
       onClick={() => {
         navigate(backLink);
       }}
-      colorScheme={isBackAvailable ? 'magenta' : 'black'}
+      colorScheme={isBackAvailable ? 'cyan' : 'black'}
       disabled={!isBackAvailable}
     >
       Back
@@ -194,7 +199,7 @@ const Controls = ({
           navigate(nextLink);
         });
       }}
-      colorScheme={isNextAvailable ? 'magenta' : 'black'}
+      colorScheme={isNextAvailable ? 'cyan' : 'black'}
       disabled={!isNextAvailable}
     >
       Next
@@ -212,12 +217,47 @@ export default ({
   onCompleteConcept,
   scrollProgress,
   onProvideFeedback,
+  hasScrolledToBottom,
+  setScrollProgress,
+  setHasScrolledToBottom,
+  parentRef,
 }) => {
   const [vote, setVote] = useState(null);
   const [feedback, setFeedback] = useState('');
 
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+
+  const scrollY = useScrollPosition();
+
+  // This is the logic to track their scroll progress and so on
+  useEffect(() => {
+    if (
+      parentRef.current &&
+      parentRef.current.scrollHeight !== 0 &&
+      parentRef.current.clientHeight !== 0
+    ) {
+      const conceptHeight =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+
+      const progress =
+        conceptHeight <= 0 ? 100 : (scrollY / conceptHeight) * 100 || 0;
+
+      setScrollProgress(progress > 100 ? 100 : progress);
+
+      if (scrollProgress === 100 && !hasScrolledToBottom) {
+        setHasScrolledToBottom(true);
+      }
+    }
+  }, [
+    parentRef,
+    scrollY,
+    scrollProgress,
+    setScrollProgress,
+    hasScrolledToBottom,
+    setHasScrolledToBottom,
+  ]);
 
   return (
     <Box
@@ -231,7 +271,7 @@ export default ({
       zIndex={2}
     >
       <Box position="absolute" top={-2} left={0} width="full">
-        <Progress value={scrollProgress || 0} size="sm" colorScheme="magenta" />
+        <Progress value={scrollProgress || 0} size="sm" colorScheme="cyan" />
       </Box>
       <Box px={8}>
         <Flex justify="space-between" align="center">

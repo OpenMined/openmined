@@ -21,7 +21,11 @@ import {
   faMinusCircle,
   faTimesCircle,
   faShapes,
+  faStar,
+  faClock,
+  faCertificate,
 } from '@fortawesome/free-solid-svg-icons';
+import { OpenMined } from '@openmined/shared/types';
 
 import ProjectAccordion from './ProjectAccordion';
 
@@ -37,13 +41,13 @@ import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
-import { OpenMined } from '@openmined/shared/types';
 import { useNavigate } from 'react-router-dom';
+import { discussionLink, issuesLink } from '../../../content/links';
 
 // The detail links on the sidebar
-const Detail = ({ title, value }) => (
+const Detail = ({ title, value, icon = faCheckCircle }) => (
   <Flex align="center" mb={4}>
-    <Icon icon={faCheckCircle} boxSize={8} />
+    <Icon icon={icon} boxSize={8} />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -55,7 +59,11 @@ const Detail = ({ title, value }) => (
 const ensurePopulatedSubmissionsArray = (submissions) =>
   submissions && submissions.length > 0
     ? [
-        ...submissions,
+        ...submissions.map((s) => {
+          if (s.status) return s;
+
+          return { ...s, status: 'pending' };
+        }),
         ...Array(PROJECT_PART_SUBMISSIONS - submissions.length).fill({
           status: 'none',
         }),
@@ -131,7 +139,7 @@ export default ({
   const resources = [
     {
       title: 'Discussion Board',
-      link: 'https://discussion.openmined.org',
+      link: discussionLink,
       icon: faCommentAlt,
     },
     {
@@ -141,7 +149,7 @@ export default ({
     },
     {
       title: 'Report Issue',
-      link: 'https://github.com/OpenMined/openmined/issues',
+      link: issuesLink,
       icon: faBug,
     },
   ];
@@ -168,7 +176,7 @@ export default ({
     ).catch((error) => handleErrors(toast, error));
 
   return (
-    <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
+    <GridContainer isInitial py={16}>
       <Flex align="flex-start" direction={{ base: 'column', lg: 'row' }}>
         <Box mr={{ lg: 16 }}>
           <Text color="gray.700" fontWeight="bold" mb={2}>
@@ -218,15 +226,20 @@ export default ({
         </Box>
         <Box
           bg="gray.100"
+          borderRadius="md"
           p={8}
           width={{ base: 'full', lg: SIDEBAR_WIDTH }}
           flex={{ lg: `0 0 ${SIDEBAR_WIDTH}px` }}
           mt={{ base: 8, lg: 0 }}
         >
-          {level && <Detail title="Level" value={level} />}
-          {length && <Detail title="Length" value={length} />}
+          {level && <Detail title="Level" value={level} icon={faStar} />}
+          {length && <Detail title="Length" value={length} icon={faClock} />}
           {certification && (
-            <Detail title="Certification" value={certification.title} />
+            <Detail
+              title="Certification"
+              value={certification.title}
+              icon={faCertificate}
+            />
           )}
           <Divider my={6} />
           <Text fontWeight="bold" mb={4}>
@@ -262,6 +275,7 @@ export default ({
                 key={index}
                 color="gray.700"
                 _hover={{ color: 'gray.800' }}
+                variant="flat"
                 display="block"
                 mt={6}
                 {...getLinkPropsFromLink(link)}

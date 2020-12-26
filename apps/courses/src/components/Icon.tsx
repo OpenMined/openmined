@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Flex } from '@chakra-ui/react';
+import { Icon, Box } from '@chakra-ui/react';
 
 const IconWrapper = ({
   boxSize = 4,
@@ -7,7 +7,13 @@ const IconWrapper = ({
   icon,
   ...props
 }) => (
-  <Flex {...props} boxSize={boxSize} justify="center" align="center">
+  <Box
+    display="inline-flex"
+    boxSize={boxSize}
+    justifyContent="center"
+    alignItems="center"
+    {...props}
+  >
     <Icon
       viewBox={`0 0 ${icon.icon[0]} ${icon.icon[1]}`}
       w="full"
@@ -16,7 +22,7 @@ const IconWrapper = ({
     >
       <path d={icon.icon[4]} fill="currentColor" />
     </Icon>
-  </Flex>
+  </Box>
 );
 
 export default IconWrapper;

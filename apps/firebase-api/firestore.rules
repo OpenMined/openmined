@@ -42,10 +42,11 @@ service cloud.firestore {
       // Anyone can read a user's document
       allow read;
 
-      // Owner can only write all fields except "is_mentor" and "mentorable_courses"
+      // Owner can only write all fields except "is_mentor", "mentorable_courses", and "completed_courses"
       allow write: if isSameUser(user) &&
         !incomingDataContains('is_mentor') &&
-        !incomingDataContains('mentorable_courses');
+        !incomingDataContains('mentorable_courses') &&
+        !incomingDataContains('completed_courses');
 
       // Only owner can read/write private data
       match /private/{privateUserVar} {
@@ -88,8 +89,9 @@ service cloud.firestore {
         // Student can create
         allow create: if isSameUser(user);
 
+        // A student can update their own course, and...
         // Mentor will need to be able to edit the submissions array of any user's course object with the "status" and "reviewed_at" time (course->project->part->submissions)
-        allow update: if isMentor(request.auth.uid) && hasAllAffectedKeys(['project']);
+        allow update: if isSameUser(user) || (isMentor(request.auth.uid) && hasAllAffectedKeys(['project']));
 
         // A student can read their own course, and...
         // Mentors should always be able to read any user's course object that they are allowed to review

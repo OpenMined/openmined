@@ -7,7 +7,6 @@ import {
   Divider,
   Flex,
   Heading,
-  Icon,
   Image,
   List,
   ListIcon,
@@ -17,9 +16,13 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faArrowRight,
+  faCheckCircle,
+  faFile,
+  faPlayCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { OpenMined } from '@openmined/shared/types';
 
 import {
@@ -35,12 +38,14 @@ import {
 import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
+import Icon from '../../../components/Icon';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
+import projectIcon from '../../../assets/homepage/technical-mentor.svg';
+import currentLessonIcon from '../../../assets/homepage/finger-point.svg';
 
 const Detail = ({ title, value }) => (
   <Flex align="center" mb={4}>
-    {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={faCheckCircle} size="2x" />
+    <Icon icon={faCheckCircle} boxSize={8} />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -81,39 +86,67 @@ const LearnFrom = ({ image, name, credential }) => (
 );
 
 export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
-  const prepareSyllabusContent = (description, parts, lessonId = null) => {
+  const prepareSyllabusContent = (
+    description,
+    parts,
+    lessonId,
+    isCurrent,
+    isTakingCourse
+  ) => {
     const iconProps: any = {
-      as: FontAwesomeIcon,
-      size: 'lg',
+      boxSize: 5,
       mr: 2,
       color: 'gray.600',
     };
-
-    // SEE TODO (#3)
-    const IncompleteConcept = () => <Icon {...iconProps} icon={faCircle} />;
-    const CompleteConcept = () => (
-      <Icon {...iconProps} color="blue.500" icon={faCheckCircle} />
-    );
 
     return (
       <Box bg="gray.200" p={8}>
         <Text mb={4}>{description}</Text>
         <List spacing={2}>
-          {parts.map(({ title, _id, _key }, index) => {
+          {parts.map(({ title, _id, type, _key }, index) => {
             const isComplete =
               _id && !_key
                 ? hasCompletedConcept(progress, lessonId, _id)
                 : hasCompletedProjectPart(progress, _key);
 
+            let icon;
+
+            const conceptIcon = type
+              ? type === 'video'
+                ? faPlayCircle
+                : faFile
+              : null;
+
+            if (isComplete) {
+              iconProps.color = 'blue.500';
+
+              if (conceptIcon) icon = conceptIcon;
+              else icon = faCheckCircle;
+            } else {
+              if (conceptIcon) icon = conceptIcon;
+              else icon = faCircle;
+            }
+
             return (
               <ListItem key={index}>
-                {isComplete && <ListIcon as={CompleteConcept} />}
-                {!isComplete && <ListIcon as={IncompleteConcept} />}
+                <ListIcon as={() => <Icon {...iconProps} icon={icon} />} />
                 {title}
               </ListItem>
             );
           })}
         </List>
+        {isCurrent && isTakingCourse && (
+          <Flex justify="flex-end" mt={4}>
+            <Link to={resumeLink}>
+              <Flex align="center">
+                <Text fontWeight="bold" mr={3}>
+                  Resume
+                </Text>
+                <Icon icon={faArrowRight} />
+              </Flex>
+            </Link>
+          </Flex>
+        )}
       </Box>
     );
   };
@@ -157,25 +190,6 @@ export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
     resumeLink = `${resumeLink}/${nextAvailablePage.concept}`;
   }
 
-  const lessons = page.lessons
-    ? page.lessons.map(({ title, description, concepts, _id }) => ({
-        title,
-        content: prepareSyllabusContent(description, concepts, _id),
-      }))
-    : [];
-
-  if (project) {
-    lessons.push({
-      title: project.title,
-      content: prepareSyllabusContent(project.description, project.parts),
-    });
-  }
-
-  // TODO: Patrick, for the lesson that hasn't been finished yet and is currently in progress, add the resume link
-  // TODO: Patrick, add the concept type icons like in the drawer instead of the empty circles
-  // TODO: Patrick, if the user has started and not finished the course add the hand icon for either the current lesson the user is on
-  // TODO: Patrick, for the project, always have the project icon
-
   const determineOpenLessons = () => {
     if (!isTakingCourse) return [0];
     if (hasCompletedCourse(progress)) return [];
@@ -189,9 +203,8 @@ export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
     return [];
   };
 
-  console.log('FINAL', determineOpenLessons());
-
-  const [indexes, setIndexes] = useState(determineOpenLessons());
+  const openLessons = determineOpenLessons();
+  const [indexes, setIndexes] = useState(openLessons);
 
   const toggleAccordionItem = (index) => {
     const isActive = indexes.includes(index);
@@ -199,6 +212,37 @@ export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
     if (isActive) setIndexes(indexes.filter((i) => i !== index));
     else setIndexes([...indexes, index]);
   };
+
+  const lessons = page.lessons
+    ? page.lessons.map(({ title, description, concepts, _id }, index) => ({
+        title,
+        content: prepareSyllabusContent(
+          description,
+          concepts,
+          _id,
+          openLessons.includes(index),
+          isTakingCourse
+        ),
+        icon:
+          openLessons.includes(index) && isTakingCourse
+            ? currentLessonIcon
+            : null,
+      }))
+    : [];
+
+  if (project) {
+    lessons.push({
+      title: project.title,
+      content: prepareSyllabusContent(
+        project.description,
+        project.parts,
+        null,
+        openLessons.includes(page.lessons.length),
+        isTakingCourse
+      ),
+      icon: projectIcon,
+    });
+  }
 
   return (
     <>

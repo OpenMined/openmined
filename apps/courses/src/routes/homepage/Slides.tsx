@@ -13,14 +13,13 @@ import {
   Flex,
   CircularProgress,
   CircularProgressProps,
-  Icon,
 } from '@chakra-ui/react';
 import { useTimer } from 'use-timer';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 import theme from '../../theme';
 import GridContainer from '../../components/GridContainer';
+import Icon from '../../components/Icon';
 
 import { useWindowSize } from '../../helpers';
 import { useSanity } from '@openmined/shared/data-access-sanity';
@@ -48,23 +47,11 @@ const ProgressButton = ({ value, direction, onClick }) => (
       size={8}
       style={absolute}
     />
-    {/* SEE TODO (#3) */}
     {direction === 'forward' && (
-      <Icon
-        as={FontAwesomeIcon}
-        icon={faArrowRight}
-        onClick={onClick}
-        style={absolute}
-      />
+      <Icon icon={faArrowRight} onClick={onClick} style={absolute} />
     )}
-    {/* SEE TODO (#3) */}
     {direction === 'back' && (
-      <Icon
-        as={FontAwesomeIcon}
-        icon={faArrowLeft}
-        onClick={onClick}
-        style={absolute}
-      />
+      <Icon icon={faArrowLeft} onClick={onClick} style={absolute} />
     )}
   </Box>
 );

@@ -8,6 +8,7 @@ import {
   Circle,
   Flex,
   Heading,
+  Image,
 } from '@chakra-ui/react';
 
 export const CircledNumber = ({ isActive = false, children, ...props }) => {
@@ -43,7 +44,7 @@ export const CircledNumber = ({ isActive = false, children, ...props }) => {
 
 export default ({ indexes, onToggleItem, sections, ...props }) => (
   <Accordion index={indexes} allowMultiple {...props}>
-    {sections.map(({ title, content, ...section }, index) => (
+    {sections.map(({ title, content, icon, ...section }, index) => (
       <AccordionItem
         border="0px"
         mt={index === 0 ? 0 : 8}
@@ -51,13 +52,16 @@ export default ({ indexes, onToggleItem, sections, ...props }) => (
         {...section}
       >
         <Flex alignItems="center" onClick={() => onToggleItem(index)}>
-          <CircledNumber
-            mr={6}
-            size="2.5rem"
-            isActive={indexes.includes(index)}
-          >
-            {index + 1}
-          </CircledNumber>
+          {!icon && (
+            <CircledNumber
+              mr={6}
+              size="2.5rem"
+              isActive={indexes.includes(index)}
+            >
+              {index + 1}
+            </CircledNumber>
+          )}
+          {icon && <Image src={icon} alt={title} boxSize="2.5rem" mr={6} />}
           <AccordionButton
             px={0}
             borderBottomWidth="1px"

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box, Text, Button, Flex, Divider, Link, Icon } from '@chakra-ui/react';
+import { Box, Text, Button, Flex, Divider, Link } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from './GridContainer';
+import Icon from './Icon';
 
 import content from '../content/footer';
 
@@ -47,10 +47,8 @@ export default (props) => (
             boxShadow="0px 4px 16px rgba(0, 0, 0, 0.3)"
           >
             <Text mr={2}>{about.button.text}</Text>
-            {/* SEE TODO (#3) */}
             <Icon
               color="gray.200"
-              as={FontAwesomeIcon}
               icon={about.button.icon}
               ml={2}
               boxSize={4}

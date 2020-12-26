@@ -3,7 +3,6 @@ import {
   Button,
   Divider,
   Flex,
-  Icon,
   Text,
   Link,
   BoxProps,
@@ -13,9 +12,9 @@ import {
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
 import { useAuth, useFirestore } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
+import Icon from '../../Icon';
 import Form from '../_form';
 import {
   validEmail,
@@ -246,15 +245,8 @@ export default ({ callback, ...props }: SignUpFormProps) => {
                 colorScheme="black"
                 isLoading={isSubmitting}
               >
-                {/* SEE TODO (#3) */}
                 Sign Up with Github{' '}
-                <Icon
-                  as={FontAwesomeIcon}
-                  icon={faGithub}
-                  ml={2}
-                  boxSize={4}
-                  color="white"
-                />
+                <Icon icon={faGithub} ml={2} boxSize={4} color="white" />
               </Button>
             </Flex>
             <Divider my={6} />

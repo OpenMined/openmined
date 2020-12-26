@@ -5,10 +5,8 @@ import {
   Box,
   Flex,
   Heading,
-  Icon,
   Text,
   Link,
-  useToken,
   Stack,
   Divider,
 } from '@chakra-ui/react';
@@ -16,7 +14,6 @@ import Page from '@openmined/shared/util-page';
 import { useParams, Link as RRDLink, Navigate } from 'react-router-dom';
 import { OpenMined } from '@openmined/shared/types';
 import { useUser, useFirestoreDocDataOnce, useFirestore } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPencilAlt,
   faLink,
@@ -26,13 +23,13 @@ import {
 import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 import GridContainer from '../../../components/GridContainer';
+import Icon from '../../../components/Icon';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 import { getLinkPropsFromLink } from '../../../helpers';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
   <Flex align="center" {...props}>
-    {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={icon} mr={2} />
+    <Icon icon={icon} mr={2} />
     <Link
       as="a"
       color="gray.700"
@@ -61,15 +58,13 @@ const LinkItem = ({ title, icon, link, ...props }) => {
       transitionDuration="normal"
       transitionTimingFunction="ease-in-out"
     >
-      {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={icon} size="lg" color="inherit" mr={3} />
+      <Icon icon={icon} boxSize={5} color="inherit" mr={3} />
       <Text color="inherit">{title}</Text>
     </Flex>
   );
 };
 
 export default () => {
-  const gray50 = useToken('colors', 'gray.50');
   const user: firebase.User = useUser();
   const db = useFirestore();
   const { uid } = useParams();
@@ -83,13 +78,10 @@ export default () => {
   if (!Object.keys(dbUser).length) return <Navigate to="/" />;
 
   return (
-    <Page
-      title={name}
-      description={dbUser.description}
-      body={{ style: `background: ${gray50};` }}
-    >
+    <Page title={name} description={dbUser.description}>
       <Box
         position="relative"
+        bg="gray.50"
         _before={{
           content: '""',
           position: 'absolute',
@@ -97,7 +89,7 @@ export default () => {
           left: 0,
           width: '478px',
           height: '309px',
-          zIndex: -1,
+          zIndex: 0,
           backgroundImage: `url(${waveform})`,
           backgroundRepeat: 'no-repeat',
           backgroundPosition: '0% 0%',
@@ -122,9 +114,7 @@ export default () => {
                       right={2}
                       bottom={2}
                     >
-                      {/* SEE TODO (#3) */}
                       <Icon
-                        as={FontAwesomeIcon}
                         icon={faPencilAlt}
                         color="white"
                         style={{ width: '0.35em' }}

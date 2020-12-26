@@ -1,15 +1,6 @@
 import React from 'react';
-import {
-  Box,
-  Button,
-  Icon,
-  SimpleGrid,
-  Text,
-  Link,
-  Heading,
-} from '@chakra-ui/react';
+import { Box, Button, SimpleGrid, Text, Link, Heading } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faSlack } from '@fortawesome/free-brands-svg-icons';
 import {
   faCommentAlt,
@@ -19,6 +10,7 @@ import {
 
 import { prepAccordionAndStatus } from '../../courses/project';
 import { hasCompletedCourse, hasStartedProject } from '../../courses/_helpers';
+import Icon from '../../../components/Icon';
 import CourseProgressCard from '../../../components/CourseProgressCard';
 import SubmissionInline from '../../../components/SubmissionInline';
 import ColoredTabs from '../../../components/ColoredTabs';
@@ -60,7 +52,7 @@ export const StudentContext = ({ courses, progress }) => {
           variant="outline"
           colorScheme="black"
         >
-          <Icon as={FontAwesomeIcon} icon={faSearch} mr={3} />
+          <Icon icon={faSearch} mr={3} />
           <Text>Browse Courses</Text>
         </Button>
       </Box>

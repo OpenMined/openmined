@@ -9,7 +9,6 @@ import {
   Grid,
   GridItem,
   Heading,
-  Icon,
   Switch,
   Text,
 } from '@chakra-ui/react';
@@ -22,7 +21,6 @@ import {
   useFirestore,
   useFirestoreCollectionData,
 } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -30,6 +28,7 @@ import { StudentContext, StudentTabs, studentResources } from './Student';
 import { MentorContext, MentorTabs, mentorResources } from './Mentor';
 
 import GridContainer from '../../../components/GridContainer';
+import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
 
 dayjs.extend(relativeTime);
@@ -48,8 +47,7 @@ const LinkItem = ({ title, icon, link, ...props }) => (
     transitionDuration="normal"
     transitionTimingFunction="ease-in-out"
   >
-    {/* SEE TODO (#3) */}
-    <Icon as={FontAwesomeIcon} icon={icon} size="lg" color="inherit" mr={3} />
+    <Icon icon={icon} boxSize={5} color="inherit" mr={3} />
     <Text color="inherit">{title}</Text>
   </Flex>
 );

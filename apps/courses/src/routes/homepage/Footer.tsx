@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Heading, Text, Button, Link, Icon } from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, Button, Link } from '@chakra-ui/react';
 import {
   ComposableMap,
   Geographies,
   Geography,
   Marker,
 } from 'react-simple-maps';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from '../../components/GridContainer';
+import Icon from '../../components/Icon';
 import theme from '../../theme';
 
 const geoUrl =
@@ -162,15 +162,7 @@ export default ({ title, description, buttons }) => (
                 mr={i === 0 ? 4 : 0}
                 colorScheme="gray"
               >
-                {/* SEE TODO (#3) */}
-                {title}{' '}
-                <Icon
-                  as={FontAwesomeIcon}
-                  icon={icon}
-                  ml={2}
-                  boxSize={4}
-                  color="black"
-                />
+                {title} <Icon icon={icon} ml={2} boxSize={4} color="black" />
               </Button>
             ))}
           </Flex>

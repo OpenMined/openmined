@@ -124,7 +124,8 @@ const genTabsContent = (
 export default ({ progress, attemptData, content, course, part, attempt }) => {
   const toast = useToast();
   const db = useFirestore();
-  const functions = useFunctions();
+  const functions: firebase.functions.Functions = useFunctions();
+  // @ts-ignore
   functions.region = 'europe-west1';
 
   const requestResignation = functions.httpsCallable('resignReview');

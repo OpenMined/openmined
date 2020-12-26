@@ -1,8 +1,7 @@
 import React from 'react';
-import { Box, Flex, Icon, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowRight,
   faCheckCircle,
@@ -10,13 +9,14 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import Icon from './Icon';
 
 dayjs.extend(relativeTime);
 
 export default ({ status, link, ...submission }) => {
   if (status === 'none') return null;
 
-  const props = {
+  const props: any = {
     p: 3,
     mt: 2,
     cursor: 'pointer',
@@ -48,14 +48,7 @@ export default ({ status, link, ...submission }) => {
   return (
     <Flex as={Link} to={link} {...props}>
       <Flex align="center">
-        {/* SEE TODO (#3) */}
-        <Icon
-          as={FontAwesomeIcon}
-          icon={icon}
-          color={iconColor}
-          size="lg"
-          mr={4}
-        />
+        <Icon icon={icon} color={iconColor} boxSize={5} mr={4} />
         <Text fontWeight="bold" mr={2}>
           {text}
         </Text>
@@ -66,8 +59,7 @@ export default ({ status, link, ...submission }) => {
             `Submitted ${dayjs(submission.submitted_at.toDate()).fromNow()}`}
         </Text>
       </Flex>
-      {/* SEE TODO (#3) */}
-      <Icon as={FontAwesomeIcon} icon={faArrowRight} color={iconColor} />
+      <Icon icon={faArrowRight} color={iconColor} />
     </Flex>
   );
 };

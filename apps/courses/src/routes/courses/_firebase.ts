@@ -319,6 +319,7 @@ export const handleReviewSubmission = async (
     project: {
       parts: {
         [partId]: {
+          completed_at: time,
           submissions,
         },
       },
@@ -342,32 +343,6 @@ export const handleReviewSubmission = async (
   return true;
 };
 
-export const handleProjectComplete = async (
-  db: firebase.firestore.Firestore,
-  uId: string,
-  courseId: string,
-  ts,
-  progress: OpenMined.Course,
-  status: string
-) => {
-  return new Promise((resolve, reject) => {
-    // If we haven't already completed this project and course...
-    if (!hasCompletedProject(progress) && !hasCompletedCourse(progress)) {
-      // Tell the DB we've done so
-      updateCourse(db, uId, courseId, {
-        completed_at: ts(),
-        project: {
-          status,
-          completed_at: ts(),
-        },
-      })
-        .then(resolve)
-        .catch(reject);
-    } else {
-      resolve(true);
-    }
-  });
-};
 export const getFeedbackRef = (
   db: firebase.firestore.Firestore,
   uId: string,

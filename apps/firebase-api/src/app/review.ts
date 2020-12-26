@@ -1,7 +1,5 @@
 import admin from 'firebase-admin';
 
-admin.initializeApp();
-
 export const assignReview = async (data, context) => {
   // Get the current user and the course
   const user = context.auth.uid;

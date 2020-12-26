@@ -70,23 +70,22 @@ const getDefaultOpenedTab = (content) => {
   if (content.every(({ status }) => status === 'passed')) return [];
 
   // Check for all parts with a status of "failed-but-pending" or "failed" and get the first one
-  const failedOrFailedButPending = content.findIndex(
-    ({ status }) => status === 'failed-but-pending' || status === 'failed'
-  );
+  const failed = content.findIndex(({ status }) => status === 'failed');
 
   // If there's at least one, open it
-  if (failedOrFailedButPending !== -1) return [failedOrFailedButPending];
+  if (failed !== -1) return [failed];
 
   // Otherwise, check for any that are "in-progress", "not-started", or "submitted" and get the first one
   const firstIfNotFinished = content.findIndex(
     ({ status }) =>
       status === 'in-progress' ||
       status === 'not-started' ||
-      status === 'submitted'
+      status === 'submitted' ||
+      status === 'failed-but-pending'
   );
 
   // If there's at least one, open it
-  if (firstIfNotFinished === -1) return [firstIfNotFinished];
+  if (firstIfNotFinished !== -1) return [firstIfNotFinished];
 
   // Otherwise, just open the first
   return [0];

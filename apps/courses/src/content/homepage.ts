@@ -1,6 +1,8 @@
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
 import { faHandHoldingUsd } from '@fortawesome/free-solid-svg-icons';
 
+import { opencollectiveLink, openminedLink, slackLink } from './links';
+
 import pytorch from '../assets/homepage/pytorch.png';
 import facebookAI from '../assets/homepage/facebook-ai.svg';
 import oxford from '../assets/homepage/oxford.png';
@@ -44,7 +46,7 @@ export default {
       {
         title: 'OpenMined',
         image: openmined,
-        link: 'https://openmined.org',
+        link: openminedLink,
       },
     ],
   },
@@ -76,12 +78,12 @@ export default {
       {
         title: 'Join Slack',
         icon: faSlack,
-        link: 'https://slack.openmined.org',
+        link: slackLink,
       },
       {
         title: 'Donate',
         icon: faHandHoldingUsd,
-        link: 'https://opencollective.com/openmined',
+        link: opencollectiveLink,
       },
     ],
   },

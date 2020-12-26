@@ -1,8 +1,10 @@
 import React from 'react';
-import { Link as RRDLink } from 'react-router-dom';
 import { useFirestore } from 'reactfire';
 import {
+  faBookOpen,
   faCheckCircle,
+  faClock,
+  faCube,
   faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -18,11 +20,7 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 
-import {
-  getLessonNumber,
-  hasStartedCourse,
-  hasStartedLesson,
-} from '../_helpers';
+import { getLessonNumber } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
@@ -31,9 +29,9 @@ import useToast from '../../../components/Toast';
 import { handleLessonStart } from '../_firebase';
 import { OpenMined } from '@openmined/shared/types';
 
-const Detail = ({ title, value }) => (
+const Detail = ({ title, value, icon = faCheckCircle }) => (
   <Flex align="center" mb={4}>
-    <Icon icon={faCheckCircle} boxSize={8} />
+    <Icon icon={icon} boxSize={8} />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -79,24 +77,30 @@ export default ({
   };
 
   return (
-    <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
+    <GridContainer isInitial py={16}>
       <Flex direction={{ base: 'column-reverse', lg: 'row' }}>
         <Box
           bg="gray.100"
+          borderRadius="md"
           p={6}
           width={{ base: 'full', lg: SIDEBAR_WIDTH }}
           flex={{ lg: `0 0 ${SIDEBAR_WIDTH}px` }}
           mr={{ lg: 16 }}
           mt={{ base: 8, lg: 0 }}
         >
-          {length && <Detail title="Length" value={length} />}
+          {length && <Detail title="Length" value={length} icon={faClock} />}
           {conceptsCount && (
-            <Detail title="Concepts" value={`${conceptsCount} concepts`} />
+            <Detail
+              title="Concepts"
+              value={`${conceptsCount} concepts`}
+              icon={faCube}
+            />
           )}
           {lessons && (
             <Detail
               title="Progress"
               value={`${lessonNum} of ${lessons.length} lessons`}
+              icon={faBookOpen}
             />
           )}
           {learnFrom && (
@@ -130,8 +134,6 @@ export default ({
                 return (
                   <Link
                     key={index}
-                    color="magenta.500"
-                    _hover={{ color: 'magenta.700' }}
                     display="block"
                     mt={2}
                     {...getLinkPropsFromLink(link)}
@@ -167,7 +169,7 @@ export default ({
               <Heading as="p" size="md" mb={4}>
                 In this lesson you'll:
               </Heading>
-              <UnorderedList spacing={4} mb={6}>
+              <UnorderedList spacing={2} mb={6}>
                 {learnHow.map((l) => (
                   <ListItem key={l} color="gray.700">
                     {l}
@@ -176,7 +178,7 @@ export default ({
               </UnorderedList>
             </>
           )}
-          <Button onClick={onLessonStart} colorScheme="magenta">
+          <Button onClick={onLessonStart} colorScheme="blue">
             Begin Lesson
           </Button>
         </Box>

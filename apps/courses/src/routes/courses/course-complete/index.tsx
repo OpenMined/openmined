@@ -12,12 +12,14 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
-import GridContainer from '../../../components/GridContainer';
-import Icon from '../../../components/Icon';
-import projectIcon from '../../../assets/project-icon.svg';
 import { faBookOpen, faCertificate } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
 import { OpenMined } from '@openmined/shared/types';
+
+import GridContainer from '../../../components/GridContainer';
+import Icon from '../../../components/Icon';
+import { slackLink } from '../../../content/links';
+import projectIcon from '../../../assets/project-icon.svg';
 
 export default ({ page }: OpenMined.CoursePagesProp) => {
   const {
@@ -65,7 +67,7 @@ export default ({ page }: OpenMined.CoursePagesProp) => {
         'From meetups to bootcamps, our community is ready to welcome you.',
       link: {
         title: 'Join the Community',
-        link: 'https://slack.openmined.org',
+        link: slackLink,
         color: 'magenta.500',
         _hover: { color: 'magenta.700' },
       },

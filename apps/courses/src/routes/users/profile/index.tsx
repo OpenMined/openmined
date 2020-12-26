@@ -21,11 +21,14 @@ import {
   faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { useSanity } from '@openmined/shared/data-access-sanity';
 
 import GridContainer from '../../../components/GridContainer';
 import Icon from '../../../components/Icon';
-import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
+import CourseCompleteCard from '../../../components/CourseCompleteCard';
 import { getLinkPropsFromLink } from '../../../helpers';
+import { discussionLink } from '../../../content/links';
+import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
   <Flex align="center" {...props}>
@@ -72,10 +75,38 @@ export default () => {
   const dbUserRef = db.collection('users').doc(uid);
   const dbUser: OpenMined.User = useFirestoreDocDataOnce(dbUserRef);
 
+  if (!Object.keys(dbUser).length) return <Navigate to="/" />;
+
+  const { data, loading } = useSanity(`
+    *[_type == "course" && visible == true] {
+      ...,
+      "slug": slug.current,
+      visual {
+        "default": default.asset -> url,
+        "full": full.asset -> url
+      },
+    }`);
+
+  if (loading) return null;
+
   const isSameUser = user && uid === user.uid;
   const name = `${dbUser.first_name} ${dbUser.last_name}`;
 
-  if (!Object.keys(dbUser).length) return <Navigate to="/" />;
+  const completedCourses =
+    data && dbUser.completed_courses && dbUser.completed_courses.length > 0
+      ? dbUser.completed_courses.map((c) => {
+          const matchedCourse = data.findIndex((d) => d.slug === c.course);
+
+          if (matchedCourse !== -1) {
+            return {
+              progress: { completed_at: c.completed_at },
+              ...data[matchedCourse],
+            };
+          }
+
+          return null;
+        })
+      : [];
 
   return (
     <Page title={name} description={dbUser.description}>
@@ -168,13 +199,31 @@ export default () => {
                   <LinkItem
                     icon={faCommentAlt}
                     title="Forum"
-                    link="https://discussion.openmined.org"
+                    link={discussionLink}
                   />
                 </Box>
               )}
             </Flex>
-            <Box mt={{ base: 8, lg: 0 }} ml={{ lg: 12 }}>
-              Finished courses and certificates go here!
+            <Box mt={{ base: 8, lg: 16 }} ml={{ lg: 12 }} flex={1}>
+              <Heading as="h3" size="md" mb={4}>
+                Completed Courses
+              </Heading>
+              {completedCourses.length !== 0 &&
+                completedCourses.map((c) => (
+                  <CourseCompleteCard key={c.title} content={c} mb={6} />
+                ))}
+              {completedCourses.length === 0 && (
+                <Box
+                  p={4}
+                  bg="gray.100"
+                  color="gray.700"
+                  borderRadius="md"
+                  textAlign="center"
+                  fontStyle="italic"
+                >
+                  This user has not completed a course yet.
+                </Box>
+              )}
             </Box>
           </Flex>
         </GridContainer>

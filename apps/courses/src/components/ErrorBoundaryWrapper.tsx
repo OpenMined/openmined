@@ -2,6 +2,8 @@ import React from 'react';
 import * as Sentry from '@sentry/react';
 import { Flex, Text, Heading, Link } from '@chakra-ui/react';
 
+import { issuesLink } from '../content/links';
+
 const FallbackComponent = () => (
   <Flex
     w="100vw"
@@ -18,12 +20,7 @@ const FallbackComponent = () => (
       Our development team has been notified and is working on a fix. We
       apologize for the inconvenience. If you'd like to file an official bug
       report,{' '}
-      <Link
-        href="https://github.com/OpenMined/openmined/issues"
-        as="a"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <Link href={issuesLink} as="a" target="_blank" rel="noopener noreferrer">
         please do so here
       </Link>
       .

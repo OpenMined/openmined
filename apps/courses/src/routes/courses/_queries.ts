@@ -99,6 +99,7 @@ export const lessonComplete = ({ lesson }) => `
   resources,
   "course": *[_type == "course" && references(^._id)][0] {
     title,
+    "projectTitle": project.title,
     "lessons": lessons[] -> {
       _id,
       title,

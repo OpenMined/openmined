@@ -16,6 +16,12 @@ import SubmissionInline from '../../../components/SubmissionInline';
 import ColoredTabs from '../../../components/ColoredTabs';
 import StatusAccordion from '../../../components/StatusAccordion';
 import CourseCompleteCard from '../../../components/CourseCompleteCard';
+import {
+  blogLink,
+  discussionLink,
+  githubLink,
+  slackLink,
+} from '../../../content/links';
 
 const combineProgressAndCourses = (courses, progress, filter) => {
   let tempCourses = progress.filter(filter);
@@ -187,21 +193,21 @@ export const studentResources = [
   {
     title: 'Discussion Board',
     icon: faCommentAlt,
-    link: 'https://discussion.openmined.org',
+    link: discussionLink,
   },
   {
     title: 'Slack',
     icon: faSlack,
-    link: 'https://slack.openmined.org',
+    link: slackLink,
   },
   {
     title: 'Github',
     icon: faGithub,
-    link: 'https://github.com/OpenMined',
+    link: githubLink,
   },
   {
     title: 'Blog',
     icon: faPencilAlt,
-    link: 'https://blog.openmined.org',
+    link: blogLink,
   },
 ];

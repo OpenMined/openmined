@@ -34,6 +34,7 @@ import Icon from './Icon';
 
 import logo from '../assets/logo.svg';
 import { handleErrors } from '../helpers';
+import { discussionLink } from '../content/links';
 
 interface LinkProps {
   title: string;
@@ -186,7 +187,7 @@ export default ({ noScrolling }) => {
             <Flex
               align="center"
               as="a"
-              href="https://discussion.openmined.org"
+              href={discussionLink}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -223,6 +224,7 @@ export default ({ noScrolling }) => {
     transitionProperty: 'color',
     transitionDuration: 'normal',
     transitionTimingFunction: 'ease-in-out',
+    boxSize: 5,
   };
 
   return (
@@ -255,7 +257,11 @@ export default ({ noScrolling }) => {
               }}
             />
           </RRDLink>
-          <Box display={['block', null, 'none']} onClick={() => setShow(!show)}>
+          <Box
+            display={['block', null, 'none']}
+            boxSize={5}
+            onClick={() => setShow(!show)}
+          >
             {show ? (
               <Icon icon={faTimes} {...iconStyles} />
             ) : (

@@ -112,7 +112,7 @@ export default ({
   return (
     <GridContainer py="header">
       {isVideoLayout && <Video {...content[0]} />}
-      <Box bg="white" px={8} py={[8, null, null, 16]}>
+      <Box bg="white" px={8} py={16}>
         <Box maxW={600} mx="auto">
           <Text color="gray.700" mb={2}>
             <Text fontWeight="bold" as="span">

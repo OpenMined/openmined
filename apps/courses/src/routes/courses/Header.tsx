@@ -33,11 +33,12 @@ import { OpenMined } from '@openmined/shared/types';
 import CourseDrawer from './Drawer';
 import { getUserRef } from './_firebase';
 
-import Icon from '../../components/Icon';
 import { getLinkPropsFromLink, handleErrors } from '../../helpers';
+import Icon from '../../components/Icon';
 import useToast, { toastConfig } from '../../components/Toast';
 import { Popover } from '../../components/Popover';
 import logo from '../../assets/logo.svg';
+import { discussionLink } from '../../content/links';
 
 type LinkProps = {
   title: string;
@@ -73,6 +74,7 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
         {...link}
         color="gray.400"
         _hover={{ color: 'white' }}
+        variant="flat"
       >
         {title}
       </Link>
@@ -130,7 +132,7 @@ export default ({
     },
     {
       title: 'Forum',
-      link: 'https://discussion.openmined.org',
+      link: discussionLink,
       icon: faCommentAlt,
     },
     {
@@ -226,11 +228,12 @@ export default ({
       zIndex={2}
     >
       <Flex as="nav" align="center" justify="space-between">
-        <Box width={{ base: 6, [BREAK]: 1 / 4 }}>
+        <Box width={{ base: 6, [BREAK]: 1 / 4 }} boxSize={5}>
           <Icon
             icon={faBars}
             color="white"
             cursor="pointer"
+            boxSize={5}
             onClick={isLeftDrawerOpen ? onLeftDrawerClose : onLeftDrawerOpen}
           />
         </Box>
@@ -238,7 +241,12 @@ export default ({
           {!noTitle && (
             <Flex justify="center" align="center">
               {icon && <Icon icon={icon} color="gray.700" boxSize={5} mr={4} />}
-              <Heading as="span" size="md" color="white">
+              <Heading
+                as="span"
+                size="md"
+                color="white"
+                flex={{ base: 1, [BREAK]: 'initial' }}
+              >
                 {subtitle}: {title}
               </Heading>
             </Flex>
@@ -258,11 +266,13 @@ export default ({
           width={6}
           justify="flex-end"
           display={{ base: 'flex', [BREAK]: 'none' }}
+          boxSize={5}
         >
           <Icon
             icon={faHome}
-            boxSize={5}
             color="white"
+            cursor="pointer"
+            boxSize={5}
             onClick={isRightDrawerOpen ? onRightDrawerClose : onRightDrawerOpen}
           />
         </Flex>

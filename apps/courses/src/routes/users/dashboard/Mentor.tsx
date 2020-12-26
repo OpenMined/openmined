@@ -24,7 +24,7 @@ import {
   faQuestionCircle,
   faShapes,
 } from '@fortawesome/free-solid-svg-icons';
-import { faGithub, faSlack } from '@fortawesome/free-brands-svg-icons';
+import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -38,6 +38,12 @@ import ColoredTabs from '../../../components/ColoredTabs';
 import useToast, { toastConfig } from '../../../components/Toast';
 import Countdown from '../../../components/Countdown';
 import Icon from '../../../components/Icon';
+import {
+  discussionLink,
+  mentorfaqLink,
+  mentorratesLink,
+  codeofconductLink,
+} from '../../../content/links';
 
 dayjs.extend(relativeTime);
 
@@ -66,6 +72,8 @@ export const MentorContext = ({ courses }) => {
   functions.region = 'europe-west1';
 
   const requestResignation = functions.httpsCallable('resignReview');
+
+  const [buttonClicked, setButtonClicked] = useState(false);
 
   const activeReviewsRef = db
     .collectionGroup('submissions')
@@ -129,11 +137,17 @@ export const MentorContext = ({ courses }) => {
                   variant="ghost"
                   colorScheme="gray"
                   mr={3}
+                  isDisabled={buttonClicked}
+                  isLoading={buttonClicked}
                   onClick={() => {
+                    setButtonClicked(true);
+
                     requestResignation({
                       submission: review.id,
                       mentor: review.mentor.id,
                     }).then(({ data }) => {
+                      setButtonClicked(false);
+
                       if (data && !data.error) {
                         toast({
                           ...toastConfig,
@@ -156,6 +170,8 @@ export const MentorContext = ({ courses }) => {
                 </Button>
                 <Button
                   colorScheme="black"
+                  isDisabled={buttonClicked}
+                  isLoading={buttonClicked}
                   onClick={() => {
                     setupUserTokenAndGoToSubmission(
                       review.student.id,
@@ -192,7 +208,7 @@ export const MentorContext = ({ courses }) => {
           </Flex>
         </Link>
         <Link
-          href="https://discussion.openmined.org"
+          href={discussionLink}
           target="_blank"
           rel="noopener noreferrer"
           ml={[0, null, null, 8]}
@@ -520,23 +536,21 @@ export const mentorResources = [
   {
     title: 'Discussion Board',
     icon: faCommentAlt,
-    link: 'https://discussion.openmined.org',
+    link: discussionLink,
   },
   {
     title: 'Rates',
     icon: faMoneyBillWave,
-    link:
-      'https://www.notion.so/openmined/822b6f0510a644bab826eccb1ac3a477?v=69f88b18cdbd4410af89615043c1b983',
+    link: mentorratesLink,
   },
   {
     title: 'FAQ',
     icon: faQuestionCircle,
-    link:
-      'https://www.notion.so/openmined/FAQs-ddb46eca6ab143f6af3a6314f30ff1b5',
+    link: mentorfaqLink,
   },
   {
     title: 'Code of Conduct',
     icon: faGithub,
-    link: 'https://github.com/OpenMined/.github/blob/master/CODE_OF_CONDUCT.md',
+    link: codeofconductLink,
   },
 ];

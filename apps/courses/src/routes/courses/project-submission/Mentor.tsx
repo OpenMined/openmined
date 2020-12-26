@@ -130,6 +130,8 @@ export default ({ progress, attemptData, content, course, part, attempt }) => {
 
   const requestResignation = functions.httpsCallable('resignReview');
 
+  const hasAlreadyReviewed = !!attemptData.review_content;
+
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const [passFail, setPassFail] = useState(null);
   const preSubmitModal = useDisclosure();
@@ -162,44 +164,45 @@ export default ({ progress, attemptData, content, course, part, attempt }) => {
 
   return (
     <Box>
-      <Flex justify="space-between" align="center" mb={6}>
-        <Text fontFamily="mono" color="gray.700" mr={6}>
-          Time Remaining:{' '}
-          <Countdown
-            time={getSubmissionReviewEndTime(
-              dayjs(attemptData.review_started_at.toDate())
-            )}
-          />
-        </Text>
-        <Button
-          colorScheme="gray"
-          mr={3}
-          onClick={() => {
-            requestResignation({
-              submission: attemptData.id,
-              mentor: attemptData.mentor.id,
-            }).then(({ data }) => {
-              if (data && !data.error) {
-                toast({
-                  ...toastConfig,
-                  title: 'Resigned from review',
-                  description: 'You have resigned from this review',
-                  status: 'success',
-                });
-              } else {
-                toast({
-                  ...toastConfig,
-                  title: 'Error resigning from review',
-                  description: data.error,
-                  status: 'error',
-                });
-              }
-            });
-          }}
-        >
-          Resign
-        </Button>
-      </Flex>
+      {!hasAlreadyReviewed && (
+        <Flex justify="space-between" align="center" mb={6}>
+          <Text fontFamily="mono" color="gray.700" mr={6}>
+            Time Remaining:{' '}
+            <Countdown
+              time={getSubmissionReviewEndTime(
+                dayjs(attemptData.review_started_at.toDate())
+              )}
+            />
+          </Text>
+          <Button
+            colorScheme="gray"
+            onClick={() => {
+              requestResignation({
+                submission: attemptData.id,
+                mentor: attemptData.mentor.id,
+              }).then(({ data }) => {
+                if (data && !data.error) {
+                  toast({
+                    ...toastConfig,
+                    title: 'Resigned from review',
+                    description: 'You have resigned from this review',
+                    status: 'success',
+                  });
+                } else {
+                  toast({
+                    ...toastConfig,
+                    title: 'Error resigning from review',
+                    description: data.error,
+                    status: 'error',
+                  });
+                }
+              });
+            }}
+          >
+            Resign
+          </Button>
+        </Flex>
+      )}
       {content.submissions.length > 0 && (
         <Box mb={6}>
           {content.submissions.map((submission, index) => (
@@ -220,60 +223,62 @@ export default ({ progress, attemptData, content, course, part, attempt }) => {
           setHasStartedSubmission
         )}
       />
-      <Flex
-        mb={8}
-        p={[8, null, null, 12]}
-        bg="gray.800"
-        color="white"
-        borderRadius="md"
-        textAlign="center"
-        direction="column"
-        align="center"
-      >
-        <Heading as="p" size="lg" mb={8}>
-          Did the student pass?
-        </Heading>
+      {!hasAlreadyReviewed && (
         <Flex
-          direction="row"
-          justify="space-between"
+          mb={8}
+          p={[8, null, null, 12]}
+          bg="gray.800"
+          color="white"
+          borderRadius="md"
+          textAlign="center"
+          direction="column"
           align="center"
-          width="full"
-          maxW={400}
         >
+          <Heading as="p" size="lg" mb={8}>
+            Did the student pass?
+          </Heading>
           <Flex
-            direction="column"
+            direction="row"
+            justify="space-between"
             align="center"
-            opacity={passFail !== 'failed' ? 0.5 : 1}
-            cursor="pointer"
-            width={1 / 2}
-            onClick={() => setPassFail('failed')}
+            width="full"
+            maxW={400}
           >
-            <Image
-              src="https://emojis.slackmojis.com/emojis/images/1572027748/6848/blob_eyes.png?1572027748"
-              alt="Yes"
-              boxSize={12}
-              mb={3}
-            />
-            <Text color="gray.700">No, they failed</Text>
-          </Flex>
-          <Flex
-            direction="column"
-            align="center"
-            opacity={passFail !== 'passed' ? 0.5 : 1}
-            cursor="pointer"
-            width={1 / 2}
-            onClick={() => setPassFail('passed')}
-          >
-            <Image
-              src="https://emojis.slackmojis.com/emojis/images/1572027739/6832/blob_cheer.png?1572027739"
-              alt="Yes"
-              boxSize={12}
-              mb={3}
-            />
-            <Text color="gray.700">Yes, they passed</Text>
+            <Flex
+              direction="column"
+              align="center"
+              opacity={passFail !== 'failed' ? 0.5 : 1}
+              cursor="pointer"
+              width={1 / 2}
+              onClick={() => setPassFail('failed')}
+            >
+              <Image
+                src="https://emojis.slackmojis.com/emojis/images/1572027748/6848/blob_eyes.png?1572027748"
+                alt="Yes"
+                boxSize={12}
+                mb={3}
+              />
+              <Text color="gray.700">No, they failed</Text>
+            </Flex>
+            <Flex
+              direction="column"
+              align="center"
+              opacity={passFail !== 'passed' ? 0.5 : 1}
+              cursor="pointer"
+              width={1 / 2}
+              onClick={() => setPassFail('passed')}
+            >
+              <Image
+                src="https://emojis.slackmojis.com/emojis/images/1572027739/6832/blob_cheer.png?1572027739"
+                alt="Yes"
+                boxSize={12}
+                mb={3}
+              />
+              <Text color="gray.700">Yes, they passed</Text>
+            </Flex>
           </Flex>
         </Flex>
-      </Flex>
+      )}
       <Flex justify="space-between" align="center">
         <Button
           as={RRDLink}

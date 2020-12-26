@@ -27,6 +27,11 @@ export namespace OpenMined {
     ts: firebase.firestore.FieldValue;
   };
 
+  type CompletedCourse = {
+    course: string;
+    completed_at: firebase.firestore.Timestamp;
+  };
+
   export interface User {
     first_name: string;
     last_name: string;
@@ -42,6 +47,7 @@ export namespace OpenMined {
     timezone?: string;
     is_mentor?: boolean;
     mentorable_courses?: string[];
+    completed_courses?: CompletedCourse[];
   }
 
   export interface UserPrivate {

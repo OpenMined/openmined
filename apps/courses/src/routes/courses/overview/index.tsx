@@ -18,9 +18,13 @@ import {
 import { Link } from 'react-router-dom';
 import {
   faArrowRight,
+  faCertificate,
   faCheckCircle,
+  faClock,
   faFile,
+  faMoneyBillWave,
   faPlayCircle,
+  faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { OpenMined } from '@openmined/shared/types';
@@ -43,9 +47,9 @@ import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 import projectIcon from '../../../assets/homepage/technical-mentor.svg';
 import currentLessonIcon from '../../../assets/homepage/finger-point.svg';
 
-const Detail = ({ title, value }) => (
+const Detail = ({ title, value, icon = faCheckCircle }) => (
   <Flex align="center" mb={4}>
-    <Icon icon={faCheckCircle} boxSize={8} />
+    <Icon icon={icon} boxSize={8} />
     <Box ml={4}>
       <Text fontWeight="bold">{title}</Text>
       <Text color="gray.700">{value}</Text>
@@ -92,64 +96,60 @@ export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
     lessonId,
     isCurrent,
     isTakingCourse
-  ) => {
-    const iconProps: any = {
-      boxSize: 5,
-      mr: 2,
-      color: 'gray.600',
-    };
+  ) => (
+    <Box bg="gray.200" p={8}>
+      <Text mb={4}>{description}</Text>
+      <List spacing={2}>
+        {parts.map(({ title, _id, type, _key }, index) => {
+          const isComplete =
+            _id && !_key
+              ? hasCompletedConcept(progress, lessonId, _id)
+              : hasCompletedProjectPart(progress, _key);
 
-    return (
-      <Box bg="gray.200" p={8}>
-        <Text mb={4}>{description}</Text>
-        <List spacing={2}>
-          {parts.map(({ title, _id, type, _key }, index) => {
-            const isComplete =
-              _id && !_key
-                ? hasCompletedConcept(progress, lessonId, _id)
-                : hasCompletedProjectPart(progress, _key);
+          let icon;
 
-            let icon;
+          const conceptIcon = type
+            ? type === 'video'
+              ? faPlayCircle
+              : faFile
+            : null;
 
-            const conceptIcon = type
-              ? type === 'video'
-                ? faPlayCircle
-                : faFile
-              : null;
+          if (isComplete) {
+            if (conceptIcon) icon = conceptIcon;
+            else icon = faCheckCircle;
+          } else {
+            if (conceptIcon) icon = conceptIcon;
+            else icon = faCircle;
+          }
 
-            if (isComplete) {
-              iconProps.color = 'blue.500';
+          const iconProps: any = {
+            boxSize: 5,
+            mr: 2,
+            color: isComplete ? 'blue.500' : 'gray.600',
+          };
 
-              if (conceptIcon) icon = conceptIcon;
-              else icon = faCheckCircle;
-            } else {
-              if (conceptIcon) icon = conceptIcon;
-              else icon = faCircle;
-            }
-
-            return (
-              <ListItem key={index}>
-                <ListIcon as={() => <Icon {...iconProps} icon={icon} />} />
-                {title}
-              </ListItem>
-            );
-          })}
-        </List>
-        {isCurrent && isTakingCourse && (
-          <Flex justify="flex-end" mt={4}>
-            <Link to={resumeLink}>
-              <Flex align="center">
-                <Text fontWeight="bold" mr={3}>
-                  Resume
-                </Text>
-                <Icon icon={faArrowRight} />
-              </Flex>
-            </Link>
-          </Flex>
-        )}
-      </Box>
-    );
-  };
+          return (
+            <ListItem key={index} display="flex" alignItems="center">
+              <ListIcon as={() => <Icon {...iconProps} icon={icon} />} />
+              {title}
+            </ListItem>
+          );
+        })}
+      </List>
+      {isCurrent && isTakingCourse && (
+        <Flex justify="flex-end" mt={4}>
+          <Link to={resumeLink}>
+            <Flex align="center">
+              <Text fontWeight="bold" mr={3}>
+                Resume
+              </Text>
+              <Icon icon={faArrowRight} />
+            </Flex>
+          </Link>
+        </Flex>
+      )}
+    </Box>
+  );
 
   const {
     title,
@@ -286,11 +286,19 @@ export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
               mt={[8, null, null, 0]}
               ml={[0, null, null, 8]}
             >
-              {cost && <Detail title="Cost" value={cost} />}
-              {level && <Detail title="Level" value={level} />}
-              {length && <Detail title="Length" value={length} />}
+              {cost && (
+                <Detail title="Cost" value={cost} icon={faMoneyBillWave} />
+              )}
+              {level && <Detail title="Level" value={level} icon={faStar} />}
+              {length && (
+                <Detail title="Length" value={length} icon={faClock} />
+              )}
               {certification && (
-                <Detail title="Certification" value={certification.title} />
+                <Detail
+                  title="Certification"
+                  value={certification.title}
+                  icon={faCertificate}
+                />
               )}
               <Divider mb={4} />
               <Text fontWeight="bold" mb={2}>

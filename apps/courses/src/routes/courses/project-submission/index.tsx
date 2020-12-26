@@ -40,7 +40,7 @@ export default (props: OpenMined.CoursePagesProp) => {
 
   return (
     <Box bg="gray.50">
-      <GridContainer isInitial pt={[8, null, null, 16]} pb={16}>
+      <GridContainer isInitial py={16}>
         {!isMentorLayout && (
           <Student {...props} content={content} attemptData={attemptData} />
         )}

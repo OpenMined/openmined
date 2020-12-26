@@ -66,6 +66,7 @@ const DrawerItem = ({
               return (
                 <Link
                   key={index}
+                  variant="flat"
                   color="gray.400"
                   _hover={{ color: 'gray.200' }}
                   onClick={() => {

@@ -1,8 +1,11 @@
 import * as firebase from '@firebase/rules-unit-testing';
 
-import { PROJECT_ID, getAuthedFirestore, updateUser } from './utils';
-
-import { getUserReviewRef } from './utils';
+import {
+  PROJECT_ID,
+  getAuthedFirestore,
+  updateUser,
+  getUserReviewRef,
+} from './utils';
 
 const ALICE_ID = 'alice';
 const BOB_ID = 'bob';
@@ -49,7 +52,7 @@ describe('users/{{userID}}/reviews/{{reviewId}}', () => {
       getUserReviewRef(anyoneDb, ALICE_ID, RANDOM_REVIEW_ID).set(reviewData)
     );
 
-    // dan cannot read/write alice course doc
+    // dan cannot read/write bob course doc
     const danDb = getAuthedFirestore({ uid: DAN_ID });
     await firebase.assertFails(
       getUserReviewRef(danDb, BOB_ID, RANDOM_REVIEW_ID).get()

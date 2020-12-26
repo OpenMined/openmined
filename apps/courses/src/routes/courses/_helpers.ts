@@ -1,5 +1,18 @@
-import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
+
+interface CourseProgress {
+  lessons?: number;
+  completedLessons?: number;
+  concepts?: number;
+  completedConcepts?: number;
+  projectParts?: number;
+  completedProjectParts?: number;
+}
+
+interface NextAvailablePage {
+  lesson?: string;
+  concept?: string;
+}
 
 // SEE TODO (#8)
 
@@ -9,7 +22,7 @@ export const hasStartedCourse = (u) =>
 export const hasCompletedCourse = (u) =>
   hasStartedCourse(u) && !!u.completed_at;
 // TODO: Need to test this
-export const getCourseProgress = (u, ls, ps) => {
+export const getCourseProgress = (u, ls, ps): CourseProgress => {
   let numLessons = 0;
   let numCompletedLessons = 0;
   let numConcepts = 0;
@@ -195,7 +208,7 @@ export const getProjectStatus = (u, ps) => {
 };
 
 // Page change
-export const getNextAvailablePage = (u, ls) => {
+export const getNextAvailablePage = (u, ls): NextAvailablePage => {
   // If we haven't started the course at all, send them to the first lesson initiation page
   if (!hasStartedCourse(u)) return { lesson: ls[0]._id, concept: null };
 

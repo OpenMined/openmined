@@ -6,8 +6,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
-- TODO (HARD): Add a ton of security rules (make sure to reference the \_helpers.ts file!!!)
-- TODO (HARD): Write tests for all security rules (make sure to use the emulator!)
 - Downgrade to React 17... make sure that we handle `<Suspense>` (which will now be unavailable) gracefully and show the loader. Also double check that the Slate editor is fixed when we downgrade. Also try to revert Thiago's PR related to Radios and Checkboxes if downgrading to React 17 fixes the problem: https://github.com/OpenMined/openmined/pull/31
 - TODO: When using our RichTextEditor, if you type then eventually your cursor gets out of place
 - Add a ton of Cypress tests
@@ -22,7 +20,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- Finish doing a final design overview for the following pages: course overview, lesson, concept, lesson-complete, project, project-submissions, project-complete, and course-complete... after this, everything visual for the site will be "finished"
+- Finish doing a final design overview for the following pages: lesson, concept, lesson-complete, project, project-submissions, project-complete, and course-complete... after this, everything visual for the site will be "finished"
 - Make sure a mentor cannot report a review after the time is up
 - Figure out how to reassign a review after 4 hour time limit is reached
 - Research ways to tighten security for Sanity API, ensuring that users cannot use it to cheat or view unreleased course material

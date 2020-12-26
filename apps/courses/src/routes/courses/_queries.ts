@@ -35,7 +35,8 @@ export const overview = ({ course }) => `
     description,
     concepts[] -> {
       _id,
-      title
+      title,
+      "type": content[0]._type
     }
   }
 }[0]`;

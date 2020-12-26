@@ -62,7 +62,8 @@ export const MentorContext = ({ courses }) => {
   const toast = useToast();
   const user: firebase.User = useUser();
   const db = useFirestore();
-  const functions = useFunctions();
+  const functions: firebase.functions.Functions = useFunctions();
+  // @ts-ignore
   functions.region = 'europe-west1';
 
   const requestResignation = functions.httpsCallable('resignReview');
@@ -71,7 +72,9 @@ export const MentorContext = ({ courses }) => {
     .collectionGroup('submissions')
     .where('mentor', '==', db.doc(`/users/${user.uid}`))
     .where('status', '==', null);
-  const activeReviewsData: OpenMined.CourseProjectSubmission[] = useFirestoreCollectionData(activeReviewsRef);
+  const activeReviewsData: OpenMined.CourseProjectSubmission[] = useFirestoreCollectionData(
+    activeReviewsRef
+  );
 
   const activeReviews = activeReviewsData.map((r) => {
     const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
@@ -240,6 +243,7 @@ export const MentorTabs = ({ courses, mentor }) => {
   const ProjectQueue = () => {
     const toast = useToast();
     const functions: firebase.functions.Functions = useFunctions();
+    // @ts-ignore
     functions.region = 'europe-west1';
 
     const requestReview = functions.httpsCallable('assignReview');
@@ -352,7 +356,9 @@ export const MentorTabs = ({ courses, mentor }) => {
       // .where('status', '!=', 'pending')
       .orderBy('started_at', 'desc')
       .limit(10);
-    const dbReviews: OpenMined.MentorReview[] = useFirestoreCollectionData(dbReviewsRef);
+    const dbReviews: OpenMined.MentorReview[] = useFirestoreCollectionData(
+      dbReviewsRef
+    );
 
     const reviewHistory = dbReviews.map((r) => {
       const courseIndex = courses.findIndex(({ slug }) => slug === r.course);

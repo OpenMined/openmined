@@ -1,15 +1,13 @@
 import * as firebase from '@firebase/rules-unit-testing';
-import { OpenMined } from '@openmined/shared/types';
 
 import {
   PROJECT_ID,
   getAuthedFirestore,
   updateUser,
   getUserCourseRef,
+  getUserSubmissionRef,
   getUserSubmissionsRef,
 } from './utils';
-
-import { getUserSubmissionRef } from './utils';
 
 const ALICE_ID = 'alice';
 const BOB_ID = 'bob';

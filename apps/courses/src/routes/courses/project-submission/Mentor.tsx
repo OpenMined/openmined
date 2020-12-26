@@ -30,7 +30,6 @@ import Countdown from '../../../components/Countdown';
 import useToast, { toastConfig } from '../../../components/Toast';
 import SubmissionInline from '../../../components/SubmissionInline';
 import { handleErrors } from '../../../helpers';
-import { MENTOR_STUDENT_TOKEN } from '../../users/dashboard/Mentor';
 
 const genTabsContent = (
   part,
@@ -121,7 +120,15 @@ const genTabsContent = (
   return content;
 };
 
-export default ({ progress, attemptData, content, course, part, attempt }) => {
+export default ({
+  progress,
+  attemptData,
+  content,
+  course,
+  part,
+  attempt,
+  student,
+}) => {
   const toast = useToast();
   const db = useFirestore();
   const functions: firebase.functions.Functions = useFunctions();
@@ -208,7 +215,9 @@ export default ({ progress, attemptData, content, course, part, attempt }) => {
           {content.submissions.map((submission, index) => (
             <SubmissionInline
               key={index}
-              link={`/courses/${course}/project/${part}/${index + 1}`}
+              link={`/courses/${course}/project/${part}/${
+                index + 1
+              }/?student=${student}`}
               {...submission}
             />
           ))}
@@ -324,7 +333,6 @@ export default ({ progress, attemptData, content, course, part, attempt }) => {
                 colorScheme="blue"
                 mr={3}
                 onClick={() => {
-                  // TODO: When finishing a review, make sure to reset the MENTOR_STUDENT_TOKEN
                   // Submit the attempt with the _key of the part and the content of the editor
                   onReviewSubmission(
                     localStorage.getItem(EDITOR_STORAGE_STRING),
@@ -333,9 +341,6 @@ export default ({ progress, attemptData, content, course, part, attempt }) => {
 
                   // And clear the editor's cache
                   localStorage.removeItem(EDITOR_STORAGE_STRING);
-
-                  // And clear the mentor/student token used to view this review
-                  localStorage.removeItem(MENTOR_STUDENT_TOKEN);
 
                   // And close the modal
                   preSubmitModal.onClose();

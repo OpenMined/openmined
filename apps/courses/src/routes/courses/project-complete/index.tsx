@@ -43,7 +43,6 @@ export default ({
   progress,
   page,
   user,
-  ts,
   course,
 }: OpenMined.CoursePagesProp) => {
   const db = useFirestore();
@@ -60,6 +59,7 @@ export default ({
   // @ts-ignore
   functions.region = 'europe-west1';
 
+  const [clickedContinue, setClickedContinue] = useState(false);
   const handleCourseComplete = functions.httpsCallable('completeCourse');
 
   // Allow this component to capture the user's feedback
@@ -78,11 +78,15 @@ export default ({
   if (!status) status = 'passed';
 
   // Create a function that is triggered when the project is completed
-  const onCompleteCourse = () =>
-    handleCourseComplete({
+  const onCompleteCourse = () => {
+    setClickedContinue(true);
+
+    return handleCourseComplete({
       course,
     })
       .then(({ data }) => {
+        setClickedContinue(false);
+
         if (data && !data.error) {
           window.location.href = `/courses/${course}/complete`;
         } else {
@@ -90,6 +94,7 @@ export default ({
         }
       })
       .catch((error) => handleErrors(toast, error));
+  };
 
   // We need a function to be able to provide feedback for this project
   const onProvideFeedback = (value, feedback = null) =>
@@ -160,6 +165,8 @@ export default ({
               mb={12}
               colorScheme="cyan"
               onClick={onCompleteCourse}
+              isDisabled={clickedContinue}
+              isLoading={clickedContinue}
             >
               Continue
             </Button>

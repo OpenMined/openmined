@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 import { OpenMined } from '@openmined/shared/types';
@@ -10,7 +10,6 @@ import * as configs from './_configs';
 import CourseWrap from './Wrapper';
 import { getCourseRef } from './_firebase';
 
-import { MENTOR_STUDENT_TOKEN } from '../users/dashboard/Mentor';
 import Loading from '../../components/Loading';
 
 // SEE TODO (#11)
@@ -65,11 +64,14 @@ export default ({ which }: PropType) => {
   // Get all the URL params
   const params: any = useParams();
 
-  // The mentor/student token is created when a mentor wants to view the submission page of a student
+  // Get all search params
+  const [searchParams] = useSearchParams();
+
+  // We need to have the UID of the student when a mentor wants to view the submission page of a student
   // Since they will have different ID's, we need to ensure that IF we're a mentor trying to leave a review
   // That the "dbCourseRef" is referencing the right user
   // If we're not a mentor in the process of a review, we can assume it's a student trying to get their own "dbCourseRef"
-  const mentorStudentToken = localStorage.getItem(MENTOR_STUDENT_TOKEN);
+  const mentorStudentToken = searchParams.get('student');
 
   // Get the user's current progress on their courses
   const user: firebase.User = useUser();

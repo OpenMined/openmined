@@ -1,9 +1,13 @@
 import * as firebase from '@firebase/rules-unit-testing';
 import * as firebaseApp from 'firebase/app';
 
-import { PROJECT_ID, getAuthedFirestore, updateUser } from './utils';
-
-import { getCourseRef, getCoursesRef } from './utils';
+import {
+  PROJECT_ID,
+  getAuthedFirestore,
+  updateUser,
+  getCourseRef,
+  getCoursesRef
+} from './utils';
 
 import { OpenMined } from '@openmined/shared/types';
 const ALICE_ID = 'alice';
@@ -57,7 +61,7 @@ describe('users/{{userID}}/courses/{{courseId}}', () => {
     });
     const bobDb = getAuthedFirestore({ uid: BOB_ID });
 
-    // bob can update users/alice/course/{RANDOM_COURSE_ID}
+    // bob can update users/alice/courses/{RANDOM_COURSE_ID}
     const updatedProject: OpenMined.Project = {
       parts: {
         any_part: {

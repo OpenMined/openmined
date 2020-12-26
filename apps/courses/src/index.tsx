@@ -1,6 +1,5 @@
 import React from 'react';
-// @ts-ignore
-import { unstable_createRoot } from 'react-dom';
+import { render } from 'react-dom';
 import { FirebaseAppProvider } from 'reactfire';
 import { SanityProvider } from '@openmined/shared/data-access-sanity';
 import { HelmetProvider } from 'react-helmet-async';
@@ -77,6 +76,5 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 if (process.env.NODE_ENV !== 'test') {
-  // Experimental concurrence mode in React
-  unstable_createRoot(root).render(<WrappedApp />);
+  render(<WrappedApp />, root);
 }

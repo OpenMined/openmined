@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Controller,
   useForm,
   useFieldArray,
   UseFormOptions,
@@ -24,13 +23,13 @@ import {
   RadioGroup,
   Stack,
   Flex,
+  Radio,
 } from '@chakra-ui/react';
 import { ObjectSchema } from 'yup';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
-import { capitalize } from '../../helpers';
-import TempRadio from '../TempRadio';
 import Icon from '../Icon';
+import { capitalize } from '../../helpers';
 
 interface Field {
   name: string;
@@ -64,7 +63,6 @@ const createInput = (
   { options, left, right, ...input },
   register,
   control,
-  setValue
 ) => {
   let elem;
 
@@ -96,44 +94,38 @@ const createInput = (
     elem = <Text color="gray.700">{input.defaultValue}</Text>;
   } else if (input.type === 'radio') {
     elem = (
-      <Controller
-        control={control}
-        as={
-          <RadioGroup {...input}>
-            <Stack spacing={2} direction="column">
-              {options.map((option) => {
-                if (typeof option === 'string') {
-                  return (
-                    <TempRadio
-                      key={option}
-                      value={option}
-                      id={`option-${option.toLowerCase().split(' ').join('-')}`}
-                      onChange={(v) => setValue(input.name, v)}
-                    >
-                      {option}
-                    </TempRadio>
-                  );
-                } else {
-                  return (
-                    <TempRadio
-                      key={option.label}
-                      value={option.value}
-                      id={`option-${option.value
-                        .toLowerCase()
-                        .split(' ')
-                        .join('-')}`}
-                      onChange={(v) => setValue(input.name, v)}
-                    >
-                      {option.label}
-                    </TempRadio>
-                  );
-                }
-              })}
-            </Stack>
-          </RadioGroup>
-        }
-        name={input.name}
-      />
+      <RadioGroup {...input}>
+        <Stack spacing={2} direction="column">
+          {options.map((option) => {
+            if (typeof option === 'string') {
+              return (
+                <Radio
+                  key={option}
+                  value={option}
+                  id={`option-${option.toLowerCase().split(' ').join('-')}`}
+                  ref={register}
+                >
+                  {option}
+                </Radio>
+              );
+            } else {
+              return (
+                <Radio
+                  key={option.label}
+                  value={option.value}
+                  id={`option-${option.value
+                    .toLowerCase()
+                    .split(' ')
+                    .join('-')}`}
+                  ref={register}
+                >
+                  {option.label}
+                </Radio>
+              );
+            }
+          })}
+        </Stack>
+      </RadioGroup>
     );
   } else {
     elem = <Input {...input} variant={VARIANT} size={SIZE} ref={register} />;
@@ -156,7 +148,6 @@ const FieldArray = ({
   fields,
   control,
   register,
-  setValue,
   defaultValue,
 }: any) => {
   const fieldArray = useFieldArray({
@@ -183,8 +174,7 @@ const FieldArray = ({
                 {createInput(
                   { ...input, name: inputName, defaultValue: item.value },
                   register,
-                  control,
-                  setValue
+                  control
                 )}
                 <InputRightElement cursor="pointer">
                   <Icon
@@ -233,7 +223,6 @@ export default ({
     control,
     handleSubmit,
     errors,
-    setValue,
     formState: { isDirty, isValid, isSubmitting },
   } = useForm({
     ...settings,
@@ -266,7 +255,7 @@ export default ({
           )}
           {helper && helper({ fontSize: 'sm' })}
         </Flex>
-        {createInput(input, register, control, setValue)}
+        {createInput(input, register, control)}
         {hasErrors && (
           <FormErrorMessage>
             {capitalize(errors[input.name].message.split('_').join(' '))}

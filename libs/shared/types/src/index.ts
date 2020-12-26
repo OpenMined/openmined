@@ -82,7 +82,7 @@ export namespace OpenMined {
   };
 
   export type Project = {
-    started_at: firebase.firestore.Timestamp;
+    started_at?: firebase.firestore.Timestamp;
     completed_at?: firebase.firestore.Timestamp;
     status?: 'passed' | 'failed';
     parts?: ProjectParts;
@@ -101,8 +101,8 @@ export namespace OpenMined {
   export type ProjectAttemptStatus = 'passed' | 'failed';
 
   export type ProjectAttempt = {
-    submitted_at: firebase.firestore.Timestamp;
-    submission: firebase.firestore.DocumentReference;
+    submitted_at?: firebase.firestore.Timestamp;
+    submission?: firebase.firestore.DocumentReference;
     reviewed_at?: firebase.firestore.Timestamp;
     status?: ProjectAttemptStatus;
   };

@@ -27,7 +27,7 @@ import {
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { OpenMined } from '@openmined/shared/types';
+import { CoursePagesProp } from '@openmined/shared/types';
 
 import {
   getCourseProgress,
@@ -89,7 +89,7 @@ const LearnFrom = ({ image, name, credential }) => (
   </Flex>
 );
 
-export default ({ course, page, progress }: OpenMined.CoursePagesProp) => {
+export default ({ course, page, progress }: CoursePagesProp) => {
   const prepareSyllabusContent = (
     description,
     parts,

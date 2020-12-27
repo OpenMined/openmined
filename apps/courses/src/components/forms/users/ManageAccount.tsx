@@ -14,7 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useAuth, useFirestore, useUser } from 'reactfire';
+import { useAnalytics, useAuth, useFirestore, useUser } from 'reactfire';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
@@ -39,6 +39,7 @@ export default ({
   const user: firebase.User = useUser();
   const auth = useAuth();
   const db = useFirestore();
+  const analytics = useAnalytics();
   const toast = useToast();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -87,8 +88,10 @@ export default ({
     if (callback) callback();
   };
 
-  const onSubmit = ({ email }) =>
-    auth.currentUser
+  const onSubmit = ({ email }) => {
+    analytics.logEvent('change_email');
+
+    return auth.currentUser
       .updateEmail(email)
       .then(() =>
         auth.currentUser
@@ -97,9 +100,15 @@ export default ({
           .catch((error) => handleErrors(toast, error))
       )
       .catch((error) => handleErrors(toast, error));
+  };
 
-  const onLinkGithub = () =>
-    auth.currentUser
+  const onLinkGithub = () => {
+    analytics.logEvent('link_account_by_manage_account', {
+      original: 'email',
+      new: 'github',
+    });
+
+    return auth.currentUser
       .linkWithPopup(githubProvider)
       .then((authUser) => {
         const batch = db.batch();
@@ -126,9 +135,15 @@ export default ({
           .catch((error) => handleErrors(toast, error));
       })
       .catch((error) => handleErrors(toast, error));
+  };
 
-  const onUnlinkGithub = () =>
-    auth.currentUser
+  const onUnlinkGithub = () => {
+    analytics.logEvent('unlink_account_by_manage_account', {
+      original: 'github',
+      new: 'email',
+    });
+
+    return auth.currentUser
       .unlink('github.com')
       .then(() => {
         const batch = db.batch();
@@ -151,13 +166,16 @@ export default ({
           .catch((error) => handleErrors(toast, error));
       })
       .catch((error) => handleErrors(toast, error));
+  };
 
-  // SEE TODO (#6)
-  const onDeleteAccount = () =>
-    auth.currentUser
+  const onDeleteAccount = () => {
+    analytics.logEvent('delete_account');
+
+    return auth.currentUser
       .delete()
       .then(onDeleteSuccess)
       .catch((error) => handleErrors(toast, error));
+  };
 
   const schema = yup.object().shape({
     email: validEmail,

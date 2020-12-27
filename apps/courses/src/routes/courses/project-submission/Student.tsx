@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Breadcrumb,
@@ -24,7 +24,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
-import { useFirestore } from 'reactfire';
+import { useAnalytics, useFirestore } from 'reactfire';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -191,6 +191,7 @@ export default ({
   attemptData,
 }) => {
   const db = useFirestore();
+  const analytics = useAnalytics();
   const toast = useToast();
 
   const {
@@ -206,6 +207,17 @@ export default ({
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const preSubmitModal = useDisclosure();
 
+  useEffect(() => {
+    if (
+      submissions.filter(
+        ({ status }) => status === 'passed' || status === 'failed'
+      ).length === 3 &&
+      !attemptData
+    ) {
+      window.location.href = `/courses/${course}/project/${part}/3`;
+    }
+  }, [submissions, attemptData, course, part]);
+
   // Save the arrayUnion function so that we can push items into a Firestore array
   const arrayUnion = useFirestore.FieldValue.arrayUnion;
 
@@ -217,6 +229,7 @@ export default ({
   const onAttemptSubmission = async (part, content) => {
     handleAttemptSubmission(
       db,
+      analytics,
       user.uid,
       course,
       arrayUnion,

@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Box, SimpleGrid, Input, Text } from '@chakra-ui/react';
 import Fuse from 'fuse.js';
+import { useAnalytics } from 'reactfire';
+import { CoursePagesProp } from '@openmined/shared/types';
 
 import Sidebar from './Sidebar';
 
+import { useDebounce } from '../../../helpers';
 import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
-import { OpenMined } from '@openmined/shared/types';
 
-export default ({ page }: OpenMined.CoursePagesProp) => {
+export default ({ page }: CoursePagesProp) => {
+  const analytics = useAnalytics();
+
   const FIXED_SIDEBAR_WIDTH = 250;
   const FIXED_SIDEBAR_MD_WIDTH = 200;
 
   const [results, setResults] = useState(page);
   const [search, setSearch] = useState('');
   const [skillLevel, setSkillLevel] = useState('');
+  const debouncedSearch = useDebounce(search, 1000);
 
   const filters = [
     {
@@ -24,6 +29,12 @@ export default ({ page }: OpenMined.CoursePagesProp) => {
       options: ['Beginner', 'Intermediate', 'Advanced'],
     },
   ];
+
+  useEffect(() => {
+    if (debouncedSearch && debouncedSearch !== '') {
+      analytics.logEvent('search', { search_term: debouncedSearch });
+    }
+  }, [debouncedSearch, analytics]);
 
   useEffect(() => {
     const liveSort = (a, b) => (a.live === b.live ? 0 : a.live ? -1 : 1);

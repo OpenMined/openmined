@@ -12,7 +12,7 @@ import {
   Text,
   UnorderedList,
 } from '@chakra-ui/react';
-import { useFirestore } from 'reactfire';
+import { useAnalytics, useFirestore } from 'reactfire';
 import {
   faBug,
   faCheckCircle,
@@ -25,7 +25,7 @@ import {
   faClock,
   faCertificate,
 } from '@fortawesome/free-solid-svg-icons';
-import { OpenMined } from '@openmined/shared/types';
+import { CoursePagesProp } from '@openmined/shared/types';
 
 import ProjectAccordion from './ProjectAccordion';
 
@@ -112,14 +112,9 @@ const getStatusStyles = (status) => {
   }
 };
 
-export default ({
-  course,
-  page,
-  progress,
-  user,
-  ts,
-}: OpenMined.CoursePagesProp) => {
+export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
   const db = useFirestore();
+  const analytics = useAnalytics();
   const toast = useToast();
 
   const {
@@ -166,6 +161,7 @@ export default ({
   const onBeginProjectPart = (part) =>
     handleProjectPartBegin(
       db,
+      analytics,
       user.uid,
       course,
       ts,

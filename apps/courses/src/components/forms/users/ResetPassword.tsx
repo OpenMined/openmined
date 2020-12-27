@@ -1,6 +1,6 @@
 import React from 'react';
 import * as yup from 'yup';
-import { useAuth } from 'reactfire';
+import { useAnalytics, useAuth } from 'reactfire';
 import { BoxProps } from '@chakra-ui/react';
 
 import Form from '../_form';
@@ -16,6 +16,7 @@ interface ResetPasswordFormProps extends BoxProps {
 
 export default ({ callback, ...props }: ResetPasswordFormProps) => {
   const auth = useAuth();
+  const analytics = useAnalytics();
   const toast = useToast();
 
   const onSuccess = (email) => {
@@ -28,11 +29,14 @@ export default ({ callback, ...props }: ResetPasswordFormProps) => {
     if (callback) callback();
   };
 
-  const onSubmit = ({ email }) =>
-    auth
+  const onSubmit = ({ email }) => {
+    analytics.logEvent('reset_password');
+
+    return auth
       .sendPasswordResetEmail(email)
       .then(() => onSuccess(email))
       .catch((error) => handleErrors(toast, error));
+  };
 
   const schema = yup.object().shape({
     email: validEmail,

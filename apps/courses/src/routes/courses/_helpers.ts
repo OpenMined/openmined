@@ -330,3 +330,14 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
 
   return status;
 };
+
+// SEE TODO (#18)
+export const useCoursePermissionGate = (user, lessons, page, params) => {
+  // For pages that don't require any permissions or redirection...
+  const permissionless = ['search', 'overview'];
+  if (permissionless.includes(page)) return { status: 'available' };
+
+  // Patrick, pick things up here...
+
+  return { page, user, lessons, params };
+};

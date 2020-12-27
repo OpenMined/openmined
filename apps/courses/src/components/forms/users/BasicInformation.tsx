@@ -1,8 +1,14 @@
 import React from 'react';
 import { BoxProps, Flex, Link } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useUser, useFirestore, useFirestoreDocData, useAuth } from 'reactfire';
-import { OpenMined } from '@openmined/shared/types';
+import {
+  useUser,
+  useFirestore,
+  useFirestoreDocData,
+  useAuth,
+  useAnalytics,
+} from 'reactfire';
+import { User } from '@openmined/shared/types';
 
 import Form from '../_form';
 import {
@@ -45,10 +51,11 @@ export default ({
   const user: firebase.User = useUser();
   const auth = useAuth();
   const db = useFirestore();
+  const analytics = useAnalytics();
   const toast = useToast();
 
   const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: OpenMined.User = useFirestoreDocData(dbUserRef);
+  const dbUser: User = useFirestoreDocData(dbUserRef);
 
   const onSuccess = () => {
     toast({
@@ -70,13 +77,30 @@ export default ({
     if (callback) callback();
   };
 
-  const onSubmit = (data: OpenMined.User) =>
-    db
+  const onSubmit = (data: User) => {
+    type UserProperties = {
+      skill_level?: string;
+      primary_language?: string;
+    };
+
+    const userProperties: UserProperties = {};
+
+    if (data.skill_level && data.skill_level !== '') {
+      userProperties.skill_level = data.skill_level;
+    }
+    if (data.primary_language && data.primary_language !== '') {
+      userProperties.primary_language = data.primary_language;
+    }
+
+    analytics.setUserProperties(userProperties);
+
+    return db
       .collection('users')
       .doc(user.uid)
       .set(data, { merge: true })
       .then(onSuccess)
       .catch((error) => handleErrors(toast, error));
+  };
 
   const onReverifyEmail = (data) =>
     auth.currentUser

@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
-import { useAuth } from 'reactfire';
+import { useAnalytics, useAuth } from 'reactfire';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import Icon from '../../Icon';
@@ -30,6 +30,7 @@ interface SignInFormProps extends BoxProps {
 
 export default ({ callback, ...props }: SignInFormProps) => {
   const auth = useAuth();
+  const analytics = useAnalytics();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -45,13 +46,18 @@ export default ({ callback, ...props }: SignInFormProps) => {
     if (callback) callback();
   };
 
-  const onSubmit = ({ email, password }) =>
-    auth
+  const onSubmit = ({ email, password }) => {
+    analytics.logEvent('login', { method: 'email' });
+
+    return auth
       .signInWithEmailAndPassword(email, password)
       .then(onSuccess)
       .catch((error) => handleErrors(toast, error));
+  };
 
   const onGithubSubmit = async () => {
+    analytics.logEvent('login', { method: 'github' });
+
     const authUser = await auth
       .signInWithPopup(githubProvider)
       .catch((error) => handleErrors(toast, error));

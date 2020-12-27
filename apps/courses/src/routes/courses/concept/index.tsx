@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useFirestore } from 'reactfire';
+import { useAnalytics, useFirestore } from 'reactfire';
 import { Box } from '@chakra-ui/react';
 
 import CourseContent from './content';
@@ -13,7 +13,7 @@ import {
   handleConceptStarted,
   handleProvideFeedback,
 } from '../_firebase';
-import { OpenMined } from '@openmined/shared/types';
+import { CoursePagesProp } from '@openmined/shared/types';
 
 export default ({
   progress,
@@ -23,8 +23,9 @@ export default ({
   course,
   lesson,
   concept,
-}: OpenMined.CoursePagesProp) => {
+}: CoursePagesProp) => {
   const db = useFirestore();
+  const analytics = useAnalytics();
   const toast = useToast();
 
   const {
@@ -35,6 +36,7 @@ export default ({
   useEffect(() => {
     handleConceptStarted(
       db,
+      analytics,
       user.uid,
       course,
       ts,
@@ -42,7 +44,18 @@ export default ({
       lesson,
       concept
     ).catch((error) => handleErrors(toast, error));
-  }, [toast, user.uid, db, progress, ts, course, lessons, lesson, concept]);
+  }, [
+    toast,
+    analytics,
+    user.uid,
+    db,
+    progress,
+    ts,
+    course,
+    lessons,
+    lesson,
+    concept,
+  ]);
 
   // We need to track the user's scroll progress, as well as whether or not they've hit the bottom at least once
   // This requires some weird computation with whether or not the parent container (in parentRef.current) has a height or not
@@ -62,6 +75,7 @@ export default ({
   const onCompleteConcept = () =>
     handleConceptComplete(
       db,
+      analytics,
       user.uid,
       course,
       ts,
@@ -74,6 +88,7 @@ export default ({
   const onProvideFeedback = (value, feedback = null) =>
     handleProvideFeedback(
       db,
+      analytics,
       user.uid,
       course,
       concept,

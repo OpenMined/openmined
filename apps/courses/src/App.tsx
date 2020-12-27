@@ -16,16 +16,6 @@ import Cookies from './components/Cookies';
 
 import { SuspenseWithPerf } from 'reactfire';
 
-const Analytics = ({ location }) => {
-  const analytics = useAnalytics();
-
-  useEffect(() => {
-    analytics.logEvent('page-view', { path_name: location.pathname });
-  }, [location.pathname, analytics]);
-
-  return null;
-};
-
 const history = createBrowserHistory();
 
 const preloadSDKs = (firebaseApp) =>
@@ -60,6 +50,26 @@ const preloadSDKs = (firebaseApp) =>
     // }),
   ]);
 
+const Analytics = ({ cookiePrefs, location }) => {
+  const analytics = useAnalytics();
+
+  useEffect(() => {
+    if (cookiePrefs === 'all') {
+      analytics.setAnalyticsCollectionEnabled(true);
+    } else {
+      analytics.setAnalyticsCollectionEnabled(false);
+    }
+  }, [cookiePrefs, analytics]);
+
+  useEffect(() => {
+    if (cookiePrefs === 'all') {
+      analytics.logEvent('page_view', { path_name: location.pathname });
+    }
+  }, [location, cookiePrefs, analytics]);
+
+  return null;
+};
+
 const App = () => {
   const [cookiePrefs, setCookiePrefs] = useState(
     window.localStorage.getItem('@openmined/cookie-preferences') || null
@@ -88,7 +98,7 @@ const App = () => {
   return (
     <Router action={action} location={location} navigator={history}>
       <SuspenseWithPerf fallback={<Loading />} traceId={location.pathname}>
-        {cookiePrefs === 'all' && <Analytics location={location} />}
+        <Analytics cookiePrefs={cookiePrefs} location={location} />
         <Routes />
         {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
       </SuspenseWithPerf>

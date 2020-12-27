@@ -1,7 +1,7 @@
 import React from 'react';
 import { BoxProps } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useAuth } from 'reactfire';
+import { useAnalytics, useAuth } from 'reactfire';
 
 import Form from '../_form';
 import { validPassword, validMatchingPassword } from '../_validation';
@@ -16,6 +16,7 @@ interface ChangePasswordFormProps extends BoxProps {
 
 export default ({ callback, ...props }: ChangePasswordFormProps) => {
   const auth = useAuth();
+  const analytics = useAnalytics();
   const toast = useToast();
 
   const onSuccess = () => {
@@ -28,11 +29,14 @@ export default ({ callback, ...props }: ChangePasswordFormProps) => {
     if (callback) callback();
   };
 
-  const onSubmit = ({ password }) =>
-    auth.currentUser
+  const onSubmit = ({ password }) => {
+    analytics.logEvent('change_password');
+
+    return auth.currentUser
       .updatePassword(password)
       .then(onSuccess)
       .catch((error) => handleErrors(toast, error));
+  };
 
   const schema = yup.object().shape({
     password: validPassword,

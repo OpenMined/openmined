@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RRDLink } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -16,10 +16,13 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useFirestore, useFunctions } from 'reactfire';
+import { useAnalytics, useFirestore, useFunctions } from 'reactfire';
 import dayjs from 'dayjs';
 
-import { getSubmissionReviewEndTime } from '../_helpers';
+import {
+  getSubmissionReviewEndTime,
+  SUBMISSION_REVIEW_HOURS,
+} from '../_helpers';
 import { handleReviewSubmission } from '../_firebase';
 import { Content } from '../concept/content';
 import RichTextEditor, {
@@ -129,8 +132,10 @@ export default ({
   attempt,
   student,
 }) => {
+  const navigate = useNavigate();
   const toast = useToast();
   const db = useFirestore();
+  const analytics = useAnalytics();
   const functions: firebase.functions.Functions = useFunctions();
   // @ts-ignore
   functions.region = 'europe-west1';
@@ -140,33 +145,97 @@ export default ({
   const hasAlreadyReviewed = !!attemptData.review_content;
 
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
+  const [hasClickedButton, setHasClickedButton] = useState(false);
   const [passFail, setPassFail] = useState(null);
   const preSubmitModal = useDisclosure();
+
+  const isBeforeDeadline = useCallback(() => {
+    const now = dayjs();
+    const reviewStarted = dayjs(attemptData.review_started_at.toDate());
+
+    return now.diff(reviewStarted, 'hour', true) <= SUBMISSION_REVIEW_HOURS;
+  }, [attemptData]);
 
   // Apparently, you cannot use SererTimestamp (ts()) inside of arrayUnion, so this is needed
   // https://stackoverflow.com/questions/52324505/function-fieldvalue-arrayunion-called-with-invalid-data-fieldvalue-servertime
   const currentTime = useFirestore.Timestamp.now;
 
+  useEffect(() => {
+    if (!isBeforeDeadline()) {
+      navigate('/users/dashboard');
+    }
+  }, [isBeforeDeadline, navigate]);
+
   // When the user attempts a submission
   const onReviewSubmission = async (content, status) => {
-    handleReviewSubmission(
-      db,
-      currentTime,
-      attemptData.student.id,
-      attemptData.mentor.id,
+    if (isBeforeDeadline()) {
+      setHasClickedButton(true);
+
+      handleReviewSubmission(
+        db,
+        analytics,
+        currentTime,
+        attemptData.student.id,
+        attemptData.mentor.id,
+        course,
+        part,
+        attempt,
+        attemptData.id,
+        status,
+        progress,
+        content
+      )
+        .then(() => {
+          // And clear the editor's cache
+          localStorage.removeItem(EDITOR_STORAGE_STRING);
+
+          // And close the modal
+          preSubmitModal.onClose();
+
+          setHasClickedButton(false);
+
+          // Once that's done, go back to the dashboard
+          navigate(`/users/dashboard`);
+        })
+        .catch((error) => handleErrors(toast, error));
+    } else {
+      onRequestResignation(attemptData.id, attemptData.mentor.id);
+    }
+  };
+
+  const onRequestResignation = async (submission, mentor) => {
+    setHasClickedButton(true);
+
+    analytics.logEvent('project_submission_resigned', {
       course,
       part,
       attempt,
-      attemptData.id,
-      status,
-      progress,
-      content
-    )
-      .then(() => {
-        // Once that's done, go back to the dashboard
-        window.location.href = `/users/dashboard`;
-      })
-      .catch((error) => handleErrors(toast, error));
+    });
+
+    requestResignation({
+      submission,
+      mentor,
+    }).then(({ data }) => {
+      setHasClickedButton(false);
+
+      if (data && !data.error) {
+        toast({
+          ...toastConfig,
+          title: 'Resigned from review',
+          description: 'You have resigned from this review',
+          status: 'success',
+        });
+
+        navigate('/users/dashboard');
+      } else {
+        toast({
+          ...toastConfig,
+          title: 'Error resigning from review',
+          description: data.error,
+          status: 'error',
+        });
+      }
+    });
   };
 
   return (
@@ -183,27 +252,10 @@ export default ({
           </Text>
           <Button
             colorScheme="gray"
+            isDisabled={hasClickedButton}
+            isLoading={hasClickedButton}
             onClick={() => {
-              requestResignation({
-                submission: attemptData.id,
-                mentor: attemptData.mentor.id,
-              }).then(({ data }) => {
-                if (data && !data.error) {
-                  toast({
-                    ...toastConfig,
-                    title: 'Resigned from review',
-                    description: 'You have resigned from this review',
-                    status: 'success',
-                  });
-                } else {
-                  toast({
-                    ...toastConfig,
-                    title: 'Error resigning from review',
-                    description: data.error,
-                    status: 'error',
-                  });
-                }
-              });
+              onRequestResignation(attemptData.id, attemptData.mentor.id);
             }}
           >
             Resign
@@ -332,18 +384,14 @@ export default ({
               <Button
                 colorScheme="blue"
                 mr={3}
+                isDisabled={hasClickedButton}
+                isLoading={hasClickedButton}
                 onClick={() => {
                   // Submit the attempt with the _key of the part and the content of the editor
                   onReviewSubmission(
                     localStorage.getItem(EDITOR_STORAGE_STRING),
                     passFail
                   );
-
-                  // And clear the editor's cache
-                  localStorage.removeItem(EDITOR_STORAGE_STRING);
-
-                  // And close the modal
-                  preSubmitModal.onClose();
                 }}
               >
                 Continue
@@ -351,6 +399,8 @@ export default ({
               <Button
                 variant="ghost"
                 colorScheme="white"
+                isDisabled={hasClickedButton}
+                isLoading={hasClickedButton}
                 onClick={preSubmitModal.onClose}
               >
                 Cancel
@@ -358,11 +408,16 @@ export default ({
             </ModalFooter>
           </ModalContent>
         </Modal>
-        {hasStartedSubmission && passFail !== null && (
-          <Button onClick={preSubmitModal.onOpen} colorScheme="black">
-            Submit
-          </Button>
-        )}
+        <Button
+          isDisabled={
+            !hasStartedSubmission || passFail === null || hasClickedButton
+          }
+          isLoading={hasClickedButton}
+          onClick={preSubmitModal.onOpen}
+          colorScheme="black"
+        >
+          Submit
+        </Button>
       </Flex>
     </Box>
   );

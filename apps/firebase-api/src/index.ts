@@ -7,7 +7,11 @@ import admin from 'firebase-admin';
 admin.initializeApp();
 
 // import ssr from './app/ssr';
-import { assignReview, resignReview } from './app/review';
+import {
+  assignReview,
+  resignReview,
+  checkForUnreviewedSubmissions,
+} from './app/review';
 import { completeCourse } from './app/courses';
 import sanity from './app/sanity';
 
@@ -18,6 +22,12 @@ exports.assignReview = functions
 exports.resignReview = functions
   .region('europe-west1')
   .https.onCall(resignReview);
+
+// Check for all unreviewed (and late) submissions and reassign them
+exports.checkForUnreviewedSubmissions = functions
+  .region('europe-west1')
+  .pubsub.schedule('every 30 minutes')
+  .onRun(checkForUnreviewedSubmissions);
 
 // Complete a course
 exports.completeCourse = functions

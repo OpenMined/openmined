@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useFirestore, useFunctions } from 'reactfire';
+import { useAnalytics, useFirestore, useFunctions } from 'reactfire';
 import {
   Box,
   Button,
@@ -17,7 +17,7 @@ import {
   faCommentAlt,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { OpenMined } from '@openmined/shared/types';
+import { CoursePagesProp } from '@openmined/shared/types';
 
 import { getProjectPartStatus } from '../_helpers';
 import { handleProvideFeedback } from '../_firebase';
@@ -39,13 +39,9 @@ const DetailLink = ({ icon, children, ...props }) => (
   </Box>
 );
 
-export default ({
-  progress,
-  page,
-  user,
-  course,
-}: OpenMined.CoursePagesProp) => {
+export default ({ progress, page, user, course }: CoursePagesProp) => {
   const db = useFirestore();
+  const analytics = useAnalytics();
 
   const {
     project: { title, parts },
@@ -81,6 +77,8 @@ export default ({
   const onCompleteCourse = () => {
     setClickedContinue(true);
 
+    analytics.logEvent('course_completed', { course, status });
+
     return handleCourseComplete({
       course,
     })
@@ -100,6 +98,7 @@ export default ({
   const onProvideFeedback = (value, feedback = null) =>
     handleProvideFeedback(
       db,
+      analytics,
       user.uid,
       course,
       course,

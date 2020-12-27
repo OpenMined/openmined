@@ -1,27 +1,99 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import dayjs from 'dayjs';
 import { Text } from '@chakra-ui/react';
 
-export default ({ time: initialTime }) => {
-  initialTime = initialTime.unix();
+type TimerRef = {
+  started?: number;
+  lastInterval?: number;
+  timeLeft?: number;
+  timeToCount?: number;
+  requestId?: number;
+};
 
-  const [time, setTime] = useState(dayjs().unix());
+const useCountdown = (timeToCount = 60 * 1000, interval = 1000) => {
+  const [timeLeft, setTimeLeft] = useState(0);
+  const timer = useRef({} as TimerRef);
+
+  const run = (ts) => {
+    if (!timer.current.started) {
+      timer.current.started = ts;
+      timer.current.lastInterval = ts;
+    }
+
+    const localInterval = Math.min(
+      interval,
+      timer.current.timeLeft || Infinity
+    );
+    if (ts - timer.current.lastInterval >= localInterval) {
+      timer.current.lastInterval += localInterval;
+      setTimeLeft((timeLeft) => {
+        timer.current.timeLeft = timeLeft - localInterval;
+        return timer.current.timeLeft;
+      });
+    }
+
+    if (ts - timer.current.started < timer.current.timeToCount) {
+      timer.current.requestId = window.requestAnimationFrame(run);
+    }
+  };
+
+  const start = useCallback((ttc = null) => {
+    window.cancelAnimationFrame(timer.current.requestId);
+
+    const newTimeToCount = ttc || timeToCount;
+    timer.current.started = null;
+    timer.current.lastInterval = null;
+    timer.current.timeToCount = newTimeToCount;
+    timer.current.requestId = window.requestAnimationFrame(run);
+
+    setTimeLeft(newTimeToCount);
+  }, []);
+
+  const pause = useCallback(() => {
+    window.cancelAnimationFrame(timer.current.requestId);
+    timer.current.started = null;
+    timer.current.lastInterval = null;
+    timer.current.timeToCount = timer.current.timeLeft;
+  }, []);
+
+  const resume = useCallback(() => {
+    if (!timer.current.started && timer.current.timeLeft > 0) {
+      window.cancelAnimationFrame(timer.current.requestId);
+      timer.current.requestId = window.requestAnimationFrame(run);
+    }
+  }, []);
+
+  const reset = useCallback(() => {
+    if (timer.current.timeLeft) {
+      window.cancelAnimationFrame(timer.current.requestId);
+      timer.current = {};
+      setTimeLeft(0);
+    }
+  }, []);
+
+  const actions = useMemo(() => ({ start, pause, resume, reset }), []);
+
+  useEffect(() => reset, []);
+
+  return { timeLeft, actions };
+};
+
+export default ({ time }) => {
+  const interval = 1000;
+  const diff = (time.unix() - dayjs().unix()) * interval;
+  const { timeLeft, actions } = useCountdown(diff, interval);
 
   useEffect(() => {
-    if (!time) return;
+    actions.start();
+  }, [actions]);
 
-    const intervalId = setInterval(() => {
-      if (time + 1 <= initialTime) {
-        setTime(time + 1);
-      } else {
-        clearInterval(intervalId);
-      }
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [time, initialTime]);
-
-  const timestamp = initialTime - time;
+  const timestamp = timeLeft / interval;
 
   if (timestamp <= 0) return <Text as="span">Times up!</Text>;
 

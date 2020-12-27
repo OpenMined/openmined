@@ -1,7 +1,7 @@
 import React from 'react';
 import { BoxProps } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useAuth } from 'reactfire';
+import { useAnalytics, useAuth } from 'reactfire';
 
 import Form from '../_form';
 import { validPassword, validMatchingPassword } from '../_validation';
@@ -16,6 +16,7 @@ interface AddPasswordFormProps extends BoxProps {
 
 export default ({ callback, ...props }: AddPasswordFormProps) => {
   const auth = useAuth();
+  const analytics = useAnalytics();
   const toast = useToast();
 
   const provider = useAuth.EmailAuthProvider;
@@ -31,6 +32,11 @@ export default ({ callback, ...props }: AddPasswordFormProps) => {
   };
 
   const onSubmit = ({ password }) => {
+    analytics.logEvent('link_account_by_add_password', {
+      original: 'github',
+      new: 'email',
+    });
+
     const credential = provider.credential(auth.currentUser.email, password);
 
     return auth.currentUser

@@ -2,7 +2,11 @@ import React, { lazy } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import { useSanity } from '@openmined/shared/data-access-sanity';
-import { OpenMined } from '@openmined/shared/types';
+import {
+  Course,
+  CoursePageWhich,
+  CoursePagesProp,
+} from '@openmined/shared/types';
 
 import { usePageAvailabilityRedirect } from './_helpers';
 import * as queries from './_queries';
@@ -13,8 +17,6 @@ import { getCourseRef } from './_firebase';
 import Loading from '../../components/Loading';
 
 // SEE TODO (#11)
-
-// SEE TODO (#20)
 
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
@@ -57,7 +59,7 @@ const PermissionsGate = ({ children, progress, which, page, ...params }) => {
 };
 
 type PropType = {
-  which: OpenMined.CoursePageWhich;
+  which: CoursePageWhich;
 };
 
 export default ({ which }: PropType) => {
@@ -80,7 +82,7 @@ export default ({ which }: PropType) => {
     params.course && user
       ? getCourseRef(db, mentorStudentToken || user.uid, params.course)
       : null;
-  const dbCourse: OpenMined.Course = dbCourseRef
+  const dbCourse: Course = dbCourseRef
     ? useFirestoreDocDataOnce(dbCourseRef)
     : {};
 
@@ -98,8 +100,17 @@ export default ({ which }: PropType) => {
   // Get our data from the CMS
   const { data, loading } = useSanity(query);
 
+  // SEE TODO (#18)
+  // const newPermissionGate = useCoursePermissionGate(
+  //   dbCourse,
+  //   data,
+  //   which,
+  //   params
+  // );
+  // console.log('NEW', newPermissionGate);
+
   // Define the props we'll be passing to each page (and to the permission hook)
-  const props: OpenMined.CoursePagesProp = {
+  const props: CoursePagesProp = {
     ...params,
     page: data,
     which,

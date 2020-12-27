@@ -32,6 +32,7 @@ import {
   faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
+import debounce from 'lodash.debounce';
 
 import Icon from '../components/Icon';
 
@@ -67,22 +68,31 @@ export default ({
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const save = useCallback(
+    debounce(
+      (v) => localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(v)),
+      300,
+      { maxWait: 2000 }
+    ),
+    []
+  );
+
+  React.useEffect(() => {
+    save(value);
+    const isValueEmpty =
+      value.length === 1 &&
+      value[0].type === 'paragraph' &&
+      value[0].children?.[0].text === '';
+    if (onChange) {
+      onChange(value, { empty: isValueEmpty });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   return (
     <Box {...props}>
-      <Slate
-        editor={editor}
-        value={value}
-        onChange={(v) => {
-          setValue(v);
-
-          localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(v));
-
-          if (onChange && JSON.stringify(v) !== JSON.stringify(initialValue)) {
-            onChange(v);
-          }
-        }}
-      >
+      <Slate editor={editor} value={value} onChange={setValue}>
         {!readOnly && (
           <Flex
             width="full"

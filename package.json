@@ -65,6 +65,7 @@
     "fuse.js": "^6.4.3",
     "history": "^5.0.0",
     "is-hotkey": "^0.2.0",
+    "lodash.debounce": "^4.0.8",
     "prismjs": "^1.22.0",
     "prop-types": "^15.7",
     "react": "17.0.1",

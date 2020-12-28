@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import {
-  useAnalytics,
   useFirestore,
   useFirestoreCollectionData,
   useFunctions,
@@ -35,6 +34,7 @@ import {
   getSubmissionReviewEndTime,
   SUBMISSION_REVIEW_HOURS,
 } from '../../courses/_helpers';
+import { analytics } from '../../../helpers';
 import ColoredTabs from '../../../components/ColoredTabs';
 import useToast, { toastConfig } from '../../../components/Toast';
 import Countdown from '../../../components/Countdown';
@@ -44,6 +44,7 @@ import {
   mentorfaqLink,
   mentorratesLink,
   codeofconductLink,
+  shiftscheduleLink,
 } from '../../../content/links';
 
 dayjs.extend(relativeTime);
@@ -60,7 +61,6 @@ export const MentorContext = ({ courses }) => {
   const toast = useToast();
   const user: firebase.User = useUser();
   const db = useFirestore();
-  const analytics = useAnalytics();
   const functions: firebase.functions.Functions = useFunctions();
   // @ts-ignore
   functions.region = 'europe-west1';
@@ -136,7 +136,7 @@ export const MentorContext = ({ courses }) => {
                   onClick={() => {
                     setButtonClicked(true);
 
-                    analytics.logEvent('project_submission_resigned', {
+                    analytics.logEvent('Project Submission Resigned', {
                       course: review.course,
                       part: review.part,
                       attempt: review.attempt,
@@ -189,9 +189,8 @@ export const MentorContext = ({ courses }) => {
         Sign up for a Discussion Board shift on our "Shift Calendar".
       </Text>
       <Flex direction={['column', null, null, 'row']} align="center">
-        {/* TODO: Input link for shift calendar */}
         <Link
-          href="#"
+          href={shiftscheduleLink}
           target="_blank"
           rel="noopener noreferrer"
           color="gray.700"
@@ -265,7 +264,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                   {title}
                 </Heading>
                 <Image src={full} alt={title} />
-                {/* TODO: Fill this value in */}
+                {/* SEE TODO (#22) */}
                 {/* <Text color="gray.400" mt={4}>X in queue</Text> */}
               </Flex>
               <Flex p={6} direction="column" align="center">
@@ -362,13 +361,13 @@ export const MentorTabs = ({ courses, mentor }) => {
       return null;
     });
 
-    // TODO: We don't currently support pagination here - although we need to at some point
+    // SEE TODO (#24)
     const hasMoreReviews = false;
 
-    // TODO: Fill this in correctly
+    // SEE TODO (#23)
     const numReviewed = 0;
 
-    // TODO: Fill this in correctly
+    // SEE TODO (#23)
     const numResigned = 0;
 
     if (reviewHistory.length === 0) {
@@ -483,7 +482,7 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Flex>
           </Flex>
         ))}
-        {/* TODO: Fill this in... */}
+        {/* SEE TODO (#24) */}
         {hasMoreReviews && (
           <Flex justify="center" mt={3}>
             <Button

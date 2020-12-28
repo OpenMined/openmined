@@ -8,7 +8,7 @@ import {
   Stack,
   Progress,
 } from '@chakra-ui/react';
-import { useAnalytics, useFirestore, useUser } from 'reactfire';
+import { useFirestore, useUser } from 'reactfire';
 import { faArrowRight, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faDotCircle } from '@fortawesome/free-regular-svg-icons';
 import { handleErrors } from '../../../../helpers';
@@ -278,7 +278,6 @@ export default ({
 
   const user: firebase.User = useUser();
   const db = useFirestore();
-  const analytics = useAnalytics();
   const toast = useToast();
 
   const arrayUnion = useFirestore.FieldValue.arrayUnion;
@@ -288,7 +287,6 @@ export default ({
 
     handleQuizFinish(
       db,
-      analytics,
       user.uid,
       course,
       arrayUnion,

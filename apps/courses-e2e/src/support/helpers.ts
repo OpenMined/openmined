@@ -62,9 +62,7 @@ export const getCourseContent = async (course) => {
       }
     }
   }[0]`;
-  const result = await client.fetch(query);
-  debugger
-  return result;
+  return client.fetch(query);
 };
 
 /* Constants */

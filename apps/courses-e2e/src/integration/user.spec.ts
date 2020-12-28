@@ -125,12 +125,12 @@ describe('user logged in', () => {
   it('should be able to start a course', () => {
     // First 'Start Course' button
     cy.visit(`courses/${COURSE_SLUG}`);
-    cy.contains('a.chakra-button', 'Start Course', { timeout: 20000 }).first().click();
+    cy.contains('a.chakra-button', 'Start Course').first().click();
     cy.url().should('not.eq', withBaseUrl());
 
     // Second 'Start Course' button
     cy.visit(`courses/${COURSE_SLUG}`);
-    cy.contains('a.chakra-button', 'Start Course', { timeout: 20000 }).last().click();
+    cy.contains('a.chakra-button', 'Start Course').last().click();
     cy.url().should('not.eq', withBaseUrl());
   });
 

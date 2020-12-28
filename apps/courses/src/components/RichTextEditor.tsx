@@ -19,6 +19,7 @@ import {
   createEditor,
   Node,
   Element as SlateElement,
+  Range,
 } from 'slate';
 import { withHistory } from 'slate-history';
 import {
@@ -32,6 +33,7 @@ import {
   faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
+import isUrl from 'is-url';
 
 import Icon from '../components/Icon';
 
@@ -171,9 +173,20 @@ const toggleBlock = (editor, format) => {
 
 const toggleMark = (editor, format) => {
   const isActive = isMarkActive(editor, format);
+  const isLink = format === 'link';
 
   if (isActive) {
     Editor.removeMark(editor, format);
+    Editor.removeMark(editor, 'url');
+  } else if (isLink) {
+    if (Range.isExpanded(editor.selection)) {
+      const url = window.prompt('Enter a URL for the selected text');
+
+      if (url && isUrl(url)) {
+        setLink(editor, url);
+        return;
+      }
+    }
   } else {
     Editor.addMark(editor, format, true);
   }
@@ -359,4 +372,9 @@ const MarkButton = ({ format, icon }) => {
       <Icon icon={icon} />
     </Flex>
   );
+};
+
+const setLink = (editor, url) => {
+  Editor.addMark(editor, 'link', true);
+  Editor.addMark(editor, 'url', url);
 };

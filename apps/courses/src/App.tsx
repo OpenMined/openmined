@@ -36,7 +36,7 @@ const preloadSDKs = (firebaseApp) =>
       firebaseApp,
       setup: (firestore) => {
         const initalizedStore = firestore();
-        initalizedStore.settings({ host: 'localhost:5502', ssl: false });
+        initalizedStore.settings({ host: 'localhost:5502', ssl: false, experimentalForceLongPolling: true });
         firestore().enablePersistence({ experimentalForceOwningTab: true });
       },
     }),
@@ -89,11 +89,12 @@ const App = () => {
     setCookiePrefs(preference);
   };
 
-  // const firebaseApp = useFirebaseApp();
+  const firebaseApp = useFirebaseApp();
 
-  // if (process.env.NODE_ENV === 'development') {
-  //   preloadSDKs(firebaseApp);
-  // }
+  // @ts-ignore
+  if (window.Cypress) {
+    preloadSDKs(firebaseApp);
+  }
 
   return (
     <Router action={action} location={location} navigator={history}>

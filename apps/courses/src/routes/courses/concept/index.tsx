@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useAnalytics, useFirestore } from 'reactfire';
+import { useFirestore } from 'reactfire';
 import { Box } from '@chakra-ui/react';
 
 import CourseContent from './content';
@@ -25,7 +25,6 @@ export default ({
   concept,
 }: CoursePagesProp) => {
   const db = useFirestore();
-  const analytics = useAnalytics();
   const toast = useToast();
 
   const {
@@ -36,7 +35,6 @@ export default ({
   useEffect(() => {
     handleConceptStarted(
       db,
-      analytics,
       user.uid,
       course,
       ts,
@@ -44,18 +42,7 @@ export default ({
       lesson,
       concept
     ).catch((error) => handleErrors(toast, error));
-  }, [
-    toast,
-    analytics,
-    user.uid,
-    db,
-    progress,
-    ts,
-    course,
-    lessons,
-    lesson,
-    concept,
-  ]);
+  }, [toast, user.uid, db, progress, ts, course, lessons, lesson, concept]);
 
   // We need to track the user's scroll progress, as well as whether or not they've hit the bottom at least once
   // This requires some weird computation with whether or not the parent container (in parentRef.current) has a height or not
@@ -75,7 +62,6 @@ export default ({
   const onCompleteConcept = () =>
     handleConceptComplete(
       db,
-      analytics,
       user.uid,
       course,
       ts,
@@ -88,7 +74,6 @@ export default ({
   const onProvideFeedback = (value, feedback = null) =>
     handleProvideFeedback(
       db,
-      analytics,
       user.uid,
       course,
       concept,

@@ -22,6 +22,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 - TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
 - TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
+- Do a project search of all todos and make sure everything is up to date
 
 ## Pre-Launch Checklist
 

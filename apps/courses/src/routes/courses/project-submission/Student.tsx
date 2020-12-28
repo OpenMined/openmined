@@ -24,7 +24,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
-import { useAnalytics, useFirestore } from 'reactfire';
+import { useFirestore } from 'reactfire';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -191,7 +191,6 @@ export default ({
   attemptData,
 }) => {
   const db = useFirestore();
-  const analytics = useAnalytics();
   const toast = useToast();
 
   const {
@@ -229,7 +228,6 @@ export default ({
   const onAttemptSubmission = async (part, content) => {
     handleAttemptSubmission(
       db,
-      analytics,
       user.uid,
       course,
       arrayUnion,

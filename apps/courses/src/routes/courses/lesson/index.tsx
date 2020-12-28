@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAnalytics, useFirestore } from 'reactfire';
+import { useFirestore } from 'reactfire';
 import {
   faBookOpen,
   faCheckCircle,
@@ -48,7 +48,6 @@ export default ({
   lesson,
 }: CoursePagesProp) => {
   const db = useFirestore();
-  const analytics = useAnalytics();
   const toast = useToast();
 
   const {
@@ -70,7 +69,7 @@ export default ({
   const lessonNum = getLessonNumber(lessons, lesson);
 
   const onLessonStart = () => {
-    handleLessonStart(db, analytics, user.uid, course, ts, progress, lesson)
+    handleLessonStart(db, user.uid, course, ts, progress, lesson)
       .then(() => {
         window.location.href = `/courses/${course}/${lesson}/${firstConcept}`;
       })

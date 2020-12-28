@@ -13,7 +13,6 @@ import {
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import {
-  useAnalytics,
   useFirestore,
   useFirestoreCollectionData,
   useFunctions,
@@ -35,6 +34,7 @@ import {
   getSubmissionReviewEndTime,
   SUBMISSION_REVIEW_HOURS,
 } from '../../courses/_helpers';
+import { analytics } from '../../../helpers';
 import ColoredTabs from '../../../components/ColoredTabs';
 import useToast, { toastConfig } from '../../../components/Toast';
 import Countdown from '../../../components/Countdown';
@@ -60,7 +60,6 @@ export const MentorContext = ({ courses }) => {
   const toast = useToast();
   const user: firebase.User = useUser();
   const db = useFirestore();
-  const analytics = useAnalytics();
   const functions: firebase.functions.Functions = useFunctions();
   // @ts-ignore
   functions.region = 'europe-west1';
@@ -136,7 +135,7 @@ export const MentorContext = ({ courses }) => {
                   onClick={() => {
                     setButtonClicked(true);
 
-                    analytics.logEvent('project_submission_resigned', {
+                    analytics.logEvent('Project Submission Resigned', {
                       course: review.course,
                       part: review.part,
                       attempt: review.attempt,

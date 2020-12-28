@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAnalytics, useFirestore } from 'reactfire';
+import { useFirestore } from 'reactfire';
 import {
   Box,
   Button,
@@ -99,7 +99,6 @@ export default ({
   lesson,
 }: CoursePagesProp) => {
   const db = useFirestore();
-  const analytics = useAnalytics();
 
   const {
     course: { lessons, projectTitle },
@@ -125,7 +124,6 @@ export default ({
   const onCompleteLesson = () =>
     handleLessonComplete(
       db,
-      analytics,
       user.uid,
       course,
       ts,
@@ -137,7 +135,6 @@ export default ({
   const onProvideFeedback = (value, feedback = null) =>
     handleProvideFeedback(
       db,
-      analytics,
       user.uid,
       course,
       lesson,

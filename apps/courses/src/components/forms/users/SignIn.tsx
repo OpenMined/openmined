@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
-import { useAnalytics, useAuth } from 'reactfire';
+import { useAuth } from 'reactfire';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import Icon from '../../Icon';
@@ -22,7 +22,11 @@ import { emailField, passwordField } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
 import Modal from '../../Modal';
-import { handleErrors, useGithubAuthProvider } from '../../../helpers';
+import {
+  handleErrors,
+  useGithubAuthProvider,
+  analytics,
+} from '../../../helpers';
 
 interface SignInFormProps extends BoxProps {
   callback?: () => void;
@@ -30,7 +34,6 @@ interface SignInFormProps extends BoxProps {
 
 export default ({ callback, ...props }: SignInFormProps) => {
   const auth = useAuth();
-  const analytics = useAnalytics();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -47,7 +50,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
   };
 
   const onSubmit = ({ email, password }) => {
-    analytics.logEvent('login', { method: 'email' });
+    analytics.logEvent('Login', { method: 'email' });
 
     return auth
       .signInWithEmailAndPassword(email, password)
@@ -56,7 +59,7 @@ export default ({ callback, ...props }: SignInFormProps) => {
   };
 
   const onGithubSubmit = async () => {
-    analytics.logEvent('login', { method: 'github' });
+    analytics.logEvent('Login', { method: 'github' });
 
     const authUser = await auth
       .signInWithPopup(githubProvider)

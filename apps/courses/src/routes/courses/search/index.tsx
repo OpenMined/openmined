@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Box, SimpleGrid, Input, Text } from '@chakra-ui/react';
 import Fuse from 'fuse.js';
-import { useAnalytics } from 'reactfire';
 import { CoursePagesProp } from '@openmined/shared/types';
 
 import Sidebar from './Sidebar';
 
-import { useDebounce } from '../../../helpers';
+import { useDebounce, analytics } from '../../../helpers';
 import GridContainer from '../../../components/GridContainer';
 import Course from '../../../components/CourseCard';
 
 export default ({ page }: CoursePagesProp) => {
-  const analytics = useAnalytics();
-
   const FIXED_SIDEBAR_WIDTH = 250;
   const FIXED_SIDEBAR_MD_WIDTH = 200;
 
@@ -32,9 +29,9 @@ export default ({ page }: CoursePagesProp) => {
 
   useEffect(() => {
     if (debouncedSearch && debouncedSearch !== '') {
-      analytics.logEvent('search', { search_term: debouncedSearch });
+      analytics.logEvent('Search', { search_term: debouncedSearch });
     }
-  }, [debouncedSearch, analytics]);
+  }, [debouncedSearch]);
 
   useEffect(() => {
     const liveSort = (a, b) => (a.live === b.live ? 0 : a.live ? -1 : 1);

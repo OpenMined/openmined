@@ -6,10 +6,9 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
-- Add a ton of Cypress tests
 - We have a ton of problems with network requests and race conditions. For instance, signing up will redirect to the profile page where your name is empty. If you refresh the page, your name shows up. This type of behavior is present on basically every single page and is why we use window.location.href in a lot of places. It would be better to rely on client-side navigation if we could ensure that all rendering logic properly waited for the appropriate network requests to load. Can we implement this?
-- TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
 - TODO (#21 HARD): Migrate all Sanity calls to be done via a Express.js-driven Firebase cloud HTTP (not callable) function. Make sure that Sanity is configured to only accept a connection via this endpoint, and NOT the website itself. This will ensure that students are not able to retrieve CMS data that they should not be allowed to see. Make sure to also implement caching on this data and set content freshness to be about 5 minutes.
+- TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
 
 ### SLZ
 
@@ -18,19 +17,22 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 - TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)
 - TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
 
+### Hericles
+
+- Add a ton of Cypress tests
+
 ### Patrick
 
-- TODO: [Use the following Firebase extension](https://firebase.google.com/products/extensions/firestore-send-email) to send a variety of emails, including, but not limited to: sign up confirmation, welcome to the course, and when you receive a project review. Maybe work with Patrick on this.
 - TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
 
 ## Pre-Launch Checklist
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
-- Deploy latest Sanity API
-- Get real terms of service and privacy policy copy
 - Create Github Discussions for the course and organization and give Yemi and Sourav the ability to create categories (inform the rest of the core team, too)
 - Take down Discourse and Spectrum accounts, make sure to change the link to the new discussions board on Github
+- Deploy latest Sanity API
+- Get real terms of service and privacy policy copy
 - Make sure to test the site on dev deployment
 - Make sure all composite and single-field indexes have been properly created
 - Make sure all functions and rules are deployed to production
@@ -39,6 +41,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. T
 - Do a complete sweep of all pages with Kyoko to have design signoff
 - Do a complete sweep of all content and make sure Mat and Andrew have signoff
 - Make sure all mentors are students and put all their ID's in the mentors collection
+- Do a dance!
 
 ## Post-Launch
 

@@ -33,7 +33,7 @@ typings
 .firebase/
 
 # Secrets
-.env
+.secret.env
 
 # System Files
 .DS_Store

@@ -66,6 +66,9 @@ Cypress.Commands.add('createUser', (user) => {
   cy.get("input[name='password']").type(user.password);
   cy.get("input[name='password_confirm']").type(user.password);
   cy.get('form').submit();
+
+  const dashboardUrl = '/users/dashboard';
+  cy.url().should('include', dashboardUrl);
 });
 
 Cypress.Commands.add('deleteAccount', () => {

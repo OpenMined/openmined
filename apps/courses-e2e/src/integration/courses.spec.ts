@@ -5,12 +5,15 @@ import {
   getNextButton,
   getButton,
 } from '../support/app.po';
-import {
-  TEST_USER_02 as ALAN_TURING,
-  TEST_COURSE,
-} from '../support/helpers';
+import { TEST_USER_02 as ALAN_TURING, TEST_COURSE } from '../support/helpers';
 
 /* eslint-disable cypress/no-unnecessary-waiting */
+
+const coursesUrl = '/courses';
+const landingUrl = '/';
+
+const demoCourseName = 'Privacy and Society';
+const demoCourseUrl = '/courses/privacy-and-society';
 
 describe('courses', () => {
   beforeEach(() => cy.visit('/'));
@@ -52,25 +55,32 @@ describe('course content', () => {
   });
 
   it('should browse the courses', () => {
-    cy.get('nav > div').contains('Courses').click();
+    cy.visit(landingUrl);
+    cy.get('nav > div').contains('Courses').should('be.visible').click();
+    cy.url().should('include', coursesUrl);
   });
 
   it('should navigate to the course overview page', () => {
-    cy.wait(1000);
-    cy.get('div').contains('Privacy and Society').click();
+    cy.visit(landingUrl);
+    cy.get('div').contains(demoCourseName).click();
 
     // Checking redirect
-    cy.url().should('include', '/courses/privacy-and-society');
-    cy.get('h1').should('have.text', 'Privacy and Society');
+    cy.url().should('include', demoCourseUrl);
+    cy.get('h1').should('have.text', 'Privacy & Society');
   });
 
   it('should accept the cookies', () => {
-    getCookies().contains('Accept all cookies').click();
+    cy.visit(landingUrl);
+    getCookies().contains('Accept all cookies').should('be.visible').click();
   });
 
   it('should start the course', () => {
+    cy.visit(demoCourseUrl);
+
     // Starting the course
-    cy.get('a.chakra-button').first().contains('Start Course').click();
+    cy.contains('Start Course')
+      .should('be.visible')
+      .click();
     cy.wait(1000);
     cy.get('h1').should('have.text', 'Awareness');
   });

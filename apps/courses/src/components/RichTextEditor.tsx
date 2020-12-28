@@ -131,7 +131,6 @@ export default ({
               <BlockButton format="heading-five" text="H5" />
               <BlockButton format="heading-six" text="H6" />
               <Divider orientation="vertical" height={8} mx={2} />
-              {/* SEE TODO (#2) */}
               <MarkButton format="link" icon={faLink} />
               <MarkButton format="code" icon={faCode} />
               <BlockButton format="block-quote" icon={faQuoteLeft} />

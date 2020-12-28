@@ -272,12 +272,6 @@ export const Element = ({ attributes, children, element }) => {
           {children}
         </Heading>
       );
-    case 'link':
-      return (
-        <Link as="a" target="_blank" rel="noopener noreferrer" {...attributes}>
-          {children}
-        </Link>
-      );
     default:
       return (
         <Text mb={4} {...attributes}>
@@ -322,6 +316,20 @@ export const Leaf = ({ attributes, children, leaf }) => {
 
   if (leaf.code) {
     return <Code {...attributes}>{children}</Code>;
+  }
+
+  if (leaf.link) {
+    return (
+      <Link
+        as="a"
+        target="_blank"
+        rel="noopener noreferrer"
+        {...attributes}
+        href={leaf.url}
+      >
+        {children}
+      </Link>
+    );
   }
 
   return (

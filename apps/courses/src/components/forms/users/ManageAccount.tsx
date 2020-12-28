@@ -14,7 +14,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useAnalytics, useAuth, useFirestore, useUser } from 'reactfire';
+import { useAuth, useFirestore, useUser } from 'reactfire';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
@@ -24,7 +24,11 @@ import { validEmail } from '../_validation';
 import { emailField } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
-import { handleErrors, useGithubAuthProvider } from '../../../helpers';
+import {
+  handleErrors,
+  useGithubAuthProvider,
+  analytics,
+} from '../../../helpers';
 
 interface ManageAccountFormProps extends BoxProps {
   callback?: () => void;
@@ -39,7 +43,6 @@ export default ({
   const user: firebase.User = useUser();
   const auth = useAuth();
   const db = useFirestore();
-  const analytics = useAnalytics();
   const toast = useToast();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -89,7 +92,7 @@ export default ({
   };
 
   const onSubmit = ({ email }) => {
-    analytics.logEvent('change_email');
+    analytics.logEvent('Change Email');
 
     return auth.currentUser
       .updateEmail(email)
@@ -103,7 +106,7 @@ export default ({
   };
 
   const onLinkGithub = () => {
-    analytics.logEvent('link_account_by_manage_account', {
+    analytics.logEvent('Link Account by Manage Account', {
       original: 'email',
       new: 'github',
     });
@@ -138,7 +141,7 @@ export default ({
   };
 
   const onUnlinkGithub = () => {
-    analytics.logEvent('unlink_account_by_manage_account', {
+    analytics.logEvent('Unlink Account by Manage Account', {
       original: 'github',
       new: 'email',
     });
@@ -169,7 +172,7 @@ export default ({
   };
 
   const onDeleteAccount = () => {
-    analytics.logEvent('delete_account');
+    analytics.logEvent('Delete Account');
 
     return auth.currentUser
       .delete()

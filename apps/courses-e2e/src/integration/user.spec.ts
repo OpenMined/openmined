@@ -47,7 +47,7 @@ describe('user not logged in', () => {
     cy.visit('/users/settings');
     cy.url().should('not.eq', withBaseUrl('users/settings'));
     // Maybe 'Unauthorized Page'
-    cy.url().should('eq', withBaseUrl());
+    cy.url().should('eq', withBaseUrl('signin'));
   });
 
   it('should be able to access a course overview page', () => {
@@ -61,14 +61,14 @@ describe('user not logged in', () => {
     // First 'Start Course' button
     cy.visit(`courses/${COURSE_SLUG}`);
     cy.wait(1000);
-    cy.get('a.chakra-button').contains('Start Course').first().click();
-    cy.url().should('eq', withBaseUrl());
+    cy.contains('a.chakra-button', 'Start Course').first().click();
+    cy.url().should('eq', withBaseUrl('signin'));
 
     // Second 'Start Course' button
     cy.visit(`courses/${COURSE_SLUG}`);
     cy.wait(1000);
-    cy.get('a.chakra-button').contains('Start Course').last().click();
-    cy.url().should('eq', withBaseUrl());
+    cy.contains('a.chakra-button', 'Start Course').last().click();
+    cy.url().should('eq', withBaseUrl('signin'));
   });
 
   it('should redirect if user tries to access a course lesson via url', (done) => {
@@ -79,7 +79,7 @@ describe('user not logged in', () => {
 
       cy.visit(`/courses/${COURSE_SLUG}/${firstLessonRef}`);
       cy.url()
-        .should('eq', withBaseUrl())
+        .should('eq', withBaseUrl('signin'))
         .then(() => done());
     });
   });
@@ -90,7 +90,7 @@ describe('user not logged in', () => {
     cy.visit(projectPageUrl);
     cy.url().should('not.eq', withBaseUrl(projectPageUrl));
     // Maybe 'Unauthorized Page'
-    cy.url().should('eq', withBaseUrl());
+    cy.url().should('eq', withBaseUrl('signin'));
   });
 
   it('should redirect if user tries to access a course lesson via url', (done) => {
@@ -99,7 +99,7 @@ describe('user not logged in', () => {
       cy.goToLesson(COURSE_SLUG, firstLessonRef);
       cy.visit(`/courses/${COURSE_SLUG}/${firstLessonRef}`);
       cy.url()
-        .should('eq', withBaseUrl())
+        .should('eq', withBaseUrl('signin'))
         .then(() => done());
     });
   });
@@ -107,6 +107,7 @@ describe('user not logged in', () => {
 
 describe('user logged in', () => {
   before(() => {
+    cy.visit('/');
     cy.acceptCookies();
     cy.createUser(ADA_LOVELACE);
     cy.saveLocalStorageCache();
@@ -124,20 +125,18 @@ describe('user logged in', () => {
   it('should be able to start a course', () => {
     // First 'Start Course' button
     cy.visit(`courses/${COURSE_SLUG}`);
-    cy.wait(1000);
-    cy.get('a.chakra-button').contains('Start Course').first().click();
+    cy.contains('a.chakra-button', 'Start Course', { timeout: 20000 }).first().click();
     cy.url().should('not.eq', withBaseUrl());
 
     // Second 'Start Course' button
     cy.visit(`courses/${COURSE_SLUG}`);
-    cy.wait(1000);
-    cy.get('a.chakra-button').contains('Start Course').last().click();
+    cy.contains('a.chakra-button', 'Start Course', { timeout: 20000 }).last().click();
     cy.url().should('not.eq', withBaseUrl());
   });
 
   it('signin page should not be available', () => {
     cy.visit('/signin');
-    cy.url().should('not.eq', withBaseUrl('/signin'));
+    cy.url().should('not.eq', withBaseUrl(' signin'));
     cy.url().should('eq', withBaseUrl());
   });
 

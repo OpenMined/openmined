@@ -16,7 +16,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useAnalytics, useFirestore, useFunctions } from 'reactfire';
+import { useFirestore, useFunctions } from 'reactfire';
 import dayjs from 'dayjs';
 
 import {
@@ -32,7 +32,7 @@ import ColoredTabs from '../../../components/ColoredTabs';
 import Countdown from '../../../components/Countdown';
 import useToast, { toastConfig } from '../../../components/Toast';
 import SubmissionInline from '../../../components/SubmissionInline';
-import { handleErrors } from '../../../helpers';
+import { handleErrors, analytics } from '../../../helpers';
 
 const genTabsContent = (
   part,
@@ -135,7 +135,6 @@ export default ({
   const navigate = useNavigate();
   const toast = useToast();
   const db = useFirestore();
-  const analytics = useAnalytics();
   const functions: firebase.functions.Functions = useFunctions();
   // @ts-ignore
   functions.region = 'europe-west1';
@@ -173,7 +172,6 @@ export default ({
 
       handleReviewSubmission(
         db,
-        analytics,
         currentTime,
         attemptData.student.id,
         attemptData.mentor.id,
@@ -206,7 +204,7 @@ export default ({
   const onRequestResignation = async (submission, mentor) => {
     setHasClickedButton(true);
 
-    analytics.logEvent('project_submission_resigned', {
+    analytics.logEvent('Project Submission Resigned', {
       course,
       part,
       attempt,

@@ -1,14 +1,14 @@
 import React from 'react';
 import { BoxProps } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useAnalytics, useAuth } from 'reactfire';
+import { useAuth } from 'reactfire';
 
 import Form from '../_form';
 import { validPassword, validMatchingPassword } from '../_validation';
 import { passwordField, passwordConfirmField } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
-import { handleErrors } from '../../../helpers';
+import { handleErrors, analytics } from '../../../helpers';
 
 interface ChangePasswordFormProps extends BoxProps {
   callback?: () => void;
@@ -16,7 +16,6 @@ interface ChangePasswordFormProps extends BoxProps {
 
 export default ({ callback, ...props }: ChangePasswordFormProps) => {
   const auth = useAuth();
-  const analytics = useAnalytics();
   const toast = useToast();
 
   const onSuccess = () => {
@@ -30,7 +29,7 @@ export default ({ callback, ...props }: ChangePasswordFormProps) => {
   };
 
   const onSubmit = ({ password }) => {
-    analytics.logEvent('change_password');
+    analytics.logEvent('Change Password');
 
     return auth.currentUser
       .updatePassword(password)

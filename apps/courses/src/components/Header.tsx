@@ -197,6 +197,7 @@ export default ({ noScrolling }) => {
             <Divider />
             <Flex
               align="center"
+              cursor="pointer"
               onClick={() =>
                 auth
                   .signOut()

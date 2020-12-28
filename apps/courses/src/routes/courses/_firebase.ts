@@ -1,5 +1,4 @@
 import { Course, ProjectAttemptStatus } from '@openmined/shared/types';
-import { analytics } from 'firebase';
 import {
   hasCompletedConcept,
   hasCompletedLesson,
@@ -9,6 +8,8 @@ import {
   hasStartedProject,
   PROJECT_PART_SUBMISSIONS,
 } from './_helpers';
+
+import { analytics } from '../../helpers';
 
 export const getUserRef = (db: firebase.firestore.Firestore, uId: string) =>
   db.collection('users').doc(uId);
@@ -28,7 +29,6 @@ export const updateCourse = (
 
 export const handleConceptStarted = async (
   db: firebase.firestore.Firestore,
-  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
@@ -37,7 +37,7 @@ export const handleConceptStarted = async (
   concept: string
 ) => {
   if (!hasStartedConcept(progress, lesson, concept)) {
-    analytics.logEvent('concept_started', {
+    analytics.logEvent('Concept Started', {
       course: courseId,
       lesson,
       concept,
@@ -57,7 +57,6 @@ export const handleConceptStarted = async (
 
 export const handleConceptComplete = (
   db: firebase.firestore.Firestore,
-  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
@@ -68,7 +67,7 @@ export const handleConceptComplete = (
   new Promise((resolve, reject) => {
     // If we haven't already completed this concept...
     if (!hasCompletedConcept(progress, lesson, concept)) {
-      analytics.logEvent('concept_completed', {
+      analytics.logEvent('Concept Completed', {
         course: courseId,
         lesson,
         concept,
@@ -95,7 +94,6 @@ export const handleConceptComplete = (
 
 export const handleQuizFinish = async (
   db: firebase.firestore.Firestore,
-  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   arrayUnion,
@@ -113,7 +111,7 @@ export const handleQuizFinish = async (
   if (numQuizzesInDb < numQuizzes) {
     const percentage = (correctAnswers / quiz.length) * 100;
 
-    analytics.logEvent('quiz_completed', {
+    analytics.logEvent('Quiz Completed', {
       course: courseId,
       lesson,
       concept,
@@ -142,7 +140,6 @@ export const handleQuizFinish = async (
 
 export const handleLessonStart = async (
   db: firebase.firestore.Firestore,
-  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
@@ -156,7 +153,7 @@ export const handleLessonStart = async (
 
   // Append the course data structure
   if (!isCourseStarted) {
-    analytics.logEvent('course_started', { course: courseId });
+    analytics.logEvent('Course Started', { course: courseId });
 
     data.started_at = ts();
     data.lessons = {};
@@ -164,7 +161,7 @@ export const handleLessonStart = async (
 
   // Then the lesson data structure inside that
   if (!isLessonStarted) {
-    analytics.logEvent('lesson_started', { course: courseId, lesson });
+    analytics.logEvent('Lesson Started', { course: courseId, lesson });
 
     data.lessons[lesson] = {
       started_at: ts(),
@@ -178,7 +175,6 @@ export const handleLessonStart = async (
 
 export const handleLessonComplete = (
   db: firebase.firestore.Firestore,
-  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
@@ -188,7 +184,7 @@ export const handleLessonComplete = (
   new Promise((resolve, reject) => {
     // If we haven't already completed this lesson...
     if (!hasCompletedLesson(progress, lesson)) {
-      analytics.logEvent('lesson_completed', { course: courseId, lesson });
+      analytics.logEvent('Lesson Completed', { course: courseId, lesson });
 
       // Tell the DB we've done so
       updateCourse(db, uId, courseId, {
@@ -207,7 +203,6 @@ export const handleLessonComplete = (
 
 export const handleProjectPartBegin = (
   db: firebase.firestore.Firestore,
-  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
@@ -218,7 +213,7 @@ export const handleProjectPartBegin = (
 
   // If they haven't begun the project at all
   if (!hasStartedProject(progress)) {
-    analytics.logEvent('project_started', { course: courseId });
+    analytics.logEvent('Project Started', { course: courseId });
 
     data.project = {
       started_at: ts(),
@@ -226,7 +221,7 @@ export const handleProjectPartBegin = (
     };
   }
 
-  analytics.logEvent('project_part_started', { course: courseId, part });
+  analytics.logEvent('Project Part Started', { course: courseId, part });
 
   // Add the project part to the object of parts
   data.project.parts[part] = {
@@ -265,7 +260,6 @@ export const addSubmission = (
 
 export const handleAttemptSubmission = async (
   db: firebase.firestore.Firestore,
-  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   arrayUnion,
@@ -282,7 +276,7 @@ export const handleAttemptSubmission = async (
     const attemptNum =
       submissions && submissions.length ? submissions.length + 1 : 1;
 
-    analytics.logEvent('project_submission_created', {
+    analytics.logEvent('Project Submission Created', {
       course: courseId,
       part,
       attempt: attemptNum,
@@ -329,7 +323,6 @@ export const handleAttemptSubmission = async (
 
 export const handleReviewSubmission = async (
   db: firebase.firestore.Firestore,
-  analytics: firebase.analytics.Analytics,
   currentTime,
   studentId: string,
   mentorId: string,
@@ -341,7 +334,7 @@ export const handleReviewSubmission = async (
   progress: Course,
   content: string
 ) => {
-  analytics.logEvent('project_submission_reviewed', {
+  analytics.logEvent('Project Submission Reviewed', {
     course: courseId,
     part: partId,
     attempt: attemptId,
@@ -420,7 +413,6 @@ export const updateFeedback = (
 
 export const handleProvideFeedback = async (
   db: firebase.firestore.Firestore,
-  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   feedbackId: string,
@@ -428,7 +420,7 @@ export const handleProvideFeedback = async (
   feedback: string | null,
   type: 'concept' | 'lesson' | 'project'
 ) => {
-  analytics.logEvent('feedback_created', {
+  analytics.logEvent('Feedback Created', {
     course: courseId,
     feedback: feedbackId,
     type,

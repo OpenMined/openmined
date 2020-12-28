@@ -34,9 +34,10 @@ const sanityConfig = {
 };
 
 const metadata = {
-  name: process.env.NX_NAME,
-  short_name: process.env.NX_SHORT_NAME,
-  description: process.env.NX_DESCRIPTION,
+  name: 'OpenMined Courses',
+  short_name: 'OpenMined Courses',
+  description:
+    'OpenMined Courses is your home for free courses on privacy-preserving artificial intelligence.',
   images: {
     main: seoMain,
     facebook: seoFacebook,

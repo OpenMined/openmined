@@ -1,18 +1,16 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import {
   preloadAuth,
   preloadFirestore,
   preloadFunctions,
-  useAnalytics,
   useFirebaseApp,
 } from 'reactfire';
 
 import Routes from './routes';
 
 import Loading from './components/Loading';
-import Cookies from './components/Cookies';
 
 import { SuspenseWithPerf } from 'reactfire';
 
@@ -36,11 +34,11 @@ const preloadSDKs = (firebaseApp) =>
       firebaseApp,
       setup: (firestore) => {
         const initalizedStore = firestore();
-        initalizedStore.settings({ host: 'localhost:5502', ssl: false });
+        initalizedStore.settings({ host: 'localhost:5502', ssl: false, experimentalForceLongPolling: true });
         firestore().enablePersistence({ experimentalForceOwningTab: true });
       },
     }),
-    // TODO:  Create a bucket for dev purposes only
+    // TODO: Create a bucket for dev purposes only
     //
     // preloadStorage({
     //   firebaseApp,
@@ -50,30 +48,7 @@ const preloadSDKs = (firebaseApp) =>
     // }),
   ]);
 
-const Analytics = ({ cookiePrefs, location }) => {
-  const analytics = useAnalytics();
-
-  useEffect(() => {
-    if (cookiePrefs === 'all') {
-      analytics.setAnalyticsCollectionEnabled(true);
-    } else {
-      analytics.setAnalyticsCollectionEnabled(false);
-    }
-  }, [cookiePrefs, analytics]);
-
-  useEffect(() => {
-    if (cookiePrefs === 'all') {
-      analytics.logEvent('page_view', { path_name: location.pathname });
-    }
-  }, [location, cookiePrefs, analytics]);
-
-  return null;
-};
-
 const App = () => {
-  const [cookiePrefs, setCookiePrefs] = useState(
-    window.localStorage.getItem('@openmined/cookie-preferences') || null
-  );
   const [action, setAction] = useState(history.action);
   const [location, setLocation] = useState(history.location);
 
@@ -84,23 +59,16 @@ const App = () => {
     });
   }, []);
 
-  const storeCookiePrefs = (preference) => {
-    window.localStorage.setItem('@openmined/cookie-preferences', preference);
-    setCookiePrefs(preference);
-  };
-
-  // const firebaseApp = useFirebaseApp();
-
-  // if (process.env.NODE_ENV === 'development') {
-  //   preloadSDKs(firebaseApp);
-  // }
+  // @ts-ignore
+  if (window.Cypress) {
+    const firebaseApp = useFirebaseApp();
+    preloadSDKs(firebaseApp);
+  }
 
   return (
     <Router action={action} location={location} navigator={history}>
       <SuspenseWithPerf fallback={<Loading />} traceId={location.pathname}>
-        <Analytics cookiePrefs={cookiePrefs} location={location} />
         <Routes />
-        {!cookiePrefs && <Cookies callback={storeCookiePrefs} />}
       </SuspenseWithPerf>
     </Router>
   );

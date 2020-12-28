@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link as RRDLink } from 'react-router-dom';
-import { useAnalytics, useAuth } from 'reactfire';
+import { useAuth } from 'reactfire';
 
 import { toastConfig } from '../components/Toast';
 
@@ -64,6 +64,16 @@ export const handleErrors = (toast, error) =>
     description: error.message,
     status: 'error',
   });
+
+export const analytics = {
+  logEvent: (label, props = null) => {
+    // @ts-ignore
+    const plausible = window.plausible;
+
+    if (props) plausible(label, { props });
+    else plausible(label);
+  },
+};
 
 export const SIDEBAR_WIDTH = 280;
 

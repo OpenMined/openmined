@@ -209,7 +209,6 @@ const toggleMark = (editor, format) => {
 
       if (url && isUrl(url)) {
         setLink(editor, url);
-        return;
       }
     }
   } else {

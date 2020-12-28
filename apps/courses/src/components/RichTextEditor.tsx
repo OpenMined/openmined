@@ -44,7 +44,7 @@ const HOTKEYS = {
   'mod+i': 'italic',
   'mod+u': 'underline',
   'mod+`': 'code',
-  'mod+l': 'link',
+  'mod+k': 'link',
 };
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];

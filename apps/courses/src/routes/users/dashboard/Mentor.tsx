@@ -44,6 +44,7 @@ import {
   mentorfaqLink,
   mentorratesLink,
   codeofconductLink,
+  shiftscheduleLink,
 } from '../../../content/links';
 
 dayjs.extend(relativeTime);
@@ -188,9 +189,8 @@ export const MentorContext = ({ courses }) => {
         Sign up for a Discussion Board shift on our "Shift Calendar".
       </Text>
       <Flex direction={['column', null, null, 'row']} align="center">
-        {/* TODO: Input link for shift calendar */}
         <Link
-          href="#"
+          href={shiftscheduleLink}
           target="_blank"
           rel="noopener noreferrer"
           color="gray.700"
@@ -264,7 +264,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                   {title}
                 </Heading>
                 <Image src={full} alt={title} />
-                {/* TODO: Fill this value in */}
+                {/* SEE TODO (#22) */}
                 {/* <Text color="gray.400" mt={4}>X in queue</Text> */}
               </Flex>
               <Flex p={6} direction="column" align="center">
@@ -361,13 +361,13 @@ export const MentorTabs = ({ courses, mentor }) => {
       return null;
     });
 
-    // TODO: We don't currently support pagination here - although we need to at some point
+    // SEE TODO (#24)
     const hasMoreReviews = false;
 
-    // TODO: Fill this in correctly
+    // SEE TODO (#23)
     const numReviewed = 0;
 
-    // TODO: Fill this in correctly
+    // SEE TODO (#23)
     const numResigned = 0;
 
     if (reviewHistory.length === 0) {
@@ -482,7 +482,7 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Flex>
           </Flex>
         ))}
-        {/* TODO: Fill this in... */}
+        {/* SEE TODO (#24) */}
         {hasMoreReviews && (
           <Flex justify="center" mt={3}>
             <Button

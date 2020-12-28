@@ -38,7 +38,7 @@ const preloadSDKs = (firebaseApp) =>
         firestore().enablePersistence({ experimentalForceOwningTab: true });
       },
     }),
-    // TODO:  Create a bucket for dev purposes only
+    // TODO: Create a bucket for dev purposes only
     //
     // preloadStorage({
     //   firebaseApp,

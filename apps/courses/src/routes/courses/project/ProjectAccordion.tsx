@@ -69,7 +69,7 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
   const projectContent = content.map((i) => {
     const { _key, description, status, submissions } = i;
 
-    // TODO: We could and should refactor this section to be a lot cleaner
+    // SEE TODO (#19)
     const panel = () => (
       <>
         {status !== 'passed' && status !== 'failed' && (

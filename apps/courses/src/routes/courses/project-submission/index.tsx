@@ -1,6 +1,9 @@
 import React from 'react';
 import { Box } from '@chakra-ui/react';
-import { OpenMined } from '@openmined/shared/types';
+import {
+  CoursePagesProp,
+  CourseProjectSubmission,
+} from '@openmined/shared/types';
 import { useFirestoreDocDataOnce } from 'reactfire';
 
 import Student from './Student';
@@ -10,7 +13,7 @@ import { prepAccordionAndStatus } from '../project';
 import GridContainer from '../../../components/GridContainer';
 import { useSearchParams } from 'react-router-dom';
 
-export default (props: OpenMined.CoursePagesProp) => {
+export default (props: CoursePagesProp) => {
   const [searchParams] = useSearchParams();
   const studentParam = searchParams.get('student');
   const isMentorLayout = !!studentParam;
@@ -36,7 +39,7 @@ export default (props: OpenMined.CoursePagesProp) => {
   const attemptRef = attempt
     ? content.submissions[+attempt - 1].submission
     : null;
-  const attemptData: OpenMined.CourseProjectSubmission = attemptRef
+  const attemptData: CourseProjectSubmission = attemptRef
     ? useFirestoreDocDataOnce(attemptRef)
     : null;
 

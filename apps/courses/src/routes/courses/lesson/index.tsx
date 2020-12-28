@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useFirestore } from 'reactfire';
+import { useAnalytics, useFirestore } from 'reactfire';
 import {
   faBookOpen,
   faCheckCircle,
@@ -28,7 +28,7 @@ import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
 import { handleLessonStart } from '../_firebase';
-import { OpenMined } from '@openmined/shared/types';
+import { CoursePagesProp } from '@openmined/shared/types';
 
 const Detail = ({ title, value, icon = faCheckCircle }) => (
   <Flex align="center" mb={4}>
@@ -47,8 +47,9 @@ export default ({
   ts,
   course,
   lesson,
-}: OpenMined.CoursePagesProp) => {
+}: CoursePagesProp) => {
   const db = useFirestore();
+  const analytics = useAnalytics();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -71,7 +72,7 @@ export default ({
   const lessonNum = getLessonNumber(lessons, lesson);
 
   const onLessonStart = () => {
-    handleLessonStart(db, user.uid, course, ts, progress, lesson)
+    handleLessonStart(db, analytics, user.uid, course, ts, progress, lesson)
       .then(() => {
         navigate(`/courses/${course}/${lesson}/${firstConcept}`);
       })

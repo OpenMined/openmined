@@ -1,4 +1,7 @@
 import admin from 'firebase-admin';
+import dayjs from 'dayjs';
+import { SUBMISSION_REVIEW_HOURS } from 'apps/courses/src/routes/courses/_helpers';
+import { logger } from 'firebase-functions';
 
 export const assignReview = async (data, context) => {
   // Get the current user and the course
@@ -155,6 +158,68 @@ export const resignReview = async (data, context) => {
     // Return the resigned review to the mentor
     return dbReview;
   } catch (error) {
+    return { error };
+  }
+};
+
+export const checkForUnreviewedSubmissions = async () => {
+  try {
+    // Get the time "SUBMISSION_REVIEW_HOURS" ago
+    const time = dayjs().subtract(SUBMISSION_REVIEW_HOURS, 'hour').toDate();
+
+    // Get all reviews where the review started over "SUBMISSION_REVIEW_HOURS" ago
+    // But has not been completed yet
+    const dbReviews = await admin
+      .firestore()
+      .collectionGroup('reviews')
+      .where('started_at', '<', time)
+      .where('completed_at', '==', null)
+      .get();
+
+    // If we don't find anything...
+    if (dbReviews.empty) {
+      logger.log('There are no submissions that need to be resigned');
+      return { success: 'There are no submissions that need to be resigned' };
+    }
+
+    // Store all the writes in a batch
+    const batch = admin.firestore().batch();
+
+    // For each review
+    dbReviews.forEach((review) => {
+      // Resign the review
+      batch.set(
+        review.ref,
+        {
+          status: 'resigned',
+          completed_at: admin.firestore.FieldValue.serverTimestamp(),
+        },
+        { merge: true }
+      );
+
+      // Get the data to find the corresponding submission
+      const data = review.data();
+
+      // Clear the submission assignment
+      batch.set(
+        data.submission,
+        { mentor: null, review_started_at: null },
+        { merge: true }
+      );
+    });
+
+    // Commit the batch
+    batch.commit().then(() => {
+      // Get the count
+      const count = dbReviews.size;
+
+      logger.log(`We found ${count} submissions that had to be resigned`);
+      return {
+        success: `We found ${count} submissions that had to be resigned`,
+      };
+    });
+  } catch (error) {
+    logger.error('Error', error);
     return { error };
   }
 };

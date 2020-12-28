@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Breadcrumb,
@@ -191,6 +191,7 @@ export default ({
   attemptData,
 }) => {
   const db = useFirestore();
+  const analytics = useAnalytics();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -207,6 +208,17 @@ export default ({
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const preSubmitModal = useDisclosure();
 
+  useEffect(() => {
+    if (
+      submissions.filter(
+        ({ status }) => status === 'passed' || status === 'failed'
+      ).length === 3 &&
+      !attemptData
+    ) {
+      window.location.href = `/courses/${course}/project/${part}/3`;
+    }
+  }, [submissions, attemptData, course, part]);
+
   // Save the arrayUnion function so that we can push items into a Firestore array
   const arrayUnion = useFirestore.FieldValue.arrayUnion;
 
@@ -218,6 +230,7 @@ export default ({
   const onAttemptSubmission = async (part, content) => {
     handleAttemptSubmission(
       db,
+      analytics,
       user.uid,
       course,
       arrayUnion,

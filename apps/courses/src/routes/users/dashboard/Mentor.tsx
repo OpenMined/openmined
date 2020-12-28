@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import {
+  useAnalytics,
   useFirestore,
   useFirestoreCollectionData,
   useFunctions,
@@ -28,7 +29,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { OpenMined } from '@openmined/shared/types';
+import { MentorReview, CourseProjectSubmission } from '@openmined/shared/types';
 
 import {
   getSubmissionReviewEndTime,
@@ -60,6 +61,7 @@ export const MentorContext = ({ courses }) => {
   const navigate = useNavigate();
   const user: firebase.User = useUser();
   const db = useFirestore();
+  const analytics = useAnalytics();
   const functions: firebase.functions.Functions = useFunctions();
   // @ts-ignore
   functions.region = 'europe-west1';
@@ -72,7 +74,7 @@ export const MentorContext = ({ courses }) => {
     .collectionGroup('submissions')
     .where('mentor', '==', db.doc(`/users/${user.uid}`))
     .where('status', '==', null);
-  const activeReviewsData: OpenMined.CourseProjectSubmission[] = useFirestoreCollectionData(
+  const activeReviewsData: CourseProjectSubmission[] = useFirestoreCollectionData(
     activeReviewsRef
   );
 
@@ -134,6 +136,12 @@ export const MentorContext = ({ courses }) => {
                   isLoading={buttonClicked}
                   onClick={() => {
                     setButtonClicked(true);
+
+                    analytics.logEvent('project_submission_resigned', {
+                      course: review.course,
+                      part: review.part,
+                      attempt: review.attempt,
+                    });
 
                     requestResignation({
                       submission: review.id,
@@ -347,9 +355,7 @@ export const MentorTabs = ({ courses, mentor }) => {
       // .where('status', '!=', 'pending')
       .orderBy('started_at', 'desc')
       .limit(10);
-    const dbReviews: OpenMined.MentorReview[] = useFirestoreCollectionData(
-      dbReviewsRef
-    );
+    const dbReviews: MentorReview[] = useFirestoreCollectionData(dbReviewsRef);
 
     const reviewHistory = dbReviews.map((r) => {
       const courseIndex = courses.findIndex(({ slug }) => slug === r.course);

@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
 import { useParams, Link as RRDLink, Navigate } from 'react-router-dom';
-import { OpenMined } from '@openmined/shared/types';
+import { User } from '@openmined/shared/types';
 import { useUser, useFirestoreDocDataOnce, useFirestore } from 'reactfire';
 import {
   faPencilAlt,
@@ -73,7 +73,7 @@ export default () => {
   const { uid } = useParams();
 
   const dbUserRef = db.collection('users').doc(uid);
-  const dbUser: OpenMined.User = useFirestoreDocDataOnce(dbUserRef);
+  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
 
   if (!Object.keys(dbUser).length) return <Navigate to="/" />;
 

@@ -1,9 +1,8 @@
-import { OpenMined } from '@openmined/shared/types';
+import { Course, ProjectAttemptStatus } from '@openmined/shared/types';
+import { analytics } from 'firebase';
 import {
   hasCompletedConcept,
-  hasCompletedCourse,
   hasCompletedLesson,
-  hasCompletedProject,
   hasStartedConcept,
   hasStartedCourse,
   hasStartedLesson,
@@ -29,14 +28,21 @@ export const updateCourse = (
 
 export const handleConceptStarted = async (
   db: firebase.firestore.Firestore,
+  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMined.Course,
+  progress: Course,
   lesson: string,
   concept: string
 ) => {
   if (!hasStartedConcept(progress, lesson, concept)) {
+    analytics.logEvent('concept_started', {
+      course: courseId,
+      lesson,
+      concept,
+    });
+
     const data = progress;
 
     // Then the concept data structure inside that
@@ -51,16 +57,23 @@ export const handleConceptStarted = async (
 
 export const handleConceptComplete = (
   db: firebase.firestore.Firestore,
+  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMined.Course,
+  progress: Course,
   lesson: string,
   concept: string
 ) =>
   new Promise((resolve, reject) => {
     // If we haven't already completed this concept...
     if (!hasCompletedConcept(progress, lesson, concept)) {
+      analytics.logEvent('concept_completed', {
+        course: courseId,
+        lesson,
+        concept,
+      });
+
       // Tell the DB we've done so
       updateCourse(db, uId, courseId, {
         lessons: {
@@ -82,10 +95,11 @@ export const handleConceptComplete = (
 
 export const handleQuizFinish = async (
   db: firebase.firestore.Firestore,
+  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   arrayUnion,
-  progress: OpenMined.Course,
+  progress: Course,
   lesson: string,
   concept: string,
   numQuizzes,
@@ -98,6 +112,15 @@ export const handleQuizFinish = async (
 
   if (numQuizzesInDb < numQuizzes) {
     const percentage = (correctAnswers / quiz.length) * 100;
+
+    analytics.logEvent('quiz_completed', {
+      course: courseId,
+      lesson,
+      concept,
+      percentage,
+      questions: quiz.length,
+      correct: correctAnswers,
+    });
 
     return updateCourse(db, uId, courseId, {
       lessons: {
@@ -119,10 +142,11 @@ export const handleQuizFinish = async (
 
 export const handleLessonStart = async (
   db: firebase.firestore.Firestore,
+  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMined.Course,
+  progress: Course,
   lesson: string
 ) => {
   const isCourseStarted = hasStartedCourse(progress);
@@ -132,12 +156,16 @@ export const handleLessonStart = async (
 
   // Append the course data structure
   if (!isCourseStarted) {
+    analytics.logEvent('course_started', { course: courseId });
+
     data.started_at = ts();
     data.lessons = {};
   }
 
   // Then the lesson data structure inside that
   if (!isLessonStarted) {
+    analytics.logEvent('lesson_started', { course: courseId, lesson });
+
     data.lessons[lesson] = {
       started_at: ts(),
       concepts: {},
@@ -150,15 +178,18 @@ export const handleLessonStart = async (
 
 export const handleLessonComplete = (
   db: firebase.firestore.Firestore,
+  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMined.Course,
+  progress: Course,
   lesson: string
 ) =>
   new Promise((resolve, reject) => {
     // If we haven't already completed this lesson...
     if (!hasCompletedLesson(progress, lesson)) {
+      analytics.logEvent('lesson_completed', { course: courseId, lesson });
+
       // Tell the DB we've done so
       updateCourse(db, uId, courseId, {
         lessons: {
@@ -176,21 +207,26 @@ export const handleLessonComplete = (
 
 export const handleProjectPartBegin = (
   db: firebase.firestore.Firestore,
+  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   ts,
-  progress: OpenMined.Course,
+  progress: Course,
   part: string
 ) => {
   const data = progress;
 
   // If they haven't begun the project at all
   if (!hasStartedProject(progress)) {
+    analytics.logEvent('project_started', { course: courseId });
+
     data.project = {
       started_at: ts(),
       parts: {},
     };
   }
+
+  analytics.logEvent('project_part_started', { course: courseId, part });
 
   // Add the project part to the object of parts
   data.project.parts[part] = {
@@ -229,11 +265,12 @@ export const addSubmission = (
 
 export const handleAttemptSubmission = async (
   db: firebase.firestore.Firestore,
+  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   arrayUnion,
   currentTime,
-  progress: OpenMined.Course,
+  progress: Course,
   part: string,
   content: string
 ) => {
@@ -242,6 +279,15 @@ export const handleAttemptSubmission = async (
 
   // If we have less than the total number of allowed submissions
   if (submissions.length < PROJECT_PART_SUBMISSIONS) {
+    const attemptNum =
+      submissions && submissions.length ? submissions.length + 1 : 1;
+
+    analytics.logEvent('project_submission_created', {
+      course: courseId,
+      part,
+      attempt: attemptNum,
+    });
+
     // Get the current time
     const time = currentTime();
 
@@ -249,7 +295,7 @@ export const handleAttemptSubmission = async (
     const submission = await addSubmission(db, uId, courseId, {
       course: courseId,
       part,
-      attempt: submissions && submissions.length ? submissions.length + 1 : 1,
+      attempt: attemptNum,
       student: db.collection('users').doc(uId),
       submitted_at: time,
       submission_content: content,
@@ -283,6 +329,7 @@ export const handleAttemptSubmission = async (
 
 export const handleReviewSubmission = async (
   db: firebase.firestore.Firestore,
+  analytics: firebase.analytics.Analytics,
   currentTime,
   studentId: string,
   mentorId: string,
@@ -290,10 +337,16 @@ export const handleReviewSubmission = async (
   partId: string,
   attemptId: string,
   submissionId: string,
-  status: OpenMined.ProjectAttemptStatus,
-  progress: OpenMined.Course,
+  status: ProjectAttemptStatus,
+  progress: Course,
   content: string
 ) => {
+  analytics.logEvent('project_submission_reviewed', {
+    course: courseId,
+    part: partId,
+    attempt: attemptId,
+  });
+
   // Get the current time
   const time = currentTime();
 
@@ -367,15 +420,23 @@ export const updateFeedback = (
 
 export const handleProvideFeedback = async (
   db: firebase.firestore.Firestore,
+  analytics: firebase.analytics.Analytics,
   uId: string,
   courseId: string,
   feedbackId: string,
   value: number,
   feedback: string | null,
   type: 'concept' | 'lesson' | 'project'
-) =>
-  updateFeedback(db, uId, courseId, feedbackId, {
+) => {
+  analytics.logEvent('feedback_created', {
+    course: courseId,
+    feedback: feedbackId,
+    type,
+  });
+
+  return updateFeedback(db, uId, courseId, feedbackId, {
     value,
     feedback,
     type,
   });
+};

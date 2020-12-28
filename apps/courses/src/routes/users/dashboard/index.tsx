@@ -13,7 +13,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
-import { OpenMined } from '@openmined/shared/types';
+import { User } from '@openmined/shared/types';
 import { useSanity } from '@openmined/shared/data-access-sanity';
 import { useUser, useFirestore, useFirestoreCollectionData } from 'reactfire';
 import dayjs from 'dayjs';

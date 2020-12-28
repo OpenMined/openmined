@@ -2,7 +2,11 @@ import React, { lazy, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
 import { useSanity } from '@openmined/shared/data-access-sanity';
-import { OpenMined } from '@openmined/shared/types';
+import {
+  Course,
+  CoursePageWhich,
+  CoursePagesProp,
+} from '@openmined/shared/types';
 
 import { usePageAvailabilityRedirect } from './_helpers';
 import * as queries from './_queries';
@@ -13,8 +17,6 @@ import { getCourseRef } from './_firebase';
 import Loading from '../../components/Loading';
 
 // SEE TODO (#11)
-
-// SEE TODO (#20)
 
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
@@ -57,7 +59,7 @@ const PermissionsGate = ({ children, progress, which, page, ...params }) => {
 };
 
 type PropType = {
-  which: OpenMined.CoursePageWhich;
+  which: CoursePageWhich;
 };
 
 export default ({ which }: PropType) => {
@@ -97,10 +99,6 @@ export default ({ which }: PropType) => {
     dbCourseRef && fetchCourse();
   }, [params.course, params.lesson, params.concept]);
 
-  //  dbCourseRef
-  //   ? useFirestoreDocDataOnce(dbCourseRef)
-  //   : {};
-
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
   const serverTimestamp = useFirestore.FieldValue.serverTimestamp;
@@ -115,8 +113,17 @@ export default ({ which }: PropType) => {
   // Get our data from the CMS
   const { data, loading } = useSanity(query);
 
+  // SEE TODO (#18)
+  // const newPermissionGate = useCoursePermissionGate(
+  //   dbCourse,
+  //   data,
+  //   which,
+  //   params
+  // );
+  // console.log('NEW', newPermissionGate);
+
   // Define the props we'll be passing to each page (and to the permission hook)
-  const props: OpenMined.CoursePagesProp = {
+  const props: CoursePagesProp = {
     ...params,
     page: data,
     which,

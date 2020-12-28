@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link as RRDLink } from 'react-router-dom';
-import { useAuth } from 'reactfire';
+import { useAnalytics, useAuth } from 'reactfire';
 
 import { toastConfig } from '../components/Toast';
 
@@ -29,6 +29,22 @@ export const useWindowSize = () => {
   }, []);
 
   return windowSize;
+};
+
+export const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
 };
 
 export const useGithubAuthProvider = () => {

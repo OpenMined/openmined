@@ -14,14 +14,14 @@ import {
 import { Link as RRDLink } from 'react-router-dom';
 import { faBookOpen, faCertificate } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
-import { OpenMined } from '@openmined/shared/types';
+import { CoursePagesProp } from '@openmined/shared/types';
 
 import GridContainer from '../../../components/GridContainer';
 import Icon from '../../../components/Icon';
 import { slackLink } from '../../../content/links';
 import projectIcon from '../../../assets/project-icon.svg';
 
-export default ({ page }: OpenMined.CoursePagesProp) => {
+export default ({ page }: CoursePagesProp) => {
   const {
     title,
     certification: { link: certificationLink },

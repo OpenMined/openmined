@@ -26,7 +26,7 @@ import {
   faCog,
   faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import { OpenMined } from '@openmined/shared/types';
+import { User } from '@openmined/shared/types';
 
 import { Popover } from './Popover';
 import GridContainer from './GridContainer';
@@ -109,7 +109,7 @@ const UserAvatar = () => {
   const user: firebase.User = useUser();
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: OpenMined.User = useFirestoreDocDataOnce(dbUserRef);
+  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
 
   return <Avatar src={dbUser.photo_url} cursor="pointer" />;
 };

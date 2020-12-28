@@ -122,3 +122,11 @@ export const timezoneField = (val = null) => ({
   options: timezones.map((d) => d.name),
   label: 'Timezone',
 });
+
+export const notificationsField = (val = null) => ({
+  defaultValue: val,
+  name: 'notification_preferences',
+  type: 'checkbox',
+  options: [{ label: 'Project Reviews', value: 'project_reviews' }],
+  label: 'I would like to be notified of:',
+});

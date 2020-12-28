@@ -23,7 +23,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
+None
 
 ## Pre-Launch Checklist
 
@@ -40,6 +40,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. T
 - Make an "intro to the CMS" video to give to Mat, Andrew, and Emma (and make sure to explain that filling in EVERY field is critical - if they can't fill in some, tell them to ask Patrick what to do)
 - Do a complete sweep of all pages with Kyoko to have design signoff
 - Do a complete sweep of all content and make sure Mat and Andrew have signoff
+- Create a README that's somewhat friendly to contributors
 - Make sure all mentors are students and put all their ID's in the mentors collection
 - Do a dance!
 

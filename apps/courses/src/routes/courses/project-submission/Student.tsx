@@ -47,7 +47,6 @@ dayjs.extend(relativeTime);
 const genTabsContent = (
   part,
   attemptData,
-  hasStartedSubmission,
   hasPendingSubmission,
   setHasStartedSubmission
 ) => {
@@ -86,11 +85,7 @@ const genTabsContent = (
         <>
           {!attemptData && !hasPendingSubmission && (
             <RichTextEditor
-              onChange={() => {
-                if (!hasStartedSubmission) {
-                  setHasStartedSubmission(true);
-                }
-              }}
+              onChange={(value, { empty }) => setHasStartedSubmission(!empty)}
             />
           )}
           {attemptData && (
@@ -338,7 +333,6 @@ export default ({
             content={genTabsContent(
               content,
               attemptData,
-              hasStartedSubmission,
               hasPendingSubmission,
               setHasStartedSubmission
             )}

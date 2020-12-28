@@ -36,7 +36,7 @@ export default ({ content, ...props }) => (
     >
       {content.map(({ panel: Panel, title, ...i }) => (
         <TabPanel {...i} key={title}>
-          <Panel />
+          {Panel()}
         </TabPanel>
       ))}
     </TabPanels>

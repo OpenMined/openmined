@@ -34,12 +34,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import SubmissionInline from '../../../components/SubmissionInline';
 import { handleErrors } from '../../../helpers';
 
-const genTabsContent = (
-  part,
-  attemptData,
-  hasStartedSubmission,
-  setHasStartedSubmission
-) => {
+const genTabsContent = (part, attemptData, setHasStartedSubmission) => {
   const content = [
     {
       title: '1. Instructions',
@@ -93,11 +88,7 @@ const genTabsContent = (
         <>
           {!attemptData.review_content && (
             <RichTextEditor
-              onChange={() => {
-                if (!hasStartedSubmission) {
-                  setHasStartedSubmission(true);
-                }
-              }}
+              onChange={(value, { empty }) => setHasStartedSubmission(!empty)}
             />
           )}
           {attemptData.review_content && (
@@ -277,12 +268,7 @@ export default ({
       )}
       <ColoredTabs
         mb={8}
-        content={genTabsContent(
-          content,
-          attemptData,
-          hasStartedSubmission,
-          setHasStartedSubmission
-        )}
+        content={genTabsContent(content, attemptData, setHasStartedSubmission)}
       />
       {!hasAlreadyReviewed && (
         <Flex

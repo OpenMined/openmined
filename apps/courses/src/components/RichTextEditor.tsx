@@ -56,6 +56,28 @@ const initialValue = [
   },
 ];
 
+const withLinks = (editor) => {
+  const { insertText } = editor;
+
+  editor.insertText = (text) => {
+    if (isUrl(text)) {
+      const { selection } = editor;
+      if (Range.isExpanded(selection)) {
+        setLink(editor, text);
+      } else {
+        const newLink = { text, url: text, link: true };
+        const emptySpace = { text: ' ' };
+        Transforms.insertFragment(editor, [newLink, emptySpace]);
+      }
+      return;
+    }
+
+    insertText(text);
+  };
+
+  return editor;
+};
+
 export default ({
   readOnly = false,
   content = null,
@@ -69,7 +91,10 @@ export default ({
   );
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(
+    () => withLinks(withHistory(withReact(createEditor()))),
+    []
+  );
 
   return (
     <Box {...props}>

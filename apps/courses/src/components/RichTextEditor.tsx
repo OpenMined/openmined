@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Flex,
   Text,
@@ -32,7 +32,7 @@ import {
   faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
-import debounce from 'lodash.debounce';
+import { useDebounce } from '../helpers';
 
 import Icon from '../components/Icon';
 
@@ -68,27 +68,21 @@ export default ({
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const save = useCallback(
-    debounce(
-      (v) => localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(v)),
-      300,
-      { maxWait: 2000 }
-    ),
-    []
-  );
+  const debouncedValue = useDebounce(value, 300);
 
-  React.useEffect(() => {
-    save(value);
-    const isValueEmpty =
-      value.length === 1 &&
-      value[0].type === 'paragraph' &&
-      value[0].children?.[0].text === '';
+  useEffect(() => {
     if (onChange) {
+      const isValueEmpty =
+        value.length === 1 &&
+        value[0].type === 'paragraph' &&
+        value[0].children?.[0].text === '';
       onChange(value, { empty: isValueEmpty });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value, onChange]);
+
+  useEffect(() => {
+    localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(debouncedValue));
+  }, [debouncedValue]);
 
   return (
     <Box {...props}>

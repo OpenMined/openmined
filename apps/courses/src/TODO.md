@@ -13,7 +13,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 ### SLZ
 
 - TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
-- TODO: Slate editor now only skips the cursor after the first character. It could be a performance thing related to hiding and showing the submit button. To solve this, maybe create a better solution to hiding and showing that button without interrupting the flow of the editor.
 - TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)
 - TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
 

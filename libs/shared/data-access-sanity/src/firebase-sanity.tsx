@@ -25,7 +25,7 @@ export const runQuery = async (currentUser, query: SANITY_FIREBASE_QUERY) => {
   });
 };
 
-export const useFirebaseSanity = (method, params) => {
+export const useFirebaseSanity = (method, params = {}) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

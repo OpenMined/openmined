@@ -133,7 +133,22 @@ export const concept = ({ lesson, concept }) => `
   }
 }[0]`;
 
+export const homepage = () => `
+*[_type == "course" && visible == true] {
+  title,
+  level,
+  length,
+  cost,
+  live,
+  "slug": slug.current,
+  visual {
+    "default": default.asset -> url,
+    "full": full.asset -> url
+  },
+}`;
+
 export const queries: { [method: string]: SANITY_QUERY } = {
+  /* Course pages */
   search: {
     auth: false,
     query: search,
@@ -165,5 +180,10 @@ export const queries: { [method: string]: SANITY_QUERY } = {
   concept: {
     auth: false,
     query: concept,
+  },
+  /* Home page */
+  homepageCourses: {
+    auth: false,
+    query: homepage,
   },
 };

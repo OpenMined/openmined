@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
-import { useFirebaseSanity, useSanity } from '@openmined/shared/data-access-sanity';
+import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 import {
   Course,
   CoursePageWhich,
@@ -99,7 +99,6 @@ export default ({ which }: PropType) => {
 
   // Get our data from the CMS
   const { data, loading } = useFirebaseSanity(which, params);
-  // const { data, loading } = useSanity(query);
 
   // SEE TODO (#18)
   // const newPermissionGate = useCoursePermissionGate(

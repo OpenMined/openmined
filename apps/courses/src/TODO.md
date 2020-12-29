@@ -32,6 +32,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. T
 - Take down Discourse and Spectrum accounts, make sure to change the link to the new discussions board on Github
 - Deploy latest Sanity API
 - Get real terms of service and privacy policy copy
+- Try to set up Sync with Mailchimp plugin for Mat: https://firebase.google.com/products/extensions/auth-mailchimp-sync
 - Make sure to test the site on dev deployment
 - Make sure all composite and single-field indexes have been properly created
 - Make sure all functions and rules are deployed to production

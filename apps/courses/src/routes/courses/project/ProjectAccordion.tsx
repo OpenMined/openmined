@@ -4,6 +4,7 @@ import { Button, Flex, Text, Link, Image, Box } from '@chakra-ui/react';
 import { PROJECT_PART_SUBMISSIONS } from '../_helpers';
 import StatusAccordion from '../../../components/StatusAccordion';
 import SubmissionInline from '../../../components/SubmissionInline';
+import { useNavigate } from 'react-router-dom';
 import { discussionLink, mentorshipLink } from '../../../content/links';
 
 // This is a component that shows up when the user has made a failed attempt ("failed-but-pending")
@@ -39,6 +40,7 @@ const AttemptedView = ({
 );
 
 export default ({ content, course, onBeginProjectPart, ...props }) => {
+  const navigate = useNavigate();
   // The text to show when the user is pending a submission review
   const pendingReviewText = (
     <>
@@ -97,18 +99,18 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                 onClick={() => {
                   if (status === 'not-started') {
                     onBeginProjectPart(_key).then(() => {
-                      window.location.href = `/courses/${course}/project/${_key}`;
+                      navigate(`/courses/${course}/project/${_key}`);
                     });
                   } else if (status === 'submitted') {
                     const attempt = submissions.findIndex(
                       ({ status }) => status === 'pending'
                     );
 
-                    window.location.href = `/courses/${course}/project/${_key}/${
-                      attempt + 1
-                    }`;
+                    navigate(
+                      `/courses/${course}/project/${_key}/${attempt + 1}`
+                    );
                   } else {
-                    window.location.href = `/courses/${course}/project/${_key}`;
+                    navigate(`/courses/${course}/project/${_key}`);
                   }
                 }}
                 colorScheme="black"

@@ -43,28 +43,24 @@ exports.completeCourse = functions
 exports.sendWelcomeEmail = functions
   .region('europe-west1')
   .auth.user()
-  .onCreate((user) => {
-    sendEmail('createAccount', user.email, { user });
-  });
+  .onCreate((user) => sendEmail('createAccount', user.email, { user }));
 
 // Send the user an email when they delete their account
 exports.sendByeEmail = functions
   .region('europe-west1')
   .auth.user()
-  .onDelete((user) => {
-    sendEmail('deleteAccount', user.email, { user });
-  });
+  .onDelete((user) => sendEmail('deleteAccount', user.email, { user }));
 
 // Send the user an email when they start a course
 exports.startCourse = functions
   .region('europe-west1')
   .firestore.document('users/{userId}/courses/{courseId}')
-  .onCreate((snap, context) => {
-    admin
+  .onCreate(async (snap, context) => {
+    await admin
       .auth()
       .getUser(context.params.userId)
       .then((user) => {
-        sendEmail('startCourse', user.email, { data: snap.data() });
+        return sendEmail('startCourse', user.email, { data: snap.data() });
       });
   });
 
@@ -74,21 +70,48 @@ exports.receiveReview = functions
   .firestore.document(
     'users/{userId}/courses/{courseId}/submissions/{submissionId}'
   )
-  .onUpdate((change, context) => {
+  .onUpdate(async (change, context) => {
+    const oldData = change.before.data();
     const newData = change.after.data();
 
-    if (newData.review_content && newData.status) {
-      admin
+    if (
+      !oldData.review_content &&
+      !oldData.status &&
+      newData.review_content &&
+      newData.status
+    ) {
+      await admin
         .auth()
         .getUser(context.params.userId)
-        .then((user) => {
-          if (newData.status === 'passed') {
-            sendEmail('receivePassedReview', user.email, { data: newData });
-          } else if (newData.status === 'failed') {
-            sendEmail('receiveFailedReview', user.email, { data: newData });
+        .then(async (user) => {
+          const dbUser = await admin
+            .firestore()
+            .collection('users')
+            .doc(context.params.userId)
+            .get();
+          const dbUserData = dbUser.data();
+
+          if (
+            !dbUserData.notification_preferences ||
+            (dbUserData.notification_preferences &&
+              dbUserData.notification_preferences.includes('project_reviews'))
+          ) {
+            if (newData.status === 'passed') {
+              return sendEmail('receivePassedReview', user.email, {
+                data: newData,
+              });
+            } else if (newData.status === 'failed') {
+              return sendEmail('receiveFailedReview', user.email, {
+                data: newData,
+              });
+            }
+          } else {
+            return { status: 'Filter not met' };
           }
         });
     }
+
+    return { status: 'Filter not met' };
   });
 
 // Set up Sanity API requests

@@ -26,6 +26,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
 import Icon from '../../../components/Icon';
 import { handleErrors } from '../../../helpers';
+import { useNavigate } from 'react-router-dom';
 import { discussionLink } from '../../../content/links';
 
 const DetailLink = ({ icon, children, ...props }) => (
@@ -99,6 +100,7 @@ export default ({
   lesson,
 }: CoursePagesProp) => {
   const db = useFirestore();
+  const navigate = useNavigate();
 
   const {
     course: { lessons, projectTitle },
@@ -200,9 +202,13 @@ export default ({
               size="lg"
               onClick={() =>
                 onCompleteLesson().then(() => {
-                  window.location.href = `/courses/${course}/${
-                    typeof nextLesson === 'string' ? nextLesson : nextLesson._id
-                  }`;
+                  navigate(
+                    `/courses/${course}/${
+                      typeof nextLesson === 'string'
+                        ? nextLesson
+                        : nextLesson._id
+                    }`
+                  );
                 })
               }
             >

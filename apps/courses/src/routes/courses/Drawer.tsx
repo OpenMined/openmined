@@ -111,7 +111,7 @@ const DrawerItem = ({
               }
 
               // SEE TODO (#11)
-              // The following lines are unnecessary if TODO #11 is fixed, remove them
+              // The following lines are unnecessary when todo fixed, remove them
               if (linkProps.to) {
                 linkProps.as = 'a';
                 linkProps.to = null;

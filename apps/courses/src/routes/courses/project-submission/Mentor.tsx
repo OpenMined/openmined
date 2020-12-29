@@ -16,7 +16,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useAnalytics, useFirestore, useFunctions } from 'reactfire';
+import { useFirestore, useFunctions } from 'reactfire';
 import dayjs from 'dayjs';
 
 import {
@@ -32,14 +32,9 @@ import ColoredTabs from '../../../components/ColoredTabs';
 import Countdown from '../../../components/Countdown';
 import useToast, { toastConfig } from '../../../components/Toast';
 import SubmissionInline from '../../../components/SubmissionInline';
-import { handleErrors } from '../../../helpers';
+import { handleErrors, analytics } from '../../../helpers';
 
-const genTabsContent = (
-  part,
-  attemptData,
-  hasStartedSubmission,
-  setHasStartedSubmission
-) => {
+const genTabsContent = (part, attemptData, setHasStartedSubmission) => {
   const content = [
     {
       title: '1. Instructions',
@@ -93,11 +88,7 @@ const genTabsContent = (
         <>
           {!attemptData.review_content && (
             <RichTextEditor
-              onChange={() => {
-                if (!hasStartedSubmission) {
-                  setHasStartedSubmission(true);
-                }
-              }}
+              onChange={(value, { empty }) => setHasStartedSubmission(!empty)}
             />
           )}
           {attemptData.review_content && (
@@ -135,7 +126,6 @@ export default ({
   const navigate = useNavigate();
   const toast = useToast();
   const db = useFirestore();
-  const analytics = useAnalytics();
   const functions: firebase.functions.Functions = useFunctions();
   // @ts-ignore
   functions.region = 'europe-west1';
@@ -173,7 +163,6 @@ export default ({
 
       handleReviewSubmission(
         db,
-        analytics,
         currentTime,
         attemptData.student.id,
         attemptData.mentor.id,
@@ -206,7 +195,7 @@ export default ({
   const onRequestResignation = async (submission, mentor) => {
     setHasClickedButton(true);
 
-    analytics.logEvent('project_submission_resigned', {
+    analytics.logEvent('Project Submission Resigned', {
       course,
       part,
       attempt,
@@ -277,12 +266,7 @@ export default ({
       )}
       <ColoredTabs
         mb={8}
-        content={genTabsContent(
-          content,
-          attemptData,
-          hasStartedSubmission,
-          setHasStartedSubmission
-        )}
+        content={genTabsContent(content, attemptData, setHasStartedSubmission)}
       />
       {!hasAlreadyReviewed && (
         <Flex

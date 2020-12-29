@@ -47,7 +47,6 @@ dayjs.extend(relativeTime);
 const genTabsContent = (
   part,
   attemptData,
-  hasStartedSubmission,
   hasPendingSubmission,
   setHasStartedSubmission
 ) => {
@@ -86,11 +85,7 @@ const genTabsContent = (
         <>
           {!attemptData && !hasPendingSubmission && (
             <RichTextEditor
-              onChange={() => {
-                if (!hasStartedSubmission) {
-                  setHasStartedSubmission(true);
-                }
-              }}
+              onChange={(value, { empty }) => setHasStartedSubmission(!empty)}
             />
           )}
           {attemptData && (
@@ -191,7 +186,6 @@ export default ({
   attemptData,
 }) => {
   const db = useFirestore();
-  const analytics = useAnalytics();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -230,7 +224,6 @@ export default ({
   const onAttemptSubmission = async (part, content) => {
     handleAttemptSubmission(
       db,
-      analytics,
       user.uid,
       course,
       arrayUnion,
@@ -339,7 +332,6 @@ export default ({
             content={genTabsContent(
               content,
               attemptData,
-              hasStartedSubmission,
               hasPendingSubmission,
               setHasStartedSubmission
             )}

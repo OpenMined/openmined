@@ -22,7 +22,6 @@ export const hasStartedCourse = (u) =>
   Object.keys(u).length !== 0 && !!u.started_at;
 export const hasCompletedCourse = (u) =>
   hasStartedCourse(u) && !!u.completed_at;
-// TODO: Need to test this
 export const getCourseProgress = (u, ls, ps): CourseProgress => {
   let numLessons = 0;
   let numCompletedLessons = 0;

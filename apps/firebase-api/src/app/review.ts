@@ -1,7 +1,8 @@
 import admin from 'firebase-admin';
-import dayjs from 'dayjs';
-import { SUBMISSION_REVIEW_HOURS } from 'apps/courses/src/routes/courses/_helpers';
 import { logger } from 'firebase-functions';
+import dayjs from 'dayjs';
+
+import { SUBMISSION_REVIEW_HOURS } from '../../../courses/src/routes/courses/_helpers';
 
 export const assignReview = async (data, context) => {
   // Get the current user and the course
@@ -150,10 +151,7 @@ export const resignReview = async (data, context) => {
         { merge: true }
       );
 
-    // And update the statistics on the mentorship array
-    // TODO: Perhaps keep two arrays of submission id's that the mentor completely reviews and resigns from
-    // We can use this on their mentor activity list to get the number, but ALSO to make sure they can't be reassigned a submission they've previously resigned from
-    // This may or may not be a needed feature, if not... just increment a counter on the users/[user]/private[user] document
+    // SEE TODO (#20)
 
     // Return the resigned review to the mentor
     return dbReview;

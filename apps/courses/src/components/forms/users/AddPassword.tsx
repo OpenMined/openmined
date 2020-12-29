@@ -1,14 +1,14 @@
 import React from 'react';
 import { BoxProps } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useAnalytics, useAuth } from 'reactfire';
+import { useAuth } from 'reactfire';
 
 import Form from '../_form';
 import { validPassword, validMatchingPassword } from '../_validation';
 import { passwordField, passwordConfirmField } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
-import { handleErrors } from '../../../helpers';
+import { handleErrors, analytics } from '../../../helpers';
 
 interface AddPasswordFormProps extends BoxProps {
   callback?: () => void;
@@ -16,7 +16,6 @@ interface AddPasswordFormProps extends BoxProps {
 
 export default ({ callback, ...props }: AddPasswordFormProps) => {
   const auth = useAuth();
-  const analytics = useAnalytics();
   const toast = useToast();
 
   const provider = useAuth.EmailAuthProvider;
@@ -32,7 +31,7 @@ export default ({ callback, ...props }: AddPasswordFormProps) => {
   };
 
   const onSubmit = ({ password }) => {
-    analytics.logEvent('link_account_by_add_password', {
+    analytics.logEvent('Link Account by Add Password', {
       original: 'github',
       new: 'email',
     });

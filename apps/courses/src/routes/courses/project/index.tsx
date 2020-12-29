@@ -12,7 +12,7 @@ import {
   Text,
   UnorderedList,
 } from '@chakra-ui/react';
-import { useAnalytics, useFirestore } from 'reactfire';
+import { useFirestore } from 'reactfire';
 import {
   faBug,
   faCheckCircle,
@@ -115,7 +115,6 @@ const getStatusStyles = (status) => {
 
 export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
   const db = useFirestore();
-  const analytics = useAnalytics();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -163,7 +162,6 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
   const onBeginProjectPart = (part) =>
     handleProjectPartBegin(
       db,
-      analytics,
       user.uid,
       course,
       ts,

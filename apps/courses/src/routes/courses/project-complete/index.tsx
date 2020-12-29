@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAnalytics, useFirestore, useFunctions } from 'reactfire';
+import { useFirestore, useFunctions } from 'reactfire';
 import {
   Box,
   Button,
@@ -24,7 +24,7 @@ import { handleProvideFeedback } from '../_firebase';
 import useToast, { toastConfig } from '../../../components/Toast';
 import Icon from '../../../components/Icon';
 import GridContainer from '../../../components/GridContainer';
-import { handleErrors } from '../../../helpers';
+import { handleErrors, analytics } from '../../../helpers';
 import { useNavigate } from 'react-router-dom';
 import { discussionLink } from '../../../content/links';
 
@@ -43,7 +43,6 @@ const DetailLink = ({ icon, children, ...props }) => (
 export default ({ progress, page, user, course }: CoursePagesProp) => {
   const db = useFirestore();
   const navigate = useNavigate();
-  const analytics = useAnalytics();
 
   const {
     project: { title, parts },
@@ -79,7 +78,7 @@ export default ({ progress, page, user, course }: CoursePagesProp) => {
   const onCompleteCourse = () => {
     setClickedContinue(true);
 
-    analytics.logEvent('course_completed', { course, status });
+    analytics.logEvent('Course Completed', { course, status });
 
     return handleCourseComplete({
       course,
@@ -100,7 +99,6 @@ export default ({ progress, page, user, course }: CoursePagesProp) => {
   const onProvideFeedback = (value, feedback = null) =>
     handleProvideFeedback(
       db,
-      analytics,
       user.uid,
       course,
       course,

@@ -180,6 +180,7 @@ export default ({
                 return (
                   <Flex
                     align="center"
+                    cursor="pointer"
                     key={index}
                     {...getLinkPropsFromLink(link)}
                     onClick={() => {

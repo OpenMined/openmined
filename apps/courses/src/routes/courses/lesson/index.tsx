@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAnalytics, useFirestore } from 'reactfire';
+import { useFirestore } from 'reactfire';
 import {
   faBookOpen,
   faCheckCircle,
@@ -49,7 +49,6 @@ export default ({
   lesson,
 }: CoursePagesProp) => {
   const db = useFirestore();
-  const analytics = useAnalytics();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -72,7 +71,7 @@ export default ({
   const lessonNum = getLessonNumber(lessons, lesson);
 
   const onLessonStart = () => {
-    handleLessonStart(db, analytics, user.uid, course, ts, progress, lesson)
+    handleLessonStart(db, user.uid, course, ts, progress, lesson)
       .then(() => {
         navigate(`/courses/${course}/${lesson}/${firstConcept}`);
       })

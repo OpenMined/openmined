@@ -36,23 +36,39 @@ const client = sanityClient(sanityConfig);
 export const getCurrentUser = () => firebase.auth().currentUser;
 
 export const getCourseContent = async (course) => {
-  const query = `*[
-    _type == "course"
-    && slug.current == "${course}"
-  ] {
-    title,
-    lessons,
-      "slug": slug.current,
+  const query = `*[_type == "course" && slug.current == "${course}" && visible == true] {
+    ...,
+    "slug": slug.current,
     visual {
       "default": default.asset -> url,
       "full": full.asset -> url
     },
+    learnHow[] {
+      title,
+      "image": image.asset -> url
+    },
+    learnFrom[] -> {
+      ...,
+      "image": image.asset -> url
+    },
+    lessons[] -> {
+      _id,
+      title,
+      description,
+      concepts[] -> {
+        _id,
+        title,
+        "type": content[0]._type
+      }
+    }
   }[0]`;
-  return await client.fetch(query);
+  const result = await client.fetch(query);
+  debugger
+  return result;
 };
 
 /* Constants */
-const COURSE_TITLE = 'Privacy and Society';
+const COURSE_TITLE = 'Privacy & Society';
 const COURSE_SLUG = 'privacy-and-society';
 
 const TEST_USER_01 = {

@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import * as yup from 'yup';
-import { useAnalytics, useAuth, useFirestore } from 'reactfire';
+import { useAuth, useFirestore } from 'reactfire';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
 import Icon from '../../Icon';
@@ -31,7 +31,11 @@ import {
 } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
-import { handleErrors, useGithubAuthProvider } from '../../../helpers';
+import {
+  handleErrors,
+  useGithubAuthProvider,
+  analytics,
+} from '../../../helpers';
 import Modal from '../../Modal';
 
 interface SignUpFormProps extends BoxProps {
@@ -47,7 +51,6 @@ interface CredentialProps {
 export default ({ callback, ...props }: SignUpFormProps) => {
   const auth = useAuth();
   const db = useFirestore();
-  const analytics = useAnalytics();
   const toast = useToast();
 
   // In the event that we already have an account created by email and we try to sign up using Github
@@ -102,7 +105,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
           .catch((error) => handleErrors(toast, error));
 
       if (primaryMethod === 'password') {
-        analytics.logEvent('link_account_by_sign_up', {
+        analytics.logEvent('Link Account by Sign Up', {
           original: 'email',
           new: 'github',
         });
@@ -113,7 +116,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
           .then(({ user }) => linkAccount(user))
           .catch((error) => handleErrors(toast, error));
       } else if (primaryMethod === 'github.com') {
-        analytics.logEvent('link_account_by_sign_up', {
+        analytics.logEvent('Link Account by Sign Up', {
           original: 'github',
           new: 'email',
         });
@@ -130,7 +133,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
   };
 
   const onSubmit = ({ email, password, first_name, last_name }) => {
-    analytics.logEvent('sign_up', { method: 'email' });
+    analytics.logEvent('Sign Up', { method: 'email' });
 
     return auth
       .createUserWithEmailAndPassword(email, password)
@@ -144,6 +147,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
               .set({
                 first_name: first_name,
                 last_name: last_name,
+                notification_preferences: [{ project_reviews: true }],
               })
               .then(onSuccess)
               .catch((error) => handleErrors(toast, error))
@@ -163,7 +167,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
   };
 
   const onGithubSubmit = async () => {
-    analytics.logEvent('sign_up', { method: 'github' });
+    analytics.logEvent('Sign Up', { method: 'github' });
 
     const authUser = await auth
       .signInWithPopup(githubProvider)
@@ -204,6 +208,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         first_name: firstName,
         last_name: lastName,
         photo_url: authUser.user.photoURL,
+        notification_preferences: [{ project_reviews: true }],
         description: (authUser.additionalUserInfo.profile as any).bio,
         github: (authUser.additionalUserInfo.profile as any).login,
         twitter: (authUser.additionalUserInfo.profile as any).twitter_username,

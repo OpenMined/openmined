@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  useForm,
-  useFieldArray,
-  UseFormOptions,
-} from 'react-hook-form';
+import { useForm, useFieldArray, UseFormOptions } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
   Box,
@@ -24,6 +20,8 @@ import {
   Stack,
   Flex,
   Radio,
+  CheckboxGroup,
+  Checkbox,
 } from '@chakra-ui/react';
 import { ObjectSchema } from 'yup';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -37,7 +35,7 @@ interface Field {
   placeholder?: string;
   label?: string;
   defaultValue?: string | number | string[] | number[];
-  options?: (string | number)[];
+  options?: any[];
   left?: string;
   right?: string;
   min?: number;
@@ -59,11 +57,7 @@ interface FormProps {
 const SIZE = 'lg';
 const VARIANT = 'filled';
 
-const createInput = (
-  { options, left, right, ...input },
-  register,
-  control,
-) => {
+const createInput = ({ options, left, right, ...input }, register, control) => {
   let elem;
 
   if (input.type === 'select') {
@@ -92,27 +86,34 @@ const createInput = (
     elem = <FieldArray {...input} control={control} register={register} />;
   } else if (input.type === 'read-only') {
     elem = <Text color="gray.700">{input.defaultValue}</Text>;
-  } else if (input.type === 'radio') {
+  } else if (input.type === 'radio' || input.type === 'checkbox') {
+    const Group = input.type === 'radio' ? RadioGroup : CheckboxGroup;
+    const InputItem = input.type === 'radio' ? Radio : Checkbox;
+
     elem = (
-      <RadioGroup {...input}>
+      <Group {...input}>
         <Stack spacing={2} direction="column">
           {options.map((option) => {
             if (typeof option === 'string') {
               return (
-                <Radio
+                // @ts-ignore
+                <InputItem
                   key={option}
                   value={option}
+                  name={input.name}
                   id={`option-${option.toLowerCase().split(' ').join('-')}`}
                   ref={register}
                 >
                   {option}
-                </Radio>
+                </InputItem>
               );
             } else {
               return (
-                <Radio
+                // @ts-ignore
+                <InputItem
                   key={option.label}
                   value={option.value}
+                  name={input.name}
                   id={`option-${option.value
                     .toLowerCase()
                     .split(' ')
@@ -120,12 +121,12 @@ const createInput = (
                   ref={register}
                 >
                   {option.label}
-                </Radio>
+                </InputItem>
               );
             }
           })}
         </Stack>
-      </RadioGroup>
+      </Group>
     );
   } else {
     elem = <Input {...input} variant={VARIANT} size={SIZE} ref={register} />;

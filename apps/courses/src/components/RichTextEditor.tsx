@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Flex,
   Text,
@@ -34,6 +34,7 @@ import {
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
 import isUrl from 'is-url';
+import { useDebounce } from '../helpers';
 
 import Icon from '../components/Icon';
 
@@ -95,22 +96,25 @@ export default ({
     () => withLinks(withHistory(withReact(createEditor()))),
     []
   );
+  const debouncedValue = useDebounce(value, 300);
+
+  useEffect(() => {
+    if (onChange) {
+      const isValueEmpty =
+        value.length === 1 &&
+        value[0].type === 'paragraph' &&
+        value[0].children?.[0].text === '';
+      onChange(value, { empty: isValueEmpty });
+    }
+  }, [value, onChange]);
+
+  useEffect(() => {
+    localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(debouncedValue));
+  }, [debouncedValue]);
 
   return (
     <Box {...props}>
-      <Slate
-        editor={editor}
-        value={value}
-        onChange={(v) => {
-          setValue(v);
-
-          localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(v));
-
-          if (onChange && JSON.stringify(v) !== JSON.stringify(initialValue)) {
-            onChange(v);
-          }
-        }}
-      >
+      <Slate editor={editor} value={value} onChange={setValue}>
         {!readOnly && (
           <Flex
             width="full"

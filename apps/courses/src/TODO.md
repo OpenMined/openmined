@@ -12,6 +12,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### SLZ
 
+- TODO (#2): Add the support for links to the rich text editor, [basically just do this](https://www.slatejs.org/examples/links)
 - TODO: Slate editor now only skips the cursor after the first character. It could be a performance thing related to hiding and showing the submit button. To solve this, maybe create a better solution to hiding and showing that button without interrupting the flow of the editor.
 - TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)
 - TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
@@ -22,7 +23,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- TODO: In relation to the last one, make sure to include some of these emails as "opt-out"-able from a page we need to make on the [Account Settings page called "Notification Preferences"](https://www.figma.com/file/qravzmnQ0ESokNMhMVU9Zk/Wireframes?node-id=937%3A415). Maybe work with Patrick on this.
+None
 
 ## Pre-Launch Checklist
 
@@ -39,6 +40,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. T
 - Make an "intro to the CMS" video to give to Mat, Andrew, and Emma (and make sure to explain that filling in EVERY field is critical - if they can't fill in some, tell them to ask Patrick what to do)
 - Do a complete sweep of all pages with Kyoko to have design signoff
 - Do a complete sweep of all content and make sure Mat and Andrew have signoff
+- Create a README that's somewhat friendly to contributors
 - Make sure all mentors are students and put all their ID's in the mentors collection
 - Do a dance!
 

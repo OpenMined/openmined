@@ -211,3 +211,5 @@ export const useSanity = (query) => {
 
   return { data, loading, error };
 };
+
+export * from './firebase-sanity';

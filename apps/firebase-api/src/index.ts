@@ -92,7 +92,7 @@ exports.receiveReview = functions
   });
 
 // Set up Sanity API requests
-exports.sanity = functions.region('europe-west1').https.onCall(sanity);
+exports.sanity = functions.region('europe-west1').https.onRequest(sanity);
 
 // SEE TODO (#13)
 // exports.ssr = functions.region('europe-west1').https.onRequest(ssr);

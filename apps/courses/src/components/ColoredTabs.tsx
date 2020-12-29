@@ -34,9 +34,9 @@ export default ({ content, ...props }) => (
       borderColor="gray.300"
       borderBottomRadius="md"
     >
-      {content.map(({ panel: createPanel, title, ...i }) => (
+      {content.map(({ panel: Panel, title, ...i }) => (
         <TabPanel {...i} key={title}>
-          {createPanel()}
+          <Panel />
         </TabPanel>
       ))}
     </TabPanels>

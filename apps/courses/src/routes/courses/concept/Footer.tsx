@@ -20,6 +20,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import { Popover } from '../../../components/Popover';
 import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
+import { useNavigate } from 'react-router-dom';
 import { discussionLink, issuesLink } from '../../../content/links';
 
 const BREAK = 'md';
@@ -176,33 +177,45 @@ const Controls = ({
   current,
   total,
   onCompleteConcept,
-}) => (
-  <Flex align="center">
-    <Button
-      onClick={() => {
-        window.location.href = backLink;
-      }}
-      colorScheme={isBackAvailable ? 'cyan' : 'black'}
-      disabled={!isBackAvailable}
-    >
-      Back
-    </Button>
-    <Text mx={[6, null, 8, 12]} color="gray.400">
-      {current} of {total}
-    </Text>
-    <Button
-      onClick={() => {
-        onCompleteConcept().then(() => {
-          window.location.href = nextLink;
-        });
-      }}
-      colorScheme={isNextAvailable ? 'cyan' : 'black'}
-      disabled={!isNextAvailable}
-    >
-      Next
-    </Button>
-  </Flex>
-);
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <Flex align="center">
+      <Button
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          setTimeout(() => {
+            navigate(backLink);
+          }, 500);
+        }}
+        colorScheme={isBackAvailable ? 'cyan' : 'black'}
+        disabled={!isBackAvailable}
+      >
+        Back
+      </Button>
+      <Text mx={[6, null, 8, 12]} color="gray.400">
+        {current} of {total}
+      </Text>
+      <Button
+        onClick={() => {
+          onCompleteConcept().then(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            setTimeout(() => {
+              navigate(nextLink);
+            }, 500);
+          });
+        }}
+        colorScheme={isNextAvailable ? 'cyan' : 'black'}
+        disabled={!isNextAvailable}
+      >
+        Next
+      </Button>
+    </Flex>
+  );
+};
 
 export default ({
   current,

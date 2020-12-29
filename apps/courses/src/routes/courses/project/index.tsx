@@ -25,6 +25,7 @@ import {
   faClock,
   faCertificate,
 } from '@fortawesome/free-solid-svg-icons';
+import { Link as RRDLink } from 'react-router-dom';
 import { CoursePagesProp } from '@openmined/shared/types';
 
 import ProjectAccordion from './ProjectAccordion';
@@ -210,9 +211,8 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
           />
           <Button
             disabled={!(status === 'passed' || status === 'failed')}
-            onClick={() =>
-              (window.location.href = `/courses/${course}/project/complete`)
-            }
+            as={RRDLink}
+            to={`/courses/${course}/project/complete`}
             colorScheme="black"
           >
             Finish

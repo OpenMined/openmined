@@ -1,12 +1,8 @@
-import React, { lazy } from 'react';
+import React, { lazy, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
+import { useFirestore, useUser } from 'reactfire';
 import { useSanity } from '@openmined/shared/data-access-sanity';
-import {
-  Course,
-  CoursePageWhich,
-  CoursePagesProp,
-} from '@openmined/shared/types';
+import { CoursePageWhich, CoursePagesProp } from '@openmined/shared/types';
 
 import { usePageAvailabilityRedirect } from './_helpers';
 import * as queries from './_queries';
@@ -15,8 +11,6 @@ import CourseWrap from './Wrapper';
 import { getCourseRef } from './_firebase';
 
 import Loading from '../../components/Loading';
-
-// SEE TODO (#11)
 
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
@@ -44,7 +38,7 @@ const pages = {
 const PermissionsGate = ({ children, progress, which, page, ...params }) => {
   // Check whether or not we're able to see this page
   const status = usePageAvailabilityRedirect(
-    progress, // The user's progress
+    progress || {}, // The user's progress
     page.lessons || page.course.lessons, // The CMS's list of lessons and concepts
     params.course, // The current course
     params.lesson || 'project', // The current lesson (or the "project" lesson)
@@ -82,9 +76,19 @@ export default ({ which }: PropType) => {
     params.course && user
       ? getCourseRef(db, mentorStudentToken || user.uid, params.course)
       : null;
-  const dbCourse: Course = dbCourseRef
-    ? useFirestoreDocDataOnce(dbCourseRef)
-    : {};
+
+  // Set the course object that the user is requesting
+  const [dbCourse, setDbCourse] = useState(null);
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      const courseData = (await dbCourseRef.get()).data();
+
+      setDbCourse(courseData || {});
+    };
+
+    if (dbCourseRef && !dbCourse) fetchCourse();
+  }, [dbCourseRef, dbCourse]);
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
@@ -119,11 +123,19 @@ export default ({ which }: PropType) => {
     ts: serverTimestamp,
   };
 
-  // If we're still waiting on the CMS, render the loader
-  if (loading) return <Loading />;
+  // If we're still waiting on the CMS or latest course data is not loaded, render the loader
+  const nowLoading = which === 'search' ? loading : loading || !dbCourse;
+
+  if (nowLoading) return <Loading />;
 
   // Prepare the configuration we'll send to the wrapper
-  const config = configs[which](props);
+  let config: any = {};
+
+  try {
+    config = configs[which](props);
+  } catch (err) {
+    return <Loading />;
+  }
 
   // If the page being requested doesn't require the permission gate, render the component directly
   if (permissionlessPages.includes(which)) {

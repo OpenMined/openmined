@@ -1,12 +1,8 @@
 import React, { lazy, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useFirestore, useFirestoreDocDataOnce, useUser } from 'reactfire';
+import { useFirestore, useUser } from 'reactfire';
 import { useSanity } from '@openmined/shared/data-access-sanity';
-import {
-  Course,
-  CoursePageWhich,
-  CoursePagesProp,
-} from '@openmined/shared/types';
+import { CoursePageWhich, CoursePagesProp } from '@openmined/shared/types';
 
 import { usePageAvailabilityRedirect } from './_helpers';
 import * as queries from './_queries';
@@ -15,8 +11,6 @@ import CourseWrap from './Wrapper';
 import { getCourseRef } from './_firebase';
 
 import Loading from '../../components/Loading';
-
-// SEE TODO (#11)
 
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
@@ -83,10 +77,7 @@ export default ({ which }: PropType) => {
       ? getCourseRef(db, mentorStudentToken || user.uid, params.course)
       : null;
 
-  // const dbCourse = dbCourseRef
-  //  ? useFirestoreDocDataOnce(dbCourseRef)
-  //  : {};
-  // console.log(dbCourse)
+  // Set the course object that the user is requesting
   const [dbCourse, setDbCourse] = useState(null);
 
   useEffect(() => {
@@ -95,9 +86,9 @@ export default ({ which }: PropType) => {
 
       setDbCourse(courseData || {});
     };
-    setDbCourse(null);
-    dbCourseRef && fetchCourse();
-  }, [params.course, params.lesson, params.concept]);
+
+    if (dbCourseRef && !dbCourse) fetchCourse();
+  }, [dbCourseRef, dbCourse]);
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
@@ -139,6 +130,7 @@ export default ({ which }: PropType) => {
 
   // Prepare the configuration we'll send to the wrapper
   let config: any = {};
+
   try {
     config = configs[which](props);
   } catch (err) {

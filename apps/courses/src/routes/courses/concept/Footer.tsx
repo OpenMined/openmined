@@ -180,31 +180,41 @@ const Controls = ({
 }) => {
   const navigate = useNavigate();
 
-  return <Flex align="center">
-    <Button
-      onClick={() => {
-        navigate(backLink);
-      }}
-      colorScheme={isBackAvailable ? 'cyan' : 'black'}
-      disabled={!isBackAvailable}
-    >
-      Back
-    </Button>
-    <Text mx={[6, null, 8, 12]} color="gray.400">
-      {current} of {total}
-    </Text>
-    <Button
-      onClick={() => {
-        onCompleteConcept().then(() => {
-          navigate(nextLink);
-        });
-      }}
-      colorScheme={isNextAvailable ? 'cyan' : 'black'}
-      disabled={!isNextAvailable}
-    >
-      Next
-    </Button>
-  </Flex>
+  return (
+    <Flex align="center">
+      <Button
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          setTimeout(() => {
+            navigate(backLink);
+          }, 500);
+        }}
+        colorScheme={isBackAvailable ? 'cyan' : 'black'}
+        disabled={!isBackAvailable}
+      >
+        Back
+      </Button>
+      <Text mx={[6, null, 8, 12]} color="gray.400">
+        {current} of {total}
+      </Text>
+      <Button
+        onClick={() => {
+          onCompleteConcept().then(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            setTimeout(() => {
+              navigate(nextLink);
+            }, 500);
+          });
+        }}
+        colorScheme={isNextAvailable ? 'cyan' : 'black'}
+        disabled={!isNextAvailable}
+      >
+        Next
+      </Button>
+    </Flex>
+  );
 };
 
 export default ({

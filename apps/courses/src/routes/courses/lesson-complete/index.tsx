@@ -202,10 +202,13 @@ export default ({
               size="lg"
               onClick={() =>
                 onCompleteLesson().then(() => {
-                  const url = `/courses/${course}/${
-                    typeof nextLesson === 'string' ? nextLesson : nextLesson._id
-                  }`;
-                  navigate(url);
+                  navigate(
+                    `/courses/${course}/${
+                      typeof nextLesson === 'string'
+                        ? nextLesson
+                        : nextLesson._id
+                    }`
+                  );
                 })
               }
             >

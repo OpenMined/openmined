@@ -209,9 +209,9 @@ export default ({
       ).length === 3 &&
       !attemptData
     ) {
-      window.location.href = `/courses/${course}/project/${part}/3`;
+      navigate(`/courses/${course}/project/${part}/3`);
     }
-  }, [submissions, attemptData, course, part]);
+  }, [navigate, submissions, attemptData, course, part]);
 
   // Save the arrayUnion function so that we can push items into a Firestore array
   const arrayUnion = useFirestore.FieldValue.arrayUnion;

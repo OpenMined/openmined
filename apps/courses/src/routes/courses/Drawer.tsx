@@ -34,10 +34,8 @@ const DrawerItem = ({
   toggleAccordionItem,
   onClose,
   item: { title, icon, fields },
-}) => {
-  const navigate = useNavigate();
-
-  return <AccordionItem border={0}>
+}) => (
+  <AccordionItem border={0}>
     <AccordionButton
       px={8}
       py={6}
@@ -110,41 +108,36 @@ const DrawerItem = ({
                 icon = type ? (type === 'video' ? faPlayCircle : faFile) : null;
               }
 
-              // SEE TODO (#11)
-              // The following lines are unnecessary when todo fixed, remove them
-              if (linkProps.to) {
-                linkProps.as = 'a';
-                linkProps.to = null;
-                linkProps.cursor = 'pointer';
-                linkProps.onClick = () => {
-                  navigate(link);
-                };
-              }
+              linkProps._hover = { color: linkProps.color };
 
               return (
-                <Flex key={index} align="center" {...linkProps}>
-                  <Flex
-                    justify="center"
-                    align="center"
-                    textAlign="center"
-                    width={5}
-                    mr={6}
-                  >
-                    {icon && (
-                      <Icon
-                        icon={icon}
-                        color={status === 'completed' ? 'cyan.300' : 'inherit'}
-                        boxSize={5}
-                      />
-                    )}
-                    {!icon && (
-                      <Text fontWeight="bold" fontSize="xl">
-                        {number}
-                      </Text>
-                    )}
+                <Link {...linkProps} key={index} variant="flat">
+                  <Flex align="center">
+                    <Flex
+                      justify="center"
+                      align="center"
+                      textAlign="center"
+                      width={5}
+                      mr={6}
+                    >
+                      {icon && (
+                        <Icon
+                          icon={icon}
+                          color={
+                            status === 'completed' ? 'cyan.300' : 'inherit'
+                          }
+                          boxSize={5}
+                        />
+                      )}
+                      {!icon && (
+                        <Text fontWeight="bold" fontSize="xl">
+                          {number}
+                        </Text>
+                      )}
+                    </Flex>
+                    <Text>{title}</Text>
                   </Flex>
-                  <Text>{title}</Text>
-                </Flex>
+                </Link>
               );
             }
           }
@@ -152,7 +145,7 @@ const DrawerItem = ({
       </Stack>
     </AccordionPanel>
   </AccordionItem>
-};
+);
 
 export default ({ isOpen, onOpen, onClose, header, content, ...props }) => {
   const [sectionIndexes, setSectionIndexes] = useState([0]);

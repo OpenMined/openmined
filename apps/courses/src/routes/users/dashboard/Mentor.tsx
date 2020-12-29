@@ -11,7 +11,7 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react';
-import { Link as RRDLink, useNavigate } from 'react-router-dom';
+import { Link as RRDLink } from 'react-router-dom';
 import {
   useFirestore,
   useFirestoreCollectionData,
@@ -59,7 +59,6 @@ const getMentorableCourses = (courses, user) =>
 
 export const MentorContext = ({ courses }) => {
   const toast = useToast();
-  const navigate = useNavigate();
   const user: firebase.User = useUser();
   const db = useFirestore();
   const functions: firebase.functions.Functions = useFunctions();
@@ -345,7 +344,6 @@ export const MentorTabs = ({ courses, mentor }) => {
 
   const MyActivity = () => {
     const user: firebase.User = useUser();
-    const navigate = useNavigate();
     const db = useFirestore();
     const dbReviewsRef = db
       .collection('users')

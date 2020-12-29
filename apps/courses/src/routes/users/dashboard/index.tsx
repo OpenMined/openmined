@@ -55,14 +55,15 @@ export default () => {
   const db = useFirestore();
 
   const dbUserRef = db.collection('users').doc(user.uid);
-  const [dbUser, setDbUser] = useState<OpenMined.User>(null);
+  const [dbUser, setDbUser] = useState<User>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
-      setDbUser((await dbUserRef.get()).data() as OpenMined.User);
+      setDbUser((await dbUserRef.get()).data() as User);
     };
-    user && user.uid && fetchUser();
-  }, [user]);
+
+    if (user && user.uid && !dbUser) fetchUser();
+  }, [user, dbUser, dbUserRef]);
 
   const userIsMentor =
     dbUser &&

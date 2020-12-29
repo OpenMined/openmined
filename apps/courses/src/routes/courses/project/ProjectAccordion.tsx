@@ -106,10 +106,9 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                       ({ status }) => status === 'pending'
                     );
 
-                    const url = `/courses/${course}/project/${_key}/${
-                      attempt + 1
-                    }`;
-                    navigate(url);
+                    navigate(
+                      `/courses/${course}/project/${_key}/${attempt + 1}`
+                    );
                   } else {
                     navigate(`/courses/${course}/project/${_key}`);
                   }

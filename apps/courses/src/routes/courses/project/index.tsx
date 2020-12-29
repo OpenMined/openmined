@@ -25,6 +25,7 @@ import {
   faClock,
   faCertificate,
 } from '@fortawesome/free-solid-svg-icons';
+import { Link as RRDLink } from 'react-router-dom';
 import { CoursePagesProp } from '@openmined/shared/types';
 
 import ProjectAccordion from './ProjectAccordion';
@@ -41,7 +42,6 @@ import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
-import { useNavigate } from 'react-router-dom';
 import { discussionLink, issuesLink } from '../../../content/links';
 
 // The detail links on the sidebar
@@ -116,7 +116,6 @@ const getStatusStyles = (status) => {
 export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
-  const navigate = useNavigate();
 
   const {
     title: courseTitle,
@@ -212,7 +211,8 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
           />
           <Button
             disabled={!(status === 'passed' || status === 'failed')}
-            onClick={() => navigate(`/courses/${course}/project/complete`)}
+            as={RRDLink}
+            to={`/courses/${course}/project/complete`}
             colorScheme="black"
           >
             Finish

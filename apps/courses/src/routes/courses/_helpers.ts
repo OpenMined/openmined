@@ -328,7 +328,7 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
         navigate(url);
       }
     }
-  }, [user, ls, course, l, c, status]);
+  }, [navigate, user, ls, course, l, c, status]);
 
   return status;
 };

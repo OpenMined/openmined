@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -140,6 +140,11 @@ export default ({
   const [passFail, setPassFail] = useState(null);
   const preSubmitModal = useDisclosure();
 
+  const tabsContent = useMemo(
+    () => genTabsContent(content, attemptData, setHasStartedSubmission),
+    [content, attemptData]
+  );
+
   const isBeforeDeadline = useCallback(() => {
     const now = dayjs();
     const reviewStarted = dayjs(attemptData.review_started_at.toDate());
@@ -266,10 +271,7 @@ export default ({
           ))}
         </Box>
       )}
-      <ColoredTabs
-        mb={8}
-        content={genTabsContent(content, attemptData, setHasStartedSubmission)}
-      />
+      <ColoredTabs mb={8} content={tabsContent} />
       {!hasAlreadyReviewed && (
         <Flex
           mb={8}

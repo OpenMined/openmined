@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Breadcrumb,
@@ -202,6 +202,17 @@ export default ({
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const preSubmitModal = useDisclosure();
 
+  const tabsContent = useMemo(
+    () =>
+      genTabsContent(
+        content,
+        attemptData,
+        hasPendingSubmission,
+        setHasStartedSubmission
+      ),
+    [content, attemptData, hasPendingSubmission]
+  );
+
   useEffect(() => {
     if (
       submissions.filter(
@@ -328,15 +339,7 @@ export default ({
               <ReviewStatus status={attemptData.status} />
             </Box>
           )}
-          <ColoredTabs
-            mb={8}
-            content={genTabsContent(
-              content,
-              attemptData,
-              hasPendingSubmission,
-              setHasStartedSubmission
-            )}
-          />
+          <ColoredTabs mb={8} content={tabsContent} />
           <Flex justify="space-between" align="center">
             <Button
               as={RRDLink}

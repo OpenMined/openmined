@@ -61,6 +61,21 @@ export default () => {
     sections,
   } = isPolicy ? policy : terms;
 
+  const renderedSections = sections.map((section) => {
+    if (Array.isArray(section.content)) {
+      return {
+        ...section,
+        content: section.content.map((c, i) => (
+          <Text key={i} mb={4}>
+            {c}
+          </Text>
+        )),
+      };
+    }
+
+    return section;
+  });
+
   const disclaimer = !isPolicy ? terms.heading.disclaimer : undefined;
 
   const [sectionIndexes, setSectionIndexes] = useState([0]);
@@ -107,7 +122,7 @@ export default () => {
                 <NumberedAccordion
                   indexes={sectionIndexes}
                   onToggleItem={toggleAccordionItem}
-                  sections={sections}
+                  sections={renderedSections}
                 />
               </Box>
             </Box>

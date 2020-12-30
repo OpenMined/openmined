@@ -101,10 +101,14 @@ export default ({ course, page, progress }: CoursePagesProp) => {
       <Text mb={4}>{description}</Text>
       <List spacing={2}>
         {parts.map(({ title, _id, type, _key }, index) => {
-          const isComplete =
-            _id && !_key
-              ? hasCompletedConcept(progress, lessonId, _id)
-              : hasCompletedProjectPart(progress, _key);
+          let isComplete = false;
+
+          if (progress) {
+            isComplete =
+              _id && !_key
+                ? hasCompletedConcept(progress, lessonId, _id)
+                : hasCompletedProjectPart(progress, _key);
+          }
 
           let icon;
 
@@ -169,7 +173,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
     ? `/courses/${course}/${page.lessons[0]._id}`
     : null;
 
-  const isTakingCourse = hasStartedCourse(progress);
+  const isTakingCourse = progress ? hasStartedCourse(progress) : false;
 
   const stats = isTakingCourse
     ? getCourseProgress(progress, page.lessons, project.parts)
@@ -333,7 +337,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                     </CircularProgressLabel>
                   </CircularProgress>
                   <Button
-                    colorScheme="blue"
+                    colorScheme="black"
                     size="lg"
                     as={Link}
                     to={resumeLink}
@@ -367,13 +371,17 @@ export default ({ course, page, progress }: CoursePagesProp) => {
             direction="column"
             align="center"
           >
-            <Heading as="h2" size="xl" mb={4}>
-              What You'll Learn
-            </Heading>
-            <Text color="gray.700">
-              Below you will find the entire course syllabus organized by
-              lessons and concepts.
-            </Text>
+            {!isTakingCourse && (
+              <>
+                <Heading as="h2" size="xl" mb={4}>
+                  What You'll Learn
+                </Heading>
+                <Text color="gray.700">
+                  Below you will find the entire course syllabus organized by
+                  lessons and concepts.
+                </Text>
+              </>
+            )}
             {lessons.length !== 0 && (
               <NumberedAccordion
                 width="full"

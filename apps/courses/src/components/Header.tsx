@@ -192,7 +192,7 @@ export default ({ noScrolling }) => {
               rel="noopener noreferrer"
             >
               <Icon icon={faCommentAlt} boxSize={5} color="gray.400" mr={4} />
-              <Text color="gray.700">Forum</Text>
+              <Text color="gray.700">Discussion Board</Text>
             </Flex>
             <Divider />
             <Flex

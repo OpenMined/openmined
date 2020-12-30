@@ -54,7 +54,7 @@ export const resources = {
       title: 'Discussion Board',
       description:
         'Take your learning to the next level and discuss it with the community!',
-      icon: <Icon icon={faCommentAlt} boxSize={8} color="magenta.600" />,
+      icon: <Icon icon={faCommentAlt} boxSize={8} color="blue.500" />,
       link: {
         title: 'Check it Out',
         link: discussionLink,
@@ -64,7 +64,7 @@ export const resources = {
       title: 'Slack Community',
       description:
         'Join the conversation with over 10,000 others in Slack community!',
-      icon: <Icon icon={faSlack} boxSize={8} color="magenta.600" />,
+      icon: <Icon icon={faSlack} boxSize={8} color="blue.500" />,
       link: {
         title: 'Join Slack',
         link: slackLink,
@@ -74,7 +74,7 @@ export const resources = {
       title: 'Blog',
       description:
         'For the latest news and info on the OpenMined community, visit our blog!',
-      icon: <Icon icon={faPencilAlt} boxSize={8} color="magenta.600" />,
+      icon: <Icon icon={faPencilAlt} boxSize={8} color="blue.500" />,
       link: {
         title: 'Check it Out',
         link: blogLink,
@@ -84,7 +84,7 @@ export const resources = {
       title: 'Mentors',
       description:
         'Our mentors provide feedback on your projects and help you at every step!',
-      icon: <Icon icon={faUser} boxSize={8} color="magenta.600" />,
+      icon: <Icon icon={faUser} boxSize={8} color="blue.500" />,
     },
   ],
 };

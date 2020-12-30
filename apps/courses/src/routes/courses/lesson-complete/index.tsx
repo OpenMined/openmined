@@ -84,7 +84,7 @@ const LessonLine = ({ status, title, isProjectNext = false }) => (
       </Text>
     </Flex>
     {status === 'next' && (
-      <Text color="gray.400" ml={6}>
+      <Text color="gray.400" fontStyle="italic" ml={6}>
         Up Next
       </Text>
     )}

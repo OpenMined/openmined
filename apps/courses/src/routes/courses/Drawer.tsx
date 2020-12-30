@@ -93,6 +93,7 @@ const DrawerItem = ({
                   }
                 : {
                     userSelect: 'none',
+                    cursor: 'default',
                   };
 
               let icon;

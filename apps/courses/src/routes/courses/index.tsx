@@ -88,7 +88,7 @@ export default ({ which }: PropType) => {
     };
 
     if (dbCourseRef && !dbCourse) fetchCourse();
-  }, [dbCourseRef, dbCourse]);
+  }, [dbCourse]);
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference
@@ -113,6 +113,12 @@ export default ({ which }: PropType) => {
   // );
   // console.log('NEW', newPermissionGate);
 
+  // If we're still waiting on the CMS or latest course data is not loaded, render the loader
+  const nowLoading = user ? loading : loading || !dbCourse;
+  console.log('COURSE', nowLoading, dbCourse);
+
+  if (nowLoading) return <Loading />;
+
   // Define the props we'll be passing to each page (and to the permission hook)
   const props: CoursePagesProp = {
     ...params,
@@ -122,13 +128,6 @@ export default ({ which }: PropType) => {
     progress: dbCourse,
     ts: serverTimestamp,
   };
-
-  // If we're still waiting on the CMS or latest course data is not loaded, render the loader
-  const nowLoading = permissionlessPages.includes(which)
-    ? loading
-    : loading || !dbCourse;
-
-  if (nowLoading) return <Loading />;
 
   // Prepare the configuration we'll send to the wrapper
   let config: any = {};

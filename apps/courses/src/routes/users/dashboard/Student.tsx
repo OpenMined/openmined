@@ -115,12 +115,12 @@ export const StudentTabs = ({ courses, progress }) => {
         ...i,
         panel: () => (
           <Box>
-            <Text color="gray.700" mb={6}>
-              {i.description}
-            </Text>
-            <Text fontWeight="bold" mb={2}>
-              Project Reviews
-            </Text>
+            <Text color="gray.700">{i.description}</Text>
+            {i.submissions.filter((s) => s.status !== 'none').length !== 0 && (
+              <Text fontWeight="bold" mt={6} mb={2}>
+                Project Reviews
+              </Text>
+            )}
             {i.submissions.map((submission, index) => (
               <SubmissionInline
                 key={index}

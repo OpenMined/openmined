@@ -72,6 +72,7 @@ const withLinks = (editor) => {
       } else {
         const newLink = { text, url: text, link: true };
         const emptySpace = { text: ' ' };
+
         Transforms.insertFragment(editor, [newLink, emptySpace]);
       }
       return;
@@ -98,7 +99,10 @@ export default ({
   const [selection, setSelection] = useState();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const renderElement = useCallback((props) => <Element {...props} />, []);
-  const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+  const renderLeaf = useCallback(
+    (props) => <Leaf {...props} readOnly={readOnly} />,
+    []
+  );
   const editor = useMemo(
     () => withLinks(withHistory(withReact(createEditor()))),
     []
@@ -136,6 +140,7 @@ export default ({
     if (!url || !isUrl(url)) {
       setUrl(null);
     }
+
     onClose();
   };
 
@@ -218,34 +223,25 @@ export default ({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title="Set up a link"
+        title="Setup a Link"
         buttons={
           isMarkActive(editor, 'link') ? (
             <>
               <Button
                 onClick={handleRemoveLink}
-                type="submit"
                 variant="ghost"
-                colorScheme="black"
+                colorScheme="red"
                 mr={3}
               >
-                Remove link
+                Remove Link
               </Button>
-              <Button
-                onClick={handleCreateLink}
-                type="submit"
-                colorScheme="black"
-              >
-                Edit link
+              <Button onClick={handleCreateLink} colorScheme="blue">
+                Edit Link
               </Button>
             </>
           ) : (
-            <Button
-              onClick={handleCreateLink}
-              type="submit"
-              colorScheme="black"
-            >
-              Create link
+            <Button onClick={handleCreateLink} colorScheme="blue">
+              Create Link
             </Button>
           )
         }
@@ -256,7 +252,10 @@ export default ({
           defaultValue={
             isMarkActive(editor, 'link') ? Editor.marks(editor).url : ''
           }
-          onChange={({ target }) => setUrl(target.value)}
+          onChange={({ target }) => {
+            // @ts-ignore
+            setUrl(target.value);
+          }}
         />
       </Modal>
     </Box>
@@ -391,7 +390,7 @@ export const Element = ({ attributes, children, element }) => {
   }
 };
 
-export const Leaf = ({ attributes, children, leaf }) => {
+export const Leaf = ({ attributes, children, leaf, readOnly }) => {
   if (leaf.bold) {
     return (
       <Text as="span" fontWeight="bold" {...attributes}>
@@ -436,6 +435,7 @@ export const Leaf = ({ attributes, children, leaf }) => {
         rel="noopener noreferrer"
         {...attributes}
         href={leaf.url}
+        cursor={readOnly ? 'pointer' : 'text'}
       >
         {children}
       </Link>
@@ -471,7 +471,7 @@ const BlockButton = ({ format, icon, text }: any) => {
   );
 };
 
-const MarkButton = ({ format, icon, openModal, setSelection }) => {
+const MarkButton = ({ format, icon, openModal, setSelection }: any) => {
   const editor = useSlate();
 
   return (

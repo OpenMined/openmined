@@ -208,7 +208,6 @@ export default ({ course, page, progress }: CoursePagesProp) => {
   };
 
   const openLessons = determineOpenLessons();
-  console.log('OPEN', openLessons);
   const [indexes, setIndexes] = useState(openLessons);
 
   const toggleAccordionItem = (index) => {

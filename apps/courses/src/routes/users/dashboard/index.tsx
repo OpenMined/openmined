@@ -81,7 +81,7 @@ export default () => {
 
   const mentorModeCache = JSON.parse(localStorage.getItem(MENTOR_MODE_KEY));
   const [mentorMode, setMentorMode] = useState(
-    (mentorModeCache && mentorModeCache.enabled) || false
+    (userIsMentor && mentorModeCache && mentorModeCache.enabled) || false
   );
 
   const resources =

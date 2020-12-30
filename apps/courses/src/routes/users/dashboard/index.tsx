@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -17,7 +17,6 @@ import { User } from '@openmined/shared/types';
 import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 import {
   useUser,
-  useFirestoreDocDataOnce,
   useFirestore,
   useFirestoreCollectionData,
 } from 'reactfire';
@@ -28,6 +27,7 @@ import { StudentContext, StudentTabs, studentResources } from './Student';
 import { MentorContext, MentorTabs, mentorResources } from './Mentor';
 
 import GridContainer from '../../../components/GridContainer';
+import Loading from '../../../components/Loading';
 import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
 
@@ -59,9 +59,18 @@ export default () => {
   const db = useFirestore();
 
   const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+  const [dbUser, setDbUser] = useState<User>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setDbUser((await dbUserRef.get()).data() as User);
+    };
+
+    if (user && user.uid && !dbUser) fetchUser();
+  }, [user, dbUser, dbUserRef]);
 
   const userIsMentor =
+    dbUser &&
     dbUser.is_mentor &&
     dbUser.mentorable_courses &&
     dbUser.mentorable_courses.length > 0;
@@ -84,7 +93,7 @@ export default () => {
 
   const { data, loading } = useFirebaseSanity('dashboardCourses');
 
-  if (loading) return null;
+  if (loading || !dbUser) return <Loading />;
 
   return (
     <Page title="Dashboard">

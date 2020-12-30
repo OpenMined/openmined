@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Breadcrumb,
@@ -23,7 +23,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link as RRDLink } from 'react-router-dom';
+import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useFirestore } from 'reactfire';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
@@ -47,7 +47,6 @@ dayjs.extend(relativeTime);
 const genTabsContent = (
   part,
   attemptData,
-  hasStartedSubmission,
   hasPendingSubmission,
   setHasStartedSubmission
 ) => {
@@ -86,11 +85,7 @@ const genTabsContent = (
         <>
           {!attemptData && !hasPendingSubmission && (
             <RichTextEditor
-              onChange={() => {
-                if (!hasStartedSubmission) {
-                  setHasStartedSubmission(true);
-                }
-              }}
+              onChange={(value, { empty }) => setHasStartedSubmission(!empty)}
             />
           )}
           {attemptData && (
@@ -192,6 +187,7 @@ export default ({
 }) => {
   const db = useFirestore();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const {
     project: { title: projectTitle, parts },
@@ -206,6 +202,17 @@ export default ({
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const preSubmitModal = useDisclosure();
 
+  const tabsContent = useMemo(
+    () =>
+      genTabsContent(
+        content,
+        attemptData,
+        hasPendingSubmission,
+        setHasStartedSubmission
+      ),
+    [content, attemptData, hasPendingSubmission]
+  );
+
   useEffect(() => {
     if (
       submissions.filter(
@@ -213,9 +220,9 @@ export default ({
       ).length === 3 &&
       !attemptData
     ) {
-      window.location.href = `/courses/${course}/project/${part}/3`;
+      navigate(`/courses/${course}/project/${part}/3`);
     }
-  }, [submissions, attemptData, course, part]);
+  }, [navigate, submissions, attemptData, course, part]);
 
   // Save the arrayUnion function so that we can push items into a Firestore array
   const arrayUnion = useFirestore.FieldValue.arrayUnion;
@@ -238,7 +245,7 @@ export default ({
     )
       .then(() => {
         // Once that's done, reload the projects in the default viewing state
-        window.location.href = `/courses/${course}/project`;
+        navigate(`/courses/${course}/project`);
       })
       .catch((error) => handleErrors(toast, error));
   };
@@ -331,16 +338,7 @@ export default ({
               <ReviewStatus status={attemptData.status} />
             </Box>
           )}
-          <ColoredTabs
-            mb={8}
-            content={genTabsContent(
-              content,
-              attemptData,
-              hasStartedSubmission,
-              hasPendingSubmission,
-              setHasStartedSubmission
-            )}
-          />
+          <ColoredTabs mb={8} content={tabsContent} />
           <Flex justify="space-between" align="center">
             <Button
               as={RRDLink}

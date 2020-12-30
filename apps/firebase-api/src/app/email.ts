@@ -355,7 +355,10 @@ export const sendEmail = async (type: string, user: string, data: any) => {
       to: user,
       ...contentTypes[type](data),
     });
+
+    return { success: true };
   } catch (error) {
     logger.error('Problem sending email', error);
+    return { error };
   }
 };

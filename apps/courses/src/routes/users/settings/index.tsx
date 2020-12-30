@@ -20,6 +20,7 @@ import BasicInformation from '../../../components/forms/users/BasicInformation';
 import ChangePassword from '../../../components/forms/users/ChangePassword';
 import AddPassword from '../../../components/forms/users/AddPassword';
 import ManageAccount from '../../../components/forms/users/ManageAccount';
+import NotificationPreferences from '../../../components/forms/users/NotificationPreferences';
 
 const StickyTabPanel = ({ title, children }) => (
   <Box bg="white" borderRadius="md" border="1px" borderColor="gray.400">
@@ -64,6 +65,7 @@ export default () => {
               {hasPasswordAccount && <Tab>Change Password</Tab>}
               {!hasPasswordAccount && <Tab>Add Password</Tab>}
               <Tab>Manage Account</Tab>
+              <Tab>Notification Preferences</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
@@ -94,6 +96,11 @@ export default () => {
                     onAddPassword={() => setTabIndex(1)}
                     callback={() => setTabIndex(0)}
                   />
+                </StickyTabPanel>
+              </TabPanel>
+              <TabPanel>
+                <StickyTabPanel title="Notification Preferences">
+                  <NotificationPreferences />
                 </StickyTabPanel>
               </TabPanel>
             </TabPanels>

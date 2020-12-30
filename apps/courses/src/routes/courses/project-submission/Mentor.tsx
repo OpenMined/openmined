@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -34,12 +34,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import SubmissionInline from '../../../components/SubmissionInline';
 import { handleErrors, analytics } from '../../../helpers';
 
-const genTabsContent = (
-  part,
-  attemptData,
-  hasStartedSubmission,
-  setHasStartedSubmission
-) => {
+const genTabsContent = (part, attemptData, setHasStartedSubmission) => {
   const content = [
     {
       title: '1. Instructions',
@@ -93,11 +88,7 @@ const genTabsContent = (
         <>
           {!attemptData.review_content && (
             <RichTextEditor
-              onChange={() => {
-                if (!hasStartedSubmission) {
-                  setHasStartedSubmission(true);
-                }
-              }}
+              onChange={(value, { empty }) => setHasStartedSubmission(!empty)}
             />
           )}
           {attemptData.review_content && (
@@ -147,6 +138,11 @@ export default ({
   const [hasClickedButton, setHasClickedButton] = useState(false);
   const [passFail, setPassFail] = useState(null);
   const preSubmitModal = useDisclosure();
+
+  const tabsContent = useMemo(
+    () => genTabsContent(content, attemptData, setHasStartedSubmission),
+    [content, attemptData]
+  );
 
   const isBeforeDeadline = useCallback(() => {
     const now = dayjs();
@@ -273,15 +269,7 @@ export default ({
           ))}
         </Box>
       )}
-      <ColoredTabs
-        mb={8}
-        content={genTabsContent(
-          content,
-          attemptData,
-          hasStartedSubmission,
-          setHasStartedSubmission
-        )}
-      />
+      <ColoredTabs mb={8} content={tabsContent} />
       {!hasAlreadyReviewed && (
         <Flex
           mb={8}

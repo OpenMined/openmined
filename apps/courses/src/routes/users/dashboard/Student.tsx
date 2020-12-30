@@ -124,7 +124,7 @@ export const StudentTabs = ({ courses, progress }) => {
             {i.submissions.map((submission, index) => (
               <SubmissionInline
                 key={index}
-                link={`/courses/${course.slug}/project/${i._key}/${index}`}
+                link={`/courses/${course.slug}/project/${i._key}/${index + 1}`}
                 {...submission}
               />
             ))}

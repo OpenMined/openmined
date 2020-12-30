@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
 import { User } from '@openmined/shared/types';
-import { useSanity } from '@openmined/shared/data-access-sanity';
+import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 import {
   useUser,
   useFirestoreDocDataOnce,
@@ -82,24 +82,7 @@ export default () => {
   const resources =
     !mentorMode || !userIsMentor ? studentResources : mentorResources;
 
-  const { data, loading } = useSanity(`
-    *[_type == "course" && visible == true] {
-      ...,
-      "slug": slug.current,
-      visual {
-        "default": default.asset -> url,
-        "full": full.asset -> url
-      },
-      lessons[] -> {
-        _id,
-        title,
-        description,
-        concepts[] -> {
-          _id,
-          title
-        }
-      }
-    }`);
+  const { data, loading } = useFirebaseSanity('dashboardCourses');
 
   if (loading) return null;
 

@@ -1,35 +1,23 @@
-import { useUser } from 'reactfire';
 import React, { useEffect, useState } from 'react';
 
-import sanityClient from './firebase-sanity-client';
 import * as firebaseSanity from './firebase-sanity';
+import { useFunctions } from 'reactfire';
 
 export type SANITY_FIREBASE_QUERY = {
   method: string;
-  data: any;
+  params: any;
+  env?: string;
 };
 
-export const runQuery = async (currentUser, query: SANITY_FIREBASE_QUERY) => {
-  let token = '';
-  if (currentUser) {
-    token = await currentUser.getIdToken();
-  }
-
-  return sanityClient({
-    method: 'POST',
-    url: `runQuery/${query.method}`,
-    data: query.data,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-};
-
-export const useFirebaseSanity = (method, params = {}) => {
+export const useFirebaseSanity = (method, params = null) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const user: firebase.User = useUser();
+
+  const functions: firebase.functions.Functions = useFunctions();
+  // @ts-ignore
+  functions.region = 'europe-west1';
+  const sanity = functions.httpsCallable('sanity');
 
   const prepareData = (d) => {
     Object.keys(d).forEach((i) => {
@@ -53,19 +41,21 @@ export const useFirebaseSanity = (method, params = {}) => {
   useEffect(() => {
     const query: firebaseSanity.SANITY_FIREBASE_QUERY = {
       method,
-      data: params,
+      params,
+      // TODO: how to decide env?
+      env: 'development',
     };
 
-    runQuery(user, query)
+    sanity(query)
       .then((d) => {
-        setData(prepareData(d.data.data));
+        setData(prepareData(d.data));
         setLoading(false);
       })
       .catch((e) => {
         setError(e);
         setLoading(false);
       });
-  }, [user, method, params]);
+  }, [method, params]);
 
   return { data, loading, error };
 };

@@ -133,7 +133,7 @@ export const concept = ({ lesson, concept }) => `
   }
 }[0]`;
 
-export const homepage = () => `
+export const homepageCourses = () => `
 *[_type == "course" && visible == true] {
   title,
   level,
@@ -147,6 +147,41 @@ export const homepage = () => `
   },
 }`;
 
+export const teachers = () => `
+*[_type == "teacher"] {
+  ...,
+  "image": image.asset -> url,
+}`;
+
+export const dashboardCourses = () => `
+*[_type == "course" && visible == true] {
+  ...,
+  "slug": slug.current,
+  visual {
+    "default": default.asset -> url,
+    "full": full.asset -> url
+  },
+  lessons[] -> {
+    _id,
+    title,
+    description,
+    concepts[] -> {
+      _id,
+      title
+    }
+  }
+}`
+
+export const profileCourses = () => `
+*[_type == "course" && visible == true] {
+  ...,
+  "slug": slug.current,
+  visual {
+    "default": default.asset -> url,
+    "full": full.asset -> url
+  },
+}`
+
 export const queries: { [method: string]: SANITY_QUERY } = {
   /* Course pages */
   search: {
@@ -158,32 +193,46 @@ export const queries: { [method: string]: SANITY_QUERY } = {
     query: overview,
   },
   courseComplete: {
-    auth: false,
+    auth: true,
     query: courseComplete,
   },
   project: {
-    auth: false,
+    auth: true,
     query: project,
   },
   projectSubmission: {
-    auth: false,
+    auth: true,
     query: projectSubmission,
   },
   lesson: {
-    auth: false,
+    auth: true,
     query: lesson,
   },
   lessonComplete: {
-    auth: false,
+    auth: true,
     query: lessonComplete,
   },
   concept: {
-    auth: false,
+    auth: true,
     query: concept,
   },
   /* Home page */
   homepageCourses: {
     auth: false,
-    query: homepage,
+    query: homepageCourses,
+  },
+  teachers: {
+    auth: false,
+    query: teachers,
+  },
+  /* Dashboard page */
+  dashboardCourses: {
+    auth: false,
+    query: dashboardCourses,
+  },
+  /* Profile page */
+  profileCourses: {
+    auth: false,
+    query: profileCourses,
   },
 };

@@ -212,4 +212,25 @@ export const useSanity = (query) => {
   return { data, loading, error };
 };
 
+const sanityConfig = {
+  projectId: process.env.NX_SANITY_COURSES_PROJECT_ID,
+  dataset: process.env.NX_SANITY_COURSES_DATASET,
+  useCdn: true,
+};
+
+export const composeSanityImageUrl = (image) => {
+  try {
+    const cdnUrl = 'https://cdn.sanity.io';
+    // const filename = `${spec.asset.id}-${spec.asset.width}x${spec.asset.height}.${spec.asset.format}`
+    const filenameParts = image.asset._ref.split('-');
+    const filename = `${filenameParts
+      .slice(1, filenameParts.length - 1)
+      .join('-')}.${filenameParts[filenameParts.length - 1]}`;
+    const baseUrl = `${cdnUrl}/images/${sanityConfig.projectId}/${sanityConfig.dataset}/${filename}`;
+    return baseUrl;
+  } catch (err) {
+    return '';
+  }
+};
+
 export * from './firebase-sanity';

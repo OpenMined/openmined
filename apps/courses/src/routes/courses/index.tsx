@@ -9,7 +9,6 @@ import {
 } from '@openmined/shared/types';
 
 import { usePageAvailabilityRedirect } from './_helpers';
-import * as queries from './_queries';
 import * as configs from './_configs';
 import CourseWrap from './Wrapper';
 import { getCourseRef } from './_firebase';
@@ -92,7 +91,6 @@ export default ({ which }: PropType) => {
 
   // Create variables to store the page to render and the query we'll make to Sanity
   const CoursePage = pages[which];
-  const query = queries[which](params);
 
   // Define what pages do not need the permissions check
   const permissionlessPages = ['search', 'overview'];

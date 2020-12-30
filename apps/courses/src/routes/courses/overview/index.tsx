@@ -24,6 +24,7 @@ import {
   faFile,
   faMoneyBillWave,
   faPlayCircle,
+  faShapes,
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
@@ -43,8 +44,13 @@ import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
 import Icon from '../../../components/Icon';
+import circle from '../../../assets/circle.svg';
+import triangle from '../../../assets/triangle.svg';
+import square from '../../../assets/square.svg';
+import pentagon from '../../../assets/pentagon.svg';
+import hexagon from '../../../assets/hexagon.svg';
+import heptagon from '../../../assets/heptagon.svg';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
-import projectIcon from '../../../assets/homepage/technical-mentor.svg';
 import currentLessonIcon from '../../../assets/homepage/finger-point.svg';
 
 const Detail = ({ title, value, icon = faCheckCircle }) => (
@@ -57,25 +63,36 @@ const Detail = ({ title, value, icon = faCheckCircle }) => (
   </Flex>
 );
 
-const LearnHow = ({ title, image }) => (
-  <Box>
-    <Image
-      src={image}
-      alt={title}
-      boxSize={16}
-      display={{ base: 'none', md: 'block' }}
-    />
-    <Heading
-      as="h3"
-      size="md"
-      lineHeight="base"
-      mt={{ base: 0, md: 3 }}
-      color="gray.700"
-    >
-      {title}
-    </Heading>
-  </Box>
-);
+const LearnHow = ({ title, index }) => {
+  let shape;
+
+  if (index === 0) shape = circle;
+  else if (index === 1) shape = triangle;
+  else if (index === 2) shape = square;
+  else if (index === 3) shape = pentagon;
+  else if (index === 4) shape = hexagon;
+  else if (index >= 5) shape = heptagon;
+
+  return (
+    <Box>
+      <Image
+        src={shape}
+        alt={title}
+        boxSize={16}
+        display={{ base: 'none', md: 'block' }}
+      />
+      <Heading
+        as="h3"
+        size="md"
+        lineHeight="base"
+        mt={{ base: 0, md: 3 }}
+        color="gray.700"
+      >
+        {title}
+      </Heading>
+    </Box>
+  );
+};
 
 const LearnFrom = ({ image, name, credential }) => (
   <Flex direction="column" align="center" textAlign="center">
@@ -101,10 +118,14 @@ export default ({ course, page, progress }: CoursePagesProp) => {
       <Text mb={4}>{description}</Text>
       <List spacing={2}>
         {parts.map(({ title, _id, type, _key }, index) => {
-          const isComplete =
-            _id && !_key
-              ? hasCompletedConcept(progress, lessonId, _id)
-              : hasCompletedProjectPart(progress, _key);
+          let isComplete = false;
+
+          if (progress) {
+            isComplete =
+              _id && !_key
+                ? hasCompletedConcept(progress, lessonId, _id)
+                : hasCompletedProjectPart(progress, _key);
+          }
 
           let icon;
 
@@ -169,7 +190,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
     ? `/courses/${course}/${page.lessons[0]._id}`
     : null;
 
-  const isTakingCourse = hasStartedCourse(progress);
+  const isTakingCourse = progress ? hasStartedCourse(progress) : false;
 
   const stats = isTakingCourse
     ? getCourseProgress(progress, page.lessons, project.parts)
@@ -223,7 +244,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
           openLessons.includes(index),
           isTakingCourse
         ),
-        icon:
+        image:
           openLessons.includes(index) && isTakingCourse
             ? currentLessonIcon
             : null,
@@ -240,7 +261,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
         openLessons.includes(page.lessons.length),
         isTakingCourse
       ),
-      icon: projectIcon,
+      icon: faShapes,
     });
   }
 
@@ -333,7 +354,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                     </CircularProgressLabel>
                   </CircularProgress>
                   <Button
-                    colorScheme="blue"
+                    colorScheme="black"
                     size="lg"
                     as={Link}
                     to={resumeLink}
@@ -353,8 +374,8 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                 Walk away being able to...
               </Heading>
               <SimpleGrid columns={[1, null, 2, 3]} spacing={8}>
-                {learnHow.map((l) => (
-                  <LearnHow {...l} key={l.title} />
+                {learnHow.map((l, i) => (
+                  <LearnHow title={l} index={i} key={i} />
                 ))}
               </SimpleGrid>
             </GridContainer>
@@ -367,13 +388,17 @@ export default ({ course, page, progress }: CoursePagesProp) => {
             direction="column"
             align="center"
           >
-            <Heading as="h2" size="xl" mb={4}>
-              What You'll Learn
-            </Heading>
-            <Text color="gray.700">
-              Below you will find the entire course syllabus organized by
-              lessons and concepts.
-            </Text>
+            {!isTakingCourse && (
+              <>
+                <Heading as="h2" size="xl" mb={4}>
+                  What You'll Learn
+                </Heading>
+                <Text color="gray.700">
+                  Below you will find the entire course syllabus organized by
+                  lessons and concepts.
+                </Text>
+              </>
+            )}
             {lessons.length !== 0 && (
               <NumberedAccordion
                 width="full"

@@ -1,12 +1,7 @@
 import React from 'react';
 import { Icon, Box } from '@chakra-ui/react';
 
-const IconWrapper = ({
-  boxSize = 4,
-  color = 'currentColor',
-  icon,
-  ...props
-}) => (
+export default ({ boxSize = 4, color = 'currentColor', icon, ...props }) => (
   <Box
     display="inline-flex"
     boxSize={boxSize}
@@ -24,5 +19,3 @@ const IconWrapper = ({
     </Icon>
   </Box>
 );
-
-export default IconWrapper;

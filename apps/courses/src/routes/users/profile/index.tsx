@@ -190,7 +190,7 @@ export default () => {
                   />
                   <LinkItem
                     icon={faCommentAlt}
-                    title="Forum"
+                    title="Discussion Board"
                     link={discussionLink}
                   />
                 </Box>

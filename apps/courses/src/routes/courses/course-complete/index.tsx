@@ -100,7 +100,11 @@ export default ({ page }: CoursePagesProp) => {
           maxW={960}
           mx="auto"
         >
-          <Image src={projectIcon} mb={4} boxSize={12} />
+          <Image
+            src="https://emojis.slackmojis.com/emojis/images/1572027767/6892/blob_party.png?1572027767"
+            mb={4}
+            boxSize={16}
+          />
           <Heading as="p" size="xl" mb={4}>
             Course Complete!
           </Heading>

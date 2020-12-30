@@ -10,15 +10,19 @@ import {
   OrderedList,
   Link,
   Code,
+  Input,
+  Button,
+  useDisclosure,
 } from '@chakra-ui/react';
 import isHotkey from 'is-hotkey';
-import { Editable, withReact, useSlate, Slate } from 'slate-react';
+import { Editable, withReact, useSlate, Slate, ReactEditor } from 'slate-react';
 import {
   Editor,
   Transforms,
   createEditor,
   Node,
   Element as SlateElement,
+  Range,
 } from 'slate';
 import { withHistory } from 'slate-history';
 import {
@@ -32,9 +36,11 @@ import {
   faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
+import isUrl from 'is-url';
 import { useDebounce } from '../helpers';
 
 import Icon from '../components/Icon';
+import Modal from '../components/Modal';
 
 export const EDITOR_STORAGE_STRING = '@openmined/rich-text-editor';
 
@@ -43,6 +49,7 @@ const HOTKEYS = {
   'mod+i': 'italic',
   'mod+u': 'underline',
   'mod+`': 'code',
+  'mod+k': 'link',
 };
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
@@ -53,6 +60,29 @@ const initialValue = [
     children: [{ text: '' }],
   },
 ];
+
+const withLinks = (editor) => {
+  const { insertText } = editor;
+
+  editor.insertText = (text) => {
+    if (isUrl(text)) {
+      const { selection } = editor;
+      if (Range.isExpanded(selection)) {
+        setLink(editor, text);
+      } else {
+        const newLink = { text, url: text, link: true };
+        const emptySpace = { text: ' ' };
+
+        Transforms.insertFragment(editor, [newLink, emptySpace]);
+      }
+      return;
+    }
+
+    insertText(text);
+  };
+
+  return editor;
+};
 
 export default ({
   readOnly = false,
@@ -65,9 +95,19 @@ export default ({
       JSON.parse(localStorage.getItem(EDITOR_STORAGE_STRING)) ||
       initialValue
   );
+  const [url, setUrl] = useState();
+  const [selection, setSelection] = useState();
+  const [isEditing, setEditing] = useState(false);
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const renderElement = useCallback((props) => <Element {...props} />, []);
-  const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const renderLeaf = useCallback(
+    (props) => <Leaf {...props} readOnly={readOnly} />,
+    []
+  );
+  const editor = useMemo(
+    () => withLinks(withHistory(withReact(createEditor()))),
+    []
+  );
   const debouncedValue = useDebounce(value, 300);
 
   useEffect(() => {
@@ -83,6 +123,44 @@ export default ({
   useEffect(() => {
     localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(debouncedValue));
   }, [debouncedValue]);
+
+  useEffect(() => {
+    if (!isOpen && selection) {
+      Transforms.select(editor, selection);
+      ReactEditor.focus(editor);
+
+      if (url) {
+        setLink(editor, url);
+      } else {
+        removeLink(editor);
+      }
+    }
+  }, [isOpen, selection, editor, url]);
+
+  const handleCreateLink = () => {
+    if (!url || !isUrl(url)) {
+      if (isEditing) {
+        // @ts-ignore
+        setUrl(isEditing);
+      } else {
+        setUrl(null);
+      }
+    }
+
+    onClose();
+  };
+
+  const handleRemoveLink = () => {
+    setUrl(null);
+    onClose();
+  };
+
+  const openModal = () => {
+    const marks = Editor.marks(editor);
+    setEditing(marks.url);
+    setUrl(marks.url);
+    onOpen();
+  };
 
   return (
     <Box {...props}>
@@ -107,8 +185,12 @@ export default ({
               <BlockButton format="heading-five" text="H5" />
               <BlockButton format="heading-six" text="H6" />
               <Divider orientation="vertical" height={8} mx={2} />
-              {/* SEE TODO (#2) */}
-              <MarkButton format="link" icon={faLink} />
+              <MarkButton
+                format="link"
+                icon={faLink}
+                openModal={openModal}
+                setSelection={setSelection}
+              />
               <MarkButton format="code" icon={faCode} />
               <BlockButton format="block-quote" icon={faQuoteLeft} />
               <Divider orientation="vertical" height={8} mx={2} />
@@ -139,13 +221,51 @@ export default ({
                 if (isHotkey(hotkey, event as any)) {
                   event.preventDefault();
                   const mark = HOTKEYS[hotkey];
-                  toggleMark(editor, mark);
+                  toggleMark(editor, mark, openModal, setSelection);
                 }
               }
             }}
           />
         </Box>
       </Slate>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Setup a Link"
+        buttons={
+          isEditing ? (
+            <>
+              <Button
+                onClick={handleRemoveLink}
+                variant="ghost"
+                colorScheme="red"
+                mr={3}
+              >
+                Remove Link
+              </Button>
+              <Button onClick={handleCreateLink} colorScheme="blue">
+                Edit Link
+              </Button>
+            </>
+          ) : (
+            <Button onClick={handleCreateLink} colorScheme="blue">
+              Create Link
+            </Button>
+          )
+        }
+      >
+        <Input
+          placeholder="Enter a valid url"
+          my={2}
+          defaultValue={
+            isMarkActive(editor, 'link') ? Editor.marks(editor).url : ''
+          }
+          onChange={({ target }) => {
+            // @ts-ignore
+            setUrl(target.value);
+          }}
+        />
+      </Modal>
     </Box>
   );
 };
@@ -173,11 +293,17 @@ const toggleBlock = (editor, format) => {
   }
 };
 
-const toggleMark = (editor, format) => {
+const toggleMark = (editor, format, openModal, setSelection) => {
   const isActive = isMarkActive(editor, format);
+  const isLink = format === 'link';
 
-  if (isActive) {
+  if (isActive && !isLink) {
     Editor.removeMark(editor, format);
+  } else if (isLink) {
+    if (Range.isExpanded(editor.selection)) {
+      setSelection(editor.selection);
+      openModal();
+    }
   } else {
     Editor.addMark(editor, format, true);
   }
@@ -263,12 +389,6 @@ export const Element = ({ attributes, children, element }) => {
           {children}
         </Heading>
       );
-    case 'link':
-      return (
-        <Link as="a" target="_blank" rel="noopener noreferrer" {...attributes}>
-          {children}
-        </Link>
-      );
     default:
       return (
         <Text mb={4} {...attributes}>
@@ -278,7 +398,7 @@ export const Element = ({ attributes, children, element }) => {
   }
 };
 
-export const Leaf = ({ attributes, children, leaf }) => {
+export const Leaf = ({ attributes, children, leaf, readOnly }) => {
   if (leaf.bold) {
     return (
       <Text as="span" fontWeight="bold" {...attributes}>
@@ -315,6 +435,21 @@ export const Leaf = ({ attributes, children, leaf }) => {
     return <Code {...attributes}>{children}</Code>;
   }
 
+  if (leaf.link) {
+    return (
+      <Link
+        as="a"
+        target="_blank"
+        rel="noopener noreferrer"
+        {...attributes}
+        href={leaf.url}
+        cursor={readOnly ? 'pointer' : 'text'}
+      >
+        {children}
+      </Link>
+    );
+  }
+
   return (
     <Text as="span" {...attributes}>
       {children}
@@ -344,7 +479,7 @@ const BlockButton = ({ format, icon, text }: any) => {
   );
 };
 
-const MarkButton = ({ format, icon }) => {
+const MarkButton = ({ format, icon, openModal, setSelection }: any) => {
   const editor = useSlate();
 
   return (
@@ -357,10 +492,20 @@ const MarkButton = ({ format, icon }) => {
       _hover={{ color: 'gray.200' }}
       onMouseDown={(event) => {
         event.preventDefault();
-        toggleMark(editor, format);
+        toggleMark(editor, format, openModal, setSelection);
       }}
     >
       <Icon icon={icon} />
     </Flex>
   );
+};
+
+const setLink = (editor, url) => {
+  Editor.addMark(editor, 'link', true);
+  Editor.addMark(editor, 'url', url);
+};
+
+const removeLink = (editor) => {
+  Editor.removeMark(editor, 'link');
+  Editor.removeMark(editor, 'url');
 };

@@ -131,7 +131,7 @@ export default ({
       icon: faCog,
     },
     {
-      title: 'Forum',
+      title: 'Discussion Board',
       link: discussionLink,
       icon: faCommentAlt,
     },

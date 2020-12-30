@@ -1,5 +1,6 @@
 export const openminedLink = 'https://openmined.org';
-export const discussionLink = 'https://discussion.openmined.org';
+export const discussionLink =
+  'https://github.com/OpenMined/courses/discussions';
 export const mentorshipLink = 'https://mentorship.openmined.org';
 export const placementsLink = 'https://placements.openmined.org';
 export const slackLink = 'https://slack.openmined.org';

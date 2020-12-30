@@ -43,10 +43,6 @@ export const getCourseContent = async (course) => {
       "default": default.asset -> url,
       "full": full.asset -> url
     },
-    learnHow[] {
-      title,
-      "image": image.asset -> url
-    },
     learnFrom[] -> {
       ...,
       "image": image.asset -> url
@@ -63,7 +59,7 @@ export const getCourseContent = async (course) => {
     }
   }[0]`;
   const result = await client.fetch(query);
-  debugger
+  debugger;
   return result;
 };
 

@@ -61,6 +61,21 @@ export default () => {
     sections,
   } = isPolicy ? policy : terms;
 
+  const renderedSections = sections.map((section) => {
+    if (Array.isArray(section.content)) {
+      return {
+        ...section,
+        content: section.content.map((c, i) => (
+          <Text key={i} mb={4}>
+            {c}
+          </Text>
+        )),
+      };
+    }
+
+    return section;
+  });
+
   const disclaimer = !isPolicy ? terms.heading.disclaimer : undefined;
 
   const [sectionIndexes, setSectionIndexes] = useState([0]);
@@ -79,35 +94,33 @@ export default () => {
       <Box position="relative" height="100%" pt={[8, null, null, 16]} pb={16}>
         <GridContainer isInitial pt={{ lg: 8 }}>
           <Flex
-            pr={[0, null, null, 24]}
+            justify="space-between"
             direction={['column', null, null, 'row']}
           >
-            <Box mr={[0, null, null, 16]}>
-              <Box mr={[0, null, null, 8]}>
-                <Heading as="h2" size="2xl" mb={4}>
-                  {title}
-                </Heading>
-                <Text color="gray.700" fontSize="md" fontFamily="mono">
-                  Last Updated: {last_updated}
-                </Text>
-                {disclaimer && (
-                  <Box
-                    mt={8}
-                    px={8}
-                    py={4}
-                    bg="blue.50"
-                    color="blue.700"
-                    borderRadius="md"
-                  >
-                    {disclaimer}
-                  </Box>
-                )}
-              </Box>
+            <Box width="full" pr={[0, null, null, 16]}>
+              <Heading as="h2" size="2xl" mb={4}>
+                {title}
+              </Heading>
+              <Text color="gray.700" fontSize="md" fontFamily="mono">
+                Last Updated: {last_updated}
+              </Text>
+              {disclaimer && (
+                <Box
+                  mt={8}
+                  px={8}
+                  py={4}
+                  bg="blue.50"
+                  color="blue.700"
+                  borderRadius="md"
+                >
+                  {disclaimer}
+                </Box>
+              )}
               <Box pt={8}>
                 <NumberedAccordion
                   indexes={sectionIndexes}
                   onToggleItem={toggleAccordionItem}
-                  sections={sections}
+                  sections={renderedSections}
                 />
               </Box>
             </Box>

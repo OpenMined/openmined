@@ -131,7 +131,7 @@ const Help = ({ helpOpen, setHelpOpen }) => {
       icon: faBug,
     },
     {
-      title: 'Forum',
+      title: 'Discussion Board',
       link: discussionLink,
       icon: faCommentAlt,
     },

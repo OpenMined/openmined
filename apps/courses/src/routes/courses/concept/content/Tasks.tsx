@@ -5,12 +5,7 @@ export default ({ tasks, spacing }: any) => (
   <Flex justify="center" my={spacing}>
     <Stack spacing={4}>
       {tasks.map((t, i) => (
-        <Checkbox
-          key={i}
-          spacing={4}
-          colorScheme="magenta"
-          alignItems="baseline"
-        >
+        <Checkbox key={i} spacing={4} colorScheme="blue" alignItems="baseline">
           <Flex>
             <Text mr={4}>{i + 1}.</Text>
             <Text>{t}</Text>

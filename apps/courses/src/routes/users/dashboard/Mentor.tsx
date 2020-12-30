@@ -20,11 +20,11 @@ import {
 } from 'reactfire';
 import {
   faCommentAlt,
-  faMoneyBillWave,
+  faPiggyBank,
   faQuestionCircle,
   faShapes,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -525,7 +525,7 @@ export const mentorResources = [
   },
   {
     title: 'Rates',
-    icon: faMoneyBillWave,
+    icon: faPiggyBank,
     link: mentorratesLink,
   },
   {
@@ -535,7 +535,7 @@ export const mentorResources = [
   },
   {
     title: 'Code of Conduct',
-    icon: faGithub,
+    icon: faUsers,
     link: codeofconductLink,
   },
 ];

@@ -44,6 +44,12 @@ import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
 import Icon from '../../../components/Icon';
+import circle from '../../../assets/circle.svg';
+import triangle from '../../../assets/triangle.svg';
+import square from '../../../assets/square.svg';
+import pentagon from '../../../assets/pentagon.svg';
+import hexagon from '../../../assets/hexagon.svg';
+import heptagon from '../../../assets/heptagon.svg';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 import currentLessonIcon from '../../../assets/homepage/finger-point.svg';
 
@@ -57,25 +63,36 @@ const Detail = ({ title, value, icon = faCheckCircle }) => (
   </Flex>
 );
 
-const LearnHow = ({ title, image }) => (
-  <Box>
-    <Image
-      src={image}
-      alt={title}
-      boxSize={16}
-      display={{ base: 'none', md: 'block' }}
-    />
-    <Heading
-      as="h3"
-      size="md"
-      lineHeight="base"
-      mt={{ base: 0, md: 3 }}
-      color="gray.700"
-    >
-      {title}
-    </Heading>
-  </Box>
-);
+const LearnHow = ({ title, index }) => {
+  let shape;
+
+  if (index === 0) shape = circle;
+  else if (index === 1) shape = triangle;
+  else if (index === 2) shape = square;
+  else if (index === 3) shape = pentagon;
+  else if (index === 4) shape = hexagon;
+  else if (index >= 5) shape = heptagon;
+
+  return (
+    <Box>
+      <Image
+        src={shape}
+        alt={title}
+        boxSize={16}
+        display={{ base: 'none', md: 'block' }}
+      />
+      <Heading
+        as="h3"
+        size="md"
+        lineHeight="base"
+        mt={{ base: 0, md: 3 }}
+        color="gray.700"
+      >
+        {title}
+      </Heading>
+    </Box>
+  );
+};
 
 const LearnFrom = ({ image, name, credential }) => (
   <Flex direction="column" align="center" textAlign="center">
@@ -357,8 +374,8 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                 Walk away being able to...
               </Heading>
               <SimpleGrid columns={[1, null, 2, 3]} spacing={8}>
-                {learnHow.map((l) => (
-                  <LearnHow {...l} key={l.title} />
+                {learnHow.map((l, i) => (
+                  <LearnHow title={l} index={i} key={i} />
                 ))}
               </SimpleGrid>
             </GridContainer>

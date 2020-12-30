@@ -120,11 +120,6 @@ export default ({ which }: PropType) => {
   // );
   // console.log('NEW', newPermissionGate);
 
-  // If we're still waiting on the CMS or latest course data is not loaded, render the loader
-  const nowLoading = user ? loading : loading || !dbCourse;
-
-  if (nowLoading) return <Loading />;
-
   // Define the props we'll be passing to each page (and to the permission hook)
   const props: CoursePagesProp = {
     ...params,

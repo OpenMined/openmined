@@ -20,16 +20,12 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 ### Patrick
 
 - SOON TO FIX: When I move from concept to concept, if I've completed a quiz on the previous page, the next page will have that quiz as completed... this is a bug. If you refresh, it's fine. See Lesson 2, Concept 1, going into Lesson 2, Concept 2
-- SOON TO FIX: On course overview when you're on a project, open the accordion to it
 - SOON TO FIX: Permission gate is broken by the navigate bug again... fix it or revert
-- Make sure the rich text editor is getting properly cleared!
-- Add all of Kyoko's images
 
 ## Pre-Launch Checklist
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
-- Take down Spectrum account
 - Get real terms of service copy
 - Make sure to test the site on dev deployment
 - Make sure all composite and single-field indexes have been properly created

@@ -7,7 +7,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 ### Danny
 
 - TODO (#21 HARD): Migrate all Sanity calls to be done via a Express.js-driven Firebase cloud HTTP (not callable) function. Make sure that Sanity is configured to only accept a connection via this endpoint, and NOT the website itself. This will ensure that students are not able to retrieve CMS data that they should not be allowed to see. Make sure to also implement caching on this data and set content freshness to be about 5 minutes.
-- TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
 
 ### SLZ
 
@@ -27,18 +26,14 @@ None
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
-- Create Github Discussions for the course and organization and give Yemi and Sourav the ability to create categories (inform the rest of the core team, too)
-- Take down Discourse and Spectrum accounts, make sure to change the link to the new discussions board on Github
-- Deploy latest Sanity API
-- Get real terms of service and privacy policy copy
+- Take down Spectrum account
+- Get real terms of service copy
 - Try to set up Sync with Mailchimp plugin for Mat: https://firebase.google.com/products/extensions/auth-mailchimp-sync
 - Make sure to test the site on dev deployment
 - Make sure all composite and single-field indexes have been properly created
 - Make sure all functions and rules are deployed to production
 - Make sure to search for any configurations, Firebase extensions, or anything that needs to be enabled on the production account first (to make it identical to the dev Firebase)
-- Make an "intro to the CMS" video to give to Mat, Andrew, and Emma (and make sure to explain that filling in EVERY field is critical - if they can't fill in some, tell them to ask Patrick what to do)
 - Do a complete sweep of all pages with Kyoko to have design signoff
-- Do a complete sweep of all content and make sure Mat and Andrew have signoff
 - Create a README that's somewhat friendly to contributors
 - Make sure all mentors are students and put all their ID's in the mentors collection
 - Do a dance!
@@ -47,6 +42,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. T
 
 We can do the following items after the launch of the first course on December 31st, 2020.
 
+- TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
 - TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
 - TODO (#18): Redo the permissions gate to allow for projects and project parts with or without attempts. We probably need a "configuration" based strategy for this. Might be good to write some tests!!
 - Change all links to use colorScheme instead of color once this issue is fixed: https://github.com/chakra-ui/chakra-ui/issues/2870

@@ -124,7 +124,9 @@ export default ({ which }: PropType) => {
   };
 
   // If we're still waiting on the CMS or latest course data is not loaded, render the loader
-  const nowLoading = which === 'search' ? loading : loading || !dbCourse;
+  const nowLoading = permissionlessPages.includes(which)
+    ? loading
+    : loading || !dbCourse;
 
   if (nowLoading) return <Loading />;
 

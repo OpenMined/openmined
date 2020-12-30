@@ -2,7 +2,11 @@ import React, { lazy, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useFirestore, useUser } from 'reactfire';
 import { useSanity } from '@openmined/shared/data-access-sanity';
-import { CoursePageWhich, CoursePagesProp, Course } from '@openmined/shared/types';
+import {
+  CoursePageWhich,
+  CoursePagesProp,
+  Course,
+} from '@openmined/shared/types';
 
 import { usePageAvailabilityRedirect } from './_helpers';
 import * as queries from './_queries';
@@ -96,7 +100,7 @@ export default ({ which }: PropType) => {
   useEffect(() => {
     if (!uId && prevUId) {
       // when user is logged out
-      console.log('logout')
+      setDbCourse(null);
     }
   }, [uId, prevUId]);
 
@@ -140,7 +144,6 @@ export default ({ which }: PropType) => {
 
   // If user is authenticated, wait for dbCourse on all blocking pages
   if (user && !dbCourse && !blocklessPages.includes(which)) return <Loading />;
-  
 
   // Prepare the configuration we'll send to the wrapper
   let config: any = {};

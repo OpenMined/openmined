@@ -24,6 +24,7 @@ import {
   faFile,
   faMoneyBillWave,
   faPlayCircle,
+  faShapes,
   faStar,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
@@ -44,7 +45,6 @@ import NumberedAccordion from '../../../components/NumberedAccordion';
 import FeaturesOrResources from '../../../components/FeaturesOrResources';
 import Icon from '../../../components/Icon';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
-import projectIcon from '../../../assets/homepage/technical-mentor.svg';
 import currentLessonIcon from '../../../assets/homepage/finger-point.svg';
 
 const Detail = ({ title, value, icon = faCheckCircle }) => (
@@ -227,7 +227,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
           openLessons.includes(index),
           isTakingCourse
         ),
-        icon:
+        image:
           openLessons.includes(index) && isTakingCourse
             ? currentLessonIcon
             : null,
@@ -244,7 +244,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
         openLessons.includes(page.lessons.length),
         isTakingCourse
       ),
-      icon: projectIcon,
+      icon: faShapes,
     });
   }
 

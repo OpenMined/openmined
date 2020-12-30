@@ -19,11 +19,9 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Patrick
 
-- On course overview when you're on a project, open the accordion to it
-- On course overview the project icon should not be an image, make it the faShapes icon from FA
-- On the lesson complete page, don't always show the project as the "next" thing. Show what is actually next
-- When I move from concept to concept, if I've completed a quiz on the previous page, the next page will have that quiz as completed... this is a bug. If you refresh, it's fine. See Lesson 2, Concept 1, going into Lesson 2, Concept 2
-- Permission gate is broken by the navigate bug again... fix it or revert
+- SOON TO FIX: When I move from concept to concept, if I've completed a quiz on the previous page, the next page will have that quiz as completed... this is a bug. If you refresh, it's fine. See Lesson 2, Concept 1, going into Lesson 2, Concept 2
+- SOON TO FIX: On course overview when you're on a project, open the accordion to it
+- SOON TO FIX: Permission gate is broken by the navigate bug again... fix it or revert
 - Make sure the rich text editor is getting properly cleared!
 - Add all of Kyoko's images
 

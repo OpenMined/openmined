@@ -100,7 +100,7 @@ export default ({ which }: PropType) => {
   useEffect(() => {
     if (!uId && prevUId) {
       // when user is logged out
-      setDbCourse(null);
+      setDbCourse({});
     }
   }, [uId, prevUId]);
 

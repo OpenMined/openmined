@@ -112,8 +112,12 @@ export const useDbUser = () => {
   const [dbUser, setDbUser] = useState<User>(null);
   useEffect(() => {
     const fetchUser = async () => {
-      const user: User = (await dbUserRef.get()).data() as User;
-      setDbUser(user);
+      try {
+        const user: User = (await dbUserRef.get()).data() as User;
+        setDbUser(user);
+      } catch (err) {
+        // pass
+      }
     };
     const dbUserRef = user ? db.collection('users').doc(user.uid) : null;
     dbUserRef && fetchUser();

@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link as RRDLink } from 'react-router-dom';
-import { useAuth } from 'reactfire';
+import { useAuth, useFirestore, useUser } from 'reactfire';
 
 import { toastConfig } from '../components/Toast';
+import { User } from '@openmined/shared/types';
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
@@ -93,4 +94,30 @@ export const getLinkPropsFromLink = (link: string) => {
       };
 
   return linkProps as any;
+};
+
+export const usePrevious = (value) => {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+};
+
+export const useDbUser = () => {
+  const user: firebase.User = useUser();
+  const db = useFirestore();
+  const [dbUser, setDbUser] = useState<User>(null);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user: User = (await dbUserRef.get()).data() as User;
+      setDbUser(user);
+    };
+    const dbUserRef = user ? db.collection('users').doc(user.uid) : null;
+    dbUserRef && fetchUser();
+  }, [user]);
+
+  return dbUser;
 };

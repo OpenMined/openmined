@@ -10,9 +10,12 @@ import {
   OrderedList,
   Link,
   Code,
+  Input,
+  Button,
+  useDisclosure,
 } from '@chakra-ui/react';
 import isHotkey from 'is-hotkey';
-import { Editable, withReact, useSlate, Slate } from 'slate-react';
+import { Editable, withReact, useSlate, Slate, ReactEditor } from 'slate-react';
 import {
   Editor,
   Transforms,
@@ -37,6 +40,7 @@ import isUrl from 'is-url';
 import { useDebounce } from '../helpers';
 
 import Icon from '../components/Icon';
+import Modal from '../components/Modal';
 
 export const EDITOR_STORAGE_STRING = '@openmined/rich-text-editor';
 
@@ -90,6 +94,9 @@ export default ({
       JSON.parse(localStorage.getItem(EDITOR_STORAGE_STRING)) ||
       initialValue
   );
+  const [url, setUrl] = useState();
+  const [selection, setSelection] = useState();
+  const { isOpen, onClose, onOpen } = useDisclosure();
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(
@@ -111,6 +118,37 @@ export default ({
   useEffect(() => {
     localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(debouncedValue));
   }, [debouncedValue]);
+
+  useEffect(() => {
+    if (!isOpen && selection) {
+      Transforms.select(editor, selection);
+      ReactEditor.focus(editor);
+      console.log(Editor.marks(editor));
+
+      if (url) {
+        setLink(editor, url);
+      } else {
+        removeLink(editor);
+      }
+    }
+  }, [isOpen, selection, editor, url]);
+
+  const handleCreateLink = () => {
+    if (!url || !isUrl(url)) {
+      setUrl(null);
+    }
+    onClose();
+  };
+
+  const handleRemoveLink = () => {
+    setUrl(null);
+    onClose();
+  };
+
+  const openModal = () => {
+    setUrl(Editor.marks(editor).url);
+    onOpen();
+  };
 
   return (
     <Box {...props}>
@@ -135,7 +173,12 @@ export default ({
               <BlockButton format="heading-five" text="H5" />
               <BlockButton format="heading-six" text="H6" />
               <Divider orientation="vertical" height={8} mx={2} />
-              <MarkButton format="link" icon={faLink} />
+              <MarkButton
+                format="link"
+                icon={faLink}
+                openModal={openModal}
+                setSelection={setSelection}
+              />
               <MarkButton format="code" icon={faCode} />
               <BlockButton format="block-quote" icon={faQuoteLeft} />
               <Divider orientation="vertical" height={8} mx={2} />
@@ -166,13 +209,57 @@ export default ({
                 if (isHotkey(hotkey, event as any)) {
                   event.preventDefault();
                   const mark = HOTKEYS[hotkey];
-                  toggleMark(editor, mark);
+                  toggleMark(editor, mark, openModal, setSelection);
                 }
               }
             }}
           />
         </Box>
       </Slate>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Set up a link"
+        buttons={
+          isMarkActive(editor, 'link') ? (
+            <>
+              <Button
+                onClick={handleRemoveLink}
+                type="submit"
+                variant="ghost"
+                colorScheme="black"
+                mr={3}
+              >
+                Remove link
+              </Button>
+              <Button
+                onClick={handleCreateLink}
+                type="submit"
+                colorScheme="black"
+              >
+                Edit link
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={handleCreateLink}
+              type="submit"
+              colorScheme="black"
+            >
+              Create link
+            </Button>
+          )
+        }
+      >
+        <Input
+          placeholder="Enter a valid url"
+          my={2}
+          defaultValue={
+            isMarkActive(editor, 'link') ? Editor.marks(editor).url : ''
+          }
+          onChange={({ target }) => setUrl(target.value)}
+        />
+      </Modal>
     </Box>
   );
 };
@@ -200,20 +287,16 @@ const toggleBlock = (editor, format) => {
   }
 };
 
-const toggleMark = (editor, format) => {
+const toggleMark = (editor, format, openModal, setSelection) => {
   const isActive = isMarkActive(editor, format);
   const isLink = format === 'link';
 
-  if (isActive) {
+  if (isActive && !isLink) {
     Editor.removeMark(editor, format);
-    Editor.removeMark(editor, 'url');
   } else if (isLink) {
     if (Range.isExpanded(editor.selection)) {
-      const url = window.prompt('Enter a URL for the selected text');
-
-      if (url && isUrl(url)) {
-        setLink(editor, url);
-      }
+      setSelection(editor.selection);
+      openModal();
     }
   } else {
     Editor.addMark(editor, format, true);
@@ -389,7 +472,7 @@ const BlockButton = ({ format, icon, text }: any) => {
   );
 };
 
-const MarkButton = ({ format, icon }) => {
+const MarkButton = ({ format, icon, openModal, setSelection }) => {
   const editor = useSlate();
 
   return (
@@ -402,7 +485,7 @@ const MarkButton = ({ format, icon }) => {
       _hover={{ color: 'gray.200' }}
       onMouseDown={(event) => {
         event.preventDefault();
-        toggleMark(editor, format);
+        toggleMark(editor, format, openModal, setSelection);
       }}
     >
       <Icon icon={icon} />
@@ -413,4 +496,9 @@ const MarkButton = ({ format, icon }) => {
 const setLink = (editor, url) => {
   Editor.addMark(editor, 'link', true);
   Editor.addMark(editor, 'url', url);
+};
+
+const removeLink = (editor) => {
+  Editor.removeMark(editor, 'link');
+  Editor.removeMark(editor, 'url');
 };

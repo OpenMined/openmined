@@ -88,7 +88,7 @@ export default ({ which }: PropType) => {
     };
 
     if (dbCourseRef) fetchCourse();
-  }, [params]);
+  }, [params.lesson, params.course, params.concept]);
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference

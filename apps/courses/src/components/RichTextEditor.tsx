@@ -97,6 +97,7 @@ export default ({
   );
   const [url, setUrl] = useState();
   const [selection, setSelection] = useState();
+  const [isEditing, setEditing] = useState(false);
   const { isOpen, onClose, onOpen } = useDisclosure();
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback(
@@ -138,7 +139,11 @@ export default ({
 
   const handleCreateLink = () => {
     if (!url || !isUrl(url)) {
-      setUrl(null);
+      if (isEditing) {
+        setUrl(isEditing);
+      } else {
+        setUrl(null);
+      }
     }
 
     onClose();
@@ -150,7 +155,9 @@ export default ({
   };
 
   const openModal = () => {
-    setUrl(Editor.marks(editor).url);
+    const marks = Editor.marks(editor);
+    setEditing(marks.url);
+    setUrl(marks.url);
     onOpen();
   };
 
@@ -225,7 +232,7 @@ export default ({
         onClose={onClose}
         title="Setup a Link"
         buttons={
-          isMarkActive(editor, 'link') ? (
+          isEditing ? (
             <>
               <Button
                 onClick={handleRemoveLink}

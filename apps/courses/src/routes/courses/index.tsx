@@ -94,7 +94,7 @@ export default ({ which }: PropType) => {
     };
 
     if (dbCourseRef) fetchCourse();
-  }, [uId, params.lesson, params.course, params.concept]);
+  }, [uId, mentorStudentToken, params.lesson, params.course, params.concept]);
 
   const prevUId = usePrevious(uId);
   useEffect(() => {

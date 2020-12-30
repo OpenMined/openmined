@@ -123,7 +123,6 @@ export default ({
     if (!isOpen && selection) {
       Transforms.select(editor, selection);
       ReactEditor.focus(editor);
-      console.log(Editor.marks(editor));
 
       if (url) {
         setLink(editor, url);

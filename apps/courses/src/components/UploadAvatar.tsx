@@ -6,7 +6,8 @@ import { useDropzone } from 'react-dropzone';
 import Icon from './Icon';
 
 export default ({ currentAvatar, setAvatarFile, ...props }: any) => {
-  const [preview, setPreview] = useState();
+  const [preview, setPreview] = useState<string | undefined>();
+
   const onDrop = (files) => {
     setAvatarFile(files[0]);
 

@@ -234,8 +234,7 @@ export default ({
         submit={(
           isDisabled: boolean,
           isSubmitting: boolean,
-          isValid: boolean,
-          isDirty: boolean
+          isValid: boolean
         ) => (
           <Button
             mt={8}

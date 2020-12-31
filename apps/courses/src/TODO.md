@@ -10,8 +10,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### SLZ
 
-- TODO (#17): Add the ability to upload an avatar to the `<BasicInformation />` page. Pretty straightforward. Perhaps also [use this Firebase extension to enable the resizing of avatars on the server-side... do 400x400](https://firebase.google.com/products/extensions/storage-resize-images)
-- TODO: After adding the ability to upload an avatar, make sure that it's deleted in cloud storage using the delete extension
+None
 
 ### Hericles
 

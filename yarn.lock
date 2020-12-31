@@ -17021,6 +17021,11 @@ react-icons@^3.8.0:
   dependencies:
     camelcase "^5.0.0"
 
+react-image-file-resizer@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/react-image-file-resizer/-/react-image-file-resizer-0.3.9.tgz#16528c04cb0615d98ffa76196c5755db182e170b"
+  integrity sha512-uq9Df/A/GCRYrVGZwbtrJu7HErP2noYcZDc4b7TQmB/YBzkXJ/AEfQKByEhcr/R8GZl2xN4uCLAgavaRYQiXWg==
+
 react-intl@^2.2.2:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-2.9.0.tgz#c97c5d17d4718f1575fdbd5a769f96018a3b1843"

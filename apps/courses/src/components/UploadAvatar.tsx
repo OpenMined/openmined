@@ -3,6 +3,7 @@ import { Avatar, AvatarBadge, Box, Flex, Text } from '@chakra-ui/react';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { useDropzone } from 'react-dropzone';
 import { useStorage, useFirestore, useUser } from 'reactfire';
+import Resizer from 'react-image-file-resizer';
 
 import Icon from './Icon';
 import useToast, { toastConfig } from './Toast';
@@ -47,27 +48,44 @@ export default ({ currentAvatar, label, ...props }: any) => {
     const storageRef = storage.ref(`/users/${user.uid}`);
     const file = files[0];
 
-    return storageRef
-      .put(file)
-      .then(() =>
-        storageRef
-          .getDownloadURL()
-          .then((photo_url) =>
-            db
-              .collection('users')
-              .doc(user.uid)
-              .set({ photo_url }, { merge: true })
+    Resizer.imageFileResizer(
+      file,
+      400,
+      400,
+      'png',
+      100,
+      0,
+      (blob) => {
+        // @ts-ignore
+        const resizedImage = new File([blob], user.uid, {
+          lastModified: file.lastModified,
+          type: 'image/png',
+        });
+
+        return storageRef
+          .put(resizedImage)
+          .then(() =>
+            storageRef
+              .getDownloadURL()
+              .then((photo_url) =>
+                db
+                  .collection('users')
+                  .doc(user.uid)
+                  .set({ photo_url }, { merge: true })
+              )
           )
-      )
-      .then(() =>
-        toast({
-          ...toastConfig,
-          title: 'Profile photo uploaded',
-          description: 'Please refresh to see this change live...',
-          status: 'success',
-        })
-      )
-      .catch((error) => handleErrors(toast, error));
+          .then(() =>
+            toast({
+              ...toastConfig,
+              title: 'Profile photo uploaded',
+              description: 'Please refresh to see this change live...',
+              status: 'success',
+            })
+          )
+          .catch((error) => handleErrors(toast, error));
+      },
+      'blob'
+    );
   };
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });

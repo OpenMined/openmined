@@ -211,8 +211,11 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
           />
           <Button
             disabled={!(status === 'passed' || status === 'failed')}
-            as={RRDLink}
-            to={`/courses/${course}/project/complete`}
+            // SEE TODO (#25)
+            // as={RRDLink}
+            // to={`/courses/${course}/project/complete`}
+            as="a"
+            href={`/courses/${course}/project/complete`}
             colorScheme="black"
           >
             Finish

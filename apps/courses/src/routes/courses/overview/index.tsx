@@ -159,14 +159,16 @@ export default ({ course, page, progress }: CoursePagesProp) => {
       </List>
       {isCurrent && isTakingCourse && (
         <Flex justify="flex-end" mt={4}>
-          <Link to={resumeLink}>
+          {/* SEE TODO (#25) */}
+          {/* <Link to={resumeLink}> */}
+          <a href={resumeLink}>
             <Flex align="center">
               <Text fontWeight="bold" mr={3}>
                 Resume
               </Text>
               <Icon icon={faArrowRight} />
             </Flex>
-          </Link>
+          </a>
         </Flex>
       )}
     </Box>
@@ -334,8 +336,11 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                 <Button
                   colorScheme="blue"
                   size="lg"
-                  as={courseStartLink ? Link : null}
-                  to={courseStartLink}
+                  // SEE TODO (#25)
+                  // as={courseStartLink ? Link : null}
+                  // to={courseStartLink}
+                  as={courseStartLink ? 'a' : null}
+                  href={courseStartLink}
                   disabled={!courseStartLink}
                 >
                   {courseStartLink ? 'Start Course' : 'Coming Soon'}
@@ -356,8 +361,11 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                   <Button
                     colorScheme="black"
                     size="lg"
-                    as={Link}
-                    to={resumeLink}
+                    // SEE TODO (#25)
+                    // as={Link}
+                    // to={resumeLink}
+                    as="a"
+                    href={resumeLink}
                     ml={4}
                   >
                     Continue
@@ -432,8 +440,11 @@ export default ({ course, page, progress }: CoursePagesProp) => {
             <Button
               colorScheme="black"
               size="lg"
-              as={courseStartLink ? Link : null}
-              to={courseStartLink}
+              // SEE TODO (#25)
+              // as={courseStartLink ? Link : null}
+              // to={courseStartLink}
+              as={courseStartLink ? 'a' : null}
+              href={courseStartLink}
               disabled={!courseStartLink}
             >
               {courseStartLink ? 'Start Course' : 'Coming Soon'}
@@ -443,8 +454,11 @@ export default ({ course, page, progress }: CoursePagesProp) => {
             <Button
               colorScheme="black"
               size="lg"
-              as={Link}
-              to={resumeLink}
+              // SEE TODO (#25)
+              // as={Link}
+              // to={resumeLink}
+              as="a"
+              href={resumeLink}
               ml={4}
             >
               Continue Course

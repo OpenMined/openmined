@@ -35,10 +35,10 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. T
 We can do the following items after the launch of the first course on December 31st, 2020.
 
 - Create a README that's somewhat friendly to contributors
-- Review PR: https://github.com/OpenMined/openmined/pull/42
 - Get the rich text editor toolbar to scroll with you as you type down the page and the editor increases in size
 - TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
 - TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).
+- TODO (#25): Redo the page changing logic
 - TODO (#18): Redo the permissions gate to allow for projects and project parts with or without attempts. We probably need a "configuration" based strategy for this. Might be good to write some tests!!
 - Change all links to use colorScheme instead of color once this issue is fixed: https://github.com/chakra-ui/chakra-ui/issues/2870
 - TODO: Add tests for remaining helpers functions

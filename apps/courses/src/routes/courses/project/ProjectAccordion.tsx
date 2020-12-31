@@ -40,7 +40,9 @@ const AttemptedView = ({
 );
 
 export default ({ content, course, onBeginProjectPart, ...props }) => {
-  const navigate = useNavigate();
+  // SEE TODO (#25)
+  // const navigate = useNavigate();
+
   // The text to show when the user is pending a submission review
   const pendingReviewText = (
     <>
@@ -99,18 +101,26 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                 onClick={() => {
                   if (status === 'not-started') {
                     onBeginProjectPart(_key).then(() => {
-                      navigate(`/courses/${course}/project/${_key}`);
+                      // SEE TODO (#25)
+                      // navigate(`/courses/${course}/project/${_key}`);
+                      window.location.href = `/courses/${course}/project/${_key}`;
                     });
                   } else if (status === 'submitted') {
                     const attempt = submissions.findIndex(
                       ({ status }) => status === 'pending'
                     );
 
-                    navigate(
-                      `/courses/${course}/project/${_key}/${attempt + 1}`
-                    );
+                    // SEE TODO (#25)
+                    // navigate(
+                    //   `/courses/${course}/project/${_key}/${attempt + 1}`
+                    // );
+                    window.location.href = `/courses/${course}/project/${_key}/${
+                      attempt + 1
+                    }`;
                   } else {
-                    navigate(`/courses/${course}/project/${_key}`);
+                    // SEE TODO (#25)
+                    // navigate(`/courses/${course}/project/${_key}`);
+                    window.location.href = `/courses/${course}/project/${_key}`;
                   }
                 }}
                 colorScheme="black"

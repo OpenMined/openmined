@@ -172,8 +172,11 @@ export const MentorContext = ({ courses }) => {
                   colorScheme="black"
                   isDisabled={buttonClicked}
                   isLoading={buttonClicked}
-                  as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  // SEE TODO (#25)
+                  // as={RRDLink}
+                  // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  as="a"
+                  href={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
                 >
                   Review
                 </Button>
@@ -190,6 +193,7 @@ export const MentorContext = ({ courses }) => {
       </Text>
       <Flex direction={['column', null, null, 'row']} align="center">
         <Link
+          as="a"
           href={shiftscheduleLink}
           target="_blank"
           rel="noopener noreferrer"
@@ -203,6 +207,7 @@ export const MentorContext = ({ courses }) => {
           </Flex>
         </Link>
         <Link
+          as="a"
           href={discussionLink}
           target="_blank"
           rel="noopener noreferrer"
@@ -292,8 +297,11 @@ export const MentorTabs = ({ courses, mentor }) => {
                 </Box>
                 <Flex justify="space-between" align="center" width="full">
                   <Link
-                    as={RRDLink}
-                    to={`/courses/${slug}`}
+                    // SEE TODO (#25)
+                    // as={RRDLink}
+                    // to={`/courses/${slug}`}
+                    as="a"
+                    href={`/courses/${slug}`}
                     color="gray.700"
                     _hover={{ color: 'gray.800' }}
                   >
@@ -464,8 +472,11 @@ export const MentorTabs = ({ courses, mentor }) => {
                 <Button
                   variant="outline"
                   colorScheme="black"
-                  as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  // SEE TODO (#25)
+                  // as={RRDLink}
+                  // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  as="a"
+                  href={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
                 >
                   See Review
                 </Button>
@@ -473,8 +484,11 @@ export const MentorTabs = ({ courses, mentor }) => {
               {review.status === 'pending' && (
                 <Button
                   colorScheme="black"
-                  as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  // SEE TODO (#25)
+                  // as={RRDLink}
+                  // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  as="a"
+                  href={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
                 >
                   Finish Review
                 </Button>

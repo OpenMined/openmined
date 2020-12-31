@@ -111,6 +111,16 @@ const DrawerItem = ({
 
               linkProps._hover = { color: linkProps.color };
 
+              // SEE TODO (#25)
+              if (linkProps.to) {
+                linkProps.as = 'a';
+                linkProps.to = null;
+                linkProps.cursor = 'pointer';
+                linkProps.onClick = () => {
+                  window.location.href = link;
+                };
+              }
+
               return (
                 <Link {...linkProps} key={index} variant="flat">
                   <Flex align="center">

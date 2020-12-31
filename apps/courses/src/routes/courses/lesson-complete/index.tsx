@@ -216,13 +216,17 @@ export default ({
               size="lg"
               onClick={() =>
                 onCompleteLesson().then(() => {
-                  navigate(
-                    `/courses/${course}/${
-                      typeof nextLesson === 'string'
-                        ? nextLesson
-                        : nextLesson._id
-                    }`
-                  );
+                  // SEE TODO (#25)
+                  // navigate(
+                  //   `/courses/${course}/${
+                  //     typeof nextLesson === 'string'
+                  //       ? nextLesson
+                  //       : nextLesson._id
+                  //   }`
+                  // );
+                  window.location.href = `/courses/${course}/${
+                    typeof nextLesson === 'string' ? nextLesson : nextLesson._id
+                  }`;
                 })
               }
             >

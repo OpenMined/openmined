@@ -178,7 +178,8 @@ const Controls = ({
   total,
   onCompleteConcept,
 }) => {
-  const navigate = useNavigate();
+  // SEE TODO (#25)
+  // const navigate = useNavigate();
 
   return (
     <Flex align="center">
@@ -187,7 +188,9 @@ const Controls = ({
           window.scrollTo({ top: 0, behavior: 'smooth' });
 
           setTimeout(() => {
-            navigate(backLink);
+            // SEE TODO (#25)
+            // navigate(backLink);
+            window.location.href = backLink;
           }, 500);
         }}
         colorScheme={isBackAvailable ? 'cyan' : 'black'}
@@ -204,7 +207,9 @@ const Controls = ({
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             setTimeout(() => {
-              navigate(nextLink);
+              // SEE TODO (#25)
+              // navigate(nextLink);
+              window.location.href = nextLink;
             }, 500);
           });
         }}

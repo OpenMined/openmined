@@ -42,7 +42,8 @@ const DetailLink = ({ icon, children, ...props }) => (
 
 export default ({ progress, page, user, course }: CoursePagesProp) => {
   const db = useFirestore();
-  const navigate = useNavigate();
+  // SEE TODO (#25)
+  // const navigate = useNavigate();
 
   const {
     project: { title, parts },
@@ -87,7 +88,9 @@ export default ({ progress, page, user, course }: CoursePagesProp) => {
         setClickedContinue(false);
 
         if (data && !data.error) {
-          navigate(`/courses/${course}/complete`);
+          // SEE TODO (#25)
+          // navigate(`/courses/${course}/complete`);
+          window.location.href = `/courses/${course}/complete`;
         } else {
           handleErrors(toast, data.error);
         }

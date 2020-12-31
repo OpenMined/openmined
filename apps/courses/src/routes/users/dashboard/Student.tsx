@@ -53,8 +53,11 @@ export const StudentContext = ({ courses, progress }) => {
           Currently, you're not taking any courses. Perhaps you should add one!
         </Text>
         <Button
-          as={RRDLink}
-          to="/courses"
+          // SEE TODO (#25)
+          // as={RRDLink}
+          // to="/courses"
+          as="a"
+          href="/courses"
           variant="outline"
           colorScheme="black"
         >
@@ -152,7 +155,9 @@ export const StudentTabs = ({ courses, progress }) => {
       return (
         <NullSetTabPanel>
           Right now you have no completed courses. Try going to the{' '}
-          <Link as={RRDLink} to="/courses">
+          {/* SEE TODO (#25) */}
+          {/* <Link as={RRDLink} to="/courses"> */}
+          <Link as="a" href="/courses">
             Course Search
           </Link>{' '}
           to find a course right for you.

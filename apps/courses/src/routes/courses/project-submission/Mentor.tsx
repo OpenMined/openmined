@@ -123,7 +123,8 @@ export default ({
   attempt,
   student,
 }) => {
-  const navigate = useNavigate();
+  // SEE TODO (#25)
+  // const navigate = useNavigate();
   const toast = useToast();
   const db = useFirestore();
   const functions: firebase.functions.Functions = useFunctions();
@@ -157,9 +158,11 @@ export default ({
 
   useEffect(() => {
     if (!isBeforeDeadline()) {
-      navigate('/users/dashboard');
+      // SEE TODO (#25)
+      // navigate('/users/dashboard');
+      window.location.href = '/users/dashboard';
     }
-  }, [isBeforeDeadline, navigate]);
+  }, [isBeforeDeadline]);
 
   // When the user attempts a submission
   const onReviewSubmission = async (content, status) => {
@@ -189,7 +192,9 @@ export default ({
           setHasClickedButton(false);
 
           // Once that's done, go back to the dashboard
-          navigate(`/users/dashboard`);
+          // SEE TODO (#25)
+          // navigate(`/users/dashboard`);
+          window.location.href = '/users/dashboard';
         })
         .catch((error) => handleErrors(toast, error));
     } else {
@@ -220,7 +225,9 @@ export default ({
           status: 'success',
         });
 
-        navigate('/users/dashboard');
+        // SEE TODO (#25)
+        // navigate('/users/dashboard');
+        window.location.href = '/users/dashboard';
       } else {
         toast({
           ...toastConfig,
@@ -328,8 +335,11 @@ export default ({
       )}
       <Flex justify="space-between" align="center">
         <Button
-          as={RRDLink}
-          to={`/users/dashboard`}
+          // SEE TODO (#25)
+          // as={RRDLink}
+          // to={`/users/dashboard`}
+          as="a"
+          href={`/users/dashboard`}
           variant="outline"
           colorScheme="black"
         >

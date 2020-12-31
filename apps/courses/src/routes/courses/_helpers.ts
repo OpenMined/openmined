@@ -325,7 +325,9 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
         let url = `/courses/${course}/${suggestedPage.lesson}`;
         if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
 
-        navigate(url);
+        // SEE TODO (#25)
+        // navigate(url);
+        window.location.href = url;
       }
     }
   }, [navigate, user, ls, course, l, c, status]);

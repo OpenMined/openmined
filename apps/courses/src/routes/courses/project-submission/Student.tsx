@@ -187,7 +187,8 @@ export default ({
 }) => {
   const db = useFirestore();
   const toast = useToast();
-  const navigate = useNavigate();
+  // SEE TODO (#25)
+  // const navigate = useNavigate();
 
   const {
     project: { title: projectTitle, parts },
@@ -220,9 +221,11 @@ export default ({
       ).length === 3 &&
       !attemptData
     ) {
-      navigate(`/courses/${course}/project/${part}/3`);
+      // SEE TODO (#25)
+      // navigate(`/courses/${course}/project/${part}/3`);
+      window.location.href = `/courses/${course}/project/${part}/3`;
     }
-  }, [navigate, submissions, attemptData, course, part]);
+  }, [submissions, attemptData, course, part]);
 
   // Save the arrayUnion function so that we can push items into a Firestore array
   const arrayUnion = useFirestore.FieldValue.arrayUnion;
@@ -245,7 +248,9 @@ export default ({
     )
       .then(() => {
         // Once that's done, reload the projects in the default viewing state
-        navigate(`/courses/${course}/project`);
+        // SEE TODO (#25)
+        // navigate(`/courses/${course}/project`);
+        window.location.href = `/courses/${course}/project`;
       })
       .catch((error) => handleErrors(toast, error));
   };
@@ -259,7 +264,9 @@ export default ({
       >
         <Breadcrumb spacing={2} color="gray.700">
           <BreadcrumbItem>
-            <BreadcrumbLink as={RRDLink} to={`/courses/${course}/project`}>
+            {/* SEE TODO (#25) */}
+            <BreadcrumbLink as="a" href={`/courses/${course}/project`}>
+              {/* <BreadcrumbLink as={RRDLink} to={`/courses/${course}/project`}> */}
               {projectTitle}
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -341,8 +348,11 @@ export default ({
           <ColoredTabs mb={8} content={tabsContent} />
           <Flex justify="space-between" align="center">
             <Button
-              as={RRDLink}
-              to={`/courses/${course}/project`}
+              // SEE TODO (#25)
+              // as={RRDLink}
+              // to={`/courses/${course}/project`}
+              as="a"
+              href={`/courses/${course}/project`}
               variant="outline"
               colorScheme="black"
             >

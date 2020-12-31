@@ -6,7 +6,7 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
-- TODO (#21 HARD): Migrate all Sanity calls to be done via a Express.js-driven Firebase cloud HTTP (not callable) function. Make sure that Sanity is configured to only accept a connection via this endpoint, and NOT the website itself. This will ensure that students are not able to retrieve CMS data that they should not be allowed to see. Make sure to also implement caching on this data and set content freshness to be about 5 minutes.
+None
 
 ### SLZ
 

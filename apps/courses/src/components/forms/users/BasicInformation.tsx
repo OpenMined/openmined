@@ -30,6 +30,8 @@ import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
 import { countries, primaryLanguages, skillLevels, timezones } from '../_data';
 
+import UploadAvatar from '../../UploadAvatar';
+
 interface BasicInformationFormProps extends BoxProps {
   callback?: () => void;
   onChangeEmailOrGithub: () => void;
@@ -140,16 +142,20 @@ export default ({
     [timezoneField(dbUser.timezone), null],
   ];
 
-  // SEE TODO (#17)
-
   return (
-    <Form
-      {...props}
-      onSubmit={onSubmit}
-      schema={schema}
-      fields={fields}
-      submit="Save Changes"
-      isBreathable
-    />
+    <>
+      <UploadAvatar
+        currentAvatar={dbUser.photo_url}
+        label="Change your profile picture"
+      />
+      <Form
+        {...props}
+        onSubmit={onSubmit}
+        schema={schema}
+        fields={fields}
+        submit="Save changes"
+        isBreathable
+      />
+    </>
   );
 };

@@ -166,7 +166,7 @@ export const dashboardCourses = () => `
       title
     }
   }
-}`
+}`;
 
 export const profileCourses = () => `
 *[_type == "course" && visible == true] {
@@ -176,7 +176,7 @@ export const profileCourses = () => `
     "default": default.asset -> url,
     "full": full.asset -> url
   },
-}`
+}`;
 
 export const queries: { [method: string]: SANITY_QUERY } = {
   /* Course pages */
@@ -195,6 +195,10 @@ export const queries: { [method: string]: SANITY_QUERY } = {
   project: {
     auth: true,
     query: project,
+  },
+  projectComplete: {
+    auth: true,
+    query: projectComplete,
   },
   projectSubmission: {
     auth: true,

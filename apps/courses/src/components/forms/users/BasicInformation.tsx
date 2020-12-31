@@ -1,13 +1,7 @@
-import React, { useState } from 'react';
-import { Box, BoxProps, Button, Flex, Link, Text } from '@chakra-ui/react';
+import React from 'react';
+import { BoxProps, Flex, Link } from '@chakra-ui/react';
 import * as yup from 'yup';
-import {
-  useUser,
-  useFirestore,
-  useFirestoreDocData,
-  useAuth,
-  useStorage,
-} from 'reactfire';
+import { useUser, useFirestore, useFirestoreDocData, useAuth } from 'reactfire';
 import { User } from '@openmined/shared/types';
 
 import Form from '../_form';
@@ -51,42 +45,12 @@ export default ({
   ...props
 }: BasicInformationFormProps) => {
   const user: firebase.User = useUser();
-  const storage = useStorage();
   const auth = useAuth();
   const db = useFirestore();
   const toast = useToast();
 
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: User = useFirestoreDocData(dbUserRef);
-
-  const removeAvatar = () => {
-    const storageRef = storage.ref(`/users/${user.uid}`);
-
-    storageRef
-      .delete()
-      .then(() =>
-        db
-          .collection('users')
-          .doc(user.uid)
-          .set({ photo_url: null }, { merge: true })
-      )
-      .then(() =>
-        toast({
-          ...toastConfig,
-          title: 'Profile picture removed successfully',
-          description: 'Please refresh to see this change live',
-          status: 'success',
-        })
-      )
-      .catch(({ message }) =>
-        toast({
-          ...toastConfig,
-          title: 'Error',
-          description: message,
-          status: 'error',
-        })
-      );
-  };
 
   const onSuccess = () => {
     toast({
@@ -107,7 +71,7 @@ export default ({
     if (callback) callback();
   };
 
-  const onSubmit = async (data: User) =>
+  const onSubmit = (data: User) =>
     db
       .collection('users')
       .doc(user.uid)
@@ -179,24 +143,10 @@ export default ({
 
   return (
     <>
-      <Box mb={8}>
-        <Flex direction="row">
-          <Text mb={2} fontWeight={700} fontSize="sm" color="gray.700" mr={4}>
-            Change your profile picture
-          </Text>
-          <Text
-            mb={2}
-            fontSize="sm"
-            color="red.500"
-            as="u"
-            cursor="pointer"
-            onClick={removeAvatar}
-          >
-            Remove picture
-          </Text>
-        </Flex>
-        <UploadAvatar currentAvatar={dbUser.photo_url} />
-      </Box>
+      <UploadAvatar
+        currentAvatar={dbUser.photo_url}
+        label="Change your profile picture"
+      />
       <Form
         {...props}
         onSubmit={onSubmit}

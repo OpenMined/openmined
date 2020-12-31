@@ -1,7 +1,13 @@
-import React from 'react';
-import { BoxProps, Flex, Link } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Box, BoxProps, Button, Flex, Link, Text } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useUser, useFirestore, useFirestoreDocData, useAuth } from 'reactfire';
+import {
+  useUser,
+  useFirestore,
+  useFirestoreDocData,
+  useAuth,
+  useStorage,
+} from 'reactfire';
 import { User } from '@openmined/shared/types';
 
 import Form from '../_form';
@@ -30,6 +36,8 @@ import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
 import { countries, primaryLanguages, skillLevels, timezones } from '../_data';
 
+import UploadAvatar from '../../UploadAvatar';
+
 interface BasicInformationFormProps extends BoxProps {
   callback?: () => void;
   onChangeEmailOrGithub: () => void;
@@ -43,12 +51,64 @@ export default ({
   ...props
 }: BasicInformationFormProps) => {
   const user: firebase.User = useUser();
+  const storage = useStorage();
   const auth = useAuth();
   const db = useFirestore();
   const toast = useToast();
 
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: User = useFirestoreDocData(dbUserRef);
+
+  const [avatar, setAvatar] = useState();
+  const size = '400x400';
+
+  const removeAvatar = () => {
+    const storageRef = storage.ref(`/users/${user.uid}_${size}`);
+    storageRef
+      .delete()
+      .then(() =>
+        db
+          .collection('users')
+          .doc(user.uid)
+          .set({ photo_url: null }, { merge: true })
+      )
+      .then(() =>
+        toast({
+          ...toastConfig,
+          title: 'Profile picture removed successfully',
+          status: 'success',
+        })
+      )
+      .catch(({ message }) =>
+        toast({
+          ...toastConfig,
+          title: 'Error',
+          description: message,
+          status: 'error',
+        })
+      );
+  };
+
+  const updateAvatar = () => {
+    const storageRef = storage.ref(`/users/${user.uid}`);
+
+    return storageRef
+      .put(avatar)
+      .then(() =>
+        storageRef.getDownloadURL().then((photo_url) => {
+          const url = photo_url;
+          return url.replace(user.uid, `${user.uid}_${size}`);
+        })
+      )
+      .catch(({ message }) =>
+        toast({
+          ...toastConfig,
+          title: 'Error',
+          description: message,
+          status: 'error',
+        })
+      );
+  };
 
   const onSuccess = () => {
     toast({
@@ -70,13 +130,16 @@ export default ({
     if (callback) callback();
   };
 
-  const onSubmit = (data: User) =>
-    db
+  const onSubmit = async (data: User) => {
+    const photo_url = avatar ? await updateAvatar() : undefined;
+
+    return db
       .collection('users')
       .doc(user.uid)
-      .set(data, { merge: true })
+      .set({ ...data, photo_url }, { merge: true })
       .then(onSuccess)
       .catch((error) => handleErrors(toast, error));
+  };
 
   const onReverifyEmail = (data) =>
     auth.currentUser
@@ -140,16 +203,52 @@ export default ({
     [timezoneField(dbUser.timezone), null],
   ];
 
-  // SEE TODO (#17)
-
   return (
-    <Form
-      {...props}
-      onSubmit={onSubmit}
-      schema={schema}
-      fields={fields}
-      submit="Save Changes"
-      isBreathable
-    />
+    <>
+      <Box mb={8}>
+        <Flex direction="row">
+          <Text mb={2} fontWeight={700} fontSize="sm" color="gray.700" mr={4}>
+            Change your profile picture
+          </Text>
+          <Text
+            mb={2}
+            fontSize="sm"
+            color="red.500"
+            as="u"
+            cursor="pointer"
+            onClick={removeAvatar}
+          >
+            Remove picture
+          </Text>
+        </Flex>
+        <UploadAvatar
+          currentAvatar={dbUser.photo_url}
+          setAvatarFile={setAvatar}
+        />
+      </Box>
+      <Form
+        {...props}
+        onSubmit={onSubmit}
+        schema={schema}
+        fields={fields}
+        submit={(
+          isDisabled: boolean,
+          isSubmitting: boolean,
+          isValid: boolean,
+          isDirty: boolean
+        ) => (
+          <Button
+            mt={8}
+            colorScheme="blue"
+            disabled={(avatar && !isValid) || (!avatar && isDisabled)}
+            isLoading={isSubmitting}
+            type="submit"
+          >
+            Save changes
+          </Button>
+        )}
+        isBreathable
+      />
+    </>
   );
 };

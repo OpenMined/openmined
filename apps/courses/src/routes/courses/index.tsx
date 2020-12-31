@@ -6,6 +6,7 @@ import {
   CoursePagesProp,
   Course,
 } from '@openmined/shared/types';
+import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 
 import { usePageAvailabilityRedirect } from './_helpers';
 import * as configs from './_configs';

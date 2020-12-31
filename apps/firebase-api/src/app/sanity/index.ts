@@ -1,12 +1,9 @@
-import admin from 'firebase-admin';
-
 // TODO: Integrate sentry for logging
-import { logger } from 'firebase-functions';
 import { queries, SANITY_QUERY } from './utils/queries';
 import sanity from './utils/sanity';
 
-const getSanityData = (query: SANITY_QUERY, env, params) => {
-  const client = sanity(env);
+const getSanityData = (query: SANITY_QUERY, params) => {
+  const client = sanity();
   const queryString = query.query(params);
 
   return client.fetch(queryString);
@@ -19,7 +16,7 @@ const getSanityData = (query: SANITY_QUERY, env, params) => {
  */
 export default async (data, context) => {
   try {
-    const { method, env, params } = data;
+    const { method, params } = data;
 
     // Make sure query is valid
     if (!queries[method]) {
@@ -31,14 +28,14 @@ export default async (data, context) => {
     // Make sure user is logged in if auth is true
     if (query.auth) {
       if (!context.auth || !context.auth.uid) {
-        return { error: 'Insufficient permission' }
+        return { error: 'Insufficient permission' };
       }
     }
 
-    // TODO: check if user is allowed to access a specific course/lesson
+    // TODO: Check if user is allowed to access a specific course/lesson
 
     // Get sanity data
-    const sanityData = await getSanityData(query, env, params);
+    const sanityData = await getSanityData(query, params);
 
     return sanityData;
   } catch (error) {

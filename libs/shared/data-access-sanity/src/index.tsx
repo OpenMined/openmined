@@ -12,6 +12,7 @@ import { Link as RRDLink } from 'react-router-dom';
 import sanityClient from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 import BlockContent from '@sanity/block-content-to-react';
+import { useFunctions } from 'reactfire';
 
 const SanityContext = createContext(null);
 
@@ -208,6 +209,82 @@ export const useSanity = (query) => {
         setLoading(false);
       });
   }, [client, query]);
+
+  return { data, loading, error };
+};
+
+export const composeSanityImageUrl = (image) => {
+  const sanityConfig = {
+    projectId: process.env.NX_SANITY_COURSES_PROJECT_ID,
+    dataset: process.env.NX_SANITY_COURSES_DATASET,
+  };
+
+  try {
+    const cdnUrl = 'https://cdn.sanity.io';
+    const filenameParts = image.asset._ref.split('-');
+    const filename = `${filenameParts
+      .slice(1, filenameParts.length - 1)
+      .join('-')}.${filenameParts[filenameParts.length - 1]}`;
+    const baseUrl = `${cdnUrl}/images/${sanityConfig.projectId}/${sanityConfig.dataset}/${filename}`;
+
+    return baseUrl;
+  } catch (error) {
+    return error;
+  }
+};
+
+export type SANITY_FIREBASE_QUERY = {
+  method: string;
+  params: any;
+  env?: string;
+};
+
+export const useFirebaseSanity = (method, params = null) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const functions: firebase.functions.Functions = useFunctions();
+  // @ts-ignore
+  functions.region = 'europe-west1';
+  const sanity = functions.httpsCallable('sanity');
+
+  const prepareData = (d) => {
+    Object.keys(d).forEach((i) => {
+      const elem = d[i];
+
+      // Make sure we convert all breaking spaces to <br /> tags
+      if (typeof elem === 'string' && elem.includes('\n')) {
+        d[i] = (
+          <span
+            dangerouslySetInnerHTML={{
+              __html: elem.split('\n').join('<br />'),
+            }}
+          />
+        );
+      }
+    });
+
+    return d;
+  };
+
+  useEffect(() => {
+    const query: SANITY_FIREBASE_QUERY = {
+      method,
+      params,
+      env: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+    };
+
+    sanity(query)
+      .then((d) => {
+        setData(prepareData(d.data));
+        setLoading(false);
+      })
+      .catch((e) => {
+        setError(e);
+        setLoading(false);
+      });
+  }, [method, params]);
 
   return { data, loading, error };
 };

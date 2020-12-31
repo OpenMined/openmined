@@ -1,15 +1,14 @@
 import React, { lazy, useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useFirestore, useUser } from 'reactfire';
-import { useSanity } from '@openmined/shared/data-access-sanity';
 import {
   CoursePageWhich,
   CoursePagesProp,
   Course,
 } from '@openmined/shared/types';
+import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 
 import { usePageAvailabilityRedirect } from './_helpers';
-import * as queries from './_queries';
 import * as configs from './_configs';
 import CourseWrap from './Wrapper';
 import { getCourseRef } from './_firebase';
@@ -110,7 +109,6 @@ export default ({ which }: PropType) => {
 
   // Create variables to store the page to render and the query we'll make to Sanity
   const CoursePage = pages[which];
-  const query = queries[which](params);
 
   // Define what pages do not need the permissions check
   const permissionlessPages = ['search', 'overview'];
@@ -119,7 +117,7 @@ export default ({ which }: PropType) => {
   const blocklessPages = ['search'];
 
   // Get our data from the CMS
-  const { data, loading } = useSanity(query);
+  const { data, loading } = useFirebaseSanity(which, params);
 
   // SEE TODO (#18)
   // const newPermissionGate = useCoursePermissionGate(

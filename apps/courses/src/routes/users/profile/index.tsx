@@ -21,7 +21,7 @@ import {
   faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { useSanity } from '@openmined/shared/data-access-sanity';
+import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 
 import GridContainer from '../../../components/GridContainer';
 import Icon from '../../../components/Icon';
@@ -77,15 +77,7 @@ export default () => {
 
   if (!Object.keys(dbUser).length) return <Navigate to="/" />;
 
-  const { data, loading } = useSanity(`
-    *[_type == "course" && visible == true] {
-      ...,
-      "slug": slug.current,
-      visual {
-        "default": default.asset -> url,
-        "full": full.asset -> url
-      },
-    }`);
+  const { data, loading } = useFirebaseSanity('profileCourses');
 
   if (loading) return null;
 

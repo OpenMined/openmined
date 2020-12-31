@@ -30,7 +30,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
-- Get real terms of service copy
 - Make sure to test the site on dev deployment
 - Make sure all composite and single-field indexes have been properly created
 - Make sure all functions and rules are deployed to production

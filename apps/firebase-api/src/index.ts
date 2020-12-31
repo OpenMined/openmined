@@ -18,6 +18,7 @@ import {
 import { completeCourse } from './app/courses';
 import { sendEmail } from './app/email';
 import sanity from './app/sanity';
+import { generateResizedImage } from './app/resize-image';
 
 // Pick review for assignment or resign from a review
 exports.assignReview = functions
@@ -119,3 +120,6 @@ exports.sanity = functions.region('europe-west1').https.onCall(sanity);
 
 // SEE TODO (#13)
 // exports.ssr = functions.region('europe-west1').https.onRequest(ssr);
+
+// Resize images
+exports.generateResizedImage = generateResizedImage;

@@ -27,20 +27,22 @@ export default ({ currentAvatar, ...props }: any) => {
     return storageRef
       .put(file)
       .then(() =>
-        storageRef.getDownloadURL().then((photo_url) =>
-          db
-            .collection('users')
-            .doc(user.uid)
-            .set({ photo_url }, { merge: true })
-            .then(() =>
-              toast({
-                ...toastConfig,
-                title: 'Profile photo uploaded',
-                description: 'Please refresh to see this change live...',
-                status: 'success',
-              })
-            )
-        )
+        storageRef
+          .getDownloadURL()
+          .then((photo_url) =>
+            db
+              .collection('users')
+              .doc(user.uid)
+              .set({ photo_url }, { merge: true })
+          )
+      )
+      .then(() =>
+        toast({
+          ...toastConfig,
+          title: 'Profile photo uploaded',
+          description: 'Please refresh to see this change live...',
+          status: 'success',
+        })
       )
       .catch(({ message }) =>
         toast({

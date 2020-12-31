@@ -59,11 +59,9 @@ export default ({
   const dbUserRef = db.collection('users').doc(user.uid);
   const dbUser: User = useFirestoreDocData(dbUserRef);
 
-  const [avatar, setAvatar] = useState();
-  const size = '400x400';
-
   const removeAvatar = () => {
-    const storageRef = storage.ref(`/users/${user.uid}_${size}`);
+    const storageRef = storage.ref(`/users/${user.uid}`);
+
     storageRef
       .delete()
       .then(() =>
@@ -76,28 +74,8 @@ export default ({
         toast({
           ...toastConfig,
           title: 'Profile picture removed successfully',
+          description: 'Please refresh to see this change live',
           status: 'success',
-        })
-      )
-      .catch(({ message }) =>
-        toast({
-          ...toastConfig,
-          title: 'Error',
-          description: message,
-          status: 'error',
-        })
-      );
-  };
-
-  const updateAvatar = () => {
-    const storageRef = storage.ref(`/users/${user.uid}`);
-
-    return storageRef
-      .put(avatar)
-      .then(() =>
-        storageRef.getDownloadURL().then((photo_url) => {
-          const url = photo_url;
-          return url.replace(user.uid, `${user.uid}_${size}`);
         })
       )
       .catch(({ message }) =>
@@ -119,7 +97,6 @@ export default ({
     });
     if (callback) callback();
   };
-
   const onReverifySuccess = () => {
     toast({
       ...toastConfig,
@@ -130,16 +107,13 @@ export default ({
     if (callback) callback();
   };
 
-  const onSubmit = async (data: User) => {
-    const photo_url = avatar ? await updateAvatar() : undefined;
-
-    return db
+  const onSubmit = async (data: User) =>
+    db
       .collection('users')
       .doc(user.uid)
-      .set({ ...data, photo_url }, { merge: true })
+      .set(data, { merge: true })
       .then(onSuccess)
       .catch((error) => handleErrors(toast, error));
-  };
 
   const onReverifyEmail = (data) =>
     auth.currentUser
@@ -221,31 +195,14 @@ export default ({
             Remove picture
           </Text>
         </Flex>
-        <UploadAvatar
-          currentAvatar={dbUser.photo_url}
-          setAvatarFile={setAvatar}
-        />
+        <UploadAvatar currentAvatar={dbUser.photo_url} />
       </Box>
       <Form
         {...props}
         onSubmit={onSubmit}
         schema={schema}
         fields={fields}
-        submit={(
-          isDisabled: boolean,
-          isSubmitting: boolean,
-          isValid: boolean
-        ) => (
-          <Button
-            mt={8}
-            colorScheme="blue"
-            disabled={(avatar && !isValid) || (!avatar && isDisabled)}
-            isLoading={isSubmitting}
-            type="submit"
-          >
-            Save changes
-          </Button>
-        )}
+        submit="Save changes"
         isBreathable
       />
     </>

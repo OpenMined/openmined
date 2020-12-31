@@ -147,7 +147,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
               .set({
                 first_name: first_name,
                 last_name: last_name,
-                notification_preferences: [{ project_reviews: true }],
+                notification_preferences: ['project_reviews'],
               })
               .then(onSuccess)
               .catch((error) => handleErrors(toast, error))
@@ -208,7 +208,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         first_name: firstName,
         last_name: lastName,
         photo_url: authUser.user.photoURL,
-        notification_preferences: [{ project_reviews: true }],
+        notification_preferences: ['project_reviews'],
         description: (authUser.additionalUserInfo.profile as any).bio,
         github: (authUser.additionalUserInfo.profile as any).login,
         twitter: (authUser.additionalUserInfo.profile as any).twitter_username,

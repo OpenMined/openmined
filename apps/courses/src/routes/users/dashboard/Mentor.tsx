@@ -177,6 +177,7 @@ export const MentorContext = ({ courses }) => {
                   // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
                   as="a"
                   href={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  target="_self"
                 >
                   Review
                 </Button>
@@ -302,6 +303,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                     // to={`/courses/${slug}`}
                     as="a"
                     href={`/courses/${slug}`}
+                    target="_self"
                     color="gray.700"
                     _hover={{ color: 'gray.800' }}
                   >
@@ -477,6 +479,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                   // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
                   as="a"
                   href={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  target="_self"
                 >
                   See Review
                 </Button>
@@ -489,6 +492,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                   // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
                   as="a"
                   href={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  target="_self"
                 >
                   Finish Review
                 </Button>

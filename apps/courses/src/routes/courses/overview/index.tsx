@@ -161,7 +161,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
         <Flex justify="flex-end" mt={4}>
           {/* SEE TODO (#25) */}
           {/* <Link to={resumeLink}> */}
-          <a href={resumeLink}>
+          <a href={resumeLink} target="_self">
             <Flex align="center">
               <Text fontWeight="bold" mr={3}>
                 Resume
@@ -341,6 +341,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                   // to={courseStartLink}
                   as={courseStartLink ? 'a' : null}
                   href={courseStartLink}
+                  target="_self"
                   disabled={!courseStartLink}
                 >
                   {courseStartLink ? 'Start Course' : 'Coming Soon'}
@@ -366,6 +367,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                     // to={resumeLink}
                     as="a"
                     href={resumeLink}
+                    target="_self"
                     ml={4}
                   >
                     Continue
@@ -445,6 +447,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
               // to={courseStartLink}
               as={courseStartLink ? 'a' : null}
               href={courseStartLink}
+              target="_self"
               disabled={!courseStartLink}
             >
               {courseStartLink ? 'Start Course' : 'Coming Soon'}
@@ -459,6 +462,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
               // to={resumeLink}
               as="a"
               href={resumeLink}
+              target="_self"
               ml={4}
             >
               Continue Course

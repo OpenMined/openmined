@@ -61,6 +61,10 @@ const initialValue = [
   },
 ];
 
+export const resetEditor = () => {
+  localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(initialValue));
+};
+
 const withLinks = (editor) => {
   const { insertText } = editor;
 

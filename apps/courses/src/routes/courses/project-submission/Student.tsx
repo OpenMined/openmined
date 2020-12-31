@@ -37,6 +37,7 @@ import SubmissionInline from '../../../components/SubmissionInline';
 import Icon from '../../../components/Icon';
 import RichTextEditor, {
   EDITOR_STORAGE_STRING,
+  resetEditor,
 } from '../../../components/RichTextEditor';
 import ColoredTabs from '../../../components/ColoredTabs';
 import useToast from '../../../components/Toast';
@@ -236,6 +237,9 @@ export default ({
 
   // When the user attempts a submission
   const onAttemptSubmission = async (part, content) => {
+    // And clear the editor's cache
+    resetEditor();
+
     handleAttemptSubmission(
       db,
       user.uid,
@@ -247,6 +251,9 @@ export default ({
       content
     )
       .then(() => {
+        // And close the modal
+        preSubmitModal.onClose();
+
         // Once that's done, reload the projects in the default viewing state
         // SEE TODO (#25)
         // navigate(`/courses/${course}/project`);
@@ -265,7 +272,7 @@ export default ({
         <Breadcrumb spacing={2} color="gray.700">
           <BreadcrumbItem>
             {/* SEE TODO (#25) */}
-            <BreadcrumbLink as="a" href={`/courses/${course}/project`}>
+            <BreadcrumbLink href={`/courses/${course}/project`} target="_self">
               {/* <BreadcrumbLink as={RRDLink} to={`/courses/${course}/project`}> */}
               {projectTitle}
             </BreadcrumbLink>
@@ -353,6 +360,7 @@ export default ({
               // to={`/courses/${course}/project`}
               as="a"
               href={`/courses/${course}/project`}
+              target="_self"
               variant="outline"
               colorScheme="black"
             >
@@ -400,11 +408,6 @@ export default ({
                         _key,
                         localStorage.getItem(EDITOR_STORAGE_STRING)
                       );
-
-                      // And clear the editor's cache
-                      localStorage.removeItem(EDITOR_STORAGE_STRING);
-
-                      preSubmitModal.onClose();
                     }}
                   >
                     Continue

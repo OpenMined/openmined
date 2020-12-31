@@ -27,6 +27,7 @@ import { handleReviewSubmission } from '../_firebase';
 import { Content } from '../concept/content';
 import RichTextEditor, {
   EDITOR_STORAGE_STRING,
+  resetEditor,
 } from '../../../components/RichTextEditor';
 import ColoredTabs from '../../../components/ColoredTabs';
 import Countdown from '../../../components/Countdown';
@@ -169,6 +170,9 @@ export default ({
     if (isBeforeDeadline()) {
       setHasClickedButton(true);
 
+      // And clear the editor's cache
+      resetEditor();
+
       handleReviewSubmission(
         db,
         currentTime,
@@ -183,9 +187,6 @@ export default ({
         content
       )
         .then(() => {
-          // And clear the editor's cache
-          localStorage.removeItem(EDITOR_STORAGE_STRING);
-
           // And close the modal
           preSubmitModal.onClose();
 
@@ -340,6 +341,7 @@ export default ({
           // to={`/users/dashboard`}
           as="a"
           href={`/users/dashboard`}
+          target="_self"
           variant="outline"
           colorScheme="black"
         >

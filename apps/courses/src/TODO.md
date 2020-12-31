@@ -18,7 +18,6 @@ None
 
 ### Patrick
 
-- When on the submissions page as a mentor, I can go back to previous submissions and all the feedback is editable. It should not be.
 - Also, I sometimes cannot see the previous submissions or feedback if it was done by a different mentor
 
 ## Pre-Launch Checklist

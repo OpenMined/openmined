@@ -7,12 +7,13 @@ import Resizer from 'react-image-file-resizer';
 
 import Icon from './Icon';
 import useToast, { toastConfig } from './Toast';
+
 import { handleErrors } from '../helpers';
 
 export default ({ currentAvatar, label, ...props }: any) => {
   const [preview, setPreview] = useState<string | undefined>();
   const storage = useStorage();
-  const user = useUser();
+  const user: firebase.User = useUser();
   const db = useFirestore();
   const toast = useToast();
 
@@ -64,24 +65,22 @@ export default ({ currentAvatar, label, ...props }: any) => {
 
         return storageRef
           .put(resizedImage)
-          .then(() =>
-            storageRef
-              .getDownloadURL()
-              .then((photo_url) =>
-                db
-                  .collection('users')
-                  .doc(user.uid)
-                  .set({ photo_url }, { merge: true })
-              )
-          )
-          .then(() =>
-            toast({
-              ...toastConfig,
-              title: 'Profile photo uploaded',
-              description: 'Please refresh to see this change live...',
-              status: 'success',
-            })
-          )
+          .then(() => {
+            storageRef.getDownloadURL().then((photo_url) => {
+              db.collection('users')
+                .doc(user.uid)
+                .set({ photo_url }, { merge: true })
+                .then(() =>
+                  toast({
+                    ...toastConfig,
+                    title: 'Profile photo uploaded',
+                    description: 'Please refresh to see this change...',
+                    status: 'success',
+                  })
+                )
+                .catch((error) => handleErrors(toast, error));
+            });
+          })
           .catch((error) => handleErrors(toast, error));
       },
       'blob'
@@ -91,7 +90,7 @@ export default ({ currentAvatar, label, ...props }: any) => {
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
-    <Box mb={8} {...props}>
+    <Box {...props}>
       <Flex direction="row">
         <Text mb={2} fontWeight={700} fontSize="sm" color="gray.700" mr={4}>
           {label}
@@ -105,7 +104,7 @@ export default ({ currentAvatar, label, ...props }: any) => {
             cursor="pointer"
             onClick={removeAvatar}
           >
-            Remove picture
+            Remove
           </Text>
         )}
       </Flex>

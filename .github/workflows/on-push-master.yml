@@ -7,7 +7,7 @@ on:
 
 jobs:
   courses:
-    name: Deploy Courses
+    name: Deploy Courses Production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo

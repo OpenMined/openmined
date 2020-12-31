@@ -18,7 +18,6 @@ None
 
 ### Patrick
 
-- When I move from concept to concept, if I've completed a quiz on the previous page, the next page will have that quiz as completed... this is a bug. If you refresh, it's fine. See Lesson 2, Concept 1, going into Lesson 2, Concept 2
 - When on the submissions page as a mentor, I can go back to previous submissions and all the feedback is editable. It should not be.
 - Also, I sometimes cannot see the previous submissions or feedback if it was done by a different mentor
 

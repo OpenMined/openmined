@@ -45,15 +45,18 @@ describe('users/{{userID}}/courses/{{courseId}}/submissions/{{submissionId}}', (
         ALICE_ID,
         COURSE_A,
         createdSubmission.id
-      ).set(exampleSubmission)
+      ).set(exampleSubmission, { merge: true })
     );
 
     // bob cannot create
     const bobDb = getAuthedFirestore({ uid: BOB_ID });
     await firebase.assertFails(
-      getUserSubmissionRef(bobDb, ALICE_ID, COURSE_A, createdSubmission.id).set(
-        exampleSubmission
-      )
+      getUserSubmissionRef(
+        bobDb,
+        ALICE_ID,
+        COURSE_A,
+        createdSubmission.id
+      ).set(exampleSubmission, { merge: true })
     );
   });
 
@@ -204,10 +207,13 @@ describe('users/{{userID}}/courses/{{courseId}}/submissions/{{submissionId}}', (
         ALICE_ID,
         COURSE_A,
         RANDOM_SUBMISSION_ID
-      ).set({
-        new: true,
-        mentor: getUserCourseRef(aliceDb, BOB_ID),
-      })
+      ).set(
+        {
+          new: true,
+          mentor: getUserCourseRef(aliceDb, BOB_ID),
+        },
+        { merge: true }
+      )
     );
     await firebase.assertFails(
       getUserSubmissionRef(

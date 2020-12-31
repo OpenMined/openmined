@@ -30,7 +30,9 @@ describe('users/{{userID}}/reviews/{{reviewId}}', () => {
     const bobDb = getAuthedFirestore({ uid: BOB_ID });
     const reviewData = { course: COURSE_A };
     await firebase.assertSucceeds(
-      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData)
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData, {
+        merge: true,
+      })
     );
     await firebase.assertSucceeds(
       getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).get()
@@ -40,7 +42,10 @@ describe('users/{{userID}}/reviews/{{reviewId}}', () => {
     const forceReviewCourseB = { course: COURSE_B };
     const ANOTHER_REVIEW_ID = 'another_review_id';
     await firebase.assertFails(
-      getUserReviewRef(bobDb, BOB_ID, ANOTHER_REVIEW_ID).set(forceReviewCourseB)
+      getUserReviewRef(bobDb, BOB_ID, ANOTHER_REVIEW_ID).set(
+        forceReviewCourseB,
+        { merge: true }
+      )
     );
 
     // others cannot read/write
@@ -49,7 +54,9 @@ describe('users/{{userID}}/reviews/{{reviewId}}', () => {
       getUserReviewRef(anyoneDb, ALICE_ID, RANDOM_REVIEW_ID).get()
     );
     await firebase.assertFails(
-      getUserReviewRef(anyoneDb, ALICE_ID, RANDOM_REVIEW_ID).set(reviewData)
+      getUserReviewRef(anyoneDb, ALICE_ID, RANDOM_REVIEW_ID).set(reviewData, {
+        merge: true,
+      })
     );
 
     // dan cannot read/write bob course doc
@@ -58,7 +65,9 @@ describe('users/{{userID}}/reviews/{{reviewId}}', () => {
       getUserReviewRef(danDb, BOB_ID, RANDOM_REVIEW_ID).get()
     );
     await firebase.assertFails(
-      getUserReviewRef(danDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData)
+      getUserReviewRef(danDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData, {
+        merge: true,
+      })
     );
   });
 
@@ -73,7 +82,9 @@ describe('users/{{userID}}/reviews/{{reviewId}}', () => {
     const bobDb = getAuthedFirestore({ uid: BOB_ID });
     const reviewData = { course: COURSE_A };
     await firebase.assertSucceeds(
-      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData)
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData, {
+        merge: true,
+      })
     );
 
     // bob can update status and completed_at
@@ -109,7 +120,9 @@ describe('users/{{userID}}/reviews/{{reviewId}}', () => {
     const bobDb = getAuthedFirestore({ uid: BOB_ID });
     const reviewData = { course: COURSE_A };
     await firebase.assertSucceeds(
-      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData)
+      getUserReviewRef(bobDb, BOB_ID, RANDOM_REVIEW_ID).set(reviewData, {
+        merge: true,
+      })
     );
 
     // bob cannot delete the review

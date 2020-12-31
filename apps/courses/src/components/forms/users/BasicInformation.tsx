@@ -146,7 +146,8 @@ export default ({
     <>
       <UploadAvatar
         currentAvatar={dbUser.photo_url}
-        label="Change your profile picture"
+        label="Profile Picture"
+        mb={8}
       />
       <Form
         {...props}

@@ -93,7 +93,7 @@ service cloud.firestore {
         allow create: if isSameUser(user);
 
         // A student can update their own course, and...
-        // Mentor will need to be able to edit the submissions array of any user's course object with the "status" and "reviewed_at" time (course->project->part->submissions)
+        // Mentor will need to be able to edit the submissions array of any user's course object with the "status" and "reviewed_at" time
         allow update: if isSameUser(user) || (isMentor(request.auth.uid) && hasAllAffectedKeys(['project']));
 
         // A student can read their own course, and...

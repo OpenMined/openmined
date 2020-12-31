@@ -42,8 +42,7 @@ export const useFirebaseSanity = (method, params = null) => {
     const query: firebaseSanity.SANITY_FIREBASE_QUERY = {
       method,
       params,
-      // TODO: how to decide env?
-      env: 'development',
+      env: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     };
 
     sanity(query)

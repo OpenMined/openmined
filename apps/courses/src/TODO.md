@@ -6,9 +6,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
-- When I move from concept to concept, if I’ve completed a quiz on the previous page, the next page will have that quiz as completed... this is a bug. If you refresh, it’s fine. See Lesson 2, Concept 1, going into Lesson 2, Concept 2
-- Also, I sometimes cannot see the previous submissions or feedback if it was done by a different mentor
-- (This issue will likely be fixed by fixing #2) When on the submissions page as a mentor, I can go back to previous submissions and all the feedback is editable. It should not be.
 - TODO (#21 HARD): Migrate all Sanity calls to be done via a Express.js-driven Firebase cloud HTTP (not callable) function. Make sure that Sanity is configured to only accept a connection via this endpoint, and NOT the website itself. This will ensure that students are not able to retrieve CMS data that they should not be allowed to see. Make sure to also implement caching on this data and set content freshness to be about 5 minutes.
 
 ### SLZ
@@ -30,7 +27,6 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
-- Make sure to test the site on dev deployment
 - Make sure all composite and single-field indexes have been properly created
 - Make sure all functions and rules are deployed to production
 - Make sure to search for any configurations, Firebase extensions, or anything that needs to be enabled on the production account first (to make it identical to the dev Firebase)

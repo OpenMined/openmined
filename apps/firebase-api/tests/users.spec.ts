@@ -1,6 +1,6 @@
 import * as firebase from '@firebase/rules-unit-testing';
 
-import { PROJECT_ID, getAuthedFirestore } from './utils';
+import { PROJECT_ID, getAuthedFirestore, updateUser } from './utils';
 
 const ALICE_ID = 'alice';
 const BOB_ID = 'bob';
@@ -28,17 +28,23 @@ describe('users/{{userID}}', () => {
     const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
     const aliceProfile = aliceDb.collection('users').doc(ALICE_ID);
     const profileData = { first_name: 'Alice' };
-    await firebase.assertSucceeds(aliceProfile.set(profileData));
+    await firebase.assertSucceeds(
+      aliceProfile.set(profileData, { merge: true })
+    );
 
     // alice cannot write is_mentor field
     const forceIsMentorData = { is_mentor: true };
-    await firebase.assertFails(aliceProfile.set(forceIsMentorData));
+    await firebase.assertFails(
+      aliceProfile.set(forceIsMentorData, { merge: true })
+    );
 
     // alice cannot write mentorable_courses field
     const forceMentorableCoursesData = {
       mentorable_courses: ['some-course', 'some-other-course'],
     };
-    await firebase.assertFails(aliceProfile.set(forceMentorableCoursesData));
+    await firebase.assertFails(
+      aliceProfile.set(forceMentorableCoursesData, { merge: true })
+    );
 
     // alice cannot write completed_courses field
     const forceCompletedCoursesData = {
@@ -49,18 +55,39 @@ describe('users/{{userID}}', () => {
         },
       ],
     };
-    await firebase.assertFails(aliceProfile.set(forceCompletedCoursesData));
+    await firebase.assertFails(
+      aliceProfile.set(forceCompletedCoursesData, { merge: true })
+    );
 
     // others cannnot write
     const anyoneDb = getAuthedFirestore(null);
     await firebase.assertFails(
-      anyoneDb.collection('users').doc(ALICE_ID).set(profileData)
+      anyoneDb
+        .collection('users')
+        .doc(ALICE_ID)
+        .set(profileData, { merge: true })
     );
 
     // bob cannnot write alice user doc
     const bobDb = getAuthedFirestore({ uid: BOB_ID });
     await firebase.assertFails(
-      bobDb.collection('users').doc(ALICE_ID).set(profileData)
+      bobDb.collection('users').doc(ALICE_ID).set(profileData, { merge: true })
+    );
+  });
+
+  it('As a mentor, an owner can only write certain fields', async () => {
+    const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
+
+    // Make alice a mentor
+    await updateUser(ALICE_ID, {
+      is_mentor: true,
+      mentorable_courses: ['hello-world'],
+    });
+
+    const aliceProfile = aliceDb.collection('users').doc(ALICE_ID);
+    const profileData = { photo_url: 'Alice' };
+    await firebase.assertSucceeds(
+      aliceProfile.set(profileData, { merge: true })
     );
   });
 
@@ -73,21 +100,23 @@ describe('users/{{userID}}', () => {
       const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
       const aliceProfile = getPrivateDocRef(aliceDb, ALICE_ID);
       const profileData = { github_id: 'token' };
-      await firebase.assertSucceeds(aliceProfile.set(profileData));
+      await firebase.assertSucceeds(
+        aliceProfile.set(profileData, { merge: true })
+      );
       await firebase.assertSucceeds(aliceProfile.get());
 
       // others cannot read/write
       const anyoneDb = getAuthedFirestore(null);
       await firebase.assertFails(getPrivateDocRef(anyoneDb, ALICE_ID).get());
       await firebase.assertFails(
-        getPrivateDocRef(anyoneDb, ALICE_ID).set(profileData)
+        getPrivateDocRef(anyoneDb, ALICE_ID).set(profileData, { merge: true })
       );
 
       // bob cannot read/write alics private
       const bobDb = getAuthedFirestore({ uid: BOB_ID });
       await firebase.assertFails(getPrivateDocRef(bobDb, ALICE_ID).get());
       await firebase.assertFails(
-        getPrivateDocRef(bobDb, ALICE_ID).set(profileData)
+        getPrivateDocRef(bobDb, ALICE_ID).set(profileData, { merge: true })
       );
     });
   });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Flex,
@@ -281,6 +281,14 @@ export default ({
   const toast = useToast();
 
   const arrayUnion = useFirestore.FieldValue.arrayUnion;
+
+  // Whenever the concept changes, reset the quiz
+  useEffect(() => {
+    setCurrentQuestion(0);
+    setCurrentSelection(null);
+    setCorrectAnswers(0);
+    setIsFinished(false);
+  }, [concept]);
 
   const onFinish = () => {
     onComplete();

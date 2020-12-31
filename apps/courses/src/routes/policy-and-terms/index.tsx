@@ -61,13 +61,14 @@ export default () => {
     sections,
   } = isPolicy ? policy : terms;
 
+  // @ts-ignore
   const renderedSections = sections.map((section) => {
     if (Array.isArray(section.content)) {
       return {
         ...section,
         content: section.content.map((c, i) => (
           <Text key={i} mb={4}>
-            {c}
+            {typeof c === 'string' ? c : <Box as={c} />}
           </Text>
         )),
       };
@@ -113,7 +114,13 @@ export default () => {
                   color="blue.700"
                   borderRadius="md"
                 >
-                  {disclaimer}
+                  {typeof disclaimer === 'string'
+                    ? disclaimer
+                    : disclaimer.map((d, i) => (
+                        <Text mb={4} key={i}>
+                          {typeof d === 'string' ? d : <Box as={d} />}
+                        </Text>
+                      ))}
                 </Box>
               )}
               <Box pt={8}>
@@ -132,6 +139,7 @@ export default () => {
               <Divider position="fixed" orientation="vertical" />
               <Box ml={8} position="fixed" width={SIDEBAR_WIDTH}>
                 <List mt={4} spacing={4}>
+                  {/* @ts-ignore */}
                   {sections.map((section, i) => (
                     <SectionListItem
                       key={section.title}

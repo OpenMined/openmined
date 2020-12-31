@@ -22,14 +22,6 @@ service cloud.firestore {
       return isLoggedIn() && request.auth.uid == user;
     }
 
-    function incomingDataContains(field) {
-      return (field in incomingData())
-    }
-
-    function isMentor(userId) {
-      return getUserData(userId).data.is_mentor
-    }
-
     function affectedKeys() {
       return incomingData().diff(existingData()).affectedKeys()
     }
@@ -38,15 +30,26 @@ service cloud.firestore {
       return list.toSet().hasAll(affectedKeys())
     }
 
+    function incomingCreateDataContains(fields) {
+      return incomingData().keys().hasAny(fields);
+    }
+
+    function incomingUpdateDataContains(fields) {
+      return affectedKeys().hasAny(fields);
+    }
+
+    function isMentor(userId) {
+      return getUserData(userId).data.is_mentor
+    }
+
     match /users/{user} {
       // Anyone can read a user's document
       allow read;
 
       // Owner can only write all fields except "is_mentor", "mentorable_courses", and "completed_courses"
-      allow write: if isSameUser(user) &&
-        !incomingDataContains('is_mentor') &&
-        !incomingDataContains('mentorable_courses') &&
-        !incomingDataContains('completed_courses');
+      allow create: if isSameUser(user) && !incomingCreateDataContains(['is_mentor', 'mentorable_courses', 'completed_courses']);
+      allow update: if isSameUser(user) && !incomingUpdateDataContains(['is_mentor', 'mentorable_courses', 'completed_courses']);
+      allow delete: if false;
 
       // Only owner can read/write private data
       match /private/{privateUserVar} {
@@ -125,7 +128,7 @@ service cloud.firestore {
 
     // This allows for the collectionGroup queries to be read by mentors
     match /{path=**}/submissions/{submission} {
-      // NOTE: This should only be triggered when querying a collectionGruop of "submissions" on the mentor dashboard
+      // NOTE: This should only be triggered when querying a collectionGroup of "submissions" on the mentor dashboard
       allow read: if isLoggedIn() &&
         isMentor(request.auth.uid) &&
         get(existingData().mentor).id == request.auth.uid;

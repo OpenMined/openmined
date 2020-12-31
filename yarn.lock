@@ -5897,6 +5897,11 @@ attr-accept@^1.1.0:
   dependencies:
     core-js "^2.5.0"
 
+attr-accept@^2.2.1:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.2.tgz#646613809660110749e92f2c10833b70968d929b"
+  integrity sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg==
+
 autoprefixer@9.7.4:
   version "9.7.4"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-9.7.4.tgz#f8bf3e06707d047f0641d87aee8cfb174b2a5378"
@@ -9986,6 +9991,13 @@ file-loader@^1.1.4:
   dependencies:
     loader-utils "^1.0.2"
     schema-utils "^0.4.5"
+
+file-selector@^0.2.2:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/file-selector/-/file-selector-0.2.4.tgz#7b98286f9dbb9925f420130ea5ed0a69238d4d80"
+  integrity sha512-ZDsQNbrv6qRi1YTDOEWzf5J2KjZ9KMI1Q2SGeTkCJmNNW25Jg4TW4UMcmoqcg4WrAyKRcpBXdbWRxkfrOzVRbA==
+  dependencies:
+    tslib "^2.0.3"
 
 file-uri-to-path@1, file-uri-to-path@1.0.0:
   version "1.0.0"
@@ -16836,6 +16848,15 @@ react-dom@17.0.1:
     object-assign "^4.1.1"
     scheduler "^0.20.1"
 
+react-dropzone@^11.2.4:
+  version "11.2.4"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-11.2.4.tgz#391a8d2e41a8a974340f83524d306540192e3313"
+  integrity sha512-EGSvK2CxFTuc28WxwuJCICyuYFX8b+sRumwU6Bs6sTbElV2HtQkT0d6C+HEee6XfbjiLIZ+Th9uji27rvo2wGw==
+  dependencies:
+    attr-accept "^2.2.1"
+    file-selector "^0.2.2"
+    prop-types "^15.7.2"
+
 react-fast-compare@3.2.0, react-fast-compare@^3.0.1, react-fast-compare@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
@@ -16899,6 +16920,11 @@ react-icons@^3.8.0:
   integrity sha512-JRgiI/vdF6uyBgyZhVyYJUZAop95Sy4XDe/jmT3R/bKliFWpO/uZBwvSjWEdxwzec7SYbEPNPck0Kff2tUGM2Q==
   dependencies:
     camelcase "^5.0.0"
+
+react-image-file-resizer@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/react-image-file-resizer/-/react-image-file-resizer-0.3.9.tgz#16528c04cb0615d98ffa76196c5755db182e170b"
+  integrity sha512-uq9Df/A/GCRYrVGZwbtrJu7HErP2noYcZDc4b7TQmB/YBzkXJ/AEfQKByEhcr/R8GZl2xN4uCLAgavaRYQiXWg==
 
 react-intl@^2.2.2:
   version "2.9.0"
@@ -19792,7 +19818,7 @@ tslib@2.0.1:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.1.tgz#410eb0d113e5b6356490eec749603725b021b43e"
   integrity sha512-SgIkNheinmEBgx1IUNirK0TUD4X9yjjBRTqqjggWCU3pUEqIk3/Uwl3yRixYKT6WjQuGiwDv4NomL3wqRCj+CQ==
 
-tslib@2.0.3, tslib@^2.0.0:
+tslib@2.0.3, tslib@^2.0.0, tslib@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.0.3.tgz#8e0741ac45fc0c226e58a17bfc3e64b9bc6ca61c"
   integrity sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==

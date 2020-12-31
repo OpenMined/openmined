@@ -14,6 +14,7 @@ import CourseWrap from './Wrapper';
 import { getCourseRef } from './_firebase';
 
 import Loading from '../../components/Loading';
+import { usePrevious } from '../../helpers';
 
 const CourseSearch = lazy(() => import('./search'));
 const CourseOverview = lazy(() => import('./overview'));
@@ -74,6 +75,7 @@ export default ({ which }: PropType) => {
 
   // Get the user's current progress on their courses
   const user: firebase.User = useUser();
+  const uId = user ? user.uid : null;
   const db = useFirestore();
   const dbCourseRef =
     params.course && user
@@ -91,7 +93,15 @@ export default ({ which }: PropType) => {
     };
 
     if (dbCourseRef) fetchCourse();
-  }, [params]);
+  }, [uId, mentorStudentToken, params.lesson, params.course, params.concept]);
+
+  const prevUId = usePrevious(uId);
+  useEffect(() => {
+    if (!uId && prevUId) {
+      // when user is logged out
+      setDbCourse({});
+    }
+  }, [uId, prevUId]);
 
   // Store a reference to the server timestamp (we'll use this later to mark start and completion time)
   // Note that this value will always reflect the Date.now() value on the server, it's not a static time reference

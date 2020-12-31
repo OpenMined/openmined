@@ -33,7 +33,7 @@ import GridContainer from './GridContainer';
 import Icon from './Icon';
 
 import logo from '../assets/logo.svg';
-import { handleErrors } from '../helpers';
+import { handleErrors, useDbUser } from '../helpers';
 import { discussionLink } from '../content/links';
 
 interface LinkProps {
@@ -106,12 +106,9 @@ const createLinks = (
 };
 
 const UserAvatar = () => {
-  const user: firebase.User = useUser();
-  const db = useFirestore();
-  const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+  const dbUser = useDbUser();
 
-  return <Avatar src={dbUser.photo_url} cursor="pointer" />;
+  return <Avatar src={dbUser ? dbUser.photo_url : ''} cursor="pointer" />;
 };
 
 export default ({ noScrolling }) => {

@@ -61,6 +61,7 @@ export default ({
     });
     if (callback) callback();
   };
+
   const onReverifySuccess = () => {
     toast({
       ...toastConfig,

@@ -140,6 +140,7 @@ export default ({
   const handleCreateLink = () => {
     if (!url || !isUrl(url)) {
       if (isEditing) {
+        // @ts-ignore
         setUrl(isEditing);
       } else {
         setUrl(null);

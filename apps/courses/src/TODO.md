@@ -6,6 +6,9 @@ We need to have the following items FINISHED BY LAUNCH on December 31st, 2020.
 
 ### Danny
 
+- When I move from concept to concept, if I’ve completed a quiz on the previous page, the next page will have that quiz as completed... this is a bug. If you refresh, it’s fine. See Lesson 2, Concept 1, going into Lesson 2, Concept 2
+- Also, I sometimes cannot see the previous submissions or feedback if it was done by a different mentor
+- (This issue will likely be fixed by fixing #2) When on the submissions page as a mentor, I can go back to previous submissions and all the feedback is editable. It should not be.
 - TODO (#21 HARD): Migrate all Sanity calls to be done via a Express.js-driven Firebase cloud HTTP (not callable) function. Make sure that Sanity is configured to only accept a connection via this endpoint, and NOT the website itself. This will ensure that students are not able to retrieve CMS data that they should not be allowed to see. Make sure to also implement caching on this data and set content freshness to be about 5 minutes.
 
 ### SLZ
@@ -18,32 +21,27 @@ None
 
 ### Patrick
 
-- Toggling on the TOS/PP to no open accordion items makes the sidebar come to the left
-- On course overview when you're on a project, open the accordion to it
-- On course overview the project icon should not be an image, make it the faShapes icon from FA
-- On the lesson complete page, don't always show the project as the "next" thing. Show what is actually next
 - When I move from concept to concept, if I've completed a quiz on the previous page, the next page will have that quiz as completed... this is a bug. If you refresh, it's fine. See Lesson 2, Concept 1, going into Lesson 2, Concept 2
-- Permission gate is broken by the navigate bug again... fix it or revert
-- Make sure the rich text editor is getting properly cleared!
-- If there are no project reviews on the student dashboard, don't show the word "Project Reviews"
+- When on the submissions page as a mentor, I can go back to previous submissions and all the feedback is editable. It should not be.
+- Also, I sometimes cannot see the previous submissions or feedback if it was done by a different mentor
 
 ## Pre-Launch Checklist
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
-- Take down Spectrum account
 - Get real terms of service copy
 - Make sure to test the site on dev deployment
 - Make sure all composite and single-field indexes have been properly created
 - Make sure all functions and rules are deployed to production
 - Make sure to search for any configurations, Firebase extensions, or anything that needs to be enabled on the production account first (to make it identical to the dev Firebase)
-- Create a README that's somewhat friendly to contributors
 - Make sure all mentors are students and put all their ID's in the mentors collection
 
 ## Post-Launch
 
 We can do the following items after the launch of the first course on December 31st, 2020.
 
+- Create a README that's somewhat friendly to contributors
+- Review PR: https://github.com/OpenMined/openmined/pull/42
 - Get the rich text editor toolbar to scroll with you as you type down the page and the editor increases in size
 - TODO (#16): We need to store the "number" of user that a user is in Firebase using a cloud function. All users have a hash-based index, which is fine, but we need to know when the number of users reaches a certain threshold since we only have space for a certain number of users. We should store this information on the User's Firestore document. Also - this has to work RETROACTIVELY for all existing users.
 - TODO (#13 HARD): We need to get SSR working for the homepage and profile pages at minimum. I can't remember how to best do this with Firebase Functions, nor can I remember how to make it conditional for SOME of the pages. We'll also want to implement some sort of caching strategy for this. [I know that Firebase has some solutions around this already](https://www.youtube.com/watch?v=82tZAPMHfT4).

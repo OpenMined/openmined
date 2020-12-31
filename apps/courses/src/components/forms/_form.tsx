@@ -49,7 +49,11 @@ interface FormProps {
   onSubmit: (any) => void;
   fields: (Field | Field[])[];
   submit?:
-    | ((isDisabled: boolean, isSubmitting: boolean) => React.ReactNode)
+    | ((
+        isDisabled: boolean,
+        isSubmitting: boolean,
+        isValid: boolean
+      ) => React.ReactNode)
     | string;
   isBreathable?: boolean;
 }
@@ -315,7 +319,7 @@ export default ({
           </Button>
         )}
         {typeof submit !== 'string' &&
-          submit(!isDirty || (isDirty && !isValid), isSubmitting)}
+          submit(!isDirty || (isDirty && !isValid), isSubmitting, isValid)}
       </form>
     </Box>
   );

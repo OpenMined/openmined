@@ -1,25 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Heading, Text, SimpleGrid } from '@chakra-ui/react';
-import { useSanity } from '@openmined/shared/data-access-sanity';
+import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 
 import GridContainer from '../../components/GridContainer';
 import Course from '../../components/CourseCard';
 
 export default ({ title, description }) => {
-  const { data, loading } = useSanity(
-    `*[_type == "course" && visible == true] {
-      title,
-      level,
-      length,
-      cost,
-      live,
-      "slug": slug.current,
-      visual {
-        "default": default.asset -> url,
-        "full": full.asset -> url
-      },
-    }`
-  );
+  const { data, loading } = useFirebaseSanity('homepageCourses');
 
   const order = [
     'Privacy and Society',

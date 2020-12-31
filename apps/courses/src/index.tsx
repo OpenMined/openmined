@@ -1,7 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { FirebaseAppProvider } from 'reactfire';
-import { SanityProvider } from '@openmined/shared/data-access-sanity';
 import { HelmetProvider } from 'react-helmet-async';
 import { ChakraProvider } from '@chakra-ui/react';
 import { SEOProvider } from '@openmined/shared/util-page';
@@ -27,12 +26,6 @@ const firebaseConfig = {
   measurementId: process.env.NX_FIREBASE_MEASUREMENT_ID,
 };
 
-const sanityConfig = {
-  projectId: process.env.NX_SANITY_COURSES_PROJECT_ID,
-  dataset: process.env.NX_SANITY_COURSES_DATASET,
-  useCdn: true,
-};
-
 const metadata = {
   name: 'OpenMined Courses',
   short_name: 'OpenMined Courses',
@@ -50,17 +43,15 @@ const root = document.getElementById('root');
 export const WrappedApp = () => (
   <React.StrictMode>
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <SanityProvider sanityConfig={sanityConfig}>
-        <HelmetProvider>
-          <ChakraProvider theme={theme}>
-            <SEOProvider metadata={metadata}>
-              <ErrorBoundaryWrapper>
-                <App />
-              </ErrorBoundaryWrapper>
-            </SEOProvider>
-          </ChakraProvider>
-        </HelmetProvider>
-      </SanityProvider>
+      <HelmetProvider>
+        <ChakraProvider theme={theme}>
+          <SEOProvider metadata={metadata}>
+            <ErrorBoundaryWrapper>
+              <App />
+            </ErrorBoundaryWrapper>
+          </SEOProvider>
+        </ChakraProvider>
+      </HelmetProvider>
     </FirebaseAppProvider>
   </React.StrictMode>
 );

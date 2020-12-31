@@ -4,9 +4,18 @@
 import path from 'path';
 import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
-import * as dotenv from 'dotenv';
+import * as dotenv from 'dotenv-flow';
 
-dotenv.config({ path: path.resolve(process.cwd(), '.secret.env') });
+const envs = [
+  path.resolve(process.cwd(), '.secret.env'),
+  path.resolve(process.cwd(), '.env'),
+];
+
+if (process.env.NODE_ENV === 'development') {
+  envs.push(path.resolve(process.cwd(), '.local.env'));
+}
+
+dotenv.load(envs);
 admin.initializeApp();
 
 // import ssr from './app/ssr';

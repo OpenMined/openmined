@@ -22,7 +22,7 @@ import GridContainer from '../../components/GridContainer';
 import Icon from '../../components/Icon';
 
 import { useWindowSize } from '../../helpers';
-import { useSanity } from '@openmined/shared/data-access-sanity';
+import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 
 const absolute: CSSProperties = {
   position: 'absolute',
@@ -57,10 +57,7 @@ const ProgressButton = ({ value, direction, onClick }) => (
 );
 
 export default (props) => {
-  const { data, loading } = useSanity(`*[_type == "teacher"] {
-    ...,
-    "image": image.asset -> url,
-  }`);
+  const { data, loading } = useFirebaseSanity('teachers');
 
   const order = [
     'Cynthia Dwork',

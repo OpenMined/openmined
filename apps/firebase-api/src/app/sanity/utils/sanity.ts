@@ -6,7 +6,6 @@ export default (env) => {
   const config = {
     projectId: 'rzeg7i8f',
     dataset,
-    // SEE TODO (#21)
     token: process.env.NX_SANITY_API_TOKEN,
     useCdn: dataset === 'production',
   };

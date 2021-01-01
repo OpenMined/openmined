@@ -45,15 +45,17 @@ module.exports = (config, context) => {
     mode = 'production';
   }
 
-  const appRoot = context.options.sourceRoot.substring(
+  const options = context.options ? context.options : context.buildOptions;
+
+  const appRoot = options.sourceRoot.substring(
     0,
-    context.options.sourceRoot.indexOf('/src')
+    options.sourceRoot.indexOf('/src')
   );
 
-  const rootEnv = context.options.root + '/.env';
-  const appEnv = context.options.root + '/' + appRoot + '/.env';
-  const rootLocalEnv = context.options.root + '/.local.env';
-  const appLocalEnv = context.options.root + '/' + appRoot + '/.local.env';
+  const rootEnv = options.root + '/.env';
+  const appEnv = options.root + '/' + appRoot + '/.env';
+  const rootLocalEnv = options.root + '/.local.env';
+  const appLocalEnv = options.root + '/' + appRoot + '/.local.env';
 
   const envs = [];
 

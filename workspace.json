@@ -25,7 +25,7 @@
             ],
             "styles": [],
             "scripts": [],
-            "webpackConfig": "@nrwl/react/plugins/webpack"
+            "webpackConfig": "apps/courses/webpack.config.js"
           },
           "configurations": {
             "production": {

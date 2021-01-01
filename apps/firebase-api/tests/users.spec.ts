@@ -85,7 +85,7 @@ describe('users/{{userID}}', () => {
     });
 
     const aliceProfile = aliceDb.collection('users').doc(ALICE_ID);
-    const profileData = { photo_url: 'Alice' };
+    const profileData = { first_name: 'Alice' };
     await firebase.assertSucceeds(
       aliceProfile.set(profileData, { merge: true })
     );

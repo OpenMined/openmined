@@ -34,7 +34,6 @@ type CompletedCourse = {
 export interface User {
   first_name: string;
   last_name: string;
-  photo_url?: string;
   description?: string;
   website?: string;
   github?: string;

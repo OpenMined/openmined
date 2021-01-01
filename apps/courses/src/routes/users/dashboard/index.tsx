@@ -15,11 +15,7 @@ import {
 import Page from '@openmined/shared/util-page';
 import { User } from '@openmined/shared/types';
 import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
-import {
-  useUser,
-  useFirestore,
-  useFirestoreCollectionData,
-} from 'reactfire';
+import { useUser, useFirestore, useFirestoreCollectionData } from 'reactfire';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -101,7 +97,7 @@ export default () => {
         <Grid templateColumns="repeat(12, 1fr)" alignItems="center">
           <GridItem colSpan={[12, null, null, 2]} mb={[4, null, null, 0]}>
             <Flex justify={['center', null, null, 'flex-start']}>
-              <Avatar src={dbUser.photo_url} size="2xl" />
+              <Avatar src={user.photoURL} size="2xl" />
             </Flex>
           </GridItem>
           <GridItem colSpan={[12, null, null, 10]}>

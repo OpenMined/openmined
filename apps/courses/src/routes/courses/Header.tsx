@@ -33,7 +33,7 @@ import { User } from '@openmined/shared/types';
 import CourseDrawer from './Drawer';
 import { getUserRef } from './_firebase';
 
-import { getLinkPropsFromLink, handleErrors, useDbUser } from '../../helpers';
+import { getLinkPropsFromLink, handleErrors } from '../../helpers';
 import Icon from '../../components/Icon';
 import useToast, { toastConfig } from '../../components/Toast';
 import { Popover } from '../../components/Popover';
@@ -82,9 +82,13 @@ const createLinks = (links: LinkProps[], onClick: () => void) =>
   });
 
 const UserAvatar = () => {
-  const dbUser = useDbUser();
+  const user = useUser<firebase.User>();
 
-  return <Avatar src={dbUser ? dbUser.photo_url : ''} cursor="pointer" />;
+  if (user) {
+    return <Avatar src={user.photoURL} cursor="pointer" />;
+  }
+
+  return null;
 };
 
 // SEE TODO (#10)

@@ -216,6 +216,7 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
             // to={`/courses/${course}/project/complete`}
             as="a"
             href={`/courses/${course}/project/complete`}
+            target="_self"
             colorScheme="black"
           >
             Finish

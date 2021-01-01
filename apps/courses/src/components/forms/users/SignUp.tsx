@@ -137,7 +137,11 @@ export default ({ callback, ...props }: SignUpFormProps) => {
 
     return auth
       .createUserWithEmailAndPassword(email, password)
-      .then(() =>
+      .then(() => {
+        auth.currentUser.updateProfile({
+          displayName: `${first_name} ${last_name}`,
+        });
+
         auth.currentUser
           .sendEmailVerification()
           .then(() =>
@@ -152,8 +156,8 @@ export default ({ callback, ...props }: SignUpFormProps) => {
               .then(onSuccess)
               .catch((error) => handleErrors(toast, error))
           )
-          .catch((error) => handleErrors(toast, error))
-      )
+          .catch((error) => handleErrors(toast, error));
+      })
       .catch((error) => {
         // In the event that an account with this email already exists (because they signed up with Github)
         // Give their account a password and link the Github provider to the new email provider
@@ -207,7 +211,6 @@ export default ({ callback, ...props }: SignUpFormProps) => {
       batch.set(userDoc, {
         first_name: firstName,
         last_name: lastName,
-        photo_url: authUser.user.photoURL,
         notification_preferences: ['project_reviews'],
         description: (authUser.additionalUserInfo.profile as any).bio,
         github: (authUser.additionalUserInfo.profile as any).login,

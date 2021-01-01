@@ -127,7 +127,7 @@ export default () => {
               align={['center', null, null, 'flex-start']}
               width={['full', null, null, 280]}
             >
-              <Avatar src={dbUser.photo_url} size="2xl" mb={4}>
+              <Avatar src={user.photoURL} size="2xl" mb={4}>
                 {isSameUser && (
                   <RRDLink to="/users/settings">
                     <AvatarBadge

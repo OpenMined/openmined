@@ -24,11 +24,6 @@ None
 
 We need to have the following items FINISHED BY LAUNCH on December 31st, 2020. These items will be done by Patrick the days before we launch.
 
-- Test finishing the course and make sure that you can
-- Test one more time with deleting a user (and their avatar, since you now changed the bucket configuration in the delete extension)
-- Make sure all composite and single-field indexes have been properly created
-- Make sure all functions and rules are deployed to production
-- Make sure to search for any configurations, Firebase extensions, or anything that needs to be enabled on the production account first (to make it identical to the dev Firebase)
 - Make sure all mentors are students and put all their ID's in the mentors collection
 
 ## Post-Launch

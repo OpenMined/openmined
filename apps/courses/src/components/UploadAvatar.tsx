@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Avatar, AvatarBadge, Box, Flex, Text } from '@chakra-ui/react';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { useDropzone } from 'react-dropzone';
-import { useStorage, useFirestore, useUser } from 'reactfire';
+import { useStorage, useFirestore, useUser, useAuth } from 'reactfire';
 import Resizer from 'react-image-file-resizer';
 
 import Icon from './Icon';
@@ -14,20 +14,21 @@ export default ({ currentAvatar, label, ...props }: any) => {
   const [preview, setPreview] = useState<string | undefined>();
   const storage = useStorage();
   const user: firebase.User = useUser();
-  const db = useFirestore();
+  const auth = useAuth();
   const toast = useToast();
 
+  const filename = 'avatar.png';
+
   const removeAvatar = () => {
-    const storageRef = storage.ref(`/users/${user.uid}`);
+    const storageRef = storage.ref(`/users/${user.uid}/${filename}`);
 
     storageRef
       .delete()
-      .then(() =>
-        db
-          .collection('users')
-          .doc(user.uid)
-          .set({ photo_url: null }, { merge: true })
-      )
+      .then(() => {
+        auth.currentUser.updateProfile({
+          photoURL: null,
+        });
+      })
       .then(() =>
         toast({
           ...toastConfig,
@@ -46,7 +47,7 @@ export default ({ currentAvatar, label, ...props }: any) => {
 
     setPreview(URL.createObjectURL(files[0]));
 
-    const storageRef = storage.ref(`/users/${user.uid}`);
+    const storageRef = storage.ref(`/users/${user.uid}/${filename}`);
     const file = files[0];
 
     Resizer.imageFileResizer(
@@ -58,7 +59,7 @@ export default ({ currentAvatar, label, ...props }: any) => {
       0,
       (blob) => {
         // @ts-ignore
-        const resizedImage = new File([blob], user.uid, {
+        const resizedImage = new File([blob], filename, {
           lastModified: file.lastModified,
           type: 'image/png',
         });
@@ -66,10 +67,11 @@ export default ({ currentAvatar, label, ...props }: any) => {
         return storageRef
           .put(resizedImage)
           .then(() => {
-            storageRef.getDownloadURL().then((photo_url) => {
-              db.collection('users')
-                .doc(user.uid)
-                .set({ photo_url }, { merge: true })
+            storageRef.getDownloadURL().then((photoURL) => {
+              auth.currentUser
+                .updateProfile({
+                  photoURL,
+                })
                 .then(() =>
                   toast({
                     ...toastConfig,

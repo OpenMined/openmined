@@ -33,7 +33,7 @@ import GridContainer from './GridContainer';
 import Icon from './Icon';
 
 import logo from '../assets/logo.svg';
-import { handleErrors, useDbUser } from '../helpers';
+import { handleErrors } from '../helpers';
 import { discussionLink } from '../content/links';
 
 interface LinkProps {
@@ -106,9 +106,13 @@ const createLinks = (
 };
 
 const UserAvatar = () => {
-  const dbUser = useDbUser();
+  const user = useUser<firebase.User>();
 
-  return <Avatar src={dbUser ? dbUser.photo_url : ''} cursor="pointer" />;
+  if (user) {
+    return <Avatar src={user.photoURL} cursor="pointer" />;
+  }
+
+  return null;
 };
 
 export default ({ noScrolling }) => {

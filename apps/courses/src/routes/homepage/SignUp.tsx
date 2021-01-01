@@ -1,20 +1,13 @@
 import React from 'react';
-import {
-  Box,
-  Heading,
-  Text,
-  SimpleGrid,
-  Flex,
-  Icon,
-  Link,
-} from '@chakra-ui/core';
+import { Box, Heading, Text, SimpleGrid, Flex, Link } from '@chakra-ui/react';
 import { useUser } from 'reactfire';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRss } from '@fortawesome/free-solid-svg-icons';
 import { faSlack } from '@fortawesome/free-brands-svg-icons';
 
 import GridContainer from '../../components/GridContainer';
-import Signup from '../../components/forms/SignUp';
+import Signup from '../../components/forms/users/SignUp';
+import Icon from '../../components/Icon';
+import { blogLink, slackLink } from '../../content/links';
 
 export default ({ signup, signedup }) => {
   const user = useUser();
@@ -24,18 +17,17 @@ export default ({ signup, signedup }) => {
     {
       icon: faRss,
       title: 'Check out our Blog!',
-      link: 'https://blog.openmined.org',
+      link: blogLink,
     },
     {
       icon: faSlack,
       title: 'Join our Slack Community!',
-      link: 'https://slack.openmined.org',
+      link: slackLink,
     },
   ];
 
-  // TODO: Patrick, we can remove the signup ID when going live
   return (
-    <GridContainer py={[16, null, null, 32]} id="signup">
+    <GridContainer py={[16, null, null, 32]}>
       <SimpleGrid columns={[1, null, null, 2]} spacing={[4, null, 8]}>
         <Box alignSelf="center" mr={{ base: 0, md: 8 }}>
           <Heading as="h2" size="2xl" mb={4}>
@@ -60,13 +52,14 @@ export default ({ signup, signedup }) => {
                 rel="noopener noreferrer"
                 href={link}
                 mt={{ base: 4, md: 0 }}
+                variant="flat"
               >
                 <Flex
                   direction={{ base: 'row', md: 'column' }}
                   align="center"
                   justify="center"
                 >
-                  <Icon as={FontAwesomeIcon} icon={icon} size="2x" />
+                  <Icon icon={icon} boxSize={8} />
                   <Text
                     fontWeight="bold"
                     fontSize="lg"

@@ -5,25 +5,41 @@ import {
   Flex,
   Link,
   Button,
-  Icon,
   Stack,
   Divider,
-} from '@chakra-ui/core';
-import { useAuth, useUser } from 'reactfire';
+  Avatar,
+  Text,
+} from '@chakra-ui/react';
+import {
+  useAuth,
+  useFirestore,
+  useUser,
+  useFirestoreDocDataOnce,
+} from 'reactfire';
 import { Link as RRDLink } from 'react-router-dom';
 import useToast, { toastConfig } from './Toast';
 import useScrollPosition from '@react-hook/window-scroll';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faBars } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimes,
+  faBars,
+  faUserCircle,
+  faCog,
+  faCommentAlt,
+} from '@fortawesome/free-solid-svg-icons';
+import { User } from '@openmined/shared/types';
 
+import { Popover } from './Popover';
 import GridContainer from './GridContainer';
+import Icon from './Icon';
 
 import logo from '../assets/logo.svg';
 import { handleErrors } from '../helpers';
+import { discussionLink } from '../content/links';
 
 interface LinkProps {
   title: string;
   type: string;
+  element?: React.ReactElement;
   auth?: boolean;
   unauth?: boolean;
   to?: string;
@@ -40,6 +56,7 @@ const createLinks = (
     (l.auth && user) || (l.unauth && !user) || (!l.auth && !l.unauth);
 
   const linkStyles = {
+    variant: 'flat',
     color: isScrolled ? 'gray.400' : 'gray.600',
     _hover: {
       color: isScrolled ? 'white' : 'black',
@@ -49,7 +66,10 @@ const createLinks = (
   return links
     .filter(appropriateLinks)
     .map(({ type, title, auth, unauth, ...link }: LinkProps) => {
-      const as = link.to ? { as: RRDLink } : {};
+      if (type === 'element')
+        return React.cloneElement(link.element, { key: title });
+
+      const as: any = link.to ? { as: RRDLink } : {};
 
       if (!link.onClick) link.onClick = onClick;
       else {
@@ -85,8 +105,18 @@ const createLinks = (
     });
 };
 
-export default () => {
-  const user = useUser();
+const UserAvatar = () => {
+  const user = useUser<firebase.User>();
+
+  if (user) {
+    return <Avatar src={user.photoURL} cursor="pointer" />;
+  }
+
+  return null;
+};
+
+export default ({ noScrolling }) => {
+  const user: firebase.User = useUser();
   const auth = useAuth();
   const toast = useToast();
   const isLoggedIn = !!user;
@@ -94,84 +124,109 @@ export default () => {
   const [show, setShow] = useState(false);
 
   const scrollY = useScrollPosition();
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(noScrolling || false);
 
   useEffect(() => {
-    if (scrollY > 0 && !isScrolled) setIsScrolled(true);
-    else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
-  }, [scrollY, isScrolled]);
-
-  // TODO: Patrick, these are the links we will have until this website goes live
-  let LEFT_LINKS: LinkProps[], RIGHT_LINKS: LinkProps[];
-
-  if (process.env.NODE_ENV === 'production') {
-    LEFT_LINKS = [];
-    RIGHT_LINKS = [
-      {
-        title: 'Sign Up',
-        type: 'button',
-        onClick: () => {
-          document
-            .getElementById('signup')
-            .scrollIntoView({ behavior: 'smooth' });
-        },
-        unauth: true,
-      },
-    ];
-  } else {
-    LEFT_LINKS = [
-      {
-        title: 'Courses',
-        type: 'text',
-        to: '/courses',
-      },
-    ];
-
-    RIGHT_LINKS = [
-      {
-        title: 'Sign In',
-        type: 'text',
-        to: '/signin',
-        unauth: true,
-      },
-      {
-        title: 'Sign Up',
-        type: 'button',
-        to: '/signup',
-        unauth: true,
-      },
-      {
-        title: 'My Courses',
-        type: 'text',
-        to: '/my-courses',
-        auth: true,
-      },
-      {
-        title: 'Logout',
-        type: 'button',
-        onClick: () =>
-          auth
-            .signOut()
-            .then(() =>
-              toast({
-                ...toastConfig,
-                title: 'Sign out successful',
-                description: 'Come back soon!',
-                status: 'success',
-              })
-            )
-            .catch((error) => handleErrors(toast, error)),
-        auth: true,
-      },
-    ];
-  }
+    if (!noScrolling) {
+      if (scrollY > 0 && !isScrolled) setIsScrolled(true);
+      else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
+    }
+  }, [scrollY, isScrolled, noScrolling]);
 
   const BREAK = 'md';
+
+  const LEFT_LINKS = [
+    {
+      title: 'Courses',
+      type: 'text',
+      to: '/courses',
+    },
+  ];
+
+  const RIGHT_LINKS = [
+    {
+      title: 'Sign In',
+      type: 'text',
+      to: '/signin',
+      unauth: true,
+    },
+    {
+      title: 'Sign Up',
+      type: 'button',
+      to: '/signup',
+      unauth: true,
+    },
+    {
+      title: 'Dashboard',
+      type: 'text',
+      to: '/users/dashboard',
+      auth: true,
+    },
+    {
+      title: 'User',
+      type: 'element',
+      auth: true,
+      element: (
+        <Popover
+          trigger={UserAvatar}
+          position="bottom"
+          alignment={{ base: 'start', [BREAK]: 'end' }}
+          clickShouldCloseContent
+        >
+          <Stack spacing={3}>
+            {user && (
+              <Flex align="center" as={RRDLink} to={`/users/${user.uid}`}>
+                <Icon icon={faUserCircle} boxSize={5} color="gray.400" mr={4} />
+                <Text color="gray.700">Profile</Text>
+              </Flex>
+            )}
+            <Flex align="center" as={RRDLink} to="/users/settings">
+              <Icon icon={faCog} boxSize={5} color="gray.400" mr={4} />
+              <Text color="gray.700">Account Settings</Text>
+            </Flex>
+            <Divider />
+            <Flex
+              align="center"
+              as="a"
+              href={discussionLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon icon={faCommentAlt} boxSize={5} color="gray.400" mr={4} />
+              <Text color="gray.700">Discussion Board</Text>
+            </Flex>
+            <Divider />
+            <Flex
+              align="center"
+              cursor="pointer"
+              onClick={() =>
+                auth
+                  .signOut()
+                  .then(() =>
+                    toast({
+                      ...toastConfig,
+                      title: 'Sign out successful',
+                      description: 'Come back soon!',
+                      status: 'success',
+                    })
+                  )
+                  .catch((error) => handleErrors(toast, error))
+              }
+            >
+              <Text color="gray.700">Logout</Text>
+            </Flex>
+          </Stack>
+        </Popover>
+      ),
+    },
+  ];
+
   const iconStyles = {
     color: isScrolled ? 'white' : 'black',
     transitionProperty: 'color',
     transitionDuration: 'normal',
     transitionTimingFunction: 'ease-in-out',
+    boxSize: 5,
   };
 
   return (
@@ -204,12 +259,15 @@ export default () => {
               }}
             />
           </RRDLink>
-          <Box display={['block', null, 'none']} onClick={() => setShow(!show)}>
-            {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
+          <Box
+            display={['block', null, 'none']}
+            boxSize={5}
+            onClick={() => setShow(!show)}
+          >
             {show ? (
-              <Icon as={FontAwesomeIcon} icon={faTimes} {...iconStyles} />
+              <Icon icon={faTimes} {...iconStyles} />
             ) : (
-              <Icon as={FontAwesomeIcon} icon={faBars} {...iconStyles} />
+              <Icon icon={faBars} {...iconStyles} />
             )}
           </Box>
           <Box
@@ -218,15 +276,12 @@ export default () => {
             flexGrow={1}
             my={{ base: 4, [BREAK]: 0 }}
           >
-            {/* TODO: Patrick, this conditional also won't apply when we move to production and can be removed then */}
-            {LEFT_LINKS.length > 0 && (
-              <Divider
-                orientation="vertical"
-                height={6}
-                mr={{ base: 4, [BREAK]: 6 }}
-                display={{ base: 'none', [BREAK]: 'block' }}
-              />
-            )}
+            <Divider
+              orientation="vertical"
+              height={6}
+              mr={{ base: 4, [BREAK]: 6 }}
+              display={{ base: 'none', [BREAK]: 'block' }}
+            />
             <Stack
               align={{ [BREAK]: 'center' }}
               direction={{ base: 'column', [BREAK]: 'row' }}

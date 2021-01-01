@@ -16,7 +16,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@openmined/shared/util-page": ["libs/shared/util-page/src/index.tsx"]
+      "@openmined/shared/util-page": ["libs/shared/util-page/src/index.tsx"],
+      "@openmined/shared/types": ["libs/shared/types/src/index.ts"],
+      "@openmined/shared/data-access-sanity": [
+        "libs/shared/data-access-sanity/src/index.tsx"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

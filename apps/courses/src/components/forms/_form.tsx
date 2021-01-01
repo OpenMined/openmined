@@ -16,12 +16,17 @@ import {
   InputRightElement,
   InputLeftAddon,
   InputRightAddon,
-  Icon,
-} from '@chakra-ui/core';
+  RadioGroup,
+  Stack,
+  Flex,
+  Radio,
+  CheckboxGroup,
+  Checkbox,
+} from '@chakra-ui/react';
 import { ObjectSchema } from 'yup';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
+import Icon from '../Icon';
 import { capitalize } from '../../helpers';
 
 interface Field {
@@ -30,7 +35,7 @@ interface Field {
   placeholder?: string;
   label?: string;
   defaultValue?: string | number | string[] | number[];
-  options?: (string | number)[];
+  options?: any[];
   left?: string;
   right?: string;
   min?: number;
@@ -46,11 +51,11 @@ interface FormProps {
   submit?:
     | ((isDisabled: boolean, isSubmitting: boolean) => React.ReactNode)
     | string;
+  isBreathable?: boolean;
 }
 
 const SIZE = 'lg';
 const VARIANT = 'filled';
-const SPACING = 4;
 
 const createInput = ({ options, left, right, ...input }, register, control) => {
   let elem;
@@ -58,17 +63,71 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   if (input.type === 'select') {
     elem = (
       <Select {...input} variant={VARIANT} size={SIZE} ref={register}>
-        {options.map((option) => (
-          <option {...option} />
-        ))}
+        {options.map((option) => {
+          if (typeof option === 'string') {
+            return (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            );
+          } else {
+            return (
+              <option key={option.label} value={option.value}>
+                {option.label}
+              </option>
+            );
+          }
+        })}
       </Select>
     );
   } else if (input.type === 'textarea') {
     elem = <Textarea {...input} variant={VARIANT} size={SIZE} ref={register} />;
   } else if (input.type === 'array') {
-    // TODO: Not sure why this is going wrong, should fix it
-    // @ts-ignore
     elem = <FieldArray {...input} control={control} register={register} />;
+  } else if (input.type === 'read-only') {
+    elem = <Text color="gray.700">{input.defaultValue}</Text>;
+  } else if (input.type === 'radio' || input.type === 'checkbox') {
+    const Group = input.type === 'radio' ? RadioGroup : CheckboxGroup;
+    const InputItem = input.type === 'radio' ? Radio : Checkbox;
+
+    elem = (
+      <Group {...input}>
+        <Stack spacing={2} direction="column">
+          {options.map((option) => {
+            if (typeof option === 'string') {
+              return (
+                // @ts-ignore
+                <InputItem
+                  key={option}
+                  value={option}
+                  name={input.name}
+                  id={`option-${option.toLowerCase().split(' ').join('-')}`}
+                  ref={register}
+                >
+                  {option}
+                </InputItem>
+              );
+            } else {
+              return (
+                // @ts-ignore
+                <InputItem
+                  key={option.label}
+                  value={option.value}
+                  name={input.name}
+                  id={`option-${option.value
+                    .toLowerCase()
+                    .split(' ')
+                    .join('-')}`}
+                  ref={register}
+                >
+                  {option.label}
+                </InputItem>
+              );
+            }
+          })}
+        </Stack>
+      </Group>
+    );
   } else {
     elem = <Input {...input} variant={VARIANT} size={SIZE} ref={register} />;
   }
@@ -84,7 +143,14 @@ const createInput = ({ options, left, right, ...input }, register, control) => {
   );
 };
 
-const FieldArray = ({ name, max, fields, control, register, defaultValue }) => {
+const FieldArray = ({
+  name,
+  max,
+  fields,
+  control,
+  register,
+  defaultValue,
+}: any) => {
   const fieldArray = useFieldArray({
     control,
     name,
@@ -112,9 +178,7 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }) => {
                   control
                 )}
                 <InputRightElement cursor="pointer">
-                  {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
                   <Icon
-                    as={FontAwesomeIcon}
                     icon={faTrash}
                     color="red.500"
                     onClick={() => fieldArray.remove(index)}
@@ -131,8 +195,7 @@ const FieldArray = ({ name, max, fields, control, register, defaultValue }) => {
         colorScheme="blue"
         mt={2}
       >
-        {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
-        <Icon as={FontAwesomeIcon} icon={faPlus} mr={2} />
+        <Icon icon={faPlus} mr={2} />
         <Text>Add</Text>
       </Button>
     </>
@@ -145,13 +208,14 @@ export default ({
   onSubmit,
   fields,
   submit = 'Submit',
+  isBreathable,
   ...props
 }: FormProps) => {
+  const spacing = isBreathable ? 8 : 4;
+
   const defVals = {};
 
-  // TODO: Not sure why this is going wrong, should fix it
-  // @ts-ignore
-  fields.forEach(({ name, defaultValue }) => {
+  fields.forEach(({ name, defaultValue }: Field) => {
     defVals[name] = defaultValue;
   });
 
@@ -170,23 +234,28 @@ export default ({
 
   const composeInput = (input, isFirst) => {
     const hasErrors = Object.prototype.hasOwnProperty.call(errors, input.name);
-    const { label } = input;
+    const { label, helper } = input;
 
     return (
       <FormControl
         key={input.name}
         isInvalid={hasErrors}
-        mt={isFirst ? 0 : SPACING}
+        mt={isFirst ? 0 : spacing}
       >
-        {label && (
-          <FormLabel
-            htmlFor={input.name}
-            opacity={label === 'BLANK' ? 0 : 1}
-            display={label === 'BLANK' ? ['none', 'block'] : 'block'}
-          >
-            {label}
-          </FormLabel>
-        )}
+        <Flex align="center" wrap="wrap" mb={2}>
+          {label && (
+            <FormLabel
+              mb={0}
+              mr={6}
+              htmlFor={input.name}
+              opacity={label === 'BLANK' ? 0 : 1}
+              display={label === 'BLANK' ? ['none', 'block'] : 'block'}
+            >
+              {label}
+            </FormLabel>
+          )}
+          {helper && helper({ fontSize: 'sm' })}
+        </Flex>
         {createInput(input, register, control)}
         {hasErrors && (
           <FormErrorMessage>
@@ -205,19 +274,29 @@ export default ({
 
           if (Array.isArray(field)) {
             // Add labels to subfields that don't have it
-            field = field.map((f) => ({
-              ...f,
-              label: f.label || 'BLANK',
-            }));
+            field = field.map((f) => {
+              // If we have a null field (a "spacer")
+              if (!f) return null;
+
+              return {
+                ...f,
+                label: f.label || 'BLANK',
+              };
+            });
 
             return (
               <SimpleGrid
                 key={i}
                 columns={[1, field.length]}
-                spacing={[0, SPACING]}
-                mt={isFirst ? -SPACING : 0}
+                spacing={[0, spacing]}
+                mt={isFirst ? -spacing : 0}
               >
-                {field.map((subfield) => composeInput(subfield, false))}
+                {field.map((subfield) => {
+                  // If we have a null field (a "spacer")
+                  if (!subfield) return null;
+
+                  return composeInput(subfield, false);
+                })}
               </SimpleGrid>
             );
           } else {
@@ -226,7 +305,7 @@ export default ({
         })}
         {typeof submit === 'string' && (
           <Button
-            mt={SPACING}
+            mt={spacing}
             colorScheme="blue"
             disabled={!isDirty || (isDirty && !isValid)}
             isLoading={isSubmitting}

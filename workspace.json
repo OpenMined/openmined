@@ -25,7 +25,7 @@
             ],
             "styles": [],
             "scripts": [],
-            "webpackConfig": "@nrwl/react/plugins/webpack"
+            "webpackConfig": "apps/courses/webpack.config.js"
           },
           "configurations": {
             "production": {
@@ -49,7 +49,8 @@
         "serve": {
           "builder": "@nrwl/web:dev-server",
           "options": {
-            "buildTarget": "courses:build"
+            "buildTarget": "courses:build",
+            "proxyConfig": "apps/courses/proxy.conf.json"
           },
           "configurations": {
             "production": {
@@ -76,6 +77,16 @@
             "commands": [
               "yarn build courses --prod",
               "firebase deploy --only hosting:openmined-education"
+            ],
+            "parallel": false
+          }
+        },
+        "deploy-development": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "yarn build courses",
+              "firebase deploy --only hosting:openmined-education-dev"
             ],
             "parallel": false
           }
@@ -164,11 +175,19 @@
             "lintFilePatterns": ["apps/firebase-api/**/*.ts"]
           }
         },
-        "test": {
+        "run-test": {
           "builder": "@nrwl/jest:jest",
           "options": {
             "jestConfig": "apps/firebase-api/jest.config.js",
             "passWithNoTests": true
+          }
+        },
+        "test": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "firebase emulators:exec --only firestore \"nx run-test firebase-api\""
+            ]
           }
         },
         "deploy": {
@@ -176,9 +195,113 @@
           "options": {
             "commands": [
               "yarn build firebase-api --prod",
+              "firebase use production",
+              "firebase deploy --only functions,firestore:rules,storage",
+              "firebase use development"
+            ],
+            "parallel": false
+          }
+        },
+        "deploy-development": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": [
+              "yarn build firebase-api",
+              "firebase use development",
               "firebase deploy --only functions,firestore:rules,storage"
             ],
             "parallel": false
+          }
+        }
+      }
+    },
+    "shared-types": {
+      "root": "libs/shared/types",
+      "sourceRoot": "libs/shared/types/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/shared/types/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/shared/types/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "sanity-api": {
+      "root": "apps/sanity-api",
+      "sourceRoot": "apps/sanity-api/src",
+      "projectType": "application",
+      "prefix": "sanity-api",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["sanity build ../../../dist/apps/sanity-api --yes"],
+            "cwd": "apps/sanity-api/src"
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["sanity start"],
+            "cwd": "apps/sanity-api/src"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/sanity-api/**/*.ts",
+              "apps/sanity-api/**/*.js"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["sanity check"],
+            "cwd": "apps/sanity-api/src"
+          }
+        },
+        "deploy": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["sanity deploy ../../../dist/apps/sanity-api"],
+            "cwd": "apps/sanity-api/src",
+            "parallel": false
+          }
+        }
+      }
+    },
+    "shared-data-access-sanity": {
+      "root": "libs/shared/data-access-sanity",
+      "sourceRoot": "libs/shared/data-access-sanity/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/shared/data-access-sanity/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/shared/data-access-sanity/jest.config.js",
+            "passWithNoTests": true
           }
         }
       }

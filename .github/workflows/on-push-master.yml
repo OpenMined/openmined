@@ -7,7 +7,7 @@ on:
 
 jobs:
   courses:
-    name: Deploy Courses
+    name: Deploy Courses Production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -25,4 +25,5 @@ jobs:
         with:
           args: deploy --only hosting:openmined-education
         env:
+          PROJECT_ID: production
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

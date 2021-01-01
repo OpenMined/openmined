@@ -38,6 +38,15 @@
     },
     "firebase-api": {
       "tags": []
+    },
+    "shared-types": {
+      "tags": []
+    },
+    "sanity-api": {
+      "tags": []
+    },
+    "shared-data-access-sanity": {
+      "tags": []
     }
   }
 }

@@ -1,11 +1,12 @@
 import React from 'react';
-// TODO: Fix the below
-// @ts-ignore
-import { unstable_createRoot } from 'react-dom';
+import { render } from 'react-dom';
 import { FirebaseAppProvider } from 'reactfire';
 import { HelmetProvider } from 'react-helmet-async';
-import { ChakraProvider } from '@chakra-ui/core';
+import { ChakraProvider } from '@chakra-ui/react';
 import { SEOProvider } from '@openmined/shared/util-page';
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+import ErrorBoundaryWrapper from './components/ErrorBoundaryWrapper';
 
 import theme from './theme';
 import App from './App';
@@ -26,9 +27,10 @@ const firebaseConfig = {
 };
 
 const metadata = {
-  name: process.env.NX_NAME,
-  short_name: process.env.NX_SHORT_NAME,
-  description: process.env.NX_DESCRIPTION,
+  name: 'OpenMined Courses',
+  short_name: 'OpenMined Courses',
+  description:
+    'OpenMined Courses is your home for free courses on privacy-preserving artificial intelligence.',
   images: {
     main: seoMain,
     facebook: seoFacebook,
@@ -44,7 +46,9 @@ export const WrappedApp = () => (
       <HelmetProvider>
         <ChakraProvider theme={theme}>
           <SEOProvider metadata={metadata}>
-            <App />
+            <ErrorBoundaryWrapper>
+              <App />
+            </ErrorBoundaryWrapper>
           </SEOProvider>
         </ChakraProvider>
       </HelmetProvider>
@@ -52,5 +56,17 @@ export const WrappedApp = () => (
   </React.StrictMode>
 );
 
-// Experimental concurrence mode in React
-unstable_createRoot(root).render(<WrappedApp />);
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn:
+      'https://3a0a3cc70179428f8ecda14adc0bb149@o492939.ingest.sentry.io/5561166',
+    autoSessionTracking: true,
+    integrations: [new Integrations.BrowserTracing()],
+    tracesSampleRate: 1.0,
+    environment: process.env.NODE_ENV,
+  });
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  render(<WrappedApp />, root);
+}

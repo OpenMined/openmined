@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Heading, Text, Button, Link, Icon } from '@chakra-ui/core';
+import { Box, Flex, Heading, Text, Button, Link } from '@chakra-ui/react';
 import {
   ComposableMap,
   Geographies,
   Geography,
   Marker,
 } from 'react-simple-maps';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import GridContainer from '../../components/GridContainer';
+import Icon from '../../components/Icon';
 import theme from '../../theme';
 
 const geoUrl =
@@ -31,11 +31,9 @@ const Map = () => {
             })
             .filter((d) => d);
 
-          // TODO: Remove this if possible and remove the @typescript-eslint/ban-ts-comment rule in the root .eslintrc.json
-          // @ts-ignore
           const uniqueMembers = Array.from(
             new Set(finalMembers.map(JSON.stringify)),
-            JSON.parse
+            (member: string) => JSON.parse(member)
           );
 
           setMembers(uniqueMembers);
@@ -56,7 +54,6 @@ const Map = () => {
     theme.colors.orange,
     theme.colors.yellow,
     theme.colors.green,
-    theme.colors.teal,
     theme.colors.cyan,
     theme.colors.blue,
     theme.colors.indigo,
@@ -136,7 +133,7 @@ const Map = () => {
   );
 };
 
-export default ({ title, description, buttons, links }) => (
+export default ({ title, description, buttons }) => (
   <Box bg="gray.900" color="white" py={16}>
     <GridContainer>
       <Flex direction={['column', null, null, 'row']} align="center">
@@ -155,7 +152,7 @@ export default ({ title, description, buttons, links }) => (
           <Text color="gray.400" fontSize="lg" mb={8}>
             {description}
           </Text>
-          <Flex wrap="wrap" mb={[8, null, null, 12]}>
+          <Flex wrap="wrap">
             {buttons.map(({ link, title, icon }, i) => (
               <Button
                 key={i}
@@ -165,30 +162,8 @@ export default ({ title, description, buttons, links }) => (
                 mr={i === 0 ? 4 : 0}
                 colorScheme="gray"
               >
-                {/* TODO: Icons are kinda ugly like this, do something about it when we import OMUI to the monorepo */}
-                {title}{' '}
-                <Icon
-                  as={FontAwesomeIcon}
-                  icon={icon}
-                  ml={2}
-                  boxSize={4}
-                  color="black"
-                />
+                {title} <Icon icon={icon} ml={2} boxSize={4} color="black" />
               </Button>
-            ))}
-          </Flex>
-          <Flex>
-            {links.map(({ title, link }, i) => (
-              <Link
-                key={i}
-                href={link}
-                target="_blank"
-                color="gray.400"
-                _hover={{ color: 'white' }}
-                ml={i === 0 ? 0 : 4}
-              >
-                {title}
-              </Link>
             ))}
           </Flex>
         </Box>

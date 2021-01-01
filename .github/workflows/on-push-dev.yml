@@ -1,0 +1,29 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  courses:
+    name: Deploy Courses Development
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Use Node 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install Dependencies
+        run: yarn install
+      - name: Build Courses
+        run: yarn build courses
+      - name: Deploy Courses to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting:openmined-education-dev
+        env:
+          PROJECT_ID: development
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

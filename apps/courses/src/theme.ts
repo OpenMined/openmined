@@ -1,4 +1,4 @@
-import { extendTheme } from '@chakra-ui/core';
+import { extendTheme } from '@chakra-ui/react';
 
 const buttonColors = (c) => {
   const fill = (type) => {
@@ -31,9 +31,14 @@ const buttonColors = (c) => {
   return { regularFill, hoverFill, activeFill, color };
 };
 
+const mono = `"Fira Code", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`;
+
 export default extendTheme({
   styles: {
     global: {
+      'html, body': {
+        color: 'gray.800',
+      },
       '*:focus': {
         outline: 'none !important',
         boxShadow: 'none !important',
@@ -41,11 +46,16 @@ export default extendTheme({
       '.chakra-progress[variant="controlled-motion"] .chakra-progress__indicator': {
         transition: 'none',
       },
-      // TODO: Fix this when this issue is resolved: https://github.com/chakra-ui/chakra-ui/issues/2405
-      '.chakra-divider': {
-        borderColor: '#9D9D9D !important',
-        opacity: 1,
+      // TODO: We can delete this component once the following issue is fixed:
+      // https://github.com/chakra-ui/chakra-ui/issues/2531
+      '.react-tiny-popover-container': {
+        zIndex: 2,
       },
+      'pre, code': {
+        textShadow: 'none !important',
+        fontFamily: `${mono} !important`,
+      },
+      'code .token': { background: 'none !important' },
     },
   },
   colors: {
@@ -121,21 +131,9 @@ export default extendTheme({
       800: '#267D28',
       900: '#034F0C',
     },
-    teal: {
-      50: '#DFF1F1',
-      100: '#AEDEDC',
-      200: '#79C9C5',
-      300: '#3EB3AD',
-      400: '#00A39B',
-      500: '#009289',
-      600: '#00837C',
-      700: '#006F6A',
-      800: '#005C59',
-      900: '#004A48',
-    },
     cyan: {
-      50: '#D8F6FA',
-      100: '#D8F6FA',
+      50: '#DFF5F8',
+      100: '#AAE9F1',
       200: '#7CD8E4',
       300: '#50CFE0',
       400: '#0FC2DA',
@@ -185,7 +183,7 @@ export default extendTheme({
   fonts: {
     heading: `"Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
     body: `"Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
-    mono: `"Fira Code", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`,
+    mono,
   },
   fontSizes: {
     xs: '0.75rem',
@@ -217,7 +215,7 @@ export default extendTheme({
     taller: '2',
   },
   space: {
-    header: '4.5rem',
+    header: '5rem',
   },
   components: {
     Button: {
@@ -264,6 +262,12 @@ export default extendTheme({
         },
       },
     },
+    Divider: {
+      baseStyle: {
+        borderColor: 'gray.500',
+        opacity: 1,
+      },
+    },
     FormLabel: {
       baseStyle: {
         fontSize: 'sm',
@@ -284,12 +288,28 @@ export default extendTheme({
         },
       },
     },
+    Input: {
+      baseStyle: {
+        field: {
+          _placeholder: {
+            color: 'gray.600',
+          },
+          color: 'gray.800',
+        },
+      },
+    },
     Link: {
       baseStyle: {
         color: 'blue.500',
+        textDecoration: 'underline',
         _hover: {
-          color: 'blue.800',
+          color: 'blue.700',
+        },
+      },
+      variants: {
+        flat: {
           textDecoration: 'none',
+          _hover: { textDecoration: 'none' },
         },
       },
     },
@@ -297,6 +317,35 @@ export default extendTheme({
       baseStyle: {
         content: {
           p: [4, 8, null, null, 12],
+        },
+      },
+    },
+    Tabs: {
+      variants: {
+        sticky: {
+          root: {
+            display: 'flex',
+            flexDirection: { base: 'column', lg: 'row' },
+          },
+          tablist: {
+            minWidth: 280,
+            mr: [0, null, null, 8],
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+          },
+          tab: {
+            borderRadius: 'md',
+            width: 'full',
+            justifyContent: 'flex-start',
+            color: 'gray.700',
+            mb: 2,
+            _selected: {
+              bg: 'blue.500',
+              color: 'blue.50',
+              fontWeight: 'bold',
+            },
+          },
+          tabpanel: { p: 0 },
         },
       },
     },

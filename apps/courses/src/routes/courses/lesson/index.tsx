@@ -167,7 +167,7 @@ export default ({
           </Heading>
           <Divider my={6} />
           <Text color="gray.700" mb={6}>
-            {description}
+            {typeof description === 'string' ? description : description()}
           </Text>
           {learnHow && (
             <>

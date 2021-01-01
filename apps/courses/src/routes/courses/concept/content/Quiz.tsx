@@ -85,7 +85,7 @@ const CorrectAnswer = ({ setCurrentSelection, index, value, explanation }) => (
     <Box>
       <Text mb={1}>{value}</Text>
       <Text color="green.500" fontSize="sm" fontStyle="italic">
-        {explanation}
+        {typeof explanation === 'string' ? explanation : explanation()}
       </Text>
     </Box>
   </Flex>
@@ -107,7 +107,7 @@ const IncorrectAnswer = ({
     <Box>
       <Text mb={1}>{value}</Text>
       <Text color="red.300" fontSize="sm" fontStyle="italic">
-        {explanation}
+        {typeof explanation === 'string' ? explanation : explanation()}
       </Text>
     </Box>
   </Flex>

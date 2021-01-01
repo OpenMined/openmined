@@ -236,7 +236,6 @@ export const composeSanityImageUrl = (image) => {
 export type SANITY_FIREBASE_QUERY = {
   method: string;
   params: any;
-  env?: string;
 };
 
 export const useFirebaseSanity = (method, params = null) => {
@@ -250,12 +249,10 @@ export const useFirebaseSanity = (method, params = null) => {
   const sanity = functions.httpsCallable('sanity');
 
   const prepareData = (d) => {
-    Object.keys(d).forEach((i) => {
-      const elem = d[i];
-
+    const _prep = (elem) => {
       // Make sure we convert all breaking spaces to <br /> tags
       if (typeof elem === 'string' && elem.includes('\n')) {
-        d[i] = (
+        return () => (
           <span
             dangerouslySetInnerHTML={{
               __html: elem.split('\n').join('<br />'),
@@ -263,6 +260,33 @@ export const useFirebaseSanity = (method, params = null) => {
           />
         );
       }
+
+      return elem;
+    };
+
+    const _loop = (elem) => {
+      if (Array.isArray(elem)) {
+        return elem.map((e) => _loop(e));
+      } else if (typeof elem === 'object') {
+        // Leave math and code blocks alone
+        if ((elem._type && elem._type === 'math') || elem._type === 'code') {
+          return elem;
+        }
+
+        const temp = {};
+
+        Object.keys(elem).forEach((e) => {
+          temp[e] = _loop(elem[e]);
+        });
+
+        return temp;
+      }
+
+      return _prep(elem);
+    };
+
+    Object.keys(d).forEach((i) => {
+      d[i] = _loop(d[i]);
     });
 
     return d;
@@ -272,7 +296,6 @@ export const useFirebaseSanity = (method, params = null) => {
     const query: SANITY_FIREBASE_QUERY = {
       method,
       params,
-      env: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     };
 
     sanity(query)

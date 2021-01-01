@@ -26,7 +26,7 @@ const AttemptedView = ({
         {title}
       </Text>
       <Text color="gray.700" fontSize="sm">
-        {description}
+        {typeof description === 'string' ? description : description()}
       </Text>
     </Flex>
     {submissions.map((submission, index) => (
@@ -81,7 +81,9 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
             {status !== 'failed-but-pending' && (
               <Text color="gray.700" mb={6}>
                 {status === 'not-started' || status === 'in-progress'
-                  ? description
+                  ? typeof description === 'string'
+                    ? description
+                    : description()
                   : pendingReviewText}
               </Text>
             )}

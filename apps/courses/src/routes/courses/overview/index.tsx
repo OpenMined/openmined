@@ -115,7 +115,9 @@ export default ({ course, page, progress }: CoursePagesProp) => {
     isTakingCourse
   ) => (
     <Box bg="gray.200" p={8}>
-      <Text mb={4}>{description}</Text>
+      <Text mb={4}>
+        {typeof description === 'string' ? description : description()}
+      </Text>
       <List spacing={2}>
         {parts.map(({ title, _id, type, _key }, index) => {
           let isComplete = false;
@@ -301,7 +303,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                 {title}
               </Heading>
               <Text color="gray.700" width={{ md: '80%', xl: '60%' }}>
-                {description}
+                {typeof description === 'string' ? description : description()}
               </Text>
             </Box>
             <Box

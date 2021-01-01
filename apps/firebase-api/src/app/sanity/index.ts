@@ -11,7 +11,6 @@ const getSanityData = (query: SANITY_QUERY, params) => {
 
 /**
  * @data.method - method
- * @data.env - enviroment
  * @data.course, lesson, concept, extra query params
  */
 export default async (data, context) => {

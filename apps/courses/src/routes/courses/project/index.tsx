@@ -193,7 +193,7 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
           </Tag>
           <Divider my={6} />
           <Text color="gray.700" mb={6}>
-            {description}
+            {typeof description === 'string' ? description : description()}
           </Text>
           <Heading mb={4} as="p" size="md">
             Goal

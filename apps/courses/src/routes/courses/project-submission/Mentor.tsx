@@ -124,7 +124,7 @@ export default ({
   attempt,
   student,
 }) => {
-  // SEE TODO (#25)
+  // TODO: https://github.com/OpenMined/openmined/issues/53
   // const navigate = useNavigate();
   const toast = useToast();
   const db = useFirestore();
@@ -159,7 +159,7 @@ export default ({
 
   useEffect(() => {
     if (!isBeforeDeadline()) {
-      // SEE TODO (#25)
+      // TODO: https://github.com/OpenMined/openmined/issues/53
       // navigate('/users/dashboard');
       window.location.href = '/users/dashboard';
     }
@@ -193,7 +193,7 @@ export default ({
           setHasClickedButton(false);
 
           // Once that's done, go back to the dashboard
-          // SEE TODO (#25)
+          // TODO: https://github.com/OpenMined/openmined/issues/53
           // navigate(`/users/dashboard`);
           window.location.href = '/users/dashboard';
         })
@@ -226,7 +226,7 @@ export default ({
           status: 'success',
         });
 
-        // SEE TODO (#25)
+        // TODO: https://github.com/OpenMined/openmined/issues/53
         // navigate('/users/dashboard');
         window.location.href = '/users/dashboard';
       } else {
@@ -336,7 +336,7 @@ export default ({
       )}
       <Flex justify="space-between" align="center">
         <Button
-          // SEE TODO (#25)
+          // TODO: https://github.com/OpenMined/openmined/issues/53
           // as={RRDLink}
           // to={`/users/dashboard`}
           as="a"

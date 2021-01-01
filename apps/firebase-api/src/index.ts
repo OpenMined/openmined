@@ -1,6 +1,3 @@
-// SEE TODO (#14)
-// SEE TODO (#15)
-
 import path from 'path';
 import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
@@ -47,7 +44,7 @@ exports.completeCourse = functions
   .region('europe-west1')
   .https.onCall(completeCourse);
 
-// SEE TODO (#16)
+// TODO: https://github.com/OpenMined/openmined/issues/51
 // Send the user an email when they sign up
 exports.sendWelcomeEmail = functions
   .region('europe-west1')
@@ -126,5 +123,5 @@ exports.receiveReview = functions
 // Set up Sanity API requests
 exports.sanity = functions.region('europe-west1').https.onCall(sanity);
 
-// SEE TODO (#13)
+// TODO: https://github.com/OpenMined/openmined/issues/52
 // exports.ssr = functions.region('europe-west1').https.onRequest(ssr);

@@ -42,7 +42,7 @@ const DetailLink = ({ icon, children, ...props }) => (
 
 export default ({ progress, page, user, course }: CoursePagesProp) => {
   const db = useFirestore();
-  // SEE TODO (#25)
+  // TODO: https://github.com/OpenMined/openmined/issues/53
   // const navigate = useNavigate();
 
   const {
@@ -88,7 +88,7 @@ export default ({ progress, page, user, course }: CoursePagesProp) => {
         setClickedContinue(false);
 
         if (data && !data.error) {
-          // SEE TODO (#25)
+          // TODO: https://github.com/OpenMined/openmined/issues/53
           // navigate(`/courses/${course}/complete`);
           window.location.href = `/courses/${course}/complete`;
         } else {

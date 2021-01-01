@@ -188,7 +188,7 @@ export default ({
 }) => {
   const db = useFirestore();
   const toast = useToast();
-  // SEE TODO (#25)
+  // TODO: https://github.com/OpenMined/openmined/issues/53
   // const navigate = useNavigate();
 
   const {
@@ -222,7 +222,7 @@ export default ({
       ).length === 3 &&
       !attemptData
     ) {
-      // SEE TODO (#25)
+      // TODO: https://github.com/OpenMined/openmined/issues/53
       // navigate(`/courses/${course}/project/${part}/3`);
       window.location.href = `/courses/${course}/project/${part}/3`;
     }
@@ -255,7 +255,7 @@ export default ({
         preSubmitModal.onClose();
 
         // Once that's done, reload the projects in the default viewing state
-        // SEE TODO (#25)
+        // TODO: https://github.com/OpenMined/openmined/issues/53
         // navigate(`/courses/${course}/project`);
         window.location.href = `/courses/${course}/project`;
       })
@@ -271,7 +271,7 @@ export default ({
       >
         <Breadcrumb spacing={2} color="gray.700">
           <BreadcrumbItem>
-            {/* SEE TODO (#25) */}
+            {/* TODO: https://github.com/OpenMined/openmined/issues/53 */}
             <BreadcrumbLink href={`/courses/${course}/project`} target="_self">
               {/* <BreadcrumbLink as={RRDLink} to={`/courses/${course}/project`}> */}
               {projectTitle}
@@ -355,7 +355,7 @@ export default ({
           <ColoredTabs mb={8} content={tabsContent} />
           <Flex justify="space-between" align="center">
             <Button
-              // SEE TODO (#25)
+              // TODO: https://github.com/OpenMined/openmined/issues/53
               // as={RRDLink}
               // to={`/courses/${course}/project`}
               as="a"

@@ -172,7 +172,7 @@ export const MentorContext = ({ courses }) => {
                   colorScheme="black"
                   isDisabled={buttonClicked}
                   isLoading={buttonClicked}
-                  // SEE TODO (#25)
+                  // TODO: https://github.com/OpenMined/openmined/issues/53
                   // as={RRDLink}
                   // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
                   as="a"
@@ -270,7 +270,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                   {title}
                 </Heading>
                 <Image src={full} alt={title} />
-                {/* SEE TODO (#22) */}
+                {/* TODO: https://github.com/OpenMined/openmined/issues/60 */}
                 {/* <Text color="gray.400" mt={4}>X in queue</Text> */}
               </Flex>
               <Flex p={6} direction="column" align="center">
@@ -298,7 +298,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                 </Box>
                 <Flex justify="space-between" align="center" width="full">
                   <Link
-                    // SEE TODO (#25)
+                    // TODO: https://github.com/OpenMined/openmined/issues/53
                     // as={RRDLink}
                     // to={`/courses/${slug}`}
                     as="a"
@@ -371,13 +371,13 @@ export const MentorTabs = ({ courses, mentor }) => {
       return null;
     });
 
-    // SEE TODO (#24)
+    // TODO: https://github.com/OpenMined/openmined/issues/59
     const hasMoreReviews = false;
 
-    // SEE TODO (#23)
+    // TODO: https://github.com/OpenMined/openmined/issues/61
     const numReviewed = 0;
 
-    // SEE TODO (#23)
+    // TODO: https://github.com/OpenMined/openmined/issues/61
     const numResigned = 0;
 
     if (reviewHistory.length === 0) {
@@ -474,7 +474,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                 <Button
                   variant="outline"
                   colorScheme="black"
-                  // SEE TODO (#25)
+                  // TODO: https://github.com/OpenMined/openmined/issues/53
                   // as={RRDLink}
                   // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
                   as="a"
@@ -487,7 +487,7 @@ export const MentorTabs = ({ courses, mentor }) => {
               {review.status === 'pending' && (
                 <Button
                   colorScheme="black"
-                  // SEE TODO (#25)
+                  // TODO: https://github.com/OpenMined/openmined/issues/53
                   // as={RRDLink}
                   // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
                   as="a"
@@ -500,7 +500,7 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Flex>
           </Flex>
         ))}
-        {/* SEE TODO (#24) */}
+        {/* TODO: https://github.com/OpenMined/openmined/issues/59 */}
         {hasMoreReviews && (
           <Flex justify="center" mt={3}>
             <Button

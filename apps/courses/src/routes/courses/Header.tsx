@@ -91,8 +91,6 @@ const UserAvatar = () => {
   return null;
 };
 
-// SEE TODO (#10)
-
 export default ({
   icon,
   title,

@@ -211,7 +211,7 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
           />
           <Button
             disabled={!(status === 'passed' || status === 'failed')}
-            // SEE TODO (#25)
+            // TODO: https://github.com/OpenMined/openmined/issues/53
             // as={RRDLink}
             // to={`/courses/${course}/project/complete`}
             as="a"

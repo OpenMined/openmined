@@ -216,7 +216,7 @@ export default ({
               size="lg"
               onClick={() =>
                 onCompleteLesson().then(() => {
-                  // SEE TODO (#25)
+                  // TODO: https://github.com/OpenMined/openmined/issues/53
                   // navigate(
                   //   `/courses/${course}/${
                   //     typeof nextLesson === 'string'

@@ -40,7 +40,7 @@ const AttemptedView = ({
 );
 
 export default ({ content, course, onBeginProjectPart, ...props }) => {
-  // SEE TODO (#25)
+  // TODO: https://github.com/OpenMined/openmined/issues/53
   // const navigate = useNavigate();
 
   // The text to show when the user is pending a submission review
@@ -73,7 +73,6 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
   const projectContent = content.map((i) => {
     const { _key, description, status, submissions } = i;
 
-    // SEE TODO (#19)
     const panel = () => (
       <>
         {status !== 'passed' && status !== 'failed' && (
@@ -103,7 +102,7 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                 onClick={() => {
                   if (status === 'not-started') {
                     onBeginProjectPart(_key).then(() => {
-                      // SEE TODO (#25)
+                      // TODO: https://github.com/OpenMined/openmined/issues/53
                       // navigate(`/courses/${course}/project/${_key}`);
                       window.location.href = `/courses/${course}/project/${_key}`;
                     });
@@ -112,7 +111,7 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                       ({ status }) => status === 'pending'
                     );
 
-                    // SEE TODO (#25)
+                    // TODO: https://github.com/OpenMined/openmined/issues/53
                     // navigate(
                     //   `/courses/${course}/project/${_key}/${attempt + 1}`
                     // );
@@ -120,7 +119,7 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                       attempt + 1
                     }`;
                   } else {
-                    // SEE TODO (#25)
+                    // TODO: https://github.com/OpenMined/openmined/issues/53
                     // navigate(`/courses/${course}/project/${_key}`);
                     window.location.href = `/courses/${course}/project/${_key}`;
                   }

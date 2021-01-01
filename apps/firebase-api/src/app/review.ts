@@ -195,8 +195,6 @@ export const resignReview = async (data, context) => {
 
     await batch.commit();
 
-    // SEE TODO (#20)
-
     // Return the resigned review to the mentor
     return { success: true };
   } catch (error) {

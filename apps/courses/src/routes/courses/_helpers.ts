@@ -15,8 +15,6 @@ interface NextAvailablePage {
   concept?: string;
 }
 
-// SEE TODO (#8)
-
 // Course permissions
 export const hasStartedCourse = (u) =>
   Object.keys(u).length !== 0 && !!u.started_at;
@@ -325,7 +323,7 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
         let url = `/courses/${course}/${suggestedPage.lesson}`;
         if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
 
-        // SEE TODO (#25)
+        // TODO: https://github.com/OpenMined/openmined/issues/53
         // navigate(url);
         window.location.href = url;
       }
@@ -335,7 +333,7 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
   return status;
 };
 
-// SEE TODO (#18)
+// TODO: https://github.com/OpenMined/openmined/issues/54
 export const useCoursePermissionGate = (user, lessons, page, params) => {
   // For pages that don't require any permissions or redirection...
   const permissionless = ['search', 'overview'];

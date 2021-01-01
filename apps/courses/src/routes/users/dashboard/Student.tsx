@@ -53,7 +53,7 @@ export const StudentContext = ({ courses, progress }) => {
           Currently, you're not taking any courses. Perhaps you should add one!
         </Text>
         <Button
-          // SEE TODO (#25)
+          // TODO: https://github.com/OpenMined/openmined/issues/53
           // as={RRDLink}
           // to="/courses"
           as="a"
@@ -155,7 +155,7 @@ export const StudentTabs = ({ courses, progress }) => {
       return (
         <NullSetTabPanel>
           Right now you have no completed courses. Try going to the{' '}
-          {/* SEE TODO (#25) */}
+          {/* TODO: https://github.com/OpenMined/openmined/issues/53 */}
           {/* <Link as={RRDLink} to="/courses"> */}
           <Link as="a" href="/courses">
             Course Search

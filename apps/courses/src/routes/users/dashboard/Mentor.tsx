@@ -341,7 +341,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                       });
                     }}
                   >
-                    Review
+                    Assign
                   </Button>
                 </Flex>
               </Flex>

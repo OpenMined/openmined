@@ -125,7 +125,12 @@ export default ({
   }, [value, onChange]);
 
   useEffect(() => {
-    localStorage.setItem(EDITOR_STORAGE_STRING, JSON.stringify(debouncedValue));
+    if (!readOnly) {
+      localStorage.setItem(
+        EDITOR_STORAGE_STRING,
+        JSON.stringify(debouncedValue)
+      );
+    }
   }, [debouncedValue]);
 
   useEffect(() => {

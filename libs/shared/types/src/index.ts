@@ -54,11 +54,16 @@ export interface UserPrivate {
   github_access_token: string | null;
 }
 
+type CourseMentorAttempt = {
+  [attempt: string]: firebase.firestore.DocumentReference;
+};
+
 export type Course = {
   started_at?: firebase.firestore.Timestamp;
   completed_at?: firebase.firestore.Timestamp;
   project?: Project;
   lessons?: Lessons;
+  allowed_mentors?: CourseMentorAttempt[];
 };
 
 export type Lessons = {

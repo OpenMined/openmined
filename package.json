@@ -64,7 +64,7 @@
     "is-hotkey": "^0.2.0",
     "prismjs": "^1.22.0",
     "prop-types": "^15.7",
-    "react": "^0.0.0-experimental-4ead6b530",
+    "react": "^0.14.0",
     "react-dom": "^0.0.0-experimental-4ead6b530",
     "react-helmet-async": "^1.0.7",
     "react-hook-form": "^6.11.0",

@@ -97,11 +97,12 @@ export default {
     {
       title: 'Support Services',
       content: [
-        `We provide Support for our students through two services, Project Reviews and Technical Mentors. Our Support services are funded through grants from our partners and donors. As such, availability of the Support services isn’t guaranteed for all students. Often, a funding source will allow us to provide Support for a certain number of students. If we aren’t able to provide you with Support services, you will always be able to ask for help from our Community members (see below).`,
-        `Each Course has an associated project that allows you to demonstrate the skills you gained through the Course. If available, you are able to submit your project for a Project Review. An OpenMined Mentor will review your project and respond with feedback, including a pass/fail grade. The feedback is intended to help you solidify your knowledge and skills, as well as provide further topics to study.`,
-        `Passing or failing a project is determined by meeting the criteria of a rubric. Each project has an associated rubric that Mentors reference to determine a passing or failing grade. You have access to the rubric as well through the Classroom.`,
+        `Students are supported by Technical Mentors and Community Mentors. Community Mentors are volunteers who aid the whole OpenMined community. You will generally find them on Slack. They can help you find projects to work on, guide you to tutorials or other learning resources, and in general answer any questions you have about the community.`,
+        `Technical Mentors specifically help students with Courses, through two Support Services: Project Reviews and the Discussion Boards. The Support Services are funded through grants from our partners and donors. As such, availability of the Support Services isn’t guaranteed for all students at all times. Often, a funding source will allow us to provide Support Services for a certain number of students. If we aren’t able to provide you with Support Services, you will always be able to ask for help from our Community members (see below).`,
+        `Each Course has an associated project that allows you to demonstrate the skills you gained through the Course. If available, you are able to submit your project for a Project Review. A Technical Mentor will review your project and respond with feedback, including a pass/fail status. The feedback is intended to help you solidify your knowledge and skills, as well as provide further topics to study.`,
+        `Passing or failing a project is determined by meeting the criteria of a rubric. Each project has an associated rubric that Mentors reference to determine a passing or failing status. You have access to the rubric as well through the Classroom.`,
         `You have three attempts to pass a project. The number of attempts you have left is displayed in the Classroom. If you do not pass a project after three attempts, the Course will still be labeled as completed, but the project won’t be listed in your Profile.`,
-        `If you do not have access to Project Reviews, you still have access to the project itself. You can work on it and share with other students for feedback, push it to your GitHub profile, or otherwise share it publicly.`,
+        `Projects are submitted through the Classroom for review. If you do not have access to Project Reviews, you aren’t able to submit your project through the classroom. However, you still have access to the project itself. You can work on it and share with other students on the discussion board for feedback, push it to your GitHub profile, or otherwise share it publicly.`,
         () => (
           <>
             Our Technical Mentors staff the{' '}
@@ -111,10 +112,12 @@ export default {
             where they provide help for students working on specific Courses. A
             limited number of Mentors will be available at any one time, so you
             might need to wait to get help while they are assisting other
-            students.
+            students. Don’t feel obligated to wait for a Technical Mentor
+            though, you can always request help from other students and members
+            of the OpenMined community.
           </>
         ),
-        `We will do our best to provide coverage over all time zones, but you may not be able to get immediate help at all times of the day. We will post a schedule for our Technical mentors so you can find a time that works best for you if you need help.`,
+        `We will do our best to provide coverage over all time zones, but you may not be able to get immediate help from Technical Mentors at all times of the day. We will post a schedule for our Technical mentors so you can find a time that works best for you.`,
       ],
     },
     {
@@ -152,7 +155,7 @@ export default {
     },
     {
       title: 'Contact Us',
-      content: `If you have any questions or suggestions about our Terms of Service, do not hesitate to contact us on Slack or Github via the proper channels or repositories.`,
+      content: `If you have any questions or suggestions about our Terms of Service, do not hesitate to contact us on Slack in the #courses channel or through email at courses@openmined.org.`,
     },
   ],
   sidebar: content.sidebar,

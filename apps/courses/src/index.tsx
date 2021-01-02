@@ -6,10 +6,12 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { SEOProvider } from '@openmined/shared/util-page';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import ErrorBoundaryWrapper from './components/ErrorBoundaryWrapper';
 
+import sentryIgnore from './sentry-ignore';
 import theme from './theme';
 import App from './App';
+
+import ErrorBoundaryWrapper from './components/ErrorBoundaryWrapper';
 
 import seoMain from './assets/seo-main.jpg';
 import seoFacebook from './assets/seo-facebook.jpg';
@@ -64,6 +66,7 @@ if (process.env.NODE_ENV === 'production') {
     integrations: [new Integrations.BrowserTracing()],
     tracesSampleRate: 1.0,
     environment: process.env.NODE_ENV,
+    ...sentryIgnore,
   });
 }
 

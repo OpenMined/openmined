@@ -154,7 +154,19 @@ export default ({ course, page, progress }: CoursePagesProp) => {
           return (
             <ListItem key={index} display="flex" alignItems="center">
               <ListIcon as={() => <Icon {...iconProps} icon={icon} />} />
-              {title}
+              {isComplete && (
+                <a
+                  href={
+                    lessonId
+                      ? `/courses/${course}/${lessonId}/${_id}`
+                      : `/courses/${course}/project/${_key}`
+                  }
+                  target="_self"
+                >
+                  {title}
+                </a>
+              )}
+              {!isComplete && title}
             </ListItem>
           );
         })}

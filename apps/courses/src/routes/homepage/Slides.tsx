@@ -91,14 +91,14 @@ const Slides = ({ title, description, slides }) => {
 
     reset();
     start();
-  }, [current, slides.length, reset, start]);
+  }, [current, slides, reset, start]);
 
   const goPrev = useCallback(() => {
     setCurrent(current - 1 < 0 ? slides.length - 1 : current - 1);
 
     reset();
     start();
-  }, [current, slides.length, reset, start]);
+  }, [current, slides, reset, start]);
 
   // Start the timer the first time this component loads
   useEffect(start, [start]);

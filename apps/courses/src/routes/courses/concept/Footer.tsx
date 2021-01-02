@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   Textarea,
+  Tooltip,
 } from '@chakra-ui/react';
 import {
   faBug,
@@ -201,23 +202,31 @@ const Controls = ({
       <Text mx={[6, null, 8, 12]} color="gray.400">
         {current} of {total}
       </Text>
-      <Button
-        onClick={() => {
-          onCompleteConcept().then(() => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            setTimeout(() => {
-              // TODO: https://github.com/OpenMined/openmined/issues/53
-              // navigate(nextLink);
-              window.location.href = nextLink;
-            }, 500);
-          });
-        }}
-        colorScheme={isNextAvailable ? 'cyan' : 'black'}
-        disabled={!isNextAvailable}
+      <Tooltip
+        label="Scroll down and make sure to complete all quiz questions first!"
+        shouldWrapChildren
+        hasArrow
+        placement="top"
+        isDisabled={isNextAvailable}
       >
-        Next
-      </Button>
+        <Button
+          onClick={() => {
+            onCompleteConcept().then(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+
+              setTimeout(() => {
+                // TODO: https://github.com/OpenMined/openmined/issues/53
+                // navigate(nextLink);
+                window.location.href = nextLink;
+              }, 500);
+            });
+          }}
+          colorScheme={isNextAvailable ? 'cyan' : 'black'}
+          disabled={!isNextAvailable}
+        >
+          Next
+        </Button>
+      </Tooltip>
     </Flex>
   );
 };

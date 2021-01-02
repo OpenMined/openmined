@@ -42,8 +42,10 @@ export const overview = ({ course }) => `
   }
 }[0]`;
 
-export const courseComplete = ({ course }) => `
-*[_type == "course" && slug.current == "${course}" && live == true] {
+export const courseComplete = ({ course, isAdmin }) => `
+*[_type == "course" && slug.current == "${course}"${
+  !isAdmin ? ' && live == true' : ''
+}] {
   ...,
   lessons[] -> {
     _id,
@@ -52,8 +54,10 @@ export const courseComplete = ({ course }) => `
   }
 }[0]`;
 
-export const project = ({ course }) => `
-*[_type == "course" && slug.current == "${course}" && live == true] {
+export const project = ({ course, isAdmin }) => `
+*[_type == "course" && slug.current == "${course}"${
+  !isAdmin ? ' && live == true' : ''
+}] {
   ...,
   lessons[] -> {
     _id,
@@ -64,8 +68,10 @@ export const project = ({ course }) => `
 
 export const projectSubmission = project;
 
-export const projectComplete = ({ course }) => `
-*[_type == "course" && slug.current == "${course}" && live == true] {
+export const projectComplete = ({ course, isAdmin }) => `
+*[_type == "course" && slug.current == "${course}"${
+  !isAdmin ? ' && live == true' : ''
+}] {
   ...,
   lessons[] -> {
     _id,
@@ -93,8 +99,12 @@ export const lesson = ({ lesson }) => `
   }
 }[0]`;
 
-export const lessonComplete = ({ lesson }) => `
-*[_type == "lesson" && _id == "${lesson}" && *[_type == "course" && references(^._id)][0].live == true] {
+export const lessonComplete = ({ lesson, isAdmin }) => `
+*[_type == "lesson" && _id == "${lesson}"${
+  !isAdmin
+    ? ' && *[_type == "course" && references(^._id)][0].live == true'
+    : ''
+}] {
   title,
   description,
   resources,
@@ -109,8 +119,12 @@ export const lessonComplete = ({ lesson }) => `
   }
 }[0]`;
 
-export const concept = ({ lesson, concept }) => `
-*[_type == "lesson" && _id == "${lesson}" && *[_type == "course" && references(^._id)][0].live == true] {
+export const concept = ({ lesson, concept, isAdmin }) => `
+*[_type == "lesson" && _id == "${lesson}"${
+  !isAdmin
+    ? ' && *[_type == "course" && references(^._id)][0].live == true'
+    : ''
+}] {
   title,
   resources,
   "concept": *[_type == "concept" && _id == "${concept}"][0],

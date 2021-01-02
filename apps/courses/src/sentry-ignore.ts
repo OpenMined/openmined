@@ -29,6 +29,9 @@ export default {
     `IDBDatabase`,
     `QuotaExceededError`,
     `Loading chunk`,
+    `ChunkLoadError`,
+    `Network Error`,
+    `Cannot read property 'createObjectStore' of undefined`,
   ],
   denyUrls: [
     // Facebook flakiness

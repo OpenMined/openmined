@@ -2,9 +2,20 @@
 import { queries, SANITY_QUERY } from './utils/queries';
 import sanity from './utils/sanity';
 
-const getSanityData = (query: SANITY_QUERY, params) => {
+const determineAdmin = (context) => {
+  if (process.env.NX_SANITY_ADMINS && context.auth && context.auth.uid) {
+    const uid = context.auth.uid;
+    const admins = process.env.NX_SANITY_ADMINS.split(',');
+
+    if (admins.length > 0 && admins.includes(uid)) return true;
+  }
+
+  return false;
+};
+
+const getSanityData = (query: SANITY_QUERY, params, isAdmin) => {
   const client = sanity();
-  const queryString = query.query(params);
+  const queryString = query.query({ ...params, isAdmin });
 
   return client.fetch(queryString);
 };
@@ -33,8 +44,11 @@ export default async (data, context) => {
 
     // TODO: Check if user is allowed to access a specific course/lesson
 
+    // Determine if the user is an admin
+    const isAdmin = determineAdmin(context);
+
     // Get sanity data
-    const sanityData = await getSanityData(query, params);
+    const sanityData = await getSanityData(query, params, isAdmin);
 
     return sanityData;
   } catch (error) {

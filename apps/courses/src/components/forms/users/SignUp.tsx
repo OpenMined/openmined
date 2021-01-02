@@ -196,11 +196,16 @@ export default ({ callback, ...props }: SignUpFormProps) => {
 
     // If we're creating an account for the first time, we need to store some information about the user
     if (authUser) {
-      const splitName = authUser.user.displayName.split(' ');
-      const firstName =
-        splitName.length >= 1 ? splitName[0] : authUser.user.displayName;
-      const lastName =
-        splitName.length >= 2 ? splitName.slice(1).join(' ') : '';
+      let firstName = '';
+      let lastName = '';
+
+      if (authUser.user.displayName && authUser.user.displayName !== '') {
+        const splitName = authUser.user.displayName.split(' ');
+
+        firstName =
+          splitName.length >= 1 ? splitName[0] : authUser.user.displayName;
+        lastName = splitName.length >= 2 ? splitName.slice(1).join(' ') : '';
+      }
 
       const batch = db.batch();
       const userDoc = db.collection('users').doc(auth.currentUser.uid);

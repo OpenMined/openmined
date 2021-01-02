@@ -31,7 +31,7 @@
             "production": {
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true,
               "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
@@ -44,6 +44,12 @@
                 }
               ]
             }
+          }
+        },
+        "analyze": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["source-map-explorer dist/apps/courses/*.js"]
           }
         },
         "serve": {
@@ -163,6 +169,12 @@
             }
           }
         },
+        "analyze": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["source-map-explorer dist/apps/firebase-api/*.js"]
+          }
+        },
         "serve": {
           "builder": "@nrwl/node:execute",
           "options": {
@@ -248,6 +260,12 @@
           "options": {
             "commands": ["sanity build ../../../dist/apps/sanity-api --yes"],
             "cwd": "apps/sanity-api/src"
+          }
+        },
+        "analyze": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["source-map-explorer dist/apps/sanity-api/*.js"]
           }
         },
         "serve": {

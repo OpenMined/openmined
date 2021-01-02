@@ -34,6 +34,8 @@ The OpenMined Courses website where we host our educational material. The site i
 
 - `yarn build courses --prod` - Builds a production version of the courses site
 
+- `yarn analyze courses` - Analyzes the file sizes and distribution of a built version of the courses site
+
 #### Courses E2E Testing
 
 The OpenMined Courses website uses Cypress for end-to-end-testing. You have access to the following commands:
@@ -61,3 +63,5 @@ Sanity is the primary CMS for all of OpenMined's websites. You must have a user 
 - `yarn build sanity-api` - Builds the Sanity CMS
 
 - `yarn build sanity-api --prod` - Builds a production version of the Sanity CMS
+
+- `yarn analyze sanity-api` - Analyzes the file sizes and distribution of a built version of the Sanity CMS

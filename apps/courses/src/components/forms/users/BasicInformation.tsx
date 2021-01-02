@@ -155,7 +155,7 @@ export default ({
   return (
     <>
       <UploadAvatar
-        currentAvatar={user.photoURL}
+        currentAvatar={user.photoURL || null}
         label="Profile Picture"
         mb={8}
       />

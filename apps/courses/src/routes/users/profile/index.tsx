@@ -127,25 +127,27 @@ export default () => {
               align={['center', null, null, 'flex-start']}
               width={['full', null, null, 280]}
             >
-              <Avatar src={user.photoURL} size="2xl" mb={4}>
-                {isSameUser && (
-                  <RRDLink to="/users/settings">
-                    <AvatarBadge
-                      bg="gray.800"
-                      border={0}
-                      boxSize="0.75em"
-                      right={2}
-                      bottom={2}
-                    >
-                      <Icon
-                        icon={faPencilAlt}
-                        color="white"
-                        style={{ width: '0.35em' }}
-                      />
-                    </AvatarBadge>
-                  </RRDLink>
-                )}
-              </Avatar>
+              {user && (
+                <Avatar src={user.photoURL || null} size="2xl" mb={4}>
+                  {isSameUser && (
+                    <RRDLink to="/users/settings">
+                      <AvatarBadge
+                        bg="gray.800"
+                        border={0}
+                        boxSize="0.75em"
+                        right={2}
+                        bottom={2}
+                      >
+                        <Icon
+                          icon={faPencilAlt}
+                          color="white"
+                          style={{ width: '0.35em' }}
+                        />
+                      </AvatarBadge>
+                    </RRDLink>
+                  )}
+                </Avatar>
+              )}
               <Heading as="h1" size="lg" mb={4}>
                 {name}
               </Heading>

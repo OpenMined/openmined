@@ -109,7 +109,7 @@ const UserAvatar = () => {
   const user = useUser<firebase.User>();
 
   if (user) {
-    return <Avatar src={user.photoURL} cursor="pointer" />;
+    return <Avatar src={user.photoURL || null} cursor="pointer" />;
   }
 
   return null;

@@ -97,7 +97,7 @@ export default () => {
         <Grid templateColumns="repeat(12, 1fr)" alignItems="center">
           <GridItem colSpan={[12, null, null, 2]} mb={[4, null, null, 0]}>
             <Flex justify={['center', null, null, 'flex-start']}>
-              <Avatar src={user.photoURL} size="2xl" />
+              {user && <Avatar src={user.photoURL || null} size="2xl" />}
             </Flex>
           </GridItem>
           <GridItem colSpan={[12, null, null, 10]}>

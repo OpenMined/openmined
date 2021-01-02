@@ -108,9 +108,11 @@ const IncorrectAnswer = ({
     <Icon icon={faTimes} color="red.300" boxSize={5} mr={4} />
     <Box>
       <Text mb={1}>{value}</Text>
-      <Text color="red.300" fontSize="sm" fontStyle="italic">
-        {typeof explanation === 'string' ? explanation : explanation()}
-      </Text>
+      {explanation && (
+        <Text color="red.300" fontSize="sm" fontStyle="italic">
+          {typeof explanation === 'string' ? explanation : explanation()}
+        </Text>
+      )}
     </Box>
   </Flex>
 );

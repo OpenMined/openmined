@@ -60,7 +60,7 @@ const Firebase = () => {
   }
 
   useEffect(() => {
-    firestore.enablePersistence();
+    firestore.enablePersistence({ synchronizeTabs: true });
   }, []);
 
   return null;

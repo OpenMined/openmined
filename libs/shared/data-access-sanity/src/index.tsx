@@ -298,15 +298,25 @@ export const useFirebaseSanity = (method, params = null) => {
       params,
     };
 
+    let isMounted = true;
+
     sanity(query)
       .then((d) => {
-        setData(prepareData(d.data));
-        setLoading(false);
+        if (isMounted) {
+          setData(prepareData(d.data));
+          setLoading(false);
+        }
       })
       .catch((e) => {
-        setError(e);
-        setLoading(false);
+        if (isMounted) {
+          setError(e);
+          setLoading(false);
+        }
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [method, params]);
 
   return { data, loading, error };

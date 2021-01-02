@@ -7,15 +7,16 @@ import { Box } from '@chakra-ui/react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-const Homepage = lazy(() => import('./homepage'));
-const Signup = lazy(() => import('./users/sign-up'));
-const Signin = lazy(() => import('./users/sign-in'));
-const Dashboard = lazy(() => import('./users/dashboard'));
-const Settings = lazy(() => import('./users/settings'));
-const Profile = lazy(() => import('./users/profile'));
+import Homepage from './homepage';
+import Signup from './users/sign-up';
+import Signin from './users/sign-in';
+import Dashboard from './users/dashboard';
+import Settings from './users/settings';
+import Profile from './users/profile';
+import PolicyAndTerms from './policy-and-terms';
+import NoMatch from './no-match';
+
 const CoursePage = lazy(() => import('./courses'));
-const PolicyAndTerms = lazy(() => import('./policy-and-terms'));
-const NoMatch = lazy(() => import('./no-match'));
 
 const AuthRoute = (props) => {
   const user = useUser();

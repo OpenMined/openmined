@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useFirestore, useUser } from 'reactfire';
 import {
@@ -16,15 +16,15 @@ import { getCourseRef } from './_firebase';
 import Loading from '../../components/Loading';
 import { usePrevious } from '../../helpers';
 
-const CourseSearch = lazy(() => import('./search'));
-const CourseOverview = lazy(() => import('./overview'));
-const CourseComplete = lazy(() => import('./course-complete'));
-const CourseProject = lazy(() => import('./project'));
-const CourseProjectSubmission = lazy(() => import('./project-submission'));
-const CourseProjectComplete = lazy(() => import('./project-complete'));
-const CourseLesson = lazy(() => import('./lesson'));
-const CourseLessonComplete = lazy(() => import('./lesson-complete'));
-const CourseConcept = lazy(() => import('./concept'));
+import CourseSearch from './search';
+import CourseOverview from './overview';
+import CourseComplete from './course-complete';
+import CourseProject from './project';
+import CourseProjectSubmission from './project-submission';
+import CourseProjectComplete from './project-complete';
+import CourseLesson from './lesson';
+import CourseLessonComplete from './lesson-complete';
+import CourseConcept from './concept';
 
 // What component do we render given what page is specified in the main routes file?
 const pages = {

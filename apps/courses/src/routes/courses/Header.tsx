@@ -226,6 +226,7 @@ export default ({
       bg="gray.900"
       boxShadow={noShadow ? null : 'md'}
       zIndex={2}
+      id="course-header"
     >
       <Flex as="nav" align="center" justify="space-between">
         <Box width={{ base: 6, [BREAK]: 1 / 4 }} boxSize={5}>

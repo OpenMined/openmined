@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Flex,
   Text,
@@ -36,6 +43,7 @@ import {
   faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
+import useScrollPosition from '@react-hook/window-scroll';
 import isUrl from 'is-url';
 import { useDebounce } from '../helpers';
 
@@ -86,6 +94,49 @@ const withLinks = (editor) => {
   };
 
   return editor;
+};
+
+const useStickyToolbar = () => {
+  const scrollY = useScrollPosition();
+  const toolbarRef = useRef(null);
+  const editorRef = useRef(null);
+  const [shouldStickToolbar, setShouldStickToolbar] = useState(false);
+  const [stikcyToolbarDimension, setStickToolbarDimension] = useState({
+    width: 0,
+    top: 0,
+    padBottom: 0,
+  });
+
+  useEffect(() => {
+    if (!toolbarRef.current) {
+      return;
+    }
+
+    const toolbarPosition = toolbarRef.current.offsetTop;
+    if (scrollY > toolbarPosition && !shouldStickToolbar) {
+      setShouldStickToolbar(true);
+    }
+    if (scrollY < toolbarPosition && shouldStickToolbar) {
+      setShouldStickToolbar(false);
+    }
+  }, [scrollY, toolbarRef, shouldStickToolbar]);
+
+  useEffect(() => {
+    const courseHeader = document.getElementById('course-header');
+
+    setStickToolbarDimension({
+      top: courseHeader ? courseHeader.clientHeight : 0,
+      width: editorRef.current ? editorRef.current.clientWidth : '100%',
+      padBottom: toolbarRef.current ? toolbarRef.current.clientHeight : 0,
+    });
+  }, [editorRef, toolbarRef, shouldStickToolbar]);
+
+  return {
+    shouldStickToolbar,
+    stikcyToolbarDimension,
+    toolbarRef,
+    editorRef,
+  };
 };
 
 export default ({
@@ -171,15 +222,27 @@ export default ({
     onOpen();
   };
 
+  const {
+    shouldStickToolbar,
+    stikcyToolbarDimension,
+    toolbarRef,
+    editorRef,
+  } = useStickyToolbar();
+
   return (
-    <Box {...props}>
+    <Box {...props} ref={editorRef}>
       <Slate editor={editor} value={value} onChange={setValue}>
         {!readOnly && (
           <Flex
-            width="full"
             bg="gray.800"
             justify="space-between"
             align="center"
+            ref={toolbarRef}
+            position={shouldStickToolbar ? 'fixed' : 'relative'}
+            top={shouldStickToolbar ? stikcyToolbarDimension.top + 'px' : 0}
+            width={
+              shouldStickToolbar ? stikcyToolbarDimension.width + 'px' : 'full'
+            }
           >
             <Flex align="center" wrap="wrap">
               <MarkButton format="bold" icon={faBold} />

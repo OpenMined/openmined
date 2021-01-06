@@ -24,6 +24,7 @@ import {
 import { completeCourse } from './app/courses';
 import { sendEmail } from './app/email';
 import sanity from './app/sanity';
+import { addUniqueNumberToUser } from './app/users';
 
 // Pick review for assignment or resign from a review
 exports.assignReview = functions
@@ -44,7 +45,12 @@ exports.completeCourse = functions
   .region('europe-west1')
   .https.onCall(completeCourse);
 
-// TODO: https://github.com/OpenMined/openmined/issues/51
+// Add unique number to each user
+exports.addUniqueNumberToUser = functions
+  .region('europe-west1')
+  .auth.user()
+  .onCreate(addUniqueNumberToUser);
+
 // Send the user an email when they sign up
 exports.sendWelcomeEmail = functions
   .region('europe-west1')

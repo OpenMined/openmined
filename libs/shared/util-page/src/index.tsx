@@ -19,7 +19,8 @@ export default ({ children, ...overrides }: OverrideProps) => {
   const DEFAULT_DESCRIPTION =
     'OpenMined is an open-source community whose goal is to make the world more privacy-preserving by lowering the barrier-to-entry to private AI technologies.';
   const DEFAULT_COLOR = '#333333';
-  const BASE_URL = window.location.origin;
+  const BASE_URL = window ? window.location.origin : '';
+  const pathname = window ? window.location.pathname : '/';
 
   const TWITTER_ACCOUNT = '@openminedorg';
 
@@ -56,7 +57,7 @@ export default ({ children, ...overrides }: OverrideProps) => {
         <html lang="en" />
 
         <base target="_blank" href={`${BASE_URL}/`} />
-        <link rel="canonical" href={`${BASE_URL}${window.location.pathname}`} />
+        <link rel="canonical" href={`${BASE_URL}${pathname}`} />
 
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

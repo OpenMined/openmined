@@ -15,7 +15,6 @@ if (process.env.NODE_ENV === 'development') {
 dotenv.load(envs);
 admin.initializeApp();
 
-// import ssr from './app/ssr';
 import {
   assignReview,
   resignReview,
@@ -24,6 +23,7 @@ import {
 import { completeCourse } from './app/courses';
 import { sendEmail } from './app/email';
 import sanity from './app/sanity';
+import ssr from './app/ssr';
 
 // Pick review for assignment or resign from a review
 exports.assignReview = functions
@@ -123,5 +123,4 @@ exports.receiveReview = functions
 // Set up Sanity API requests
 exports.sanity = functions.region('europe-west1').https.onCall(sanity);
 
-// TODO: https://github.com/OpenMined/openmined/issues/52
-// exports.ssr = functions.region('europe-west1').https.onRequest(ssr);
+exports.ssr = functions.region('europe-west1').https.onRequest(ssr);

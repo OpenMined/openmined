@@ -158,14 +158,41 @@
           "options": {
             "outputPath": "dist/apps/firebase-api",
             "main": "apps/firebase-api/src/index.ts",
+            "polyfills": "apps/courses/src/polyfills.ts",
             "tsConfig": "apps/firebase-api/tsconfig.app.json",
-            "assets": ["apps/firebase-api/src/assets"]
+            "assets": [
+              "apps/firebase-api/src/assets",
+              {
+                "input": "apps/courses/src/assets",
+                "glob": "!(*.js|*ts)",
+                "output": ""
+              },
+              {
+                "input": "libs/shared/util-page/src/lib",
+                "glob": "!(*.js|*ts)",
+                "output": ""
+              }
+            ],
+            "styles": [],
+            "scripts": [],
+            "webpackConfig": "apps/courses/webpack.config.js"
           },
           "configurations": {
             "production": {
               "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "extractCss": true,
+              "namedChunks": false,
               "extractLicenses": true,
-              "inspect": false
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           }
         },

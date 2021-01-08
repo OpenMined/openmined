@@ -6,6 +6,7 @@ import {
   AspectRatio,
   Box,
   Image,
+  Img,
   SimpleGrid,
 } from '@chakra-ui/react';
 
@@ -79,7 +80,7 @@ export default ({ title, description, video, partners, partnersText }) => (
           {partners.map(({ title, link, image }, i) => (
             <Flex key={i} align="center" justify="center">
               <a target="_blank" rel="noopener noreferrer" href={link}>
-                <Image
+                <Img
                   src={image}
                   alt={title}
                   maxWidth={{ base: '140px', lg: '200px', xl: '240px' }}

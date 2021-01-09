@@ -123,4 +123,10 @@ exports.receiveReview = functions
 // Set up Sanity API requests
 exports.sanity = functions.region('europe-west1').https.onCall(sanity);
 
-exports.ssr = functions.region('europe-west1').https.onRequest(ssr);
+exports.ssr = functions
+  .runWith({
+    timeoutSeconds: 540,
+    memory: '1GB',
+  })
+  .region('europe-west1')
+  .https.onRequest(ssr);

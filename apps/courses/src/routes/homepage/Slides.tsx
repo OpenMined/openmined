@@ -9,7 +9,7 @@ import {
   Box,
   Heading,
   Text,
-  Image,
+  Img as Image,
   Flex,
   CircularProgress,
   CircularProgressProps,
@@ -56,27 +56,28 @@ const ProgressButton = ({ value, direction, onClick }) => (
   </Box>
 );
 
+const order = [
+  'Cynthia Dwork',
+  'Helen Nissenbaum',
+  'Pascal Paillier',
+  'Ilya Mironov',
+  'Dawn Song',
+  'Ramesh Raskar',
+];
+
 export default (props) => {
   const { data, loading } = useFirebaseSanity('teachers');
+  
+  if (loading) return null;
 
-  const order = [
-    'Cynthia Dwork',
-    'Helen Nissenbaum',
-    'Pascal Paillier',
-    'Ilya Mironov',
-    'Dawn Song',
-    'Ramesh Raskar',
-  ];
+  return <SlidesSSR {...props} data={data} />;
+};
+
+export const SlidesSSR = ({ title, description, data }) => {
   const slides = data
     ? data.sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name))
     : null;
 
-  if (loading) return null;
-
-  return <Slides {...props} slides={slides} />;
-};
-
-const Slides = ({ title, description, slides }) => {
   const REFRESH_RATE = 50;
   const SLIDE_DURATION = 5000;
 

@@ -30,7 +30,7 @@ const UnauthRoute = (props) => {
   return !user ? <Route {...props} /> : <Navigate to="/users/dashboard" />;
 };
 
-const RouteWrapper = ({
+export const RouteWrapper = ({
   noHeader = false,
   blackHeader = false,
   noFooter = false,

@@ -5,8 +5,10 @@ import * as firebase from 'firebase';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom/server';
+import sanity from '../sanity';
 
 import { Route, Routes } from 'react-router-dom';
+import { prepareData } from '@openmined/shared/data-access-sanity';
 // import { SuspenseWithPerf } from 'reactfire';
 // import Loading from '';
 
@@ -33,9 +35,14 @@ const metadata = {
   },
 };
 
-import Homepage from '../../../../courses/src/routes/homepage';
-import ErrorBoundaryWrapper from '../../../../courses/src/components/ErrorBoundaryWrapper';
+import { HomepageSSR } from '../../../../courses/src/routes/homepage';
+// import { RouteWrapper } from '../../../../courses/src/routes';
 
+import { Box } from '@chakra-ui/react';
+import { HeaderSSR } from '../../../../courses/src/components/Header';
+import Footer from '../../../../courses/src/components/Footer';
+
+import ErrorBoundaryWrapper from '../../../../courses/src/components/ErrorBoundaryWrapper';
 
 const firebaseConfig = {
   apiKey: process.env.NX_FIREBASE_API_KEY,
@@ -62,18 +69,61 @@ export const WrappedApp = ({ children }) => (
   </React.StrictMode>
 );
 
-const renderMarkup = (req) => {
+const renderMarkup = async (req) => {
   try {
     global.window = {
       location: {
-        origin: ''
-      }
-    }
+        origin: '',
+      },
+    };
+
+    const homepageCourses = prepareData(
+      await sanity(
+        {
+          method: 'homepageCourses',
+        },
+        {}
+      )
+    );
+    const teachers = prepareData(
+      await sanity(
+        {
+          method: 'teachers',
+        },
+        {}
+      )
+    );
+
     const markup = renderToString(
       <WrappedApp>
+        {/* <Homepage homepageCourses={prepareData(homepageCourses)} /> */}
         <StaticRouter location={req.url}>
           <Routes>
-            <Route path="/" element={<Homepage />} />
+            <Route
+              path="/"
+              element={
+                <>
+                  <HeaderSSR
+                    noScrolling={false}
+                    isLoggedIn={false}
+                    user={null}
+                    auth={null}
+                    isScrolled={false}
+                  />
+                  <Box
+                    minHeight="100vh"
+                    display="grid"
+                    gridTemplateRows={'1fr'}
+                  >
+                    <HomepageSSR
+                      homepageCourses={homepageCourses}
+                      teachers={teachers}
+                    />
+                    <Footer />
+                  </Box>
+                </>
+              }
+            />
           </Routes>
         </StaticRouter>
       </WrappedApp>
@@ -81,17 +131,17 @@ const renderMarkup = (req) => {
 
     return markup;
   } catch (err) {
-    console.log('error while rendering')
-    console.log(err)
+    console.log('error while rendering');
+    console.log(err);
   }
 };
 
-export default (req, res) => {
+export default async (req, res) => {
   const filePath = path.join(__dirname, '../courses/index.html');
   try {
     const indexHtml = fs.readFileSync(filePath, { encoding: 'utf8' });
 
-    const markup = renderMarkup(req);
+    const markup = await renderMarkup(req);
 
     const finalHtml = indexHtml.replace('{{SSR}}', markup);
     res.send(finalHtml);

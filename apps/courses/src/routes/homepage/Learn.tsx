@@ -5,9 +5,7 @@ import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 import GridContainer from '../../components/GridContainer';
 import Course from '../../components/CourseCard';
 
-export default ({ title, description }) => {
-  const { data, loading } = useFirebaseSanity('homepageCourses');
-
+export const LearnSSR = ({ title, description, data }) => {
   const order = [
     'Privacy and Society',
     'Foundations of Private Computation',
@@ -19,8 +17,6 @@ export default ({ title, description }) => {
     : null;
 
   const [isHovered, setIsHovered] = useState(null);
-
-  if (loading) return null;
 
   return (
     <Box bg="gray.900" color="white" py={[16, null, null, 32]}>
@@ -63,4 +59,12 @@ export default ({ title, description }) => {
       </GridContainer>
     </Box>
   );
+};
+
+export default (props) => {
+  const { data, loading } = useFirebaseSanity('homepageCourses');
+
+  if (loading) return null;
+
+  return <LearnSSR {...props} data={data} />
 };

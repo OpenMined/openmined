@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Flex, Image, Heading, ChakraProps } from '@chakra-ui/react';
+import { Box, Text, Flex, Img as Image, Heading, ChakraProps } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
 import theme from '../theme';

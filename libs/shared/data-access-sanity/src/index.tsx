@@ -233,6 +233,51 @@ export const composeSanityImageUrl = (image) => {
   }
 };
 
+
+export const prepareData = (d) => {
+  const _prep = (elem) => {
+    // Make sure we convert all breaking spaces to <br /> tags
+    if (typeof elem === 'string' && elem.includes('\n')) {
+      return () => (
+        <span
+          dangerouslySetInnerHTML={{
+            __html: elem.split('\n').join('<br />'),
+          }}
+        />
+      );
+    }
+
+    return elem;
+  };
+
+  const _loop = (elem) => {
+    if (Array.isArray(elem)) {
+      return elem.map((e) => _loop(e));
+    } else if (typeof elem === 'object') {
+      // Leave math and code blocks alone
+      if ((elem._type && elem._type === 'math') || elem._type === 'code') {
+        return elem;
+      }
+
+      const temp = {};
+
+      Object.keys(elem).forEach((e) => {
+        temp[e] = _loop(elem[e]);
+      });
+
+      return temp;
+    }
+
+    return _prep(elem);
+  };
+
+  Object.keys(d).forEach((i) => {
+    d[i] = _loop(d[i]);
+  });
+
+  return d;
+};
+
 export type SANITY_FIREBASE_QUERY = {
   method: string;
   params: any;
@@ -247,50 +292,6 @@ export const useFirebaseSanity = (method, params = null) => {
   // @ts-ignore
   functions.region = 'europe-west1';
   const sanity = functions.httpsCallable('sanity');
-
-  const prepareData = (d) => {
-    const _prep = (elem) => {
-      // Make sure we convert all breaking spaces to <br /> tags
-      if (typeof elem === 'string' && elem.includes('\n')) {
-        return () => (
-          <span
-            dangerouslySetInnerHTML={{
-              __html: elem.split('\n').join('<br />'),
-            }}
-          />
-        );
-      }
-
-      return elem;
-    };
-
-    const _loop = (elem) => {
-      if (Array.isArray(elem)) {
-        return elem.map((e) => _loop(e));
-      } else if (typeof elem === 'object') {
-        // Leave math and code blocks alone
-        if ((elem._type && elem._type === 'math') || elem._type === 'code') {
-          return elem;
-        }
-
-        const temp = {};
-
-        Object.keys(elem).forEach((e) => {
-          temp[e] = _loop(elem[e]);
-        });
-
-        return temp;
-      }
-
-      return _prep(elem);
-    };
-
-    Object.keys(d).forEach((i) => {
-      d[i] = _loop(d[i]);
-    });
-
-    return d;
-  };
 
   useEffect(() => {
     const query: SANITY_FIREBASE_QUERY = {

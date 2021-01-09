@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box,
-  Image,
+  Img as Image,
   Flex,
   Link,
   Button,
@@ -115,23 +115,16 @@ const UserAvatar = () => {
   return null;
 };
 
-export default ({ noScrolling }) => {
-  const user: firebase.User = useUser();
-  const auth = useAuth();
+export const HeaderSSR = ({
+  noScrolling,
+  isLoggedIn,
+  user,
+  auth,
+  isScrolled,
+}) => {
   const toast = useToast();
-  const isLoggedIn = !!user;
 
   const [show, setShow] = useState(false);
-
-  const scrollY = useScrollPosition();
-  const [isScrolled, setIsScrolled] = useState(noScrolling || false);
-
-  useEffect(() => {
-    if (!noScrolling) {
-      if (scrollY > 0 && !isScrolled) setIsScrolled(true);
-      else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
-    }
-  }, [scrollY, isScrolled, noScrolling]);
 
   const BREAK = 'md';
 
@@ -309,5 +302,31 @@ export default ({ noScrolling }) => {
         </Flex>
       </GridContainer>
     </Box>
+  );
+};
+
+export default ({ noScrolling }) => {
+  const user: firebase.User = useUser();
+  const isLoggedIn = !!user;
+  const auth = useAuth();
+
+  const scrollY = useScrollPosition();
+  const [isScrolled, setIsScrolled] = useState(noScrolling || false);
+
+  useEffect(() => {
+    if (!noScrolling) {
+      if (scrollY > 0 && !isScrolled) setIsScrolled(true);
+      else if (scrollY <= 0 && isScrolled) setIsScrolled(false);
+    }
+  }, [scrollY, isScrolled, noScrolling]);
+
+  return (
+    <HeaderSSR
+      noScrolling={noScrolling}
+      isLoggedIn={isLoggedIn}
+      user={user}
+      auth={auth}
+      isScrolled={isScrolled}
+    />
   );
 };

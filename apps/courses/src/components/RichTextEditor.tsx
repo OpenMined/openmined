@@ -3,7 +3,6 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import {
@@ -43,7 +42,6 @@ import {
   faStrikethrough,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
-import useScrollPosition from '@react-hook/window-scroll';
 import isUrl from 'is-url';
 import { useDebounce } from '../helpers';
 
@@ -96,47 +94,15 @@ const withLinks = (editor) => {
   return editor;
 };
 
-const useStickyToolbar = () => {
-  const scrollY = useScrollPosition();
-  const toolbarRef = useRef(null);
-  const editorRef = useRef(null);
-  const [shouldStickToolbar, setShouldStickToolbar] = useState(false);
-  const [stikcyToolbarDimension, setStickToolbarDimension] = useState({
-    width: 0,
-    top: 0,
-    padBottom: 0,
-  });
-
-  useEffect(() => {
-    if (!toolbarRef.current) {
-      return;
-    }
-
-    const toolbarPosition = toolbarRef.current.offsetTop;
-    if (scrollY > toolbarPosition && !shouldStickToolbar) {
-      setShouldStickToolbar(true);
-    }
-    if (scrollY < toolbarPosition && shouldStickToolbar) {
-      setShouldStickToolbar(false);
-    }
-  }, [scrollY, toolbarRef, shouldStickToolbar]);
+const useCourseHeaderHeight = () => {
+  const [height, setHeight] = useState(0);
 
   useEffect(() => {
     const courseHeader = document.getElementById('course-header');
+    courseHeader && setHeight(courseHeader.clientHeight);
+  }, []);
 
-    setStickToolbarDimension({
-      top: courseHeader ? courseHeader.clientHeight : 0,
-      width: editorRef.current ? editorRef.current.clientWidth : '100%',
-      padBottom: toolbarRef.current ? toolbarRef.current.clientHeight : 0,
-    });
-  }, [editorRef, toolbarRef, shouldStickToolbar]);
-
-  return {
-    shouldStickToolbar,
-    stikcyToolbarDimension,
-    toolbarRef,
-    editorRef,
-  };
+  return height;
 };
 
 export default ({
@@ -222,27 +188,18 @@ export default ({
     onOpen();
   };
 
-  const {
-    shouldStickToolbar,
-    stikcyToolbarDimension,
-    toolbarRef,
-    editorRef,
-  } = useStickyToolbar();
+  const courseHeaderHeight = useCourseHeaderHeight();
 
   return (
-    <Box {...props} ref={editorRef}>
+    <Box {...props}>
       <Slate editor={editor} value={value} onChange={setValue}>
         {!readOnly && (
           <Flex
             bg="gray.800"
             justify="space-between"
             align="center"
-            ref={toolbarRef}
-            position={shouldStickToolbar ? 'fixed' : 'relative'}
-            top={shouldStickToolbar ? stikcyToolbarDimension.top + 'px' : 0}
-            width={
-              shouldStickToolbar ? stikcyToolbarDimension.width + 'px' : 'full'
-            }
+            position={'sticky'}
+            top={`${courseHeaderHeight}px`}
           >
             <Flex align="center" wrap="wrap">
               <MarkButton format="bold" icon={faBold} />

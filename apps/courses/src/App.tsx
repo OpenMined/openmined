@@ -49,8 +49,13 @@ const Firebase = () => {
           });
         }
       });
-    } catch (err) {
-      // handle error when enablePersistence was already invoked when SDK is preloaded
+    } catch (error) {
+      toast({
+        ...toastConfig,
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+      });
     }
   }, []);
 
@@ -93,6 +98,7 @@ const preloadSDKs = (firebaseApp) => {
     // }),
   ]);
 };
+
 const App = () => {
   const [action, setAction] = useState(history.action);
   const [location, setLocation] = useState(history.location);
@@ -105,6 +111,7 @@ const App = () => {
   }, []);
 
   const firebaseApp = useFirebaseApp();
+
   // @ts-ignore
   if (window.Cypress) {
     preloadSDKs(firebaseApp);

@@ -24,7 +24,7 @@ import {
 import { completeCourse } from './app/courses';
 import { sendEmail } from './app/email';
 import sanity from './app/sanity';
-import { addUniqueNumberToUser } from './app/users';
+import { addUniqueNumberToUser, addUNumToAllUsers } from './app/users';
 
 // Pick review for assignment or resign from a review
 exports.assignReview = functions
@@ -49,7 +49,9 @@ exports.completeCourse = functions
 exports.addUniqueNumberToUser = functions
   .region('europe-west1')
   .auth.user()
-  .onCreate(addUniqueNumberToUser);
+  // Toggle below 2 lines to add unique numbers to all users or only the current user
+  // .onCreate(addUniqueNumberToUser);
+  .onCreate(addUNumToAllUsers);
 
 // Send the user an email when they sign up
 exports.sendWelcomeEmail = functions

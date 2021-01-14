@@ -8,7 +8,7 @@ import {
 } from '@openmined/shared/types';
 import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 
-import { usePageAvailabilityRedirect } from './_helpers';
+import { usePageAvailabilityRedirect, useIsAllowedToAccessPage } from './_helpers';
 import * as configs from './_configs';
 import CourseWrap from './Wrapper';
 import { getCourseRef } from './_firebase';
@@ -55,6 +55,21 @@ const PermissionsGate = ({ children, progress, which, page, ...params }) => {
   // Otherwise, render the component itself
   return children;
 };
+
+const NewPermissionsGate = ({ children, progress, which, page, ...params }) => {
+  // Check whether or not we're able to see this page
+  const isAllowed = useIsAllowedToAccessPage(
+    which,
+    progress, // The user's progress
+    page.lessons || page.course.lessons, // The CMS's list of lessons and concepts
+    params,
+  );
+
+  if (!isAllowed) return <Loading />;
+
+  // Otherwise, render the component itself
+  return children;
+}
 
 type PropType = {
   which: CoursePageWhich;
@@ -164,10 +179,10 @@ export default ({ which }: PropType) => {
 
   // When ready, pass our component as a child of the permissions page
   return (
-    <PermissionsGate {...props}>
+    <NewPermissionsGate {...props}>
       <CourseWrap {...config}>
         <CoursePage {...props} />
       </CourseWrap>
-    </PermissionsGate>
+    </NewPermissionsGate>
   );
 };

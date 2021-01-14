@@ -1,3 +1,5 @@
+import { faSleigh } from '@fortawesome/free-solid-svg-icons';
+import { Course, CoursePageWhich } from '@openmined/shared/types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -261,6 +263,103 @@ export const getNextAvailablePage = (u, ls): NextAvailablePage => {
 
   // Something went wrong...
   return null;
+};
+
+// 'which' classification
+const isOnProjectPage = (which: CoursePageWhich) => {
+  return ['project', 'projectSubmission', 'projectCompleted'].indexOf(which) !== -1;
+}
+const isOnLessonPage = (which: CoursePageWhich) => {
+  return ['lesson', 'lessonComplete', 'concept'].indexOf(which) !== -1;
+}
+
+/* Compares 2 concept ids which can be actual concept id as well as falsy values like null, undefined
+ * Note: null and undefined are same
+ */
+const isSameConcept = (c1, c2) => (c1 === c2) || (!c1 && !c2);
+
+export const isAllowedToAccessPage = (
+  which: CoursePageWhich,
+  user,
+  ls,
+  course,
+  lesson,
+  concept,
+  suggestedPage: NextAvailablePage
+): boolean => {
+  // If project is completed, can acccess this page
+  if (which === 'courseComplete') return hasCompletedProject(user);
+
+  if (isOnProjectPage(which)) {
+    // If last lesson is completed, all lessons are completed.
+    const isAllLessonsCompleted = hasCompletedLesson(user, ls[ls.length - 1]._id);
+    // If all lessons are completed, can access all project pages
+    return isAllLessonsCompleted;
+  }
+
+
+  if (which === 'lessonComplete') {
+    const clc = ls[getLessonIndex(ls, lesson)].concepts; // "Current lesson concepts"
+    const lastConceptComplete = hasCompletedConcept(
+      user,
+      lesson,
+      clc[clc.length - 1]._id
+    );
+
+    // Are we on a lesson completion page, and has the last concept of the current lesson been completed?
+    return lastConceptComplete;
+  }
+
+  // If it's next available page, pass right away
+  if (suggestedPage.lesson === lesson && isSameConcept(suggestedPage.concept, concept)) {
+    return true;
+  }
+
+  // If lesson is started can access the lesson page
+  if (which === 'lesson') return hasStartedLesson(user, lesson);
+
+  if (which === 'concept') {
+    // Are we on a concept page, and has the concept been started?
+    return hasStartedConcept(user, lesson, concept)
+  }
+
+  return false
+};
+
+export const useIsAllowedToAccessPage = (
+  which: CoursePageWhich,
+  user,
+  ls,
+  params
+) => {
+  const [isAllowed, setIsAllowed] = useState(false);
+  const { course, lesson, concept } = params;
+
+  useEffect(() => {
+    const suggestedPage = getNextAvailablePage(user, ls);
+    const canAccess = isAllowedToAccessPage(
+      which,
+      user,
+      ls,
+      course,
+      lesson,
+      concept,
+      suggestedPage
+    );
+    
+    if (!canAccess) {
+      let url = `/courses/${course}/${suggestedPage.lesson}`;
+      if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
+
+      // TODO: https://github.com/OpenMined/openmined/issues/53
+      // navigate(url);
+      window.location.href = url;
+    } else {
+      setIsAllowed(canAccess);
+    }
+  }, [user, ls, course, lesson, concept, which]);
+
+  return isAllowed;
 };
 
 const checkForPrevious = (user, ls, l, c) => {

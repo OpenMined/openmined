@@ -4,7 +4,7 @@ import { logger } from 'firebase-functions';
 const getUserRef = (userId) =>
   admin.firestore().collection('users').doc(userId);
 
-export const addUNumToAllUsers = () => {
+export const addUNumToAllUsers = (req, res) => {
   let uNum = 1;
 
   const iterateAllUsers = async (nextPageToken?) => {
@@ -23,6 +23,8 @@ export const addUNumToAllUsers = () => {
       if (listUsersResult.pageToken) {
         // List next batch of users.
         iterateAllUsers(listUsersResult.pageToken);
+      } else {
+        res.json({ msg: 'Success' });
       }
     } catch (error) {
       logger.error('Error listing users:', error);

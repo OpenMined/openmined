@@ -49,9 +49,12 @@ exports.completeCourse = functions
 exports.addUniqueNumberToUser = functions
   .region('europe-west1')
   .auth.user()
-  // Toggle below 2 lines to add unique numbers to all users or only the current user
-  // .onCreate(addUniqueNumberToUser);
-  .onCreate(addUNumToAllUsers);
+  .onCreate(addUniqueNumberToUser);
+
+// Add unique number to all users
+exports.addUniqueNumberToUser = functions
+  .region('europe-west1')
+  .https.onRequest(addUNumToAllUsers);
 
 // Send the user an email when they sign up
 exports.sendWelcomeEmail = functions

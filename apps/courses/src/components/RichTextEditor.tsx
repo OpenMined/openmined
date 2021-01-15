@@ -198,7 +198,7 @@ export default ({
             bg="gray.800"
             justify="space-between"
             align="center"
-            position={'sticky'}
+            position="sticky"
             top={`${courseHeaderHeight}px`}
           >
             <Flex align="center" wrap="wrap">

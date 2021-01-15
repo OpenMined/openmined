@@ -1,7 +1,6 @@
-import { faSleigh } from '@fortawesome/free-solid-svg-icons';
-import { Course, CoursePageWhich } from '@openmined/shared/types';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CoursePageWhich } from '@openmined/shared/types';
 
 interface CourseProgress {
   lessons?: number;
@@ -265,18 +264,50 @@ export const getNextAvailablePage = (u, ls): NextAvailablePage => {
   return null;
 };
 
+export const getNextAvailablePageA = (u, ls): NextAvailablePage => {
+  // If we haven't started the course at all, send them to the first lesson initiation page
+  if (!hasStartedCourse(u)) return { lesson: ls[0]._id, concept: null };
+
+  for (let i = 0; i < ls.length; i++) {
+    const currentLesson = ls[i];
+
+    // If lesson is not started, make sure to mark with started_at
+    if (!hasStartedLesson(u, currentLesson._id)) {
+      return { lesson: currentLesson._id, concept: null };
+    }
+
+    for (let j = 0; j < currentLesson.concepts.length; j++) {
+      const currentConcept = currentLesson.concepts[j]._id;
+
+      if (!hasCompletedConcept(u, currentLesson._id, currentConcept)) {
+        return { lesson: currentLesson._id, concept: currentConcept };
+      }
+    }
+
+    // If we got here, then all concepts in that lesson have been completed
+    // Even though all concepts are completed, make sure this lesson is marked with completed_at
+    if (!hasCompletedLesson(u, currentLesson._id)) {
+      return { lesson: currentLesson._id, concept: 'complete' };
+    }
+  }
+
+  // Ok all lessons, concepts has started_at and completed_at
+  return { lesson: 'project', concept: null };
+};
+
 // 'which' classification
 const isOnProjectPage = (which: CoursePageWhich) => {
-  return ['project', 'projectSubmission', 'projectCompleted'].indexOf(which) !== -1;
-}
-const isOnLessonPage = (which: CoursePageWhich) => {
-  return ['lesson', 'lessonComplete', 'concept'].indexOf(which) !== -1;
-}
+  return (
+    ['project', 'projectSubmission', 'projectCompleted'].indexOf(which) !== -1
+  );
+};
 
-/* Compares 2 concept ids which can be actual concept id as well as falsy values like null, undefined
+/* Compares 2 ids which can be actual id as well as falsy values like null, undefined
  * Note: null and undefined are same
  */
-const isSameConcept = (c1, c2) => (c1 === c2) || (!c1 && !c2);
+const isSameRouteValue = (c1, c2) => c1 === c2 || (!c1 && !c2);
+const isSameLessonConcept = (c1, c2) =>
+  c1.lesson === c2.lesson && isSameRouteValue(c1.concept, c2.concept);
 
 export const isAllowedToAccessPage = (
   which: CoursePageWhich,
@@ -290,28 +321,24 @@ export const isAllowedToAccessPage = (
   // If project is completed, can acccess this page
   if (which === 'courseComplete') return hasCompletedProject(user);
 
-  if (isOnProjectPage(which)) {
-    // If last lesson is completed, all lessons are completed.
-    const isAllLessonsCompleted = hasCompletedLesson(user, ls[ls.length - 1]._id);
-    // If all lessons are completed, can access all project pages
-    return isAllLessonsCompleted;
-  }
-
+  // If last lesson is completed, all lessons are completed.
+  // If all lessons are completed, can access all project pages
+  if (isOnProjectPage(which))
+    return hasCompletedLesson(user, ls[ls.length - 1]._id);
 
   if (which === 'lessonComplete') {
     const clc = ls[getLessonIndex(ls, lesson)].concepts; // "Current lesson concepts"
-    const lastConceptComplete = hasCompletedConcept(
-      user,
-      lesson,
-      clc[clc.length - 1]._id
-    );
-
     // Are we on a lesson completion page, and has the last concept of the current lesson been completed?
-    return lastConceptComplete;
+    return hasCompletedConcept(user, lesson, clc[clc.length - 1]._id);
   }
 
   // If it's next available page, pass right away
-  if (suggestedPage.lesson === lesson && isSameConcept(suggestedPage.concept, concept)) {
+  if (
+    isSameLessonConcept(
+      { lesson: suggestedPage.lesson, concept: suggestedPage.concept },
+      { lesson, concept }
+    )
+  ) {
     return true;
   }
 
@@ -320,10 +347,10 @@ export const isAllowedToAccessPage = (
 
   if (which === 'concept') {
     // Are we on a concept page, and has the concept been started?
-    return hasStartedConcept(user, lesson, concept)
+    return hasStartedConcept(user, lesson, concept);
   }
 
-  return false
+  return false;
 };
 
 export const useIsAllowedToAccessPage = (
@@ -336,7 +363,7 @@ export const useIsAllowedToAccessPage = (
   const { course, lesson, concept } = params;
 
   useEffect(() => {
-    const suggestedPage = getNextAvailablePage(user, ls);
+    const suggestedPage = getNextAvailablePageA(user, ls);
     const canAccess = isAllowedToAccessPage(
       which,
       user,
@@ -346,7 +373,7 @@ export const useIsAllowedToAccessPage = (
       concept,
       suggestedPage
     );
-    
+
     if (!canAccess) {
       let url = `/courses/${course}/${suggestedPage.lesson}`;
       if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;

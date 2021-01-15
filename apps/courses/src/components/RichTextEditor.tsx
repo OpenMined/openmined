@@ -43,7 +43,7 @@ import {
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
 import isUrl from 'is-url';
-import { useDebounce } from '../helpers';
+import { useCourseHeaderHeight, useDebounce } from '../helpers';
 
 import Icon from '../components/Icon';
 import Modal from '../components/Modal';
@@ -92,17 +92,6 @@ const withLinks = (editor) => {
   };
 
   return editor;
-};
-
-const useCourseHeaderHeight = () => {
-  const [height, setHeight] = useState(0);
-
-  useEffect(() => {
-    const courseHeader = document.getElementById('course-header');
-    courseHeader && setHeight(courseHeader.clientHeight);
-  }, []);
-
-  return height;
 };
 
 export default ({
@@ -198,7 +187,7 @@ export default ({
             bg="gray.800"
             justify="space-between"
             align="center"
-            position={'sticky'}
+            position="sticky"
             top={`${courseHeaderHeight}px`}
           >
             <Flex align="center" wrap="wrap">

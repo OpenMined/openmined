@@ -6,7 +6,10 @@ import CourseContent from './content';
 import CourseFooter from './Footer';
 
 import { getConceptIndex, hasCompletedConcept } from '../_helpers';
-import { handleErrors } from '../../../helpers';
+import {
+  handleErrors,
+  useCourseFooterHeight,
+} from '../../../helpers';
 import useToast from '../../../components/Toast';
 import {
   handleConceptComplete,
@@ -117,9 +120,14 @@ export default ({
     hasScrolledToBottom,
   ]);
 
+  const courseFooterHeight = useCourseFooterHeight();
   return (
     <>
-      <Box bg="gray.800" ref={parentRef}>
+      <Box
+        bg="gray.800"
+        ref={parentRef}
+        paddingBottom={`${courseFooterHeight}px`}
+      >
         <CourseContent
           page={page}
           progress={progress}

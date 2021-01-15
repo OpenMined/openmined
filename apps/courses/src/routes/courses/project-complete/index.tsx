@@ -118,7 +118,7 @@ export default ({ progress, page, user, course }: CoursePagesProp) => {
 
   return (
     <Box bg="gray.900" color="white">
-      <GridContainer isInitial py={[8, null, null, 16]}>
+      <GridContainer py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
             <Image

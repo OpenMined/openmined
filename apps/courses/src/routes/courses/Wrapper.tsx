@@ -3,6 +3,7 @@ import { faBookOpen, faCube, faLink } from '@fortawesome/free-solid-svg-icons';
 import Page from '@openmined/shared/util-page';
 
 import CourseHeader from './Header';
+import { Box } from '@chakra-ui/react';
 
 import {
   hasCompletedConcept,
@@ -10,6 +11,7 @@ import {
   hasStartedConcept,
   hasStartedLesson,
 } from './_helpers';
+import { useCourseHeaderHeight } from '../../helpers';
 
 const genDrawerSections = (
   { type, data },
@@ -73,10 +75,18 @@ export default ({ page, header, children }) => {
     );
   }
 
+  const courseHeaderHeight = useCourseHeaderHeight();
   return (
     <Page title={page.title} description={page.description}>
       {header && <CourseHeader {...header} />}
-      {children}
+
+      <Box
+        minHeight="100vh"
+        display="grid"
+        paddingTop={`${courseHeaderHeight}px`}
+      >
+        {children}
+      </Box>
     </Page>
   );
 };

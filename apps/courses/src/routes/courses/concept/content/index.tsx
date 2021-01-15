@@ -110,7 +110,7 @@ export default ({
   const isVideoLayout = firstContentPiece === 'video';
 
   return (
-    <GridContainer py="header">
+    <GridContainer>
       {isVideoLayout && <Video {...content[0]} />}
       <Box bg="white" px={8} py={16}>
         <Box maxW={600} mx="auto">

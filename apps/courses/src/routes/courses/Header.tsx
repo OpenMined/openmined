@@ -33,7 +33,7 @@ import { User } from '@openmined/shared/types';
 import CourseDrawer from './Drawer';
 import { getUserRef } from './_firebase';
 
-import { getLinkPropsFromLink, handleErrors } from '../../helpers';
+import { COURSE_HEADER_ID, getLinkPropsFromLink, handleErrors } from '../../helpers';
 import Icon from '../../components/Icon';
 import useToast, { toastConfig } from '../../components/Toast';
 import { Popover } from '../../components/Popover';
@@ -226,7 +226,7 @@ export default ({
       bg="gray.900"
       boxShadow={noShadow ? null : 'md'}
       zIndex={2}
-      id="course-header"
+      id={COURSE_HEADER_ID}
     >
       <Flex as="nav" align="center" justify="space-between">
         <Box width={{ base: 6, [BREAK]: 1 / 4 }} boxSize={5}>

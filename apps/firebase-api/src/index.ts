@@ -46,13 +46,13 @@ exports.completeCourse = functions
   .https.onCall(completeCourse);
 
 // Add unique number to each user
-exports.addUniqueNumberToUser = functions
-  .region('europe-west1')
-  .auth.user()
-  .onCreate(addUniqueNumberToUser);
+// exports.addUniqueNumberToUser = functions
+//   .region('europe-west1')
+//   .auth.user()
+//   .onCreate(addUniqueNumberToUser);
 
 // Add unique number to all users
-exports.addUniqueNumberToUser = functions
+exports.addUniqueNumberToAllUsers = functions
   .region('europe-west1')
   .https.onRequest(addUNumToAllUsers);
 

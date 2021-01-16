@@ -169,7 +169,7 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
     ).catch((error) => handleErrors(toast, error));
 
   return (
-    <GridContainer isInitial py={16}>
+    <GridContainer py={16}>
       <Flex align="flex-start" direction={{ base: 'column', lg: 'row' }}>
         <Box mr={{ lg: 16 }}>
           <Text color="gray.700" fontWeight="bold" mb={2}>

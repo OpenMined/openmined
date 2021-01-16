@@ -20,7 +20,7 @@ import useScrollPosition from '@react-hook/window-scroll';
 import useToast, { toastConfig } from '../../../components/Toast';
 import { Popover } from '../../../components/Popover';
 import Icon from '../../../components/Icon';
-import { getLinkPropsFromLink } from '../../../helpers';
+import { COURSE_FOOTER_ID, getLinkPropsFromLink } from '../../../helpers';
 import { useNavigate } from 'react-router-dom';
 import { discussionLink, issuesLink } from '../../../content/links';
 
@@ -183,7 +183,7 @@ const Controls = ({
   // const navigate = useNavigate();
 
   return (
-    <Flex align="center">
+    <Flex align="center" id={COURSE_FOOTER_ID}>
       <Button
         onClick={() => {
           window.scrollTo({ top: 0, behavior: 'smooth' });

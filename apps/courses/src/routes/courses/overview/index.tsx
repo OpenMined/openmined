@@ -301,7 +301,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
         }}
       />
       <Box pt={[8, null, null, 24]} pb={16}>
-        <GridContainer isInitial mb={[8, null, null, 12, 16]}>
+        <GridContainer mb={[8, null, null, 12, 16]}>
           <Flex
             direction={['column', null, null, 'row']}
             justify="space-between"

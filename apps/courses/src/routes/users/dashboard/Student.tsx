@@ -13,7 +13,7 @@ import { hasCompletedCourse, hasStartedProject } from '../../courses/_helpers';
 import Icon from '../../../components/Icon';
 import CourseProgressCard from '../../../components/CourseProgressCard';
 import SubmissionInline from '../../../components/SubmissionInline';
-import ColoredTabs from '../../../components/ColoredTabs';
+import ColoredTabs, { ColoredTabPanel } from '../../../components/ColoredTabs';
 import StatusAccordion from '../../../components/StatusAccordion';
 import CourseCompleteCard from '../../../components/CourseCompleteCard';
 import {
@@ -175,22 +175,22 @@ export const StudentTabs = ({ courses, progress }) => {
   };
 
   return (
-    <ColoredTabs
-      content={[
-        {
-          title: 'My Projects',
-          panel: MyProjects,
-          px: [8, null, null, 16],
-          py: [8, null, null, 12],
-        },
-        {
-          title: 'Course History',
-          panel: CourseHistory,
-          px: [8, null, null, 16],
-          py: [8, null, null, 12],
-        },
-      ]}
-    />
+    <ColoredTabs>
+      <ColoredTabPanel
+        title="My Projects"
+        px={[8, null, null, 16]}
+        py={[8, null, null, 12]}
+      >
+        <MyProjects />
+      </ColoredTabPanel>
+      <ColoredTabPanel
+        title="Course History"
+        px={[8, null, null, 16]}
+        py={[8, null, null, 12]}
+      >
+        <CourseHistory />
+      </ColoredTabPanel>
+    </ColoredTabs>
   );
 };
 

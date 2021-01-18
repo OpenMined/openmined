@@ -19,26 +19,32 @@ const tabProps = {
   },
 };
 
-export default ({ content, ...props }) => (
-  <Tabs isFitted {...props}>
-    <TabList flexDirection={['column', null, 'row']}>
-      {content.map(({ title }) => (
-        <Tab {...tabProps} key={title}>
-          {title}
-        </Tab>
-      ))}
-    </TabList>
-    <TabPanels
-      bg="white"
-      border="1px solid"
-      borderColor="gray.300"
-      borderBottomRadius="md"
-    >
-      {content.map(({ panel: Panel, title, ...i }) => (
-        <TabPanel {...i} key={title}>
-          <Panel />
-        </TabPanel>
-      ))}
-    </TabPanels>
-  </Tabs>
+export default ({ children, ...props }) => {
+  const childrenArray = React.Children.toArray(children)
+  const titles = childrenArray.map(child => (child as any).props.title)
+  return (
+    <Tabs isFitted {...props}>
+      <TabList flexDirection={['column', null, 'row']}>
+        {titles.map(title => (
+          <Tab {...tabProps} key={title}>
+            {title}
+          </Tab>
+        ))}
+      </TabList>
+      <TabPanels
+        bg="white"
+        border="1px solid"
+        borderColor="gray.300"
+        borderBottomRadius="md"
+      >
+        {childrenArray}
+      </TabPanels>
+    </Tabs>
+  );
+};
+
+export const ColoredTabPanel = ({ children, title, ...props }) => (
+  <TabPanel {...props} key={title}>
+    {children}
+  </TabPanel>
 );

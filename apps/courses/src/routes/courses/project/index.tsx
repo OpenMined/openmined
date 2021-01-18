@@ -64,7 +64,8 @@ const ensurePopulatedSubmissionsArray = (submissions) =>
 
           return { ...s, status: 'pending' };
         }),
-        ...Array(PROJECT_PART_SUBMISSIONS - submissions.length).fill({
+        // Fall back to 0 when PROJECT_PART_SUBMISSIONS < submissions.length
+        ...Array(Math.max(PROJECT_PART_SUBMISSIONS - submissions.length, 0)).fill({
           status: 'none',
         }),
       ]

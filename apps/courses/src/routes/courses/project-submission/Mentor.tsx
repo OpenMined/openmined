@@ -29,91 +29,13 @@ import RichTextEditor, {
   EDITOR_STORAGE_STRING,
   resetEditor,
 } from '../../../components/RichTextEditor';
-import ColoredTabs from '../../../components/ColoredTabs';
+import ColoredTabs, { ColoredTabPanel } from '../../../components/ColoredTabs';
 import Countdown from '../../../components/Countdown';
 import useToast, { toastConfig } from '../../../components/Toast';
 import SubmissionInline from '../../../components/SubmissionInline';
 import { handleErrors, analytics } from '../../../helpers';
-
-const genTabsContent = (part, attemptData, setHasStartedSubmission) => {
-  const content = [
-    {
-      title: '1. Instructions',
-      panel: () => (
-        <>
-          <Heading as="p" mb={2} size="lg">
-            Instructions
-          </Heading>
-          <Divider />
-          <Content content={part.instructions} />
-        </>
-      ),
-      px: [8, null, null, 24],
-      py: [8, null, null, 16],
-    },
-    {
-      title: '2. Rubric',
-      panel: () => (
-        <>
-          <Heading as="p" mb={2} size="lg">
-            Rubric
-          </Heading>
-          <Divider />
-          <Content content={part.rubric} />
-        </>
-      ),
-      px: [8, null, null, 24],
-      py: [8, null, null, 16],
-    },
-    {
-      title: '3. Submission',
-      panel: () => (
-        <Box px={[8, null, null, 24]} py={[8, null, null, 16]}>
-          <Heading as="p" mb={2} size="lg">
-            Submission
-          </Heading>
-          <Divider />
-          <RichTextEditor
-            mt={8}
-            content={JSON.parse(attemptData.submission_content)}
-            readOnly
-          />
-        </Box>
-      ),
-      p: 0,
-      minHeight: 400,
-    },
-    {
-      title: '4. Feedback',
-      panel: () => (
-        <>
-          {!attemptData.review_content && (
-            <RichTextEditor
-              onChange={(value, { empty }) => setHasStartedSubmission(!empty)}
-            />
-          )}
-          {attemptData.review_content && (
-            <Box px={[8, null, null, 24]} py={[8, null, null, 16]}>
-              <Heading as="p" mb={2} size="lg">
-                Submission
-              </Heading>
-              <Divider />
-              <RichTextEditor
-                mt={8}
-                content={JSON.parse(attemptData.review_content)}
-                readOnly
-              />
-            </Box>
-          )}
-        </>
-      ),
-      p: 0,
-      minHeight: 400,
-    },
-  ];
-
-  return content;
-};
+import Instructions from './tabs/Instructions';
+import Rubric from './tabs/Rubric';
 
 export default ({
   progress,
@@ -141,12 +63,10 @@ export default ({
   const [passFail, setPassFail] = useState(null);
   const preSubmitModal = useDisclosure();
 
-  const tabsContent = useMemo(
-    () => genTabsContent(content, attemptData, setHasStartedSubmission),
-    [content, attemptData]
-  );
-
   const isBeforeDeadline = useCallback(() => {
+    if (!attemptData.review_started_at) {
+      return true;
+    }
     const now = dayjs();
     const reviewStarted = dayjs(attemptData.review_started_at.toDate());
 
@@ -246,11 +166,13 @@ export default ({
         <Flex justify="space-between" align="center" mb={6}>
           <Text fontFamily="mono" color="gray.700" mr={6}>
             Time Remaining:{' '}
-            <Countdown
-              time={getSubmissionReviewEndTime(
-                dayjs(attemptData.review_started_at.toDate())
-              )}
-            />
+            {attemptData.review_started_at && (
+              <Countdown
+                time={getSubmissionReviewEndTime(
+                  dayjs(attemptData.review_started_at.toDate())
+                )}
+              />
+            )}
           </Text>
           <Button
             colorScheme="gray"
@@ -277,7 +199,57 @@ export default ({
           ))}
         </Box>
       )}
-      <ColoredTabs mb={8} content={tabsContent} />
+      <ColoredTabs mb={8}>
+        <ColoredTabPanel
+          title="1. Instructions"
+          px={[8, null, null, 24]}
+          py={[8, null, null, 16]}
+        >
+          <Instructions content={content} />
+        </ColoredTabPanel>
+        <ColoredTabPanel
+          title="2. Rubric"
+          px={[8, null, null, 24]}
+          py={[8, null, null, 16]}
+        >
+          <Rubric content={content} />
+        </ColoredTabPanel>
+        <ColoredTabPanel title="3. Submission" p={0} minHeight={400}>
+          <Box px={[8, null, null, 24]} py={[8, null, null, 16]}>
+            <Heading as="p" mb={2} size="lg">
+              Submission
+            </Heading>
+            <Divider />
+            <RichTextEditor
+              mt={8}
+              content={JSON.parse(attemptData.submission_content)}
+              readOnly
+            />
+          </Box>
+        </ColoredTabPanel>
+        <ColoredTabPanel title="4. Feedback" p={0} minHeight={400}>
+          <>
+            {!attemptData.review_content && (
+              <RichTextEditor
+                onChange={(value, { empty }) => setHasStartedSubmission(!empty)}
+              />
+            )}
+            {attemptData.review_content && (
+              <Box px={[8, null, null, 24]} py={[8, null, null, 16]}>
+                <Heading as="p" mb={2} size="lg">
+                  Submission
+                </Heading>
+                <Divider />
+                <RichTextEditor
+                  mt={8}
+                  content={JSON.parse(attemptData.review_content)}
+                  readOnly
+                />
+              </Box>
+            )}
+          </>
+        </ColoredTabPanel>
+      </ColoredTabs>
       {!hasAlreadyReviewed && (
         <Flex
           mb={8}

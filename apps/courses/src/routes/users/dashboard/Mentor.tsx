@@ -35,7 +35,7 @@ import {
   SUBMISSION_REVIEW_HOURS,
 } from '../../courses/_helpers';
 import { analytics } from '../../../helpers';
-import ColoredTabs from '../../../components/ColoredTabs';
+import ColoredTabs, { ColoredTabPanel } from '../../../components/ColoredTabs';
 import useToast, { toastConfig } from '../../../components/Toast';
 import Countdown from '../../../components/Countdown';
 import Icon from '../../../components/Icon';
@@ -516,22 +516,22 @@ export const MentorTabs = ({ courses, mentor }) => {
   };
 
   return (
-    <ColoredTabs
-      content={[
-        {
-          title: 'Project Queue',
-          panel: ProjectQueue,
-          px: [8, null, null, 16],
-          py: [8, null, null, 12],
-        },
-        {
-          title: 'My Activity',
-          panel: MyActivity,
-          px: [8, null, null, 16],
-          py: [8, null, null, 12],
-        },
-      ]}
-    />
+    <ColoredTabs>
+      <ColoredTabPanel
+        title="Project Queue"
+        px={[8, null, null, 16]}
+        py={[8, null, null, 12]}
+      >
+        <ProjectQueue />
+      </ColoredTabPanel>
+      <ColoredTabPanel
+        title="My Activity"
+        px={[8, null, null, 16]}
+        py={[8, null, null, 12]}
+      >
+        <MyActivity />
+      </ColoredTabPanel>
+    </ColoredTabs>
   );
 };
 

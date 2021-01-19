@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -352,27 +352,67 @@ export const MentorTabs = ({ courses, mentor }) => {
     );
   };
 
-  const MyActivity = () => {
-    const user: firebase.User = useUser();
-    const db = useFirestore();
-    const dbReviewsRef = db
+  const loadReviewData = async (db, uId, startAt, pageSize) => {
+    let dbRef = db
       .collection('users')
-      .doc(user.uid)
+      .doc(uId)
       .collection('reviews')
       // .where('status', '!=', 'pending')
       .orderBy('started_at', 'desc')
-      .limit(10);
-    const dbReviews: MentorReview[] = useFirestoreCollectionData(dbReviewsRef);
+      .limit(pageSize + 1);
+    if (startAt) {
+      dbRef = dbRef.startAt(startAt);
+    }
+    const reviewsSnapshots = await dbRef.get();
+    const reviews = reviewsSnapshots.docs.map((doc) => doc.data());
 
-    const reviewHistory = dbReviews.map((r) => {
-      const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
+    if (reviews.length > pageSize) {
+      return {
+        reviews: reviews.slice(0, pageSize),
+        lastReview: reviews[pageSize],
+      };
+    } else {
+      return {
+        reviews,
+        lastReview: null,
+      };
+    }
+  };
 
-      if (courseIndex !== -1) return { ...r, course: courses[courseIndex] };
-      return null;
-    });
+  const MyActivity = () => {
+    const PAGE_SIZE = 5;
+    const user: firebase.User = useUser();
+    const db = useFirestore();
 
-    // TODO: https://github.com/OpenMined/openmined/issues/59
-    const hasMoreReviews = false;
+    const [pageLoading, setPageLoading] = useState<boolean>(false);
+    const [dbReviews, setDbReviews] = useState<MentorReview[]>([]);
+    const [lastReview, setLastReiew] = useState<MentorReview>(null);
+
+    const loadNextPage = async () => {
+      setPageLoading(true);
+      const { lastReview: newLastReview, reviews: newReviews } = await loadReviewData(
+        db,
+        user.uid,
+        lastReview,
+        PAGE_SIZE
+      );
+
+      setDbReviews(dbReviews.concat(newReviews));
+      setLastReiew(newLastReview);
+      setPageLoading(false);
+    }
+
+    useEffect(() => {
+      loadNextPage();
+    }, []);
+
+    const reviewHistory = dbReviews
+      .map((r) => {
+        const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
+
+        if (courseIndex !== -1) return { ...r, course: courses[courseIndex] };
+        return null;
+      });
 
     // TODO: https://github.com/OpenMined/openmined/issues/61
     const numReviewed = 0;
@@ -500,11 +540,11 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Flex>
           </Flex>
         ))}
-        {/* TODO: https://github.com/OpenMined/openmined/issues/59 */}
-        {hasMoreReviews && (
+        {!!lastReview && (
           <Flex justify="center" mt={3}>
             <Button
-              onClick={() => console.log('LOAD MORE')}
+              isLoading={pageLoading}
+              onClick={() => loadNextPage()}
               colorScheme="black"
             >
               Load More Reviews

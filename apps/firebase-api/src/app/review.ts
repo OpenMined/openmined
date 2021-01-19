@@ -3,6 +3,7 @@ import { logger } from 'firebase-functions';
 import dayjs from 'dayjs';
 
 import { SUBMISSION_REVIEW_HOURS } from '../../../courses/src/routes/courses/_helpers';
+import { MentorReview } from '@openmined/shared/types';
 
 export const assignReview = async (data, context) => {
   // Get the current user and the course
@@ -275,5 +276,32 @@ export const checkForUnreviewedSubmissions = async () => {
   } catch (error) {
     logger.error('Error', error);
     return { error };
+  }
+};
+
+export const calculateCompletedResignedReviews = async (change, context) => {
+  try {
+    const { mentorId } = context.params;
+
+    const dbReviews = await admin
+      .firestore()
+      .collection(`/users/${mentorId}/reviews`)
+      .get();
+
+    const mentorRef = admin.firestore().collection('users').doc(mentorId);
+
+    const reviews: MentorReview[] = dbReviews.docs.map(
+      (doc) => doc.data() as MentorReview
+    );
+
+    const numResigned = reviews.filter((review) => review.status === 'resigned')
+      .length;
+    const numCompleted = reviews.filter(
+      (review) => review.status === 'reviewed'
+    ).length;
+
+    await mentorRef.set({ numResigned, numCompleted }, { merge: true });
+  } catch (error) {
+    logger.error('calculateAssignedResignedReviews failed', error);
   }
 };

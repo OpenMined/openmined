@@ -20,10 +20,15 @@ import {
   assignReview,
   resignReview,
   checkForUnreviewedSubmissions,
+  calculateCompletedResignedReviews,
 } from './app/review';
 import { completeCourse } from './app/courses';
 import { sendEmail } from './app/email';
 import sanity from './app/sanity';
+import {
+  onCourseSubmissionUpdate,
+  calculateSubmissionNum,
+} from './app/submissions';
 import { addUniqueNumberToUser, addUNumToAllUsers } from './app/users';
 
 // Pick review for assignment or resign from a review
@@ -87,49 +92,21 @@ exports.receiveReview = functions
   .firestore.document(
     'users/{userId}/courses/{courseId}/submissions/{submissionId}'
   )
-  .onUpdate(async (change, context) => {
-    const oldData = change.before.data();
-    const newData = change.after.data();
+  .onUpdate(onCourseSubmissionUpdate);
 
-    if (
-      !oldData.review_content &&
-      !oldData.status &&
-      newData.review_content &&
-      newData.status
-    ) {
-      await admin
-        .auth()
-        .getUser(context.params.userId)
-        .then(async (user) => {
-          const dbUser = await admin
-            .firestore()
-            .collection('users')
-            .doc(context.params.userId)
-            .get();
-          const dbUserData = dbUser.data();
+// Calculate the pending submissions in the queue
+exports.calculateSubmissionNum = functions
+  .region('europe-west1')
+  .firestore.document('users/{mentorId}/reviews/{reviewId}')
+  .onWrite(calculateCompletedResignedReviews);
 
-          if (
-            !dbUserData.notification_preferences ||
-            (dbUserData.notification_preferences &&
-              dbUserData.notification_preferences.includes('project_reviews'))
-          ) {
-            if (newData.status === 'passed') {
-              return sendEmail('receivePassedReview', user.email, {
-                data: newData,
-              });
-            } else if (newData.status === 'failed') {
-              return sendEmail('receiveFailedReview', user.email, {
-                data: newData,
-              });
-            }
-          } else {
-            return { status: 'Filter not met' };
-          }
-        });
-    }
-
-    return { status: 'Filter not met' };
-  });
+// Calculate the pending submissions in the queue
+exports.calculateSubmissionNum = functions
+  .region('europe-west1')
+  .firestore.document(
+    'users/{userId}/courses/{courseId}/submissions/{submissionId}'
+  )
+  .onWrite(calculateSubmissionNum);
 
 // Set up Sanity API requests
 exports.sanity = functions.region('europe-west1').https.onCall(sanity);

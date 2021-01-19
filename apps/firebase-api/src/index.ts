@@ -95,7 +95,7 @@ exports.receiveReview = functions
   .onUpdate(onCourseSubmissionUpdate);
 
 // Calculate the pending submissions in the queue
-exports.calculateSubmissionNum = functions
+exports.calculateCompletedResignedReviews = functions
   .region('europe-west1')
   .firestore.document('users/{mentorId}/reviews/{reviewId}')
   .onWrite(calculateCompletedResignedReviews);

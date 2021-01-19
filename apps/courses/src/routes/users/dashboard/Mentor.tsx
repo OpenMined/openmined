@@ -15,6 +15,7 @@ import { Link as RRDLink } from 'react-router-dom';
 import {
   useFirestore,
   useFirestoreCollectionData,
+  useFirestoreDocData,
   useFunctions,
   useUser,
 } from 'reactfire';
@@ -28,7 +29,11 @@ import {
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { MentorReview, CourseProjectSubmission } from '@openmined/shared/types';
+import {
+  MentorReview,
+  CourseProjectSubmission,
+  CourseMetric,
+} from '@openmined/shared/types';
 
 import {
   getSubmissionReviewEndTime,
@@ -242,7 +247,12 @@ const NullSetTabPanel = ({ children }) => (
 );
 
 export const MentorTabs = ({ courses, mentor }) => {
-  const ProjectQueue = () => {
+  const ProjectQueueCourse = ({
+    title,
+    slug,
+    visual: { full },
+    project: { parts },
+  }) => {
     const toast = useToast();
     const functions: firebase.functions.Functions = useFunctions();
     // @ts-ignore
@@ -252,102 +262,111 @@ export const MentorTabs = ({ courses, mentor }) => {
 
     const [hasRequestedReview, setHasRequestedReview] = useState(false);
 
+    const db = useFirestore();
+    const courseMetricRef = db.collection('courses').doc(slug);
+    const courseMetric: CourseMetric = useFirestoreDocData(courseMetricRef);
+
+    return (
+      <Box key={title} borderRadius="md" boxShadow="lg" overflow="hidden">
+        <Flex
+          p={6}
+          direction="column"
+          align="center"
+          bg="gray.800"
+          color="white"
+        >
+          <Heading as="p" size="md" mb={4}>
+            {title}
+          </Heading>
+          <Image src={full} alt={title} />
+          {(!!courseMetric && !!courseMetric.numSubmissionsPending) && (
+            <Text color="gray.400" mt={4}>
+              {courseMetric.numSubmissionsPending} in queue
+            </Text>
+          )}
+        </Flex>
+        <Flex p={6} direction="column" align="center">
+          <Box mt={-3} mb={8} width="full">
+            {parts.map((part, index) => (
+              <Flex
+                align="center"
+                p={3}
+                borderBottom="1px solid"
+                borderBottomColor="gray.400"
+                key={index}
+              >
+                <Circle
+                  bg="gray.800"
+                  color="white"
+                  fontWeight="bold"
+                  boxSize={8}
+                  mr={3}
+                >
+                  {index + 1}
+                </Circle>
+                <Text fontWeight="bold">{part.title}</Text>
+              </Flex>
+            ))}
+          </Box>
+          <Flex justify="space-between" align="center" width="full">
+            <Link
+              // TODO: https://github.com/OpenMined/openmined/issues/53
+              // as={RRDLink}
+              // to={`/courses/${slug}`}
+              as="a"
+              href={`/courses/${slug}`}
+              target="_self"
+              color="gray.700"
+              _hover={{ color: 'gray.800' }}
+            >
+              Project Overview
+            </Link>
+            <Button
+              colorScheme="black"
+              disabled={hasRequestedReview}
+              isLoading={hasRequestedReview}
+              onClick={() => {
+                setHasRequestedReview(true);
+
+                requestReview({ course: slug }).then(({ data }) => {
+                  if (data && !data.error) {
+                    setHasRequestedReview(false);
+
+                    toast({
+                      ...toastConfig,
+                      title: 'Review assigned',
+                      description: `You have been assigned a review, you have ${SUBMISSION_REVIEW_HOURS} hours to complete this review`,
+                      status: 'success',
+                    });
+
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  } else {
+                    toast({
+                      ...toastConfig,
+                      title: 'Error assigning review',
+                      description: data.error,
+                      status: 'error',
+                    });
+
+                    setHasRequestedReview(false);
+                  }
+                });
+              }}
+            >
+              Assign
+            </Button>
+          </Flex>
+        </Flex>
+      </Box>
+    );
+  };
+
+  const ProjectQueue = () => {
     const mentorableCourses = getMentorableCourses(courses, mentor);
 
     return (
       <SimpleGrid columns={[1, null, 2, null, 3]} spacing={6} width="full">
-        {mentorableCourses.map(
-          ({ title, slug, visual: { full }, project: { parts } }) => (
-            <Box key={title} borderRadius="md" boxShadow="lg" overflow="hidden">
-              <Flex
-                p={6}
-                direction="column"
-                align="center"
-                bg="gray.800"
-                color="white"
-              >
-                <Heading as="p" size="md" mb={4}>
-                  {title}
-                </Heading>
-                <Image src={full} alt={title} />
-                {/* TODO: https://github.com/OpenMined/openmined/issues/60 */}
-                {/* <Text color="gray.400" mt={4}>X in queue</Text> */}
-              </Flex>
-              <Flex p={6} direction="column" align="center">
-                <Box mt={-3} mb={8} width="full">
-                  {parts.map((part, index) => (
-                    <Flex
-                      align="center"
-                      p={3}
-                      borderBottom="1px solid"
-                      borderBottomColor="gray.400"
-                      key={index}
-                    >
-                      <Circle
-                        bg="gray.800"
-                        color="white"
-                        fontWeight="bold"
-                        boxSize={8}
-                        mr={3}
-                      >
-                        {index + 1}
-                      </Circle>
-                      <Text fontWeight="bold">{part.title}</Text>
-                    </Flex>
-                  ))}
-                </Box>
-                <Flex justify="space-between" align="center" width="full">
-                  <Link
-                    // TODO: https://github.com/OpenMined/openmined/issues/53
-                    // as={RRDLink}
-                    // to={`/courses/${slug}`}
-                    as="a"
-                    href={`/courses/${slug}`}
-                    target="_self"
-                    color="gray.700"
-                    _hover={{ color: 'gray.800' }}
-                  >
-                    Project Overview
-                  </Link>
-                  <Button
-                    colorScheme="black"
-                    disabled={hasRequestedReview}
-                    isLoading={hasRequestedReview}
-                    onClick={() => {
-                      setHasRequestedReview(true);
-
-                      requestReview({ course: slug }).then(({ data }) => {
-                        if (data && !data.error) {
-                          setHasRequestedReview(false);
-
-                          toast({
-                            ...toastConfig,
-                            title: 'Review assigned',
-                            description: `You have been assigned a review, you have ${SUBMISSION_REVIEW_HOURS} hours to complete this review`,
-                            status: 'success',
-                          });
-
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        } else {
-                          toast({
-                            ...toastConfig,
-                            title: 'Error assigning review',
-                            description: data.error,
-                            status: 'error',
-                          });
-
-                          setHasRequestedReview(false);
-                        }
-                      });
-                    }}
-                  >
-                    Assign
-                  </Button>
-                </Flex>
-              </Flex>
-            </Box>
-          )
-        )}
+        {mentorableCourses.map(ProjectQueueCourse)}
       </SimpleGrid>
     );
   };
@@ -374,11 +393,8 @@ export const MentorTabs = ({ courses, mentor }) => {
     // TODO: https://github.com/OpenMined/openmined/issues/59
     const hasMoreReviews = false;
 
-    // TODO: https://github.com/OpenMined/openmined/issues/61
-    const numReviewed = 0;
-
-    // TODO: https://github.com/OpenMined/openmined/issues/61
-    const numResigned = 0;
+    const numReviewed = mentor.numCompleted || 0;
+    const numResigned = mentor.numResigned || 0;
 
     if (reviewHistory.length === 0) {
       return (
@@ -390,41 +406,43 @@ export const MentorTabs = ({ courses, mentor }) => {
 
     return (
       <Box>
-        {/* <SimpleGrid
-          columns={[1, null, 2]}
-          spacing={0}
-          width="full"
-          bg="gray.800"
-          color="white"
-          borderRadius="md"
-          mb={8}
-          p={12}
-        >
-          <Flex
-            direction="column"
-            justify="center"
-            align="center"
-            textAlign="center"
-            borderRight="1px solid"
-            borderRightColor="gray.900"
+        {numReviewed && numResigned && (
+          <SimpleGrid
+            columns={[1, null, 2]}
+            spacing={0}
+            width="full"
+            bg="gray.800"
+            color="white"
+            borderRadius="md"
+            mb={8}
+            p={12}
           >
-            <Heading as="p" size="3xl">
-              {numReviewed}
-            </Heading>
-            <Text color="gray.200">Reviews Completed</Text>
-          </Flex>
-          <Flex
-            direction="column"
-            justify="center"
-            align="center"
-            textAlign="center"
-          >
-            <Heading as="p" size="3xl">
-              {numResigned}
-            </Heading>
-            <Text color="magenta.200">Reviews Resigned</Text>
-          </Flex>
-        </SimpleGrid> */}
+            <Flex
+              direction="column"
+              justify="center"
+              align="center"
+              textAlign="center"
+              borderRight="1px solid"
+              borderRightColor="gray.900"
+            >
+              <Heading as="p" size="3xl">
+                {numReviewed}
+              </Heading>
+              <Text color="gray.200">Reviews Completed</Text>
+            </Flex>
+            <Flex
+              direction="column"
+              justify="center"
+              align="center"
+              textAlign="center"
+            >
+              <Heading as="p" size="3xl">
+                {numResigned}
+              </Heading>
+              <Text color="magenta.200">Reviews Resigned</Text>
+            </Flex>
+          </SimpleGrid>
+        )}
         <Heading as="p" size="md" color="gray.700" mb={3}>
           History
         </Heading>

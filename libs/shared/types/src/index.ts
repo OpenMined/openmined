@@ -145,3 +145,7 @@ export type MentorReview = {
   attempt: string | number;
   status: MentorReviewStatus;
 };
+
+export type CourseMetric = {
+  numSubmissionsPending?: number;
+}

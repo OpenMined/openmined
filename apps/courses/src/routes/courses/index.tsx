@@ -8,7 +8,7 @@ import {
 } from '@openmined/shared/types';
 import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 
-import { usePageAvailabilityRedirect, useIsAllowedToAccessPage } from './_helpers';
+import { useIsAllowedToAccessPage } from './_helpers';
 import * as configs from './_configs';
 import CourseWrap from './Wrapper';
 import { getCourseRef } from './_firebase';
@@ -40,23 +40,6 @@ const pages = {
 };
 
 const PermissionsGate = ({ children, progress, which, page, ...params }) => {
-  // Check whether or not we're able to see this page
-  const status = usePageAvailabilityRedirect(
-    progress || {}, // The user's progress
-    page.lessons || page.course.lessons, // The CMS's list of lessons and concepts
-    params.course, // The current course
-    params.lesson || 'project', // The current lesson (or the "project" lesson)
-    params.concept ? params.concept : which === 'lesson' ? null : 'complete' // The current concept, if it exists, or the appropriate lesson/project/course complete "concept"
-  );
-
-  // If we're loading or going to redirect, render the loader
-  if (status === 'loading' || status === 'redirecting') return <Loading />;
-
-  // Otherwise, render the component itself
-  return children;
-};
-
-const NewPermissionsGate = ({ children, progress, which, page, ...params }) => {
   // Check whether or not we're able to see this page
   const isAllowed = useIsAllowedToAccessPage(
     which,
@@ -179,10 +162,10 @@ export default ({ which }: PropType) => {
 
   // When ready, pass our component as a child of the permissions page
   return (
-    <NewPermissionsGate {...props}>
+    <PermissionsGate {...props}>
       <CourseWrap {...config}>
         <CoursePage {...props} />
       </CourseWrap>
-    </NewPermissionsGate>
+    </PermissionsGate>
   );
 };

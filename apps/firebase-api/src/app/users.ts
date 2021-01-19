@@ -48,7 +48,7 @@ export const addUNumToAllUsers = async (req, res) => {
     });
 
     // 500 is limit
-    const BATCH_SIZE = 1;
+    const BATCH_SIZE = 300;
     let uNum = 1;
     for (let i = 0; i < sortedUsers.length; i += BATCH_SIZE) {
       const subUsers = sortedUsers.slice(

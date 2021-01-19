@@ -48,14 +48,14 @@ exports.completeCourse = functions
 // Add unique number to each user
 exports.addUniqueNumberToUser = functions
   .region('europe-west1')
-  // Use higher memory and timeout since it might take some time to process
-  .runWith({ memory: '2GB', timeoutSeconds: 540 })
   .auth.user()
   .onCreate(addUniqueNumberToUser);
 
 // Add unique number to all users
 exports.addUniqueNumberToAllUsers = functions
   .region('europe-west1')
+  // Use higher memory and timeout since it might take some time to process
+  .runWith({ memory: '2GB', timeoutSeconds: 540 })
   .https.onRequest(addUNumToAllUsers);
 
 // Send the user an email when they sign up

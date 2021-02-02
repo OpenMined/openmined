@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CoursePageWhich } from '@openmined/shared/types';
 
-interface CourseProgress {
+export interface CourseProgress {
   lessons?: number;
   completedLessons?: number;
   concepts?: number;
@@ -208,63 +208,7 @@ export const getProjectStatus = (u, ps) => {
   return 'in-progress';
 };
 
-// Page change
 export const getNextAvailablePage = (u, ls): NextAvailablePage => {
-  // If we haven't started the course at all, send them to the first lesson initiation page
-  if (!hasStartedCourse(u)) return { lesson: ls[0]._id, concept: null };
-
-  for (let i = 0; i < ls.length; i++) {
-    const currentLesson = ls[i];
-
-    for (let j = 0; j < currentLesson.concepts.length; j++) {
-      const currentConcept = currentLesson.concepts[j]._id;
-
-      if (!hasCompletedConcept(u, currentLesson._id, currentConcept)) {
-        return { lesson: currentLesson._id, concept: currentConcept };
-      }
-    }
-
-    // If we got here, then all concepts in that lesson have been completed
-    // However, we should quickly check if there's another lesson available - if there is...
-    if (ls[i + 1]) {
-      const nextLessonId = ls[i + 1]._id;
-
-      // If they haven't completed this lesson and they also haven't started the next lesson
-      // Send them to the completion page
-      if (
-        !hasCompletedLesson(u, currentLesson._id) &&
-        !hasStartedLesson(u, nextLessonId)
-      ) {
-        return { lesson: currentLesson._id, concept: 'complete' };
-      }
-
-      // If they have completed this lesson, but they haven't started the next one
-      // Send them to the next lesson
-      else if (
-        hasCompletedLesson(u, currentLesson._id) &&
-        !hasStartedLesson(u, nextLessonId)
-      ) {
-        return { lesson: nextLessonId, concept: null };
-      }
-    }
-
-    // Otherwise, there are no more remaining lessons...
-    else {
-      // Check to make sure they've marked the last lesson as complete
-      if (!hasCompletedLesson(u, currentLesson._id)) {
-        return { lesson: currentLesson._id, concept: 'complete' };
-      }
-
-      // If they have, send them to the project
-      return { lesson: 'project', concept: null };
-    }
-  }
-
-  // Something went wrong...
-  return null;
-};
-
-export const getNextAvailablePageA = (u, ls): NextAvailablePage => {
   // If we haven't started the course at all, send them to the first lesson initiation page
   if (!hasStartedCourse(u)) return { lesson: ls[0]._id, concept: null };
 
@@ -363,7 +307,7 @@ export const useIsAllowedToAccessPage = (
   const { course, lesson, concept } = params;
 
   useEffect(() => {
-    const suggestedPage = getNextAvailablePageA(user, ls);
+    const suggestedPage = getNextAvailablePage(user, ls);
     const canAccess = isAllowedToAccessPage(
       which,
       user,

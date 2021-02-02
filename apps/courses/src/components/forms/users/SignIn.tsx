@@ -61,11 +61,10 @@ export default ({ callback, ...props }: SignInFormProps) => {
   const onGithubSubmit = async () => {
     analytics.logEvent('Login', { method: 'github' });
 
-    const authUser = await auth
+    await auth
       .signInWithPopup(githubProvider)
+      .then(() => onSuccess())
       .catch((error) => handleErrors(toast, error));
-
-    if (authUser) onSuccess();
   };
 
   const schema = yup.object().shape({

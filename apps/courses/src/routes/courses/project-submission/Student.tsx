@@ -188,6 +188,7 @@ export default ({
 }) => {
   const db = useFirestore();
   const toast = useToast();
+  const [hasClickedButton, setHasClickedButton] = useState(false);
   // TODO: https://github.com/OpenMined/openmined/issues/53
   // const navigate = useNavigate();
 
@@ -237,6 +238,7 @@ export default ({
 
   // When the user attempts a submission
   const onAttemptSubmission = async (part, content) => {
+    setHasClickedButton(true);
     // And clear the editor's cache
     resetEditor();
 
@@ -259,7 +261,8 @@ export default ({
         // navigate(`/courses/${course}/project`);
         window.location.href = `/courses/${course}/project`;
       })
-      .catch((error) => handleErrors(toast, error));
+      .catch((error) => handleErrors(toast, error))
+      .finally(() => setHasClickedButton(false));
   };
 
   return (
@@ -409,6 +412,7 @@ export default ({
                         localStorage.getItem(EDITOR_STORAGE_STRING)
                       );
                     }}
+                    isLoading={hasClickedButton}
                   >
                     Continue
                   </Button>
@@ -416,6 +420,7 @@ export default ({
                     variant="ghost"
                     colorScheme="white"
                     onClick={preSubmitModal.onClose}
+                    isLoading={hasClickedButton}
                   >
                     Cancel
                   </Button>
@@ -423,7 +428,11 @@ export default ({
               </ModalContent>
             </Modal>
             {!attemptData && hasStartedSubmission && (
-              <Button onClick={preSubmitModal.onOpen} colorScheme="black">
+              <Button
+                onClick={preSubmitModal.onOpen}
+                colorScheme="black"
+                isLoading={hasClickedButton}
+              >
                 Submit
               </Button>
             )}

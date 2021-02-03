@@ -106,12 +106,13 @@ const createLinks = (
 };
 
 const UserAvatar = () => {
-  const user: firebase.User = useUser();
-  const db = useFirestore();
-  const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
+  const user = useUser<firebase.User>();
 
-  return <Avatar src={dbUser.photo_url} cursor="pointer" />;
+  if (user) {
+    return <Avatar src={user.photoURL || null} cursor="pointer" />;
+  }
+
+  return null;
 };
 
 export default ({ noScrolling }) => {
@@ -192,7 +193,7 @@ export default ({ noScrolling }) => {
               rel="noopener noreferrer"
             >
               <Icon icon={faCommentAlt} boxSize={5} color="gray.400" mr={4} />
-              <Text color="gray.700">Forum</Text>
+              <Text color="gray.700">Discussion Board</Text>
             </Flex>
             <Divider />
             <Flex

@@ -1,12 +1,18 @@
-// SEE TODO (#14)
-// SEE TODO (#15)
-
 import path from 'path';
 import * as functions from 'firebase-functions';
 import admin from 'firebase-admin';
-import * as dotenv from 'dotenv';
+import * as dotenv from 'dotenv-flow';
 
-dotenv.config({ path: path.resolve(process.cwd(), '.secret.env') });
+const envs = [
+  path.resolve(process.cwd(), '.secret.env'),
+  path.resolve(process.cwd(), '.env'),
+];
+
+if (process.env.NODE_ENV === 'development') {
+  envs.push(path.resolve(process.cwd(), '.local.env'));
+}
+
+dotenv.load(envs);
 admin.initializeApp();
 
 // import ssr from './app/ssr';
@@ -18,6 +24,7 @@ import {
 import { completeCourse } from './app/courses';
 import { sendEmail } from './app/email';
 import sanity from './app/sanity';
+import { addUniqueNumberToUser, addUNumToAllUsers } from './app/users';
 
 // Pick review for assignment or resign from a review
 exports.assignReview = functions
@@ -38,7 +45,17 @@ exports.completeCourse = functions
   .region('europe-west1')
   .https.onCall(completeCourse);
 
-// SEE TODO (#16)
+// Add unique number to each user
+exports.addUniqueNumberToUser = functions
+  .region('europe-west1')
+  .auth.user()
+  .onCreate(addUniqueNumberToUser);
+
+// Add unique number to all users
+exports.addUniqueNumberToAllUsers = functions
+  .region('europe-west1')
+  .https.onRequest(addUNumToAllUsers);
+
 // Send the user an email when they sign up
 exports.sendWelcomeEmail = functions
   .region('europe-west1')
@@ -117,5 +134,5 @@ exports.receiveReview = functions
 // Set up Sanity API requests
 exports.sanity = functions.region('europe-west1').https.onCall(sanity);
 
-// SEE TODO (#13)
+// TODO: https://github.com/OpenMined/openmined/issues/52
 // exports.ssr = functions.region('europe-west1').https.onRequest(ssr);

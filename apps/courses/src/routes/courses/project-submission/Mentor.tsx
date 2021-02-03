@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -27,6 +27,7 @@ import { handleReviewSubmission } from '../_firebase';
 import { Content } from '../concept/content';
 import RichTextEditor, {
   EDITOR_STORAGE_STRING,
+  resetEditor,
 } from '../../../components/RichTextEditor';
 import ColoredTabs from '../../../components/ColoredTabs';
 import Countdown from '../../../components/Countdown';
@@ -123,7 +124,8 @@ export default ({
   attempt,
   student,
 }) => {
-  const navigate = useNavigate();
+  // TODO: https://github.com/OpenMined/openmined/issues/53
+  // const navigate = useNavigate();
   const toast = useToast();
   const db = useFirestore();
   const functions: firebase.functions.Functions = useFunctions();
@@ -139,6 +141,11 @@ export default ({
   const [passFail, setPassFail] = useState(null);
   const preSubmitModal = useDisclosure();
 
+  const tabsContent = useMemo(
+    () => genTabsContent(content, attemptData, setHasStartedSubmission),
+    [content, attemptData]
+  );
+
   const isBeforeDeadline = useCallback(() => {
     const now = dayjs();
     const reviewStarted = dayjs(attemptData.review_started_at.toDate());
@@ -152,14 +159,19 @@ export default ({
 
   useEffect(() => {
     if (!isBeforeDeadline()) {
-      navigate('/users/dashboard');
+      // TODO: https://github.com/OpenMined/openmined/issues/53
+      // navigate('/users/dashboard');
+      window.location.href = '/users/dashboard';
     }
-  }, [isBeforeDeadline, navigate]);
+  }, [isBeforeDeadline]);
 
   // When the user attempts a submission
   const onReviewSubmission = async (content, status) => {
     if (isBeforeDeadline()) {
       setHasClickedButton(true);
+
+      // And clear the editor's cache
+      resetEditor();
 
       handleReviewSubmission(
         db,
@@ -175,16 +187,15 @@ export default ({
         content
       )
         .then(() => {
-          // And clear the editor's cache
-          localStorage.removeItem(EDITOR_STORAGE_STRING);
-
           // And close the modal
           preSubmitModal.onClose();
 
           setHasClickedButton(false);
 
           // Once that's done, go back to the dashboard
-          navigate(`/users/dashboard`);
+          // TODO: https://github.com/OpenMined/openmined/issues/53
+          // navigate(`/users/dashboard`);
+          window.location.href = '/users/dashboard';
         })
         .catch((error) => handleErrors(toast, error));
     } else {
@@ -215,7 +226,9 @@ export default ({
           status: 'success',
         });
 
-        navigate('/users/dashboard');
+        // TODO: https://github.com/OpenMined/openmined/issues/53
+        // navigate('/users/dashboard');
+        window.location.href = '/users/dashboard';
       } else {
         toast({
           ...toastConfig,
@@ -264,10 +277,7 @@ export default ({
           ))}
         </Box>
       )}
-      <ColoredTabs
-        mb={8}
-        content={genTabsContent(content, attemptData, setHasStartedSubmission)}
-      />
+      <ColoredTabs mb={8} content={tabsContent} />
       {!hasAlreadyReviewed && (
         <Flex
           mb={8}
@@ -326,8 +336,12 @@ export default ({
       )}
       <Flex justify="space-between" align="center">
         <Button
-          as={RRDLink}
-          to={`/users/dashboard`}
+          // TODO: https://github.com/OpenMined/openmined/issues/53
+          // as={RRDLink}
+          // to={`/users/dashboard`}
+          as="a"
+          href={`/users/dashboard`}
+          target="_self"
           variant="outline"
           colorScheme="black"
         >

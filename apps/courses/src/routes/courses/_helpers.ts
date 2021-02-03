@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface CourseProgress {
   lessons?: number;
@@ -13,8 +14,6 @@ interface NextAvailablePage {
   lesson?: string;
   concept?: string;
 }
-
-// SEE TODO (#8)
 
 // Course permissions
 export const hasStartedCourse = (u) =>
@@ -304,6 +303,8 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
     checkForPrevious(user, ls, l, c) ? 'previous' : 'loading'
   );
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     // If we're still in the "loading" state
     if (status === 'loading') {
@@ -322,15 +323,17 @@ export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
         let url = `/courses/${course}/${suggestedPage.lesson}`;
         if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
 
+        // TODO: https://github.com/OpenMined/openmined/issues/53
+        // navigate(url);
         window.location.href = url;
       }
     }
-  }, [user, ls, course, l, c, status]);
+  }, [navigate, user, ls, course, l, c, status]);
 
   return status;
 };
 
-// SEE TODO (#18)
+// TODO: https://github.com/OpenMined/openmined/issues/54
 export const useCoursePermissionGate = (user, lessons, page, params) => {
   // For pages that don't require any permissions or redirection...
   const permissionless = ['search', 'overview'];

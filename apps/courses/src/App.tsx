@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import {
@@ -6,6 +6,7 @@ import {
   preloadFirestore,
   preloadFunctions,
   useFirebaseApp,
+  useFirestore,
 } from 'reactfire';
 
 import Routes from './routes';
@@ -13,10 +14,55 @@ import Routes from './routes';
 import Loading from './components/Loading';
 
 import { SuspenseWithPerf } from 'reactfire';
+import useToast, { toastConfig } from './components/Toast';
 
 const history = createBrowserHistory();
 
-const preloadSDKs = (firebaseApp) =>
+const Firebase = () => {
+  const firestore = useFirestore();
+  const toast = useToast();
+
+  useEffect(() => {
+    try {
+      firestore.enablePersistence({ synchronizeTabs: true }).catch((error) => {
+        if (error.code === 'failed-precondition') {
+          toast({
+            ...toastConfig,
+            title: 'Error',
+            description: error.message,
+            status: 'error',
+          });
+        } else if (error.code === 'unimplemented') {
+          toast({
+            ...toastConfig,
+            title: 'Error',
+            description:
+              'This browser is not fully compatible with offline mode. While you do not have to, we suggest you use a different browser.',
+            status: 'error',
+          });
+        } else {
+          toast({
+            ...toastConfig,
+            title: 'Error',
+            description: error.message,
+            status: 'error',
+          });
+        }
+      });
+    } catch (error) {
+      toast({
+        ...toastConfig,
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+      });
+    }
+  }, []);
+
+  return null;
+};
+
+const preloadSDKs = (firebaseApp) => {
   Promise.all([
     preloadAuth({
       firebaseApp,
@@ -34,7 +80,11 @@ const preloadSDKs = (firebaseApp) =>
       firebaseApp,
       setup: (firestore) => {
         const initalizedStore = firestore();
-        initalizedStore.settings({ host: 'localhost:5502', ssl: false, experimentalForceLongPolling: true });
+        initalizedStore.settings({
+          host: 'localhost:5502',
+          ssl: false,
+          experimentalForceLongPolling: true,
+        });
         firestore().enablePersistence({ experimentalForceOwningTab: true });
       },
     }),
@@ -47,6 +97,7 @@ const preloadSDKs = (firebaseApp) =>
     //   },
     // }),
   ]);
+};
 
 const App = () => {
   const [action, setAction] = useState(history.action);
@@ -59,15 +110,17 @@ const App = () => {
     });
   }, []);
 
+  const firebaseApp = useFirebaseApp();
+
   // @ts-ignore
   if (window.Cypress) {
-    const firebaseApp = useFirebaseApp();
     preloadSDKs(firebaseApp);
   }
 
   return (
     <Router action={action} location={location} navigator={history}>
       <SuspenseWithPerf fallback={<Loading />} traceId={location.pathname}>
+        <Firebase />
         <Routes />
       </SuspenseWithPerf>
     </Router>

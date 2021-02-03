@@ -21,7 +21,7 @@ import {
   faCommentAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { useSanity } from '@openmined/shared/data-access-sanity';
+import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 
 import GridContainer from '../../../components/GridContainer';
 import Icon from '../../../components/Icon';
@@ -77,15 +77,7 @@ export default () => {
 
   if (!Object.keys(dbUser).length) return <Navigate to="/" />;
 
-  const { data, loading } = useSanity(`
-    *[_type == "course" && visible == true] {
-      ...,
-      "slug": slug.current,
-      visual {
-        "default": default.asset -> url,
-        "full": full.asset -> url
-      },
-    }`);
+  const { data, loading } = useFirebaseSanity('profileCourses');
 
   if (loading) return null;
 
@@ -135,25 +127,27 @@ export default () => {
               align={['center', null, null, 'flex-start']}
               width={['full', null, null, 280]}
             >
-              <Avatar src={dbUser.photo_url} size="2xl" mb={4}>
-                {isSameUser && (
-                  <RRDLink to="/users/settings">
-                    <AvatarBadge
-                      bg="gray.800"
-                      border={0}
-                      boxSize="0.75em"
-                      right={2}
-                      bottom={2}
-                    >
-                      <Icon
-                        icon={faPencilAlt}
-                        color="white"
-                        style={{ width: '0.35em' }}
-                      />
-                    </AvatarBadge>
-                  </RRDLink>
-                )}
-              </Avatar>
+              {user && (
+                <Avatar src={user.photoURL || null} size="2xl" mb={4}>
+                  {isSameUser && (
+                    <RRDLink to="/users/settings">
+                      <AvatarBadge
+                        bg="gray.800"
+                        border={0}
+                        boxSize="0.75em"
+                        right={2}
+                        bottom={2}
+                      >
+                        <Icon
+                          icon={faPencilAlt}
+                          color="white"
+                          style={{ width: '0.35em' }}
+                        />
+                      </AvatarBadge>
+                    </RRDLink>
+                  )}
+                </Avatar>
+              )}
               <Heading as="h1" size="lg" mb={4}>
                 {name}
               </Heading>
@@ -198,7 +192,7 @@ export default () => {
                   />
                   <LinkItem
                     icon={faCommentAlt}
-                    title="Forum"
+                    title="Discussion Board"
                     link={discussionLink}
                   />
                 </Box>

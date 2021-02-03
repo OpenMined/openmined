@@ -25,6 +25,7 @@ import {
   faClock,
   faCertificate,
 } from '@fortawesome/free-solid-svg-icons';
+import { Link as RRDLink } from 'react-router-dom';
 import { CoursePagesProp } from '@openmined/shared/types';
 
 import ProjectAccordion from './ProjectAccordion';
@@ -168,7 +169,7 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
     ).catch((error) => handleErrors(toast, error));
 
   return (
-    <GridContainer isInitial py={16}>
+    <GridContainer py={16}>
       <Flex align="flex-start" direction={{ base: 'column', lg: 'row' }}>
         <Box mr={{ lg: 16 }}>
           <Text color="gray.700" fontWeight="bold" mb={2}>
@@ -192,7 +193,7 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
           </Tag>
           <Divider my={6} />
           <Text color="gray.700" mb={6}>
-            {description}
+            {typeof description === 'string' ? description : description()}
           </Text>
           <Heading mb={4} as="p" size="md">
             Goal
@@ -210,9 +211,12 @@ export default ({ course, page, progress, user, ts }: CoursePagesProp) => {
           />
           <Button
             disabled={!(status === 'passed' || status === 'failed')}
-            onClick={() =>
-              (window.location.href = `/courses/${course}/project/complete`)
-            }
+            // TODO: https://github.com/OpenMined/openmined/issues/53
+            // as={RRDLink}
+            // to={`/courses/${course}/project/complete`}
+            as="a"
+            href={`/courses/${course}/project/complete`}
+            target="_self"
             colorScheme="black"
           >
             Finish

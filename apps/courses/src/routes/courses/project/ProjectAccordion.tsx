@@ -4,6 +4,7 @@ import { Button, Flex, Text, Link, Image, Box } from '@chakra-ui/react';
 import { PROJECT_PART_SUBMISSIONS } from '../_helpers';
 import StatusAccordion from '../../../components/StatusAccordion';
 import SubmissionInline from '../../../components/SubmissionInline';
+import { useNavigate } from 'react-router-dom';
 import { discussionLink, mentorshipLink } from '../../../content/links';
 
 // This is a component that shows up when the user has made a failed attempt ("failed-but-pending")
@@ -25,7 +26,7 @@ const AttemptedView = ({
         {title}
       </Text>
       <Text color="gray.700" fontSize="sm">
-        {description}
+        {typeof description === 'string' ? description : description()}
       </Text>
     </Flex>
     {submissions.map((submission, index) => (
@@ -39,6 +40,9 @@ const AttemptedView = ({
 );
 
 export default ({ content, course, onBeginProjectPart, ...props }) => {
+  // TODO: https://github.com/OpenMined/openmined/issues/53
+  // const navigate = useNavigate();
+
   // The text to show when the user is pending a submission review
   const pendingReviewText = (
     <>
@@ -69,7 +73,6 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
   const projectContent = content.map((i) => {
     const { _key, description, status, submissions } = i;
 
-    // SEE TODO (#19)
     const panel = () => (
       <>
         {status !== 'passed' && status !== 'failed' && (
@@ -77,7 +80,9 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
             {status !== 'failed-but-pending' && (
               <Text color="gray.700" mb={6}>
                 {status === 'not-started' || status === 'in-progress'
-                  ? description
+                  ? typeof description === 'string'
+                    ? description
+                    : description()
                   : pendingReviewText}
               </Text>
             )}
@@ -97,6 +102,8 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                 onClick={() => {
                   if (status === 'not-started') {
                     onBeginProjectPart(_key).then(() => {
+                      // TODO: https://github.com/OpenMined/openmined/issues/53
+                      // navigate(`/courses/${course}/project/${_key}`);
                       window.location.href = `/courses/${course}/project/${_key}`;
                     });
                   } else if (status === 'submitted') {
@@ -104,10 +111,16 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
                       ({ status }) => status === 'pending'
                     );
 
+                    // TODO: https://github.com/OpenMined/openmined/issues/53
+                    // navigate(
+                    //   `/courses/${course}/project/${_key}/${attempt + 1}`
+                    // );
                     window.location.href = `/courses/${course}/project/${_key}/${
                       attempt + 1
                     }`;
                   } else {
+                    // TODO: https://github.com/OpenMined/openmined/issues/53
+                    // navigate(`/courses/${course}/project/${_key}`);
                     window.location.href = `/courses/${course}/project/${_key}`;
                   }
                 }}

@@ -137,7 +137,11 @@ export default ({ callback, ...props }: SignUpFormProps) => {
 
     return auth
       .createUserWithEmailAndPassword(email, password)
-      .then(() =>
+      .then(() => {
+        auth.currentUser.updateProfile({
+          displayName: `${first_name} ${last_name}`,
+        });
+
         auth.currentUser
           .sendEmailVerification()
           .then(() =>
@@ -147,13 +151,13 @@ export default ({ callback, ...props }: SignUpFormProps) => {
               .set({
                 first_name: first_name,
                 last_name: last_name,
-                notification_preferences: [{ project_reviews: true }],
+                notification_preferences: ['project_reviews'],
               })
               .then(onSuccess)
               .catch((error) => handleErrors(toast, error))
           )
-          .catch((error) => handleErrors(toast, error))
-      )
+          .catch((error) => handleErrors(toast, error));
+      })
       .catch((error) => {
         // In the event that an account with this email already exists (because they signed up with Github)
         // Give their account a password and link the Github provider to the new email provider
@@ -192,11 +196,16 @@ export default ({ callback, ...props }: SignUpFormProps) => {
 
     // If we're creating an account for the first time, we need to store some information about the user
     if (authUser) {
-      const splitName = authUser.user.displayName.split(' ');
-      const firstName =
-        splitName.length >= 1 ? splitName[0] : authUser.user.displayName;
-      const lastName =
-        splitName.length >= 2 ? splitName.slice(1).join(' ') : '';
+      let firstName = '';
+      let lastName = '';
+
+      if (authUser.user.displayName && authUser.user.displayName !== '') {
+        const splitName = authUser.user.displayName.split(' ');
+
+        firstName =
+          splitName.length >= 1 ? splitName[0] : authUser.user.displayName;
+        lastName = splitName.length >= 2 ? splitName.slice(1).join(' ') : '';
+      }
 
       const batch = db.batch();
       const userDoc = db.collection('users').doc(auth.currentUser.uid);
@@ -207,8 +216,7 @@ export default ({ callback, ...props }: SignUpFormProps) => {
       batch.set(userDoc, {
         first_name: firstName,
         last_name: lastName,
-        photo_url: authUser.user.photoURL,
-        notification_preferences: [{ project_reviews: true }],
+        notification_preferences: ['project_reviews'],
         description: (authUser.additionalUserInfo.profile as any).bio,
         github: (authUser.additionalUserInfo.profile as any).login,
         twitter: (authUser.additionalUserInfo.profile as any).twitter_username,

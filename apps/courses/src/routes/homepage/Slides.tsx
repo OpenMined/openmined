@@ -22,7 +22,7 @@ import GridContainer from '../../components/GridContainer';
 import Icon from '../../components/Icon';
 
 import { useWindowSize } from '../../helpers';
-import { useSanity } from '@openmined/shared/data-access-sanity';
+import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
 
 const absolute: CSSProperties = {
   position: 'absolute',
@@ -57,10 +57,7 @@ const ProgressButton = ({ value, direction, onClick }) => (
 );
 
 export default (props) => {
-  const { data, loading } = useSanity(`*[_type == "teacher"] {
-    ...,
-    "image": image.asset -> url,
-  }`);
+  const { data, loading } = useFirebaseSanity('teachers');
 
   const order = [
     'Cynthia Dwork',
@@ -94,14 +91,14 @@ const Slides = ({ title, description, slides }) => {
 
     reset();
     start();
-  }, [current, slides.length, reset, start]);
+  }, [current, slides, reset, start]);
 
   const goPrev = useCallback(() => {
     setCurrent(current - 1 < 0 ? slides.length - 1 : current - 1);
 
     reset();
     start();
-  }, [current, slides.length, reset, start]);
+  }, [current, slides, reset, start]);
 
   // Start the timer the first time this component loads
   useEffect(start, [start]);

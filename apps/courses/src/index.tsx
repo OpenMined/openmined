@@ -1,16 +1,17 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { FirebaseAppProvider } from 'reactfire';
-import { SanityProvider } from '@openmined/shared/data-access-sanity';
 import { HelmetProvider } from 'react-helmet-async';
 import { ChakraProvider } from '@chakra-ui/react';
 import { SEOProvider } from '@openmined/shared/util-page';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
-import ErrorBoundaryWrapper from './components/ErrorBoundaryWrapper';
 
+import sentryIgnore from './sentry-ignore';
 import theme from './theme';
 import App from './App';
+
+import ErrorBoundaryWrapper from './components/ErrorBoundaryWrapper';
 
 import seoMain from './assets/seo-main.jpg';
 import seoFacebook from './assets/seo-facebook.jpg';
@@ -25,12 +26,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.NX_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NX_FIREBASE_APP_ID,
   measurementId: process.env.NX_FIREBASE_MEASUREMENT_ID,
-};
-
-const sanityConfig = {
-  projectId: process.env.NX_SANITY_COURSES_PROJECT_ID,
-  dataset: process.env.NX_SANITY_COURSES_DATASET,
-  useCdn: true,
 };
 
 const metadata = {
@@ -50,17 +45,15 @@ const root = document.getElementById('root');
 export const WrappedApp = () => (
   <React.StrictMode>
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <SanityProvider sanityConfig={sanityConfig}>
-        <HelmetProvider>
-          <ChakraProvider theme={theme}>
-            <SEOProvider metadata={metadata}>
-              <ErrorBoundaryWrapper>
-                <App />
-              </ErrorBoundaryWrapper>
-            </SEOProvider>
-          </ChakraProvider>
-        </HelmetProvider>
-      </SanityProvider>
+      <HelmetProvider>
+        <ChakraProvider theme={theme}>
+          <SEOProvider metadata={metadata}>
+            <ErrorBoundaryWrapper>
+              <App />
+            </ErrorBoundaryWrapper>
+          </SEOProvider>
+        </ChakraProvider>
+      </HelmetProvider>
     </FirebaseAppProvider>
   </React.StrictMode>
 );
@@ -71,8 +64,9 @@ if (process.env.NODE_ENV === 'production') {
       'https://3a0a3cc70179428f8ecda14adc0bb149@o492939.ingest.sentry.io/5561166',
     autoSessionTracking: true,
     integrations: [new Integrations.BrowserTracing()],
-    tracesSampleRate: 1.0,
+    tracesSampleRate: 0.2,
     environment: process.env.NODE_ENV,
+    ...sentryIgnore,
   });
 }
 

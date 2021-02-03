@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Flex,
@@ -84,9 +84,11 @@ const CorrectAnswer = ({ setCurrentSelection, index, value, explanation }) => (
     />
     <Box>
       <Text mb={1}>{value}</Text>
-      <Text color="green.500" fontSize="sm" fontStyle="italic">
-        {explanation}
-      </Text>
+      {explanation && (
+        <Text color="green.500" fontSize="sm" fontStyle="italic">
+          {typeof explanation === 'string' ? explanation : explanation()}
+        </Text>
+      )}
     </Box>
   </Flex>
 );
@@ -106,9 +108,11 @@ const IncorrectAnswer = ({
     <Icon icon={faTimes} color="red.300" boxSize={5} mr={4} />
     <Box>
       <Text mb={1}>{value}</Text>
-      <Text color="red.300" fontSize="sm" fontStyle="italic">
-        {explanation}
-      </Text>
+      {explanation && (
+        <Text color="red.300" fontSize="sm" fontStyle="italic">
+          {typeof explanation === 'string' ? explanation : explanation()}
+        </Text>
+      )}
     </Box>
   </Flex>
 );
@@ -281,6 +285,14 @@ export default ({
   const toast = useToast();
 
   const arrayUnion = useFirestore.FieldValue.arrayUnion;
+
+  // Whenever the concept changes, reset the quiz
+  useEffect(() => {
+    setCurrentQuestion(0);
+    setCurrentSelection(null);
+    setCorrectAnswers(0);
+    setIsFinished(false);
+  }, [concept]);
 
   const onFinish = () => {
     onComplete();

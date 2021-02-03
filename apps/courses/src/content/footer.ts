@@ -24,8 +24,8 @@ export default {
       title: 'Courses',
       links: [
         {
-          title: 'Privacy and Society',
-          link: '/courses/privacy-and-society',
+          title: 'Our Privacy Opportunity',
+          link: '/courses/our-privacy-opportunity',
         },
         {
           title: 'Foundations of Private Computation',

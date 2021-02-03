@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useFirestore } from 'reactfire';
 import {
   faBookOpen,
@@ -19,15 +20,15 @@ import {
   Text,
   UnorderedList,
 } from '@chakra-ui/react';
+import { CoursePagesProp } from '@openmined/shared/types';
 
 import { getLessonNumber } from '../_helpers';
+import { handleLessonStart } from '../_firebase';
 import GridContainer from '../../../components/GridContainer';
 import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { handleErrors } from '../../../helpers';
 import useToast from '../../../components/Toast';
-import { handleLessonStart } from '../_firebase';
-import { CoursePagesProp } from '@openmined/shared/types';
 
 const Detail = ({ title, value, icon = faCheckCircle }) => (
   <Flex align="center" mb={4}>
@@ -49,6 +50,8 @@ export default ({
 }: CoursePagesProp) => {
   const db = useFirestore();
   const toast = useToast();
+  // TODO: https://github.com/OpenMined/openmined/issues/53
+  // const navigate = useNavigate();
 
   const {
     course: { title: courseTitle, lessons },
@@ -71,13 +74,15 @@ export default ({
   const onLessonStart = () => {
     handleLessonStart(db, user.uid, course, ts, progress, lesson)
       .then(() => {
+        // TODO: https://github.com/OpenMined/openmined/issues/53
+        // navigate(`/courses/${course}/${lesson}/${firstConcept}`);
         window.location.href = `/courses/${course}/${lesson}/${firstConcept}`;
       })
       .catch((error) => handleErrors(toast, error));
   };
 
   return (
-    <GridContainer isInitial py={16}>
+    <GridContainer py={16}>
       <Flex direction={{ base: 'column-reverse', lg: 'row' }}>
         <Box
           bg="gray.100"
@@ -162,7 +167,7 @@ export default ({
           </Heading>
           <Divider my={6} />
           <Text color="gray.700" mb={6}>
-            {description}
+            {typeof description === 'string' ? description : description()}
           </Text>
           {learnHow && (
             <>

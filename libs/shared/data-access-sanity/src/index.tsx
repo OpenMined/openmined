@@ -12,6 +12,7 @@ import { Link as RRDLink } from 'react-router-dom';
 import sanityClient from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 import BlockContent from '@sanity/block-content-to-react';
+import { useFunctions } from 'reactfire';
 
 const SanityContext = createContext(null);
 
@@ -208,6 +209,115 @@ export const useSanity = (query) => {
         setLoading(false);
       });
   }, [client, query]);
+
+  return { data, loading, error };
+};
+
+export const composeSanityImageUrl = (image) => {
+  const sanityConfig = {
+    projectId: process.env.NX_SANITY_COURSES_PROJECT_ID,
+    dataset: process.env.NX_SANITY_COURSES_DATASET,
+  };
+
+  try {
+    const cdnUrl = 'https://cdn.sanity.io';
+    const filenameParts = image.asset._ref.split('-');
+    const filename = `${filenameParts
+      .slice(1, filenameParts.length - 1)
+      .join('-')}.${filenameParts[filenameParts.length - 1]}`;
+    const baseUrl = `${cdnUrl}/images/${sanityConfig.projectId}/${sanityConfig.dataset}/${filename}`;
+
+    return baseUrl;
+  } catch (error) {
+    return error;
+  }
+};
+
+export type SANITY_FIREBASE_QUERY = {
+  method: string;
+  params: any;
+};
+
+export const useFirebaseSanity = (method, params = null) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const functions: firebase.functions.Functions = useFunctions();
+  // @ts-ignore
+  functions.region = 'europe-west1';
+  const sanity = functions.httpsCallable('sanity');
+
+  const prepareData = (d) => {
+    const _prep = (elem) => {
+      // Make sure we convert all breaking spaces to <br /> tags
+      if (typeof elem === 'string' && elem.includes('\n')) {
+        return () => (
+          <span
+            dangerouslySetInnerHTML={{
+              __html: elem.split('\n').join('<br />'),
+            }}
+          />
+        );
+      }
+
+      return elem;
+    };
+
+    const _loop = (elem) => {
+      if (Array.isArray(elem)) {
+        return elem.map((e) => _loop(e));
+      } else if (typeof elem === 'object') {
+        // Leave math and code blocks alone
+        if ((elem._type && elem._type === 'math') || elem._type === 'code') {
+          return elem;
+        }
+
+        const temp = {};
+
+        Object.keys(elem).forEach((e) => {
+          temp[e] = _loop(elem[e]);
+        });
+
+        return temp;
+      }
+
+      return _prep(elem);
+    };
+
+    Object.keys(d).forEach((i) => {
+      d[i] = _loop(d[i]);
+    });
+
+    return d;
+  };
+
+  useEffect(() => {
+    const query: SANITY_FIREBASE_QUERY = {
+      method,
+      params,
+    };
+
+    let isMounted = true;
+
+    sanity(query)
+      .then((d) => {
+        if (isMounted) {
+          setData(prepareData(d.data));
+          setLoading(false);
+        }
+      })
+      .catch((e) => {
+        if (isMounted) {
+          setError(e);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [method, params]);
 
   return { data, loading, error };
 };

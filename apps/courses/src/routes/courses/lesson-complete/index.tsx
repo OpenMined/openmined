@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import {
   faArrowRight,
+  faBookOpen,
   faBullhorn,
   faCheckCircle,
   faCommentAlt,
@@ -26,6 +27,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import GridContainer from '../../../components/GridContainer';
 import Icon from '../../../components/Icon';
 import { handleErrors } from '../../../helpers';
+import { useNavigate } from 'react-router-dom';
 import { discussionLink } from '../../../content/links';
 
 const DetailLink = ({ icon, children, ...props }) => (
@@ -40,55 +42,52 @@ const DetailLink = ({ icon, children, ...props }) => (
   </Box>
 );
 
-const LessonLine = ({ status, title, isProjectNext = false }) => (
-  <Flex
-    bg="gray.800"
-    borderTop={status === 'current' ? 'none' : '1px solid'}
-    borderTopColor="gray.700"
-    justify="space-between"
-    align="center"
-    width="full"
-    p={6}
-  >
-    <Flex align="center">
-      <Icon
-        icon={
-          status === 'current'
-            ? faCheckCircle
-            : status === 'next'
-            ? faArrowRight
-            : faShapes
-        }
-        color={
-          status === 'current'
-            ? 'green.400'
-            : status === 'next'
-            ? 'cyan.500'
-            : isProjectNext
-            ? 'gray.400'
-            : 'gray.700'
-        }
-        boxSize={5}
-        mr={6}
-      />
-      <Text
-        fontSize="lg"
-        color={
-          (status === 'project' && isProjectNext) || status !== 'project'
-            ? 'white'
-            : 'gray.700'
-        }
-      >
-        {title}
-      </Text>
+const LessonLine = ({ status, title, type }) => {
+  let color, icon, iconColor;
+
+  if (status === 'current') {
+    color = 'white';
+    icon = faCheckCircle;
+    iconColor = 'green.400';
+  } else if (status === 'next') {
+    color = 'white';
+    icon = faArrowRight;
+    iconColor = 'cyan.500';
+  } else if (status === 'later') {
+    color = 'gray.700';
+    iconColor = 'gray.700';
+
+    if (type === 'lesson') {
+      icon = faBookOpen;
+    } else if (type === 'project') {
+      icon = faShapes;
+    }
+  }
+
+  return (
+    <Flex
+      bg="gray.800"
+      borderTop={status === 'current' ? 'none' : '1px solid'}
+      borderTopColor="gray.700"
+      justify="space-between"
+      align="center"
+      width="full"
+      p={6}
+    >
+      <Flex align="center">
+        <Icon icon={icon} color={iconColor} boxSize={5} mr={6} />
+        <Text fontSize="lg" color={color}>
+          {title}
+        </Text>
+      </Flex>
+      {status === 'next' && (
+        <Text color="gray.400" fontStyle="italic" ml={6}>
+          Up Next
+        </Text>
+      )}
     </Flex>
-    {status === 'next' && (
-      <Text color="gray.400" ml={6}>
-        Up Next
-      </Text>
-    )}
-  </Flex>
-);
+  );
+};
 
 export default ({
   progress,
@@ -99,6 +98,7 @@ export default ({
   lesson,
 }: CoursePagesProp) => {
   const db = useFirestore();
+  const navigate = useNavigate();
 
   const {
     course: { lessons, projectTitle },
@@ -151,7 +151,7 @@ export default ({
 
   return (
     <Box bg="gray.900" color="white">
-      <GridContainer isInitial py={[8, null, null, 16]}>
+      <GridContainer py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
             <Icon icon={faCheckCircle} color="cyan.300" boxSize={12} mb={4} />
@@ -184,15 +184,31 @@ export default ({
               <Divider />
             </Flex>
             <Box borderRadius="md" overflow="hidden" width="full" mb={8}>
-              <LessonLine status="current" title={title} />
-              {typeof nextLesson !== 'string' && (
-                <LessonLine status="next" title={nextLesson.title} />
+              <LessonLine status="current" type="lessson" title={title} />
+              {lessons.length > lessonIndex + 1 && (
+                <LessonLine
+                  status="next"
+                  type="lesson"
+                  title={lessons[lessonIndex + 1].title}
+                />
               )}
-              <LessonLine
-                status="project"
-                title={projectTitle}
-                isProjectNext={typeof nextLesson === 'string'}
-              />
+              {lessons.length === lessonIndex + 1 && (
+                <LessonLine status="next" type="project" title={projectTitle} />
+              )}
+              {lessons.length > lessonIndex + 2 && (
+                <LessonLine
+                  status="later"
+                  type="lesson"
+                  title={lessons[lessonIndex + 2].title}
+                />
+              )}
+              {lessons.length === lessonIndex + 2 && (
+                <LessonLine
+                  status="later"
+                  type="project"
+                  title={projectTitle}
+                />
+              )}
             </Box>
             <Button
               mb={12}
@@ -200,6 +216,14 @@ export default ({
               size="lg"
               onClick={() =>
                 onCompleteLesson().then(() => {
+                  // TODO: https://github.com/OpenMined/openmined/issues/53
+                  // navigate(
+                  //   `/courses/${course}/${
+                  //     typeof nextLesson === 'string'
+                  //       ? nextLesson
+                  //       : nextLesson._id
+                  //   }`
+                  // );
                   window.location.href = `/courses/${course}/${
                     typeof nextLesson === 'string' ? nextLesson : nextLesson._id
                   }`;

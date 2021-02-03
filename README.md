@@ -1,90 +1,67 @@
-# OpenMined
+# OpenMined Web Monorepo
 
-This project was generated using [Nx](https://nx.dev).
+Welcome to the OpenMined web monorepo, the home of all of OpenMined's many websites. Below are some basic instructions for getting this repository running on your machine.
 
-<p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+## Support
 
-🔎 **Nx is a set of Extensible Dev Tools for Monorepos.**
+If you're looking for support about the courses, please go the [Courses Discussion Board](https://github.com/OpenMined/courses/discussions). If you've found a bug, or have a suggestion for an improvement to the Courses site, or any of our websites, [please file an issue here](https://github.com/OpenMined/openmined/issues).
 
-## Adding capabilities to your workspace
+## Contributing
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+We are currently only accepting bug fixes from our community at the moment. If you're interested in working on these sites regularly as part of a team, please DM **@Patrick Cason** on Slack with your resume and qualifications.
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+### Local Setup
 
-Below are our core plugins:
+0. Make sure that you have [Node](https://nodejs.org/), [NPM](https://www.npmjs.com/), and [Yarn](https://yarnpkg.com/) installed on your machine.
 
-- [React](https://reactjs.org)
-  - `npm install --save-dev @nrwl/react`
-- Web (no framework frontends)
-  - `npm install --save-dev @nrwl/web`
-- [Angular](https://angular.io)
-  - `npm install --save-dev @nrwl/angular`
-- [Nest](https://nestjs.com)
-  - `npm install --save-dev @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `npm install --save-dev @nrwl/express`
-- [Node](https://nodejs.org)
-  - `npm install --save-dev @nrwl/node`
+1. [Install NX](https://nx.dev), our monorepo management framework.
 
-There are also many [community plugins](https://nx.dev/nx-community) you could add.
+2. From this point forward, you will run **all** commands in the root folder. Start by running `yarn install` to install all dependencies.
 
-## Generate an application
+3. Run one of the below commands, depending on what you're trying to do... note that the third word in the command corresponds to the app in question. For instance, `yarn start courses` will run the `courses` app, located at `apps/courses`.
 
-Run `nx g @nrwl/react:app my-app` to generate an application.
+#### Courses
 
-> You can use any of the plugins above to generate applications as well.
+The OpenMined Courses website where we host our educational material. The site is a [React.js](https://reactjs.org) web application, running on a [Firebase](https://firebase.google.com) backend, [Jest](https://jestjs.io/) for testing, [Cypress](https://www.cypress.io/) for end-to-end testing, and using [Sanity.io](https://sanity.io) as the content management system (CMS).
 
-When using Nx, you can create multiple applications and libraries in the same workspace.
+- `yarn start courses` - Runs the courses site with hot reloading for development purposes.
 
-## Generate a library
+- `yarn lint courses` - Runs the linter for the courses site
 
-Run `nx g @nrwl/react:lib my-lib` to generate a library.
+- `yarn test courses` - Runs the test suite for the courses site
 
-> You can also use any of the plugins above to generate libraries as well.
+- `yarn build courses` - Builds the courses site
 
-Libraries are sharable across libraries and applications. They can be imported from `@openmined/mylib`.
+- `yarn build courses --prod` - Builds a production version of the courses site
 
-## Development server
+- `yarn analyze courses` - Analyzes the file sizes and distribution of a built version of the courses site
 
-Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+#### Courses E2E Testing
 
-## Code scaffolding
+The OpenMined Courses website uses Cypress for end-to-end-testing. You have access to the following commands:
 
-Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
+- `yarn e2e courses-e2e` - Runs all the end-to-end tests for the Courses website
 
-## Build
+- `yarn lint courses-e2e` - Runs the linter for the courses end-to-end app
 
-Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+#### Firebase API
 
-## Running unit tests
+Firebase is the primary backend for all of OpenMined's websites. If you want to test any functions or security rules before pushing them live, [you may do so using the emulator suite](https://firebase.google.com/docs/emulator-suite).
 
-Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
+- `yarn test firebase-api` - Runs all the tests for the our Firebase backend
 
-Run `nx affected:test` to execute the unit tests affected by a change.
+#### Sanity CMS
 
-## Running end-to-end tests
+Sanity is the primary CMS for all of OpenMined's websites. You must have a user account to change any actual values, however, if you want to run it on your machine, you have access to the following commands:
 
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+- `yarn start sanity-api` - Runs the Sanity CMS with hot reloading for development purposes.
 
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
+- `yarn lint sanity-api` - Runs the linter for the Sanity CMS
 
-## Understand your workspace
+- `yarn test sanity-api` - Runs the test suite for the Sanity CMS
 
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
+- `yarn build sanity-api` - Builds the Sanity CMS
 
-## Further help
+- `yarn build sanity-api --prod` - Builds a production version of the Sanity CMS
 
-Visit the [Nx Documentation](https://nx.dev) to learn more.
-
-## ☁ Nx Cloud
-
-### Computation Memoization in the Cloud
-
-<p align="center"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+- `yarn analyze sanity-api` - Analyzes the file sizes and distribution of a built version of the Sanity CMS

@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   Textarea,
+  Tooltip,
 } from '@chakra-ui/react';
 import {
   faBug,
@@ -19,7 +20,8 @@ import useScrollPosition from '@react-hook/window-scroll';
 import useToast, { toastConfig } from '../../../components/Toast';
 import { Popover } from '../../../components/Popover';
 import Icon from '../../../components/Icon';
-import { getLinkPropsFromLink } from '../../../helpers';
+import { COURSE_FOOTER_ID, getLinkPropsFromLink } from '../../../helpers';
+import { useNavigate } from 'react-router-dom';
 import { discussionLink, issuesLink } from '../../../content/links';
 
 const BREAK = 'md';
@@ -130,7 +132,7 @@ const Help = ({ helpOpen, setHelpOpen }) => {
       icon: faBug,
     },
     {
-      title: 'Forum',
+      title: 'Discussion Board',
       link: discussionLink,
       icon: faCommentAlt,
     },
@@ -176,33 +178,58 @@ const Controls = ({
   current,
   total,
   onCompleteConcept,
-}) => (
-  <Flex align="center">
-    <Button
-      onClick={() => {
-        window.location.href = backLink;
-      }}
-      colorScheme={isBackAvailable ? 'cyan' : 'black'}
-      disabled={!isBackAvailable}
-    >
-      Back
-    </Button>
-    <Text mx={[6, null, 8, 12]} color="gray.400">
-      {current} of {total}
-    </Text>
-    <Button
-      onClick={() => {
-        onCompleteConcept().then(() => {
-          window.location.href = nextLink;
-        });
-      }}
-      colorScheme={isNextAvailable ? 'cyan' : 'black'}
-      disabled={!isNextAvailable}
-    >
-      Next
-    </Button>
-  </Flex>
-);
+}) => {
+  // TODO: https://github.com/OpenMined/openmined/issues/53
+  // const navigate = useNavigate();
+
+  return (
+    <Flex align="center" id={COURSE_FOOTER_ID}>
+      <Button
+        onClick={() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          setTimeout(() => {
+            // TODO: https://github.com/OpenMined/openmined/issues/53
+            // navigate(backLink);
+            window.location.href = backLink;
+          }, 500);
+        }}
+        colorScheme={isBackAvailable ? 'cyan' : 'black'}
+        disabled={!isBackAvailable}
+      >
+        Back
+      </Button>
+      <Text mx={[6, null, 8, 12]} color="gray.400">
+        {current} of {total}
+      </Text>
+      <Tooltip
+        label="Scroll down and make sure to complete all quiz questions first!"
+        shouldWrapChildren
+        hasArrow
+        placement="top"
+        isDisabled={isNextAvailable}
+      >
+        <Button
+          onClick={() => {
+            onCompleteConcept().then(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+
+              setTimeout(() => {
+                // TODO: https://github.com/OpenMined/openmined/issues/53
+                // navigate(nextLink);
+                window.location.href = nextLink;
+              }, 500);
+            });
+          }}
+          colorScheme={isNextAvailable ? 'cyan' : 'black'}
+          disabled={!isNextAvailable}
+        >
+          Next
+        </Button>
+      </Tooltip>
+    </Flex>
+  );
+};
 
 export default ({
   current,

@@ -24,7 +24,9 @@ describe('users/{{userID}}/courses/{{courseId}}', () => {
     const aliceDb = getAuthedFirestore({ uid: ALICE_ID });
     const courseData = { started_at: new Date() };
     await firebase.assertSucceeds(
-      getCourseRef(aliceDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData)
+      getCourseRef(aliceDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData, {
+        merge: true,
+      })
     );
     await firebase.assertSucceeds(
       getCourseRef(aliceDb, ALICE_ID, RANDOM_COURSE_ID).get()
@@ -33,7 +35,9 @@ describe('users/{{userID}}/courses/{{courseId}}', () => {
     // others cannot read/write
     const anyoneDb = getAuthedFirestore(null);
     await firebase.assertFails(
-      getCourseRef(anyoneDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData)
+      getCourseRef(anyoneDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData, {
+        merge: true,
+      })
     );
 
     // bob cannot read/write alice course doc
@@ -42,7 +46,9 @@ describe('users/{{userID}}/courses/{{courseId}}', () => {
       getCourseRef(bobDb, ALICE_ID, RANDOM_COURSE_ID).get()
     );
     await firebase.assertFails(
-      getCourseRef(bobDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData)
+      getCourseRef(bobDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData, {
+        merge: true,
+      })
     );
   });
 
@@ -51,7 +57,9 @@ describe('users/{{userID}}/courses/{{courseId}}', () => {
     const courseData = { started_at: new Date() };
     // alice can create course
     await firebase.assertSucceeds(
-      getCourseRef(aliceDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData)
+      getCourseRef(aliceDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData, {
+        merge: true,
+      })
     );
 
     // bob: mentor of alice's course can update alice's course
@@ -95,7 +103,9 @@ describe('users/{{userID}}/courses/{{courseId}}', () => {
     const courseData = { started_at: new Date() };
     // alice can create course
     await firebase.assertSucceeds(
-      getCourseRef(aliceDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData)
+      getCourseRef(aliceDb, ALICE_ID, RANDOM_COURSE_ID).set(courseData, {
+        merge: true,
+      })
     );
 
     // bob: mentor of alice's course can read alice's course

@@ -45,10 +45,6 @@ export const getCourseContent = async (course) => {
       "default": default.asset -> url,
       "full": full.asset -> url
     },
-    learnHow[] {
-      title,
-      "image": image.asset -> url
-    },
     learnFrom[] -> {
       ...,
       "image": image.asset -> url

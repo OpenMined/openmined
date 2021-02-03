@@ -25,6 +25,7 @@ import useToast, { toastConfig } from '../../../components/Toast';
 import Icon from '../../../components/Icon';
 import GridContainer from '../../../components/GridContainer';
 import { handleErrors, analytics } from '../../../helpers';
+import { useNavigate } from 'react-router-dom';
 import { discussionLink } from '../../../content/links';
 
 const DetailLink = ({ icon, children, ...props }) => (
@@ -41,6 +42,8 @@ const DetailLink = ({ icon, children, ...props }) => (
 
 export default ({ progress, page, user, course }: CoursePagesProp) => {
   const db = useFirestore();
+  // TODO: https://github.com/OpenMined/openmined/issues/53
+  // const navigate = useNavigate();
 
   const {
     project: { title, parts },
@@ -85,6 +88,8 @@ export default ({ progress, page, user, course }: CoursePagesProp) => {
         setClickedContinue(false);
 
         if (data && !data.error) {
+          // TODO: https://github.com/OpenMined/openmined/issues/53
+          // navigate(`/courses/${course}/complete`);
           window.location.href = `/courses/${course}/complete`;
         } else {
           handleErrors(toast, data.error);
@@ -113,7 +118,7 @@ export default ({ progress, page, user, course }: CoursePagesProp) => {
 
   return (
     <Box bg="gray.900" color="white">
-      <GridContainer isInitial py={[8, null, null, 16]}>
+      <GridContainer py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
             <Image

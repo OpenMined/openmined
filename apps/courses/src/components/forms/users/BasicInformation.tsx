@@ -30,6 +30,8 @@ import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
 import { countries, primaryLanguages, skillLevels, timezones } from '../_data';
 
+import UploadAvatar from '../../UploadAvatar';
+
 interface BasicInformationFormProps extends BoxProps {
   callback?: () => void;
   onChangeEmailOrGithub: () => void;
@@ -70,13 +72,23 @@ export default ({
     if (callback) callback();
   };
 
-  const onSubmit = (data: User) =>
-    db
+  const onSubmit = (data: User) => {
+    if (
+      (data.first_name && data.first_name !== '') ||
+      (data.last_name && data.last_name !== '')
+    ) {
+      auth.currentUser.updateProfile({
+        displayName: `${data.first_name} ${data.last_name}`,
+      });
+    }
+
+    return db
       .collection('users')
       .doc(user.uid)
       .set(data, { merge: true })
       .then(onSuccess)
       .catch((error) => handleErrors(toast, error));
+  };
 
   const onReverifyEmail = (data) =>
     auth.currentUser
@@ -140,16 +152,21 @@ export default ({
     [timezoneField(dbUser.timezone), null],
   ];
 
-  // SEE TODO (#17)
-
   return (
-    <Form
-      {...props}
-      onSubmit={onSubmit}
-      schema={schema}
-      fields={fields}
-      submit="Save Changes"
-      isBreathable
-    />
+    <>
+      <UploadAvatar
+        currentAvatar={user.photoURL || null}
+        label="Profile Picture"
+        mb={8}
+      />
+      <Form
+        {...props}
+        onSubmit={onSubmit}
+        schema={schema}
+        fields={fields}
+        submit="Save changes"
+        isBreathable
+      />
+    </>
   );
 };

@@ -7,7 +7,7 @@ on:
 
 jobs:
   courses:
-    name: Deploy Courses
+    name: Deploy Courses Production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
@@ -27,3 +27,11 @@ jobs:
         env:
           PROJECT_ID: production
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_COURSES_PROJECT }}
+        with:
+          environment: production

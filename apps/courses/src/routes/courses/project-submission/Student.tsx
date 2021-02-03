@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Breadcrumb,
@@ -23,7 +23,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Link as RRDLink } from 'react-router-dom';
+import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useFirestore } from 'reactfire';
 import { faCommentAlt } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
@@ -37,6 +37,7 @@ import SubmissionInline from '../../../components/SubmissionInline';
 import Icon from '../../../components/Icon';
 import RichTextEditor, {
   EDITOR_STORAGE_STRING,
+  resetEditor,
 } from '../../../components/RichTextEditor';
 import ColoredTabs from '../../../components/ColoredTabs';
 import useToast from '../../../components/Toast';
@@ -187,6 +188,8 @@ export default ({
 }) => {
   const db = useFirestore();
   const toast = useToast();
+  // TODO: https://github.com/OpenMined/openmined/issues/53
+  // const navigate = useNavigate();
 
   const {
     project: { title: projectTitle, parts },
@@ -201,6 +204,17 @@ export default ({
   const [hasStartedSubmission, setHasStartedSubmission] = useState(false);
   const preSubmitModal = useDisclosure();
 
+  const tabsContent = useMemo(
+    () =>
+      genTabsContent(
+        content,
+        attemptData,
+        hasPendingSubmission,
+        setHasStartedSubmission
+      ),
+    [content, attemptData, hasPendingSubmission]
+  );
+
   useEffect(() => {
     if (
       submissions.filter(
@@ -208,6 +222,8 @@ export default ({
       ).length === 3 &&
       !attemptData
     ) {
+      // TODO: https://github.com/OpenMined/openmined/issues/53
+      // navigate(`/courses/${course}/project/${part}/3`);
       window.location.href = `/courses/${course}/project/${part}/3`;
     }
   }, [submissions, attemptData, course, part]);
@@ -221,6 +237,9 @@ export default ({
 
   // When the user attempts a submission
   const onAttemptSubmission = async (part, content) => {
+    // And clear the editor's cache
+    resetEditor();
+
     handleAttemptSubmission(
       db,
       user.uid,
@@ -232,7 +251,12 @@ export default ({
       content
     )
       .then(() => {
+        // And close the modal
+        preSubmitModal.onClose();
+
         // Once that's done, reload the projects in the default viewing state
+        // TODO: https://github.com/OpenMined/openmined/issues/53
+        // navigate(`/courses/${course}/project`);
         window.location.href = `/courses/${course}/project`;
       })
       .catch((error) => handleErrors(toast, error));
@@ -247,7 +271,9 @@ export default ({
       >
         <Breadcrumb spacing={2} color="gray.700">
           <BreadcrumbItem>
-            <BreadcrumbLink as={RRDLink} to={`/courses/${course}/project`}>
+            {/* TODO: https://github.com/OpenMined/openmined/issues/53 */}
+            <BreadcrumbLink href={`/courses/${course}/project`} target="_self">
+              {/* <BreadcrumbLink as={RRDLink} to={`/courses/${course}/project`}> */}
               {projectTitle}
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -326,19 +352,15 @@ export default ({
               <ReviewStatus status={attemptData.status} />
             </Box>
           )}
-          <ColoredTabs
-            mb={8}
-            content={genTabsContent(
-              content,
-              attemptData,
-              hasPendingSubmission,
-              setHasStartedSubmission
-            )}
-          />
+          <ColoredTabs mb={8} content={tabsContent} />
           <Flex justify="space-between" align="center">
             <Button
-              as={RRDLink}
-              to={`/courses/${course}/project`}
+              // TODO: https://github.com/OpenMined/openmined/issues/53
+              // as={RRDLink}
+              // to={`/courses/${course}/project`}
+              as="a"
+              href={`/courses/${course}/project`}
+              target="_self"
               variant="outline"
               colorScheme="black"
             >
@@ -386,11 +408,6 @@ export default ({
                         _key,
                         localStorage.getItem(EDITOR_STORAGE_STRING)
                       );
-
-                      // And clear the editor's cache
-                      localStorage.removeItem(EDITOR_STORAGE_STRING);
-
-                      preSubmitModal.onClose();
                     }}
                   >
                     Continue

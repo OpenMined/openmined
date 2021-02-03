@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link as RRDLink } from 'react-router-dom';
-import { useAuth } from 'reactfire';
+import { useAuth, useFirestore, useUser } from 'reactfire';
 
 import { toastConfig } from '../components/Toast';
+import { User } from '@openmined/shared/types';
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
@@ -93,4 +94,59 @@ export const getLinkPropsFromLink = (link: string) => {
       };
 
   return linkProps as any;
+};
+
+export const usePrevious = (value) => {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+};
+
+export const useDbUser = () => {
+  const user: firebase.User = useUser();
+  const db = useFirestore();
+  const [dbUser, setDbUser] = useState<User>(null);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user: User = (await dbUserRef.get()).data() as User;
+        setDbUser(user);
+      } catch (err) {
+        // pass
+      }
+    };
+    const dbUserRef = user ? db.collection('users').doc(user.uid) : null;
+    dbUserRef && fetchUser();
+  }, [user]);
+
+  return dbUser;
+};
+
+export const COURSE_HEADER_ID = 'course-header';
+export const COURSE_FOOTER_ID = 'course-footer';
+
+export const useCourseHeaderHeight = () => {
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const courseHeader = document.getElementById(COURSE_HEADER_ID);
+    courseHeader && setHeight(courseHeader.clientHeight);
+  }, []);
+
+  return height;
+};
+
+export const useCourseFooterHeight = () => {
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const courseFooter = document.getElementById(COURSE_FOOTER_ID);
+    courseFooter && setHeight(courseFooter.clientHeight);
+  }, []);
+
+  return height;
 };

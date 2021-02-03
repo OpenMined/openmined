@@ -61,6 +61,23 @@ export const assignReview = async (data, context) => {
       // Get the ID of the student from that assignment
       const studentId = assignment.student._path.segments[1];
 
+      const courseRef = admin
+        .firestore()
+        .doc(`/users/${studentId}/courses/${course}`);
+
+      const batch = admin.firestore().batch();
+
+      // Add the mentor to the list of assigned mentors
+      batch.set(
+        courseRef,
+        {
+          allowed_mentors: {
+            [assignment.attempt]: user,
+          },
+        },
+        { merge: true }
+      );
+
       // Store a reference to the assignment
       const submissionRef = admin
         .firestore()
@@ -69,7 +86,8 @@ export const assignReview = async (data, context) => {
         );
 
       // Write the assignment to the submission
-      await submissionRef.set(
+      batch.set(
+        submissionRef,
         {
           mentor: admin.firestore().doc(`/users/${user}`),
           review_started_at: admin.firestore.FieldValue.serverTimestamp(),
@@ -78,11 +96,12 @@ export const assignReview = async (data, context) => {
       );
 
       // Write the assignment to the mentor's reviews subcollection with the same ID
-      await admin
-        .firestore()
-        .collection(`/users/${user}/reviews`)
-        .doc(assignment.id)
-        .set({
+      batch.set(
+        admin
+          .firestore()
+          .collection(`/users/${user}/reviews`)
+          .doc(assignment.id),
+        {
           submission: submissionRef,
           id: assignment.id,
           student: assignment.student,
@@ -92,7 +111,10 @@ export const assignReview = async (data, context) => {
           status: 'pending',
           started_at: admin.firestore.FieldValue.serverTimestamp(),
           completed_at: null,
-        });
+        }
+      );
+
+      await batch.commit();
 
       // Return it to the user
       return assignment;
@@ -131,30 +153,50 @@ export const resignReview = async (data, context) => {
     }
 
     // Get the assignment reference
-    const assignment = dbSubmissions.docs[0].ref;
+    const assignmentRef = dbSubmissions.docs[0].ref;
+    const assignment = dbSubmissions.docs[0].data();
+
+    // Get the ID of the student from that assignment
+    const studentId = assignment.student._path.segments[1];
+
+    const courseRef = admin
+      .firestore()
+      .doc(`/users/${studentId}/courses/${assignment.course}`);
+
+    const batch = admin.firestore().batch();
+
+    // Add the mentor to the list of assigned mentors
+    batch.set(
+      courseRef,
+      {
+        allowed_mentors: {
+          [assignment.attempt]: null,
+        },
+      },
+      { merge: true }
+    );
 
     // Write the assignment to the submission
-    await assignment.set(
+    batch.set(
+      assignmentRef,
       { mentor: null, review_started_at: null },
       { merge: true }
     );
 
     // Resign the review to the mentor's reviews collection
-    const dbReview = await admin
-      .firestore()
-      .doc(`/users/${mentor}/reviews/${submission}`)
-      .set(
-        {
-          status: 'resigned',
-          completed_at: admin.firestore.FieldValue.serverTimestamp(),
-        },
-        { merge: true }
-      );
+    batch.set(
+      admin.firestore().doc(`/users/${mentor}/reviews/${submission}`),
+      {
+        status: 'resigned',
+        completed_at: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
 
-    // SEE TODO (#20)
+    await batch.commit();
 
     // Return the resigned review to the mentor
-    return dbReview;
+    return { success: true };
   } catch (error) {
     return { error };
   }
@@ -202,6 +244,20 @@ export const checkForUnreviewedSubmissions = async () => {
       batch.set(
         data.submission,
         { mentor: null, review_started_at: null },
+        { merge: true }
+      );
+
+      // Get the ID of the student from that assignment
+      const studentId = data.student._path.segments[1];
+
+      // Remove the mentor from the attempts map
+      batch.set(
+        admin.firestore().doc(`/users/${studentId}/courses/${data.course}`),
+        {
+          allowed_mentors: {
+            [data.attempt]: null,
+          },
+        },
         { merge: true }
       );
     });

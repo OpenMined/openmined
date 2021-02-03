@@ -53,8 +53,11 @@ export const StudentContext = ({ courses, progress }) => {
           Currently, you're not taking any courses. Perhaps you should add one!
         </Text>
         <Button
-          as={RRDLink}
-          to="/courses"
+          // TODO: https://github.com/OpenMined/openmined/issues/53
+          // as={RRDLink}
+          // to="/courses"
+          as="a"
+          href="/courses"
           variant="outline"
           colorScheme="black"
         >
@@ -115,12 +118,12 @@ export const StudentTabs = ({ courses, progress }) => {
         ...i,
         panel: () => (
           <Box>
-            <Text color="gray.700" mb={6}>
-              {i.description}
-            </Text>
-            <Text fontWeight="bold" mb={2}>
-              Project Reviews
-            </Text>
+            <Text color="gray.700">{i.description}</Text>
+            {i.submissions.filter((s) => s.status !== 'none').length !== 0 && (
+              <Text fontWeight="bold" mt={6} mb={2}>
+                Project Reviews
+              </Text>
+            )}
             {i.submissions.map((submission, index) => (
               <SubmissionInline
                 key={index}
@@ -152,7 +155,9 @@ export const StudentTabs = ({ courses, progress }) => {
       return (
         <NullSetTabPanel>
           Right now you have no completed courses. Try going to the{' '}
-          <Link as={RRDLink} to="/courses">
+          {/* TODO: https://github.com/OpenMined/openmined/issues/53 */}
+          {/* <Link as={RRDLink} to="/courses"> */}
+          <Link as="a" href="/courses">
             Course Search
           </Link>{' '}
           to find a course right for you.

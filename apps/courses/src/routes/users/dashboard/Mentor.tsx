@@ -20,11 +20,11 @@ import {
 } from 'reactfire';
 import {
   faCommentAlt,
-  faMoneyBillWave,
+  faPiggyBank,
   faQuestionCircle,
   faShapes,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -172,8 +172,12 @@ export const MentorContext = ({ courses }) => {
                   colorScheme="black"
                   isDisabled={buttonClicked}
                   isLoading={buttonClicked}
-                  as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  // TODO: https://github.com/OpenMined/openmined/issues/53
+                  // as={RRDLink}
+                  // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  as="a"
+                  href={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  target="_self"
                 >
                   Review
                 </Button>
@@ -190,6 +194,7 @@ export const MentorContext = ({ courses }) => {
       </Text>
       <Flex direction={['column', null, null, 'row']} align="center">
         <Link
+          as="a"
           href={shiftscheduleLink}
           target="_blank"
           rel="noopener noreferrer"
@@ -203,6 +208,7 @@ export const MentorContext = ({ courses }) => {
           </Flex>
         </Link>
         <Link
+          as="a"
           href={discussionLink}
           target="_blank"
           rel="noopener noreferrer"
@@ -264,7 +270,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                   {title}
                 </Heading>
                 <Image src={full} alt={title} />
-                {/* SEE TODO (#22) */}
+                {/* TODO: https://github.com/OpenMined/openmined/issues/60 */}
                 {/* <Text color="gray.400" mt={4}>X in queue</Text> */}
               </Flex>
               <Flex p={6} direction="column" align="center">
@@ -292,8 +298,12 @@ export const MentorTabs = ({ courses, mentor }) => {
                 </Box>
                 <Flex justify="space-between" align="center" width="full">
                   <Link
-                    as={RRDLink}
-                    to={`/courses/${slug}`}
+                    // TODO: https://github.com/OpenMined/openmined/issues/53
+                    // as={RRDLink}
+                    // to={`/courses/${slug}`}
+                    as="a"
+                    href={`/courses/${slug}`}
+                    target="_self"
                     color="gray.700"
                     _hover={{ color: 'gray.800' }}
                   >
@@ -331,7 +341,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                       });
                     }}
                   >
-                    Review
+                    Assign
                   </Button>
                 </Flex>
               </Flex>
@@ -361,13 +371,13 @@ export const MentorTabs = ({ courses, mentor }) => {
       return null;
     });
 
-    // SEE TODO (#24)
+    // TODO: https://github.com/OpenMined/openmined/issues/59
     const hasMoreReviews = false;
 
-    // SEE TODO (#23)
+    // TODO: https://github.com/OpenMined/openmined/issues/61
     const numReviewed = 0;
 
-    // SEE TODO (#23)
+    // TODO: https://github.com/OpenMined/openmined/issues/61
     const numResigned = 0;
 
     if (reviewHistory.length === 0) {
@@ -464,8 +474,12 @@ export const MentorTabs = ({ courses, mentor }) => {
                 <Button
                   variant="outline"
                   colorScheme="black"
-                  as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  // TODO: https://github.com/OpenMined/openmined/issues/53
+                  // as={RRDLink}
+                  // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  as="a"
+                  href={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  target="_self"
                 >
                   See Review
                 </Button>
@@ -473,8 +487,12 @@ export const MentorTabs = ({ courses, mentor }) => {
               {review.status === 'pending' && (
                 <Button
                   colorScheme="black"
-                  as={RRDLink}
-                  to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  // TODO: https://github.com/OpenMined/openmined/issues/53
+                  // as={RRDLink}
+                  // to={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  as="a"
+                  href={`/courses/${review.course.slug}/project/${review.part}/${review.attempt}/?student=${review.student.id}`}
+                  target="_self"
                 >
                   Finish Review
                 </Button>
@@ -482,7 +500,7 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Flex>
           </Flex>
         ))}
-        {/* SEE TODO (#24) */}
+        {/* TODO: https://github.com/OpenMined/openmined/issues/59 */}
         {hasMoreReviews && (
           <Flex justify="center" mt={3}>
             <Button
@@ -525,7 +543,7 @@ export const mentorResources = [
   },
   {
     title: 'Rates',
-    icon: faMoneyBillWave,
+    icon: faPiggyBank,
     link: mentorratesLink,
   },
   {
@@ -535,7 +553,7 @@ export const mentorResources = [
   },
   {
     title: 'Code of Conduct',
-    icon: faGithub,
+    icon: faUsers,
     link: codeofconductLink,
   },
 ];

@@ -420,7 +420,7 @@ export default ({
                     variant="ghost"
                     colorScheme="white"
                     onClick={preSubmitModal.onClose}
-                    isLoading={hasClickedButton}
+                    isDisabled={hasClickedButton}
                   >
                     Cancel
                   </Button>
@@ -428,11 +428,7 @@ export default ({
               </ModalContent>
             </Modal>
             {!attemptData && hasStartedSubmission && (
-              <Button
-                onClick={preSubmitModal.onOpen}
-                colorScheme="black"
-                isLoading={hasClickedButton}
-              >
+              <Button onClick={preSubmitModal.onOpen} colorScheme="black">
                 Submit
               </Button>
             )}

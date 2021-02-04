@@ -16,6 +16,7 @@ const tabProps = {
     borderColor: 'blue.100',
     borderBottom: '2px solid',
     borderBottomColor: ['blue.100', null, 'blue.700'],
+    zIndex: 0,
   },
 };
 

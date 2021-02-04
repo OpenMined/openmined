@@ -58,10 +58,10 @@ export default ({ callback, ...props }: SignInFormProps) => {
       .catch((error) => handleErrors(toast, error));
   };
 
-  const onGithubSubmit = async () => {
+  const onGithubSubmit = () => {
     analytics.logEvent('Login', { method: 'github' });
 
-    await auth
+    return auth
       .signInWithPopup(githubProvider)
       .then(() => onSuccess())
       .catch((error) => handleErrors(toast, error));

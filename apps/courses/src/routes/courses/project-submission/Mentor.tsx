@@ -148,6 +148,9 @@ export default ({
 
   const isBeforeDeadline = useCallback(() => {
     const now = dayjs();
+    // if review_started_at is null, always return false
+    if (!attemptData.review_started_at) return false;
+
     const reviewStarted = dayjs(attemptData.review_started_at.toDate());
 
     return now.diff(reviewStarted, 'hour', true) <= SUBMISSION_REVIEW_HOURS;
@@ -246,11 +249,11 @@ export default ({
         <Flex justify="space-between" align="center" mb={6}>
           <Text fontFamily="mono" color="gray.700" mr={6}>
             Time Remaining:{' '}
-            <Countdown
+            { attemptData.review_started_at && <Countdown
               time={getSubmissionReviewEndTime(
                 dayjs(attemptData.review_started_at.toDate())
               )}
-            />
+            /> }
           </Text>
           <Button
             colorScheme="gray"

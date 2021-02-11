@@ -8,7 +8,7 @@ import {
   Text,
   UnorderedList,
 } from '@chakra-ui/react';
-import { Link as RRDLink } from 'react-router-dom';
+import NextLink from 'next/link';
 import sanityClient from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 import BlockContent from '@sanity/block-content-to-react';
@@ -74,8 +74,8 @@ const processChildren = (children, markDefs) =>
                   rel: 'noopener noreferrer',
                 }
               : {
-                  as: RRDLink,
-                  to: extra.href,
+                  as: 'a',
+                  href: extra.href,
                 };
 
             return (

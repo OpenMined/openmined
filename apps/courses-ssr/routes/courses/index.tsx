@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useRouter } from 'next/router';
+// import { useParams, useSearchParams } from 'react-router-dom';
 import { useFirestore, useUser } from 'reactfire';
 import {
   CoursePageWhich,
@@ -61,17 +62,20 @@ type PropType = {
 };
 
 export default ({ which }: PropType) => {
+  const router = useRouter();
   // Get all the URL params
-  const params: any = useParams();
+  // const params: any = useParams();
+  const params: any = router.query;
 
   // Get all search params
-  const [searchParams] = useSearchParams();
+  // const [searchParams] = useSearchParams();
 
   // We need to have the UID of the student when a mentor wants to view the submission page of a student
   // Since they will have different ID's, we need to ensure that IF we're a mentor trying to leave a review
   // That the "dbCourseRef" is referencing the right user
   // If we're not a mentor in the process of a review, we can assume it's a student trying to get their own "dbCourseRef"
-  const mentorStudentToken = searchParams.get('student');
+  // const mentorStudentToken = searchParams.get('student');
+  const mentorStudentToken = params.student;
 
   // Get the user's current progress on their courses
   const user: firebase.User = useUser();

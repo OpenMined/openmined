@@ -140,11 +140,11 @@ export default ({ callback, ...props }: SignInFormProps) => {
             <Divider my={6} maxWidth={540} mx="auto" />
             <Text fontSize="sm" color="gray.700">
               By signing in you agree to our{' '}
-              <Link as={RRDLink} to="/terms" variant="flat">
+              <Link as={LinkWrapper} to="/terms" variant="flat">
                 Terms of Use
               </Link>{' '}
               and{' '}
-              <Link as={RRDLink} to="/policy" variant="flat">
+              <Link as={LinkWrapper} to="/policy" variant="flat">
                 Privacy Policy
               </Link>
               .

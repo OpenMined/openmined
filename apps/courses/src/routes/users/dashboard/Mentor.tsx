@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -28,7 +28,7 @@ import {
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { MentorReview, CourseProjectSubmission } from '@openmined/shared/types';
+import { CourseProjectSubmission } from '@openmined/shared/types';
 
 import {
   getSubmissionReviewEndTime,
@@ -46,6 +46,7 @@ import {
   codeofconductLink,
   shiftscheduleLink,
 } from '../../../content/links';
+import { useMentorLoadReviews } from '../../../hooks/useMentorLoadReviews';
 
 dayjs.extend(relativeTime);
 
@@ -352,67 +353,20 @@ export const MentorTabs = ({ courses, mentor }) => {
     );
   };
 
-  const loadReviewData = async (db, uId, startAt, pageSize) => {
-    let dbRef = db
-      .collection('users')
-      .doc(uId)
-      .collection('reviews')
-      // .where('status', '!=', 'pending')
-      .orderBy('started_at', 'desc')
-      .limit(pageSize + 1);
-    if (startAt) {
-      dbRef = dbRef.startAt(startAt);
-    }
-    const reviewsSnapshots = await dbRef.get();
-    const reviews = reviewsSnapshots.docs.map((doc) => doc.data());
-
-    if (reviews.length > pageSize) {
-      return {
-        reviews: reviews.slice(0, pageSize),
-        lastReview: reviews[pageSize],
-      };
-    } else {
-      return {
-        reviews,
-        lastReview: null,
-      };
-    }
-  };
-
   const MyActivity = () => {
-    const PAGE_SIZE = 5;
-    const user: firebase.User = useUser();
-    const db = useFirestore();
+    const {
+      reviews,
+      isLoading,
+      hasMoreReviews,
+      nextPage,
+    } = useMentorLoadReviews();
 
-    const [pageLoading, setPageLoading] = useState<boolean>(false);
-    const [dbReviews, setDbReviews] = useState<MentorReview[]>([]);
-    const [lastReview, setLastReiew] = useState<MentorReview>(null);
+    const reviewHistory = reviews.map((r) => {
+      const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
 
-    const loadNextPage = async () => {
-      setPageLoading(true);
-      const { lastReview: newLastReview, reviews: newReviews } = await loadReviewData(
-        db,
-        user.uid,
-        lastReview,
-        PAGE_SIZE
-      );
-
-      setDbReviews(dbReviews.concat(newReviews));
-      setLastReiew(newLastReview);
-      setPageLoading(false);
-    }
-
-    useEffect(() => {
-      loadNextPage();
-    }, []);
-
-    const reviewHistory = dbReviews
-      .map((r) => {
-        const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
-
-        if (courseIndex !== -1) return { ...r, course: courses[courseIndex] };
-        return null;
-      });
+      if (courseIndex !== -1) return { ...r, course: courses[courseIndex] };
+      return null;
+    });
 
     // TODO: https://github.com/OpenMined/openmined/issues/61
     const numReviewed = 0;
@@ -540,11 +494,11 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Flex>
           </Flex>
         ))}
-        {!!lastReview && (
+        {hasMoreReviews && (
           <Flex justify="center" mt={3}>
             <Button
-              isLoading={pageLoading}
-              onClick={() => loadNextPage()}
+              isLoading={isLoading}
+              onClick={nextPage}
               colorScheme="black"
             >
               Load More Reviews

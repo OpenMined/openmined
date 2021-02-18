@@ -47,8 +47,8 @@ service cloud.firestore {
       allow read;
 
       // Owner can only write all fields except "is_mentor", "mentorable_courses", and "completed_courses"
-      allow create: if isSameUser(user) && !incomingCreateDataContains(['is_mentor', 'mentorable_courses', 'completed_courses']);
-      allow update: if isSameUser(user) && !incomingUpdateDataContains(['is_mentor', 'mentorable_courses', 'completed_courses']);
+      allow create: if isSameUser(user) && !incomingCreateDataContains(['is_mentor', 'mentorable_courses', 'completed_courses', 'uNum']);
+      allow update: if isSameUser(user) && !incomingUpdateDataContains(['is_mentor', 'mentorable_courses', 'completed_courses', 'uNum']);
       allow delete: if false;
 
       // Only owner can read/write private data

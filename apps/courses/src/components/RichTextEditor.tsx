@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   Flex,
   Text,
@@ -37,7 +43,7 @@ import {
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
 import isUrl from 'is-url';
-import { useDebounce } from '../helpers';
+import { useCourseHeaderHeight, useDebounce } from '../helpers';
 
 import Icon from '../components/Icon';
 import Modal from '../components/Modal';
@@ -171,15 +177,18 @@ export default ({
     onOpen();
   };
 
+  const courseHeaderHeight = useCourseHeaderHeight();
+
   return (
     <Box {...props}>
       <Slate editor={editor} value={value} onChange={setValue}>
         {!readOnly && (
           <Flex
-            width="full"
             bg="gray.800"
             justify="space-between"
             align="center"
+            position="sticky"
+            top={`${courseHeaderHeight}px`}
           >
             <Flex align="center" wrap="wrap">
               <MarkButton format="bold" icon={faBold} />

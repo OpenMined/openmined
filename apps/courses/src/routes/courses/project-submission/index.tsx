@@ -45,7 +45,7 @@ export default (props: CoursePagesProp) => {
 
   return (
     <Box bg="gray.50">
-      <GridContainer isInitial py={16}>
+      <GridContainer py={16}>
         {!isMentorLayout && (
           <Student {...props} content={content} attemptData={attemptData} />
         )}

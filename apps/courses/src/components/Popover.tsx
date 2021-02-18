@@ -65,7 +65,9 @@ export const Popover = ({
       }
     >
       <Box
-        onClick={() => {
+        onClick={(ev) => {
+          // stopPropagation, or it will invoke onClickOutside, thus closes the popup right away
+          ev.stopPropagation();
           if (onOpen) onOpen(!show);
           else setShow(!show);
         }}

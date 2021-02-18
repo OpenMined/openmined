@@ -19,77 +19,84 @@ import useToast, { toastConfig } from './components/Toast';
 const history = createBrowserHistory();
 
 const Firebase = () => {
-  const firebaseApp = useFirebaseApp();
   const firestore = useFirestore();
   const toast = useToast();
 
-  // @ts-ignore
-  if (window.Cypress) {
-    Promise.all([
-      preloadAuth({
-        firebaseApp,
-        setup: (auth) => {
-          auth().useEmulator('http://localhost:5500/');
-        },
-      }),
-      preloadFunctions({
-        firebaseApp,
-        setup: (functions) => {
-          functions().useFunctionsEmulator('http://localhost:5501');
-        },
-      }),
-      preloadFirestore({
-        firebaseApp,
-        setup: (firestore) => {
-          const initalizedStore = firestore();
-          initalizedStore.settings({
-            host: 'localhost:5502',
-            ssl: false,
-            experimentalForceLongPolling: true,
-          });
-          firestore().enablePersistence({ experimentalForceOwningTab: true });
-        },
-      }),
-      // TODO: Create a bucket for dev purposes only
-      //
-      // preloadStorage({
-      //   firebaseApp,
-      //   setup: (storage) => {
-      //     storage('gs://put-a-bucket-here');
-      //   },
-      // }),
-    ]);
-  }
-
   useEffect(() => {
-    firestore.enablePersistence({ synchronizeTabs: true }).catch((error) => {
-      if (error.code === 'failed-precondition') {
-        toast({
-          ...toastConfig,
-          title: 'Error',
-          description: error.message,
-          status: 'error',
-        });
-      } else if (error.code === 'unimplemented') {
-        toast({
-          ...toastConfig,
-          title: 'Error',
-          description:
-            'This browser is not fully compatible with offline mode. While you do not have to, we suggest you use a different browser.',
-          status: 'error',
-        });
-      } else {
-        toast({
-          ...toastConfig,
-          title: 'Error',
-          description: error.message,
-          status: 'error',
-        });
-      }
-    });
+    try {
+      firestore.enablePersistence({ synchronizeTabs: true }).catch((error) => {
+        if (error.code === 'failed-precondition') {
+          toast({
+            ...toastConfig,
+            title: 'Error',
+            description: error.message,
+            status: 'error',
+          });
+        } else if (error.code === 'unimplemented') {
+          toast({
+            ...toastConfig,
+            title: 'Error',
+            description:
+              'This browser is not fully compatible with offline mode. While you do not have to, we suggest you use a different browser.',
+            status: 'error',
+          });
+        } else {
+          toast({
+            ...toastConfig,
+            title: 'Error',
+            description: error.message,
+            status: 'error',
+          });
+        }
+      });
+    } catch (error) {
+      toast({
+        ...toastConfig,
+        title: 'Error',
+        description: error.message,
+        status: 'error',
+      });
+    }
   }, []);
 
   return null;
+};
+
+const preloadSDKs = (firebaseApp) => {
+  Promise.all([
+    preloadAuth({
+      firebaseApp,
+      setup: (auth) => {
+        auth().useEmulator('http://localhost:5500/');
+      },
+    }),
+    preloadFunctions({
+      firebaseApp,
+      setup: (functions) => {
+        functions().useFunctionsEmulator('http://localhost:5501');
+      },
+    }),
+    preloadFirestore({
+      firebaseApp,
+      setup: (firestore) => {
+        const initalizedStore = firestore();
+        initalizedStore.settings({
+          host: 'localhost:5502',
+          ssl: false,
+          experimentalForceLongPolling: true,
+        });
+        firestore().enablePersistence({ experimentalForceOwningTab: true });
+      },
+    }),
+    // TODO: Create a bucket for dev purposes only
+    //
+    // preloadStorage({
+    //   firebaseApp,
+    //   setup: (storage) => {
+    //     storage('gs://put-a-bucket-here');
+    //   },
+    // }),
+  ]);
 };
 
 const App = () => {
@@ -102,6 +109,13 @@ const App = () => {
       setAction(action);
     });
   }, []);
+
+  const firebaseApp = useFirebaseApp();
+
+  // @ts-ignore
+  if (window.Cypress) {
+    preloadSDKs(firebaseApp);
+  }
 
   return (
     <Router action={action} location={location} navigator={history}>

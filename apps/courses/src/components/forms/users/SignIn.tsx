@@ -58,14 +58,13 @@ export default ({ callback, ...props }: SignInFormProps) => {
       .catch((error) => handleErrors(toast, error));
   };
 
-  const onGithubSubmit = async () => {
+  const onGithubSubmit = () => {
     analytics.logEvent('Login', { method: 'github' });
 
-    const authUser = await auth
+    return auth
       .signInWithPopup(githubProvider)
+      .then(() => onSuccess())
       .catch((error) => handleErrors(toast, error));
-
-    if (authUser) onSuccess();
   };
 
   const schema = yup.object().shape({

@@ -125,3 +125,28 @@ export const useDbUser = () => {
 
   return dbUser;
 };
+
+export const COURSE_HEADER_ID = 'course-header';
+export const COURSE_FOOTER_ID = 'course-footer';
+
+export const useCourseHeaderHeight = () => {
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const courseHeader = document.getElementById(COURSE_HEADER_ID);
+    courseHeader && setHeight(courseHeader.clientHeight);
+  }, []);
+
+  return height;
+};
+
+export const useCourseFooterHeight = () => {
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const courseFooter = document.getElementById(COURSE_FOOTER_ID);
+    courseFooter && setHeight(courseFooter.clientHeight);
+  }, []);
+
+  return height;
+};

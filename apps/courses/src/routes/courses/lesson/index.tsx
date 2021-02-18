@@ -82,7 +82,7 @@ export default ({
   };
 
   return (
-    <GridContainer isInitial py={16}>
+    <GridContainer py={16}>
       <Flex direction={{ base: 'column-reverse', lg: 'row' }}>
         <Box
           bg="gray.100"

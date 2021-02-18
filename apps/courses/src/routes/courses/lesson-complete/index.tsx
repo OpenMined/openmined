@@ -151,7 +151,7 @@ export default ({
 
   return (
     <Box bg="gray.900" color="white">
-      <GridContainer isInitial py={[8, null, null, 16]}>
+      <GridContainer py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
             <Icon icon={faCheckCircle} color="cyan.300" boxSize={12} mb={4} />

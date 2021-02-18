@@ -4,7 +4,7 @@ import {
   CoursePagesProp,
   CourseProjectSubmission,
 } from '@openmined/shared/types';
-import { useFirestoreDocDataOnce } from 'reactfire';
+import { useFirestoreDocData } from 'reactfire';
 
 import Student from './Student';
 import Mentor from './Mentor';
@@ -40,7 +40,7 @@ export default (props: CoursePagesProp) => {
     ? content.submissions[+attempt - 1].submission
     : null;
   const attemptData: CourseProjectSubmission = attemptRef
-    ? useFirestoreDocDataOnce(attemptRef)
+    ? useFirestoreDocData(attemptRef)
     : null;
 
   return (

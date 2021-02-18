@@ -28,7 +28,7 @@ import {
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { MentorReview, CourseProjectSubmission } from '@openmined/shared/types';
+import { CourseProjectSubmission } from '@openmined/shared/types';
 
 import {
   getSubmissionReviewEndTime,
@@ -46,6 +46,7 @@ import {
   codeofconductLink,
   shiftscheduleLink,
 } from '../../../content/links';
+import { useMentorLoadReviews } from '../../../hooks/useMentorLoadReviews';
 
 dayjs.extend(relativeTime);
 
@@ -353,26 +354,19 @@ export const MentorTabs = ({ courses, mentor }) => {
   };
 
   const MyActivity = () => {
-    const user: firebase.User = useUser();
-    const db = useFirestore();
-    const dbReviewsRef = db
-      .collection('users')
-      .doc(user.uid)
-      .collection('reviews')
-      // .where('status', '!=', 'pending')
-      .orderBy('started_at', 'desc')
-      .limit(10);
-    const dbReviews: MentorReview[] = useFirestoreCollectionData(dbReviewsRef);
+    const {
+      reviews,
+      isLoading,
+      hasMoreReviews,
+      nextPage,
+    } = useMentorLoadReviews();
 
-    const reviewHistory = dbReviews.map((r) => {
+    const reviewHistory = reviews.map((r) => {
       const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
 
       if (courseIndex !== -1) return { ...r, course: courses[courseIndex] };
       return null;
     });
-
-    // TODO: https://github.com/OpenMined/openmined/issues/59
-    const hasMoreReviews = false;
 
     // TODO: https://github.com/OpenMined/openmined/issues/61
     const numReviewed = 0;
@@ -500,11 +494,11 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Flex>
           </Flex>
         ))}
-        {/* TODO: https://github.com/OpenMined/openmined/issues/59 */}
         {hasMoreReviews && (
           <Flex justify="center" mt={3}>
             <Button
-              onClick={() => console.log('LOAD MORE')}
+              isLoading={isLoading}
+              onClick={nextPage}
               colorScheme="black"
             >
               Load More Reviews

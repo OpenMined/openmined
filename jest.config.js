@@ -6,5 +6,6 @@ module.exports = {
     '<rootDir>/libs/shared/types',
     '<rootDir>/apps/sanity-api',
     '<rootDir>/libs/shared/data-access-sanity',
+    '<rootDir>/apps/courses-ssr',
   ],
 };

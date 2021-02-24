@@ -16,6 +16,7 @@ dotenv.load(envs);
 admin.initializeApp();
 
 // import ssr from './app/ssr';
+import nextJsServer from './app/nextJsServer';
 import {
   assignReview,
   resignReview,
@@ -136,3 +137,5 @@ exports.sanity = functions.region('europe-west1').https.onCall(sanity);
 
 // TODO: https://github.com/OpenMined/openmined/issues/52
 // exports.ssr = functions.region('europe-west1').https.onRequest(ssr);
+
+exports.nextJsServer = functions.region('europe-west1').https.onRequest(nextJsServer);

@@ -334,7 +334,7 @@
           "outputs": ["{options.outputPath}"],
           "options": {
             "root": "apps/courses-ssr",
-            "outputPath": "dist/apps/courses-ssr"
+            "outputPath": "apps/courses-ssr/dist"
           },
           "configurations": {
             "production": {}

@@ -16,4 +16,7 @@ module.exports = withNx({
     NX_FIREBASE_APP_ID: process.env.NX_FIREBASE_APP_ID,
     NX_FIREBASE_MEASUREMENT_ID: process.env.NX_FIREBASE_MEASUREMENT_ID,
   },
+  // target: 'experimental-serverless-trace',
+  // distDir: "../../dist/apps/courses-ssr",
+  // dev: false,
 });

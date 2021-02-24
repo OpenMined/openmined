@@ -19,11 +19,11 @@
     },
     {
       "target": "openmined-education-dev",
-      "public": "dist/apps/courses",
+      "public": "apps/courses-ssr/dist",
       "rewrites": [
         {
-          "source": "**",
-          "destination": "/index.html"
+          "source": "**/**",
+          "function": "nextJsServer"
         }
       ]
     }

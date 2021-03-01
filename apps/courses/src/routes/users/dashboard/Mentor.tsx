@@ -10,6 +10,7 @@ import {
   Link,
   SimpleGrid,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import {
@@ -50,6 +51,19 @@ import { useMentorLoadReviews } from '../../../hooks/useMentorLoadReviews';
 
 dayjs.extend(relativeTime);
 
+const useActiveReviewData = () => {
+  const user: firebase.User = useUser();
+  const db = useFirestore();
+  const activeReviewsRef = db
+    .collectionGroup('submissions')
+    .where('mentor', '==', db.doc(`/users/${user.uid}`))
+    .where('status', '==', null);
+  const activeReviewsData: CourseProjectSubmission[] = useFirestoreCollectionData(
+    activeReviewsRef
+  );
+
+  return activeReviewsData;
+};
 const getMentorableCourses = (courses, user) =>
   user.mentorable_courses.map((id) => {
     const courseIndex = courses.findIndex(({ slug }) => slug === id);
@@ -70,13 +84,7 @@ export const MentorContext = ({ courses }) => {
 
   const [buttonClicked, setButtonClicked] = useState(false);
 
-  const activeReviewsRef = db
-    .collectionGroup('submissions')
-    .where('mentor', '==', db.doc(`/users/${user.uid}`))
-    .where('status', '==', null);
-  const activeReviewsData: CourseProjectSubmission[] = useFirestoreCollectionData(
-    activeReviewsRef
-  );
+  const activeReviewsData = useActiveReviewData();
 
   const activeReviews = activeReviewsData.map((r) => {
     const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
@@ -255,6 +263,8 @@ export const MentorTabs = ({ courses, mentor }) => {
 
     const mentorableCourses = getMentorableCourses(courses, mentor);
 
+    const activeReviewsData = useActiveReviewData();
+    const assignDisabled = activeReviewsData.length > 0;
     return (
       <SimpleGrid columns={[1, null, 2, null, 3]} spacing={6} width="full">
         {mentorableCourses.map(
@@ -310,40 +320,48 @@ export const MentorTabs = ({ courses, mentor }) => {
                   >
                     Project Overview
                   </Link>
-                  <Button
-                    colorScheme="black"
-                    disabled={hasRequestedReview}
-                    isLoading={hasRequestedReview}
-                    onClick={() => {
-                      setHasRequestedReview(true);
-
-                      requestReview({ course: slug }).then(({ data }) => {
-                        if (data && !data.error) {
-                          setHasRequestedReview(false);
-
-                          toast({
-                            ...toastConfig,
-                            title: 'Review assigned',
-                            description: `You have been assigned a review, you have ${SUBMISSION_REVIEW_HOURS} hours to complete this review`,
-                            status: 'success',
-                          });
-
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        } else {
-                          toast({
-                            ...toastConfig,
-                            title: 'Error assigning review',
-                            description: data.error,
-                            status: 'error',
-                          });
-
-                          setHasRequestedReview(false);
-                        }
-                      });
-                    }}
+                  <Tooltip
+                    label="You must complete your pending review prior to being assigned a new submission."
+                    shouldWrapChildren
+                    hasArrow
+                    placement="top"
+                    isDisabled={!assignDisabled}
                   >
-                    Assign
-                  </Button>
+                    <Button
+                      colorScheme="black"
+                      disabled={hasRequestedReview || assignDisabled}
+                      isLoading={hasRequestedReview}
+                      onClick={() => {
+                        setHasRequestedReview(true);
+
+                        requestReview({ course: slug }).then(({ data }) => {
+                          if (data && !data.error) {
+                            setHasRequestedReview(false);
+
+                            toast({
+                              ...toastConfig,
+                              title: 'Review assigned',
+                              description: `You have been assigned a review, you have ${SUBMISSION_REVIEW_HOURS} hours to complete this review`,
+                              status: 'success',
+                            });
+
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          } else {
+                            toast({
+                              ...toastConfig,
+                              title: 'Error assigning review',
+                              description: data.error,
+                              status: 'error',
+                            });
+
+                            setHasRequestedReview(false);
+                          }
+                        });
+                      }}
+                    >
+                      Assign
+                    </Button>
+                  </Tooltip>
                 </Flex>
               </Flex>
             </Box>

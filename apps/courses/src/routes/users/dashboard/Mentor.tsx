@@ -321,7 +321,7 @@ export const MentorTabs = ({ courses, mentor }) => {
                     Project Overview
                   </Link>
                   <Tooltip
-                    label="Please complete your current review before you get assigned a new one."
+                    label="You must complete your pending review prior to being assigned a new submission."
                     shouldWrapChildren
                     hasArrow
                     placement="top"

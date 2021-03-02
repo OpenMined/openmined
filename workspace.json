@@ -323,6 +323,83 @@
           }
         }
       }
+    },
+    "courses-ssr": {
+      "root": "apps/courses-ssr",
+      "sourceRoot": "apps/courses-ssr",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@nrwl/next:build",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "root": "apps/courses-ssr",
+            "outputPath": "apps/courses-ssr/dist"
+          },
+          "configurations": {
+            "production": {}
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/next:server",
+          "options": {
+            "buildTarget": "courses-ssr:build",
+            "dev": true
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "courses-ssr:build:production",
+              "dev": false
+            }
+          }
+        },
+        "export": {
+          "builder": "@nrwl/next:export",
+          "options": {
+            "buildTarget": "courses-ssr:build:production"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/courses-ssr/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/courses-ssr"],
+          "options": {
+            "jestConfig": "apps/courses-ssr/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "courses-ssr-e2e": {
+      "root": "apps/courses-ssr-e2e",
+      "sourceRoot": "apps/courses-ssr-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/courses-ssr-e2e/cypress.json",
+            "tsConfig": "apps/courses-ssr-e2e/tsconfig.e2e.json",
+            "devServerTarget": "courses-ssr:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "courses-ssr:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/courses-ssr-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
     }
   },
   "cli": {
@@ -349,6 +426,12 @@
         "linter": "eslint",
         "pascalCaseFiles": true,
         "routing": false
+      }
+    },
+    "@nrwl/next": {
+      "application": {
+        "style": "scss",
+        "linter": "eslint"
       }
     }
   },

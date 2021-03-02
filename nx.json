@@ -47,6 +47,13 @@
     },
     "shared-data-access-sanity": {
       "tags": []
+    },
+    "courses-ssr": {
+      "tags": []
+    },
+    "courses-ssr-e2e": {
+      "tags": [],
+      "implicitDependencies": ["courses-ssr"]
     }
   }
 }

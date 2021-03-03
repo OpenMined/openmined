@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CoursePageWhich } from '@openmined/shared/types';
 
-interface CourseProgress {
+export interface CourseProgress {
   lessons?: number;
   completedLessons?: number;
   concepts?: number;
@@ -207,13 +208,17 @@ export const getProjectStatus = (u, ps) => {
   return 'in-progress';
 };
 
-// Page change
 export const getNextAvailablePage = (u, ls): NextAvailablePage => {
   // If we haven't started the course at all, send them to the first lesson initiation page
   if (!hasStartedCourse(u)) return { lesson: ls[0]._id, concept: null };
 
   for (let i = 0; i < ls.length; i++) {
     const currentLesson = ls[i];
+
+    // If lesson is not started, make sure to mark with started_at
+    if (!hasStartedLesson(u, currentLesson._id)) {
+      return { lesson: currentLesson._id, concept: null };
+    }
 
     for (let j = 0; j < currentLesson.concepts.length; j++) {
       const currentConcept = currentLesson.concepts[j]._id;
@@ -224,113 +229,108 @@ export const getNextAvailablePage = (u, ls): NextAvailablePage => {
     }
 
     // If we got here, then all concepts in that lesson have been completed
-    // However, we should quickly check if there's another lesson available - if there is...
-    if (ls[i + 1]) {
-      const nextLessonId = ls[i + 1]._id;
-
-      // If they haven't completed this lesson and they also haven't started the next lesson
-      // Send them to the completion page
-      if (
-        !hasCompletedLesson(u, currentLesson._id) &&
-        !hasStartedLesson(u, nextLessonId)
-      ) {
-        return { lesson: currentLesson._id, concept: 'complete' };
-      }
-
-      // If they have completed this lesson, but they haven't started the next one
-      // Send them to the next lesson
-      else if (
-        hasCompletedLesson(u, currentLesson._id) &&
-        !hasStartedLesson(u, nextLessonId)
-      ) {
-        return { lesson: nextLessonId, concept: null };
-      }
-    }
-
-    // Otherwise, there are no more remaining lessons...
-    else {
-      // Check to make sure they've marked the last lesson as complete
-      if (!hasCompletedLesson(u, currentLesson._id)) {
-        return { lesson: currentLesson._id, concept: 'complete' };
-      }
-
-      // If they have, send them to the project
-      return { lesson: 'project', concept: null };
+    // Even though all concepts are completed, make sure this lesson is marked with completed_at
+    if (!hasCompletedLesson(u, currentLesson._id)) {
+      return { lesson: currentLesson._id, concept: 'complete' };
     }
   }
 
-  // Something went wrong...
-  return null;
+  // Ok all lessons, concepts has started_at and completed_at
+  return { lesson: 'project', concept: null };
 };
 
-const checkForPrevious = (user, ls, l, c) => {
-  // Are we on a project page, and has the last lesson been completed?
-  if (l === 'project' && hasCompletedLesson(user, ls[ls.length - 1]._id)) {
+// 'which' classification
+const isOnProjectPage = (which: CoursePageWhich) => {
+  return (
+    ['project', 'projectSubmission', 'projectCompleted'].indexOf(which) !== -1
+  );
+};
+
+/* Compares 2 ids which can be actual id as well as falsy values like null, undefined
+ * Note: null and undefined are same
+ */
+const isSameRouteValue = (c1, c2) => c1 === c2 || (!c1 && !c2);
+const isSameLessonConcept = (c1, c2) =>
+  c1.lesson === c2.lesson && isSameRouteValue(c1.concept, c2.concept);
+
+export const isAllowedToAccessPage = (
+  which: CoursePageWhich,
+  user,
+  ls,
+  course,
+  lesson,
+  concept,
+  suggestedPage: NextAvailablePage
+): boolean => {
+  // If project is completed, can acccess this page
+  if (which === 'courseComplete') return hasCompletedProject(user);
+
+  // If last lesson is completed, all lessons are completed.
+  // If all lessons are completed, can access all project pages
+  if (isOnProjectPage(which))
+    return hasCompletedLesson(user, ls[ls.length - 1]._id);
+
+  if (which === 'lessonComplete') {
+    const clc = ls[getLessonIndex(ls, lesson)].concepts; // "Current lesson concepts"
+    // Are we on a lesson completion page, and has the last concept of the current lesson been completed?
+    return hasCompletedConcept(user, lesson, clc[clc.length - 1]._id);
+  }
+
+  // If it's next available page, pass right away
+  if (
+    isSameLessonConcept(
+      { lesson: suggestedPage.lesson, concept: suggestedPage.concept },
+      { lesson, concept }
+    )
+  ) {
     return true;
   }
 
-  // Or, we're not on a project page
-  else if (l !== 'project') {
-    // Are we on a lesson page, and has the current lesson been started?
-    if (c === null && hasStartedLesson(user, l)) {
-      return true;
-    }
+  // If lesson is started can access the lesson page
+  if (which === 'lesson') return hasStartedLesson(user, lesson);
 
-    const clc = ls[getLessonIndex(ls, l)].concepts; // "Current lesson concepts"
-    const lastConceptComplete = hasCompletedConcept(
-      user,
-      l,
-      clc[clc.length - 1]._id
-    );
-
-    // Are we on a lesson completion page, and has the last concept of the current lesson been completed?
-    if (c === 'complete' && lastConceptComplete) {
-      return true;
-    }
-
+  if (which === 'concept') {
     // Are we on a concept page, and has the concept been started?
-    if (c !== null && c !== 'complete' && hasStartedConcept(user, l, c)) {
-      return true;
-    }
+    return hasStartedConcept(user, lesson, concept);
   }
 
   return false;
 };
 
-export const usePageAvailabilityRedirect = (user, ls, course, l, c = null) => {
-  // Set up a status state variable
-  const [status, setStatus] = useState(
-    checkForPrevious(user, ls, l, c) ? 'previous' : 'loading'
-  );
-
-  const navigate = useNavigate();
+export const useIsAllowedToAccessPage = (
+  which: CoursePageWhich,
+  user,
+  ls,
+  params
+) => {
+  const [isAllowed, setIsAllowed] = useState(false);
+  const { course, lesson, concept } = params;
 
   useEffect(() => {
-    // If we're still in the "loading" state
-    if (status === 'loading') {
-      // Get the suggested page
-      const suggestedPage = getNextAvailablePage(user, ls);
+    const suggestedPage = getNextAvailablePage(user, ls);
+    const canAccess = isAllowedToAccessPage(
+      which,
+      user,
+      ls,
+      course,
+      lesson,
+      concept,
+      suggestedPage
+    );
 
-      // If the suggested lesson and concept are same as the ones we passed, then we're right where we're supposed to be!
-      if (suggestedPage.lesson === l && suggestedPage.concept === c) {
-        setStatus('available');
-      }
+    if (!canAccess) {
+      let url = `/courses/${course}/${suggestedPage.lesson}`;
+      if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
 
-      // Otherwise, we need to redirect the user where they're supposed to be
-      else {
-        setStatus('redirecting');
-
-        let url = `/courses/${course}/${suggestedPage.lesson}`;
-        if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
-
-        // TODO: https://github.com/OpenMined/openmined/issues/53
-        // navigate(url);
-        window.location.href = url;
-      }
+      // TODO: https://github.com/OpenMined/openmined/issues/53
+      // navigate(url);
+      window.location.href = url;
+    } else {
+      setIsAllowed(canAccess);
     }
-  }, [navigate, user, ls, course, l, c, status]);
+  }, [user, ls, course, lesson, concept, which]);
 
-  return status;
+  return isAllowed;
 };
 
 // TODO: https://github.com/OpenMined/openmined/issues/54

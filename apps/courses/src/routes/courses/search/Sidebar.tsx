@@ -50,7 +50,7 @@ const SidebarItem = ({
         <RadioGroup colorScheme="blue" value={value} onChange={(val) => setter(val)}>
           <Stack>
             {options.map((item) => (
-              <Radio value={item} key={item}>
+              <Radio value={item} key={item} isChecked={item === value}>
                 {item}
               </Radio>
             ))}

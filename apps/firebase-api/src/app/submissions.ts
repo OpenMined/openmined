@@ -61,7 +61,7 @@ export const calculateSubmissionNum = async (change, context) => {
     const numSubmissionsPending = dbSubmissions.size;
     await admin
       .firestore()
-      .collection('courses')
+      .collection('stats')
       .doc(courseId)
       .set({ numSubmissionsPending }, { merge: true });
   } catch (error) {

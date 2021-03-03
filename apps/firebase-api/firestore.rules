@@ -126,7 +126,7 @@ service cloud.firestore {
       }
     }
 
-    match /courses/{course} {
+    match /stats/{course} {
       allow read: if isMentor(request.auth.uid);
     }
 

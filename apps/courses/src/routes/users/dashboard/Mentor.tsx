@@ -10,6 +10,7 @@ import {
   Link,
   SimpleGrid,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { Link as RRDLink } from 'react-router-dom';
 import {
@@ -51,9 +52,23 @@ import {
   codeofconductLink,
   shiftscheduleLink,
 } from '../../../content/links';
+import { useMentorLoadReviews } from '../../../hooks/useMentorLoadReviews';
 
 dayjs.extend(relativeTime);
 
+const useActiveReviewData = () => {
+  const user: firebase.User = useUser();
+  const db = useFirestore();
+  const activeReviewsRef = db
+    .collectionGroup('submissions')
+    .where('mentor', '==', db.doc(`/users/${user.uid}`))
+    .where('status', '==', null);
+  const activeReviewsData: CourseProjectSubmission[] = useFirestoreCollectionData(
+    activeReviewsRef
+  );
+
+  return activeReviewsData;
+};
 const getMentorableCourses = (courses, user) =>
   user.mentorable_courses.map((id) => {
     const courseIndex = courses.findIndex(({ slug }) => slug === id);
@@ -74,13 +89,7 @@ export const MentorContext = ({ courses }) => {
 
   const [buttonClicked, setButtonClicked] = useState(false);
 
-  const activeReviewsRef = db
-    .collectionGroup('submissions')
-    .where('mentor', '==', db.doc(`/users/${user.uid}`))
-    .where('status', '==', null);
-  const activeReviewsData: CourseProjectSubmission[] = useFirestoreCollectionData(
-    activeReviewsRef
-  );
+  const activeReviewsData = useActiveReviewData();
 
   const activeReviews = activeReviewsData.map((r) => {
     const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
@@ -263,9 +272,11 @@ export const MentorTabs = ({ courses, mentor }) => {
     const [hasRequestedReview, setHasRequestedReview] = useState(false);
 
     const db = useFirestore();
-    const courseMetricRef = db.collection('courses').doc(slug);
+    const courseMetricRef = db.collection('stats').doc(slug);
     const courseMetric: CourseMetric = useFirestoreDocData(courseMetricRef);
 
+    const activeReviewsData = useActiveReviewData();
+    const assignDisabled = activeReviewsData.length > 0;
     return (
       <Box key={title} borderRadius="md" boxShadow="lg" overflow="hidden">
         <Flex
@@ -321,40 +332,48 @@ export const MentorTabs = ({ courses, mentor }) => {
             >
               Project Overview
             </Link>
-            <Button
-              colorScheme="black"
-              disabled={hasRequestedReview}
-              isLoading={hasRequestedReview}
-              onClick={() => {
-                setHasRequestedReview(true);
-
-                requestReview({ course: slug }).then(({ data }) => {
-                  if (data && !data.error) {
-                    setHasRequestedReview(false);
-
-                    toast({
-                      ...toastConfig,
-                      title: 'Review assigned',
-                      description: `You have been assigned a review, you have ${SUBMISSION_REVIEW_HOURS} hours to complete this review`,
-                      status: 'success',
-                    });
-
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  } else {
-                    toast({
-                      ...toastConfig,
-                      title: 'Error assigning review',
-                      description: data.error,
-                      status: 'error',
-                    });
-
-                    setHasRequestedReview(false);
-                  }
-                });
-              }}
+            <Tooltip
+              label="You must complete your pending review prior to being assigned a new submission."
+              shouldWrapChildren
+              hasArrow
+              placement="top"
+              isDisabled={!assignDisabled}
             >
-              Assign
-            </Button>
+              <Button
+                colorScheme="black"
+                disabled={hasRequestedReview || assignDisabled}
+                isLoading={hasRequestedReview}
+                onClick={() => {
+                  setHasRequestedReview(true);
+
+                  requestReview({ course: slug }).then(({ data }) => {
+                    if (data && !data.error) {
+                      setHasRequestedReview(false);
+
+                      toast({
+                        ...toastConfig,
+                        title: 'Review assigned',
+                        description: `You have been assigned a review, you have ${SUBMISSION_REVIEW_HOURS} hours to complete this review`,
+                        status: 'success',
+                      });
+
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                      toast({
+                        ...toastConfig,
+                        title: 'Error assigning review',
+                        description: data.error,
+                        status: 'error',
+                      });
+
+                      setHasRequestedReview(false);
+                    }
+                  });
+                }}
+              >
+                Assign
+              </Button>
+            </Tooltip>
           </Flex>
         </Flex>
       </Box>
@@ -372,26 +391,19 @@ export const MentorTabs = ({ courses, mentor }) => {
   };
 
   const MyActivity = () => {
-    const user: firebase.User = useUser();
-    const db = useFirestore();
-    const dbReviewsRef = db
-      .collection('users')
-      .doc(user.uid)
-      .collection('reviews')
-      // .where('status', '!=', 'pending')
-      .orderBy('started_at', 'desc')
-      .limit(10);
-    const dbReviews: MentorReview[] = useFirestoreCollectionData(dbReviewsRef);
+    const {
+      reviews,
+      isLoading,
+      nextPage,
+      hasMoreReviews,
+    } = useMentorLoadReviews();
 
-    const reviewHistory = dbReviews.map((r) => {
+    const reviewHistory = reviews.map((r) => {
       const courseIndex = courses.findIndex(({ slug }) => slug === r.course);
 
       if (courseIndex !== -1) return { ...r, course: courses[courseIndex] };
       return null;
     });
-
-    // TODO: https://github.com/OpenMined/openmined/issues/59
-    const hasMoreReviews = false;
 
     const numReviewed = mentor.numCompleted || 0;
     const numResigned = mentor.numResigned || 0;
@@ -518,11 +530,11 @@ export const MentorTabs = ({ courses, mentor }) => {
             </Flex>
           </Flex>
         ))}
-        {/* TODO: https://github.com/OpenMined/openmined/issues/59 */}
         {hasMoreReviews && (
           <Flex justify="center" mt={3}>
             <Button
-              onClick={() => console.log('LOAD MORE')}
+              isLoading={isLoading}
+              onClick={nextPage}
               colorScheme="black"
             >
               Load More Reviews

@@ -132,6 +132,8 @@ export type CourseProjectSubmission = {
   review_ended_at: firebase.firestore.Timestamp | null;
 };
 
+export type MentorReviewStatus = 'pending' | 'resigned' | 'reviewed'
+
 export type MentorReview = {
   started_at: firebase.firestore.Timestamp;
   completed_at: firebase.firestore.Timestamp | null;
@@ -141,5 +143,9 @@ export type MentorReview = {
   course: string;
   part: string;
   attempt: string | number;
-  status: 'pending' | 'resigned' | 'reviewed';
+  status: MentorReviewStatus;
 };
+
+export type CourseMetric = {
+  numSubmissionsPending?: number;
+}

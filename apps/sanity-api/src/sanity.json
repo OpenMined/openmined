@@ -19,7 +19,7 @@
   "env": {
     "development": {
       "api": {
-        "dataset": "development"
+        "dataset": "mirror"
       },
       "plugins": [
         "@sanity/vision"

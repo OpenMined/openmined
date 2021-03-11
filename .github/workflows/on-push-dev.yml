@@ -27,6 +27,7 @@ jobs:
         env:
           PROJECT_ID: development
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          NX_SANITY_ADMIN: ${{ secrets.NX_SANITY_ADMINS }}
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:

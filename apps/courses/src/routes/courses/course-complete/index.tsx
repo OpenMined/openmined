@@ -156,9 +156,11 @@ export default ({ page }: CoursePagesProp) => {
                       {description}
                     </Text>
                   </Flex>
-                  <Link {...navigateLinkProps(link)} {...linkProps}>
-                    {linkTitle}
-                  </Link>
+                  {link && (
+                    <Link {...navigateLinkProps(link)} {...linkProps}>
+                      {linkTitle}
+                    </Link>
+                  )}
                 </Flex>
               )
             )}

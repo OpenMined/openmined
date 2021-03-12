@@ -183,7 +183,7 @@ const Controls = ({
   // const navigate = useNavigate();
 
   return (
-    <Flex align="center" id={COURSE_FOOTER_ID}>
+    <Flex align="center">
       <Button
         onClick={() => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -293,6 +293,7 @@ export default ({
       bg="gray.900"
       boxShadow="md"
       zIndex={2}
+      id={COURSE_FOOTER_ID}
     >
       <Box position="absolute" top={-2} left={0} width="full">
         <Progress value={scrollProgress || 0} size="sm" colorScheme="cyan" />

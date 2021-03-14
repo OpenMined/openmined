@@ -242,7 +242,7 @@ export const getNextAvailablePage = (u, ls): NextAvailablePage => {
 // 'which' classification
 const isOnProjectPage = (which: CoursePageWhich) => {
   return (
-    ['project', 'projectSubmission', 'projectCompleted'].indexOf(which) !== -1
+    ['project', 'projectSubmission', 'projectComplete'].indexOf(which) !== -1
   );
 };
 

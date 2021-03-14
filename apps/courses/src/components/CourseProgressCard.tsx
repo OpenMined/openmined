@@ -16,7 +16,7 @@ import Icon from '../components/Icon';
 export default ({ content, ...props }) => {
   const { title, slug, level, length, lessons, project, progress } = content;
 
-  const stats = getCourseProgress(progress, lessons, project.parts);
+  const stats = getCourseProgress(progress, lessons, project?.parts);
   const percentComplete =
     ((stats.completedConcepts + stats.completedProjectParts) /
       (stats.concepts + stats.projectParts)) *
@@ -69,10 +69,12 @@ export default ({ content, ...props }) => {
               </Flex>
             );
           })}
-          <Flex align="center" mt={2}>
-            <Icon icon={faShapes} mr={3} color="gray.600" boxSize={5} />
-            <Text color="gray.700">{project.title}</Text>
-          </Flex>
+          {project && (
+            <Flex align="center" mt={2}>
+              <Icon icon={faShapes} mr={3} color="gray.600" boxSize={5} />
+              <Text color="gray.700">{project.title}</Text>
+            </Flex>
+          )}
         </Box>
         <Flex justify="flex-end">
           <Link to={resumeLink}>

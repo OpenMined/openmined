@@ -26,7 +26,7 @@ export const getCourseProgress = (u, ls, ps): CourseProgress => {
   let numCompletedLessons = 0;
   let numConcepts = 0;
   let numCompletedConcepts = 0;
-  const numProjectParts = ps.length;
+  const numProjectParts = ps?.length ?? 0;
   let numCompletedProjectParts = 0;
 
   ls.forEach((l) => {
@@ -41,7 +41,7 @@ export const getCourseProgress = (u, ls, ps): CourseProgress => {
     });
   });
 
-  ps.forEach((p) => {
+  ps?.forEach((p) => {
     if (hasCompletedProjectPart(u, p._key)) numCompletedProjectParts++;
   });
 

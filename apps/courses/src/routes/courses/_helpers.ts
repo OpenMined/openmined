@@ -34,7 +34,7 @@ export const getCourseProgress = (u, ls, ps): CourseProgress => {
 
     if (hasCompletedLesson(u, l._id)) numCompletedLessons++;
 
-    l.concepts.forEach((c) => {
+    l.concepts?.forEach((c) => {
       numConcepts++;
 
       if (hasCompletedConcept(u, l._id, c._id)) numCompletedConcepts++;

@@ -209,7 +209,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
   const isTakingCourse = progress ? hasStartedCourse(progress) : false;
 
   const stats = isTakingCourse
-    ? getCourseProgress(progress, page.lessons, project.parts)
+    ? getCourseProgress(progress, page.lessons, project?.parts)
     : {};
   const percentComplete =
     ((stats.completedConcepts + stats.completedProjectParts) /

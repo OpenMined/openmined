@@ -1,5 +1,13 @@
 import React from 'react';
-import { Box, Text, Flex, Heading, Progress, Divider } from '@chakra-ui/react';
+import {
+  Badge,
+  Box,
+  Text,
+  Flex,
+  Heading,
+  Progress,
+  Divider,
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import {
   faArrowRight,
@@ -12,9 +20,20 @@ import {
   hasCompletedLesson,
 } from '../routes/courses/_helpers';
 import Icon from '../components/Icon';
+import dayjs from 'dayjs';
 
 export default ({ content, ...props }) => {
-  const { title, slug, level, length, lessons, project, progress } = content;
+  const {
+    title,
+    slug,
+    level,
+    length,
+    lessons,
+    project,
+    progress,
+    simulcast,
+    simulcast_release_date,
+  } = content;
 
   const stats = getCourseProgress(progress, lessons, project?.parts);
   const percentComplete =
@@ -27,6 +46,10 @@ export default ({ content, ...props }) => {
 
   if (nextAvailablePage.concept) {
     resumeLink = `${resumeLink}/${nextAvailablePage.concept}`;
+  }
+
+  if (simulcast && percentComplete === 100) {
+    resumeLink = null;
   }
 
   return (
@@ -53,6 +76,9 @@ export default ({ content, ...props }) => {
         </Flex>
         <Box bg="blue.50" p={4} borderRadius="md" mb={4}>
           {lessons.map((l, i) => {
+            const shouldShowNextBadge =
+              i > 0 && lessons[i - 1].concepts?.length > 0 && !l.concepts;
+
             const iconProps = hasCompletedLesson(progress, l._id)
               ? {
                   icon: faCheckCircle,
@@ -63,28 +89,61 @@ export default ({ content, ...props }) => {
                 };
 
             return (
-              <Flex align="center" mt={i === 0 ? 0 : 2} key={i}>
-                <Icon {...iconProps} mr={3} boxSize={5} />
-                <Text color="gray.700">{l.title}</Text>
+              <Flex
+                align="center"
+                mt={i === 0 ? 0 : 2}
+                key={i}
+                justifyContent="space-between"
+              >
+                <Flex>
+                  <Icon {...iconProps} mr={3} boxSize={5} />
+                  <Text color="gray.700">{l.title}</Text>
+                </Flex>
+                {shouldShowNextBadge && (
+                  <Badge color="white" bgColor="blue.700" justifySelf="end">
+                    Next
+                  </Badge>
+                )}
               </Flex>
             );
           })}
           {project && (
-            <Flex align="center" mt={2}>
-              <Icon icon={faShapes} mr={3} color="gray.600" boxSize={5} />
-              <Text color="gray.700">{project.title}</Text>
+            <Flex align="center" mt={2} justifyContent="space-between">
+              <Flex>
+                <Icon icon={faShapes} mr={3} color="gray.600" boxSize={5} />
+                <Text color="gray.700">{project.title}</Text>
+              </Flex>
+              {simulcast &&
+                !project.parts &&
+                lessons[lessons.length - 1].concepts?.length > 0 && (
+                  <Badge color="white" bgColor="blue.700" justifySelf="end">
+                    Next
+                  </Badge>
+                )}
             </Flex>
           )}
         </Box>
         <Flex justify="flex-end">
-          <Link to={resumeLink}>
-            <Flex align="center">
+          {resumeLink && (
+            <Link to={resumeLink}>
+              <Flex align="center">
+                <Text fontWeight="bold" mr={3}>
+                  Resume
+                </Text>
+                <Icon icon={faArrowRight} />
+              </Flex>
+            </Link>
+          )}
+          {!resumeLink && (
+            <Flex align="center" color="GrayText">
               <Text fontWeight="bold" mr={3}>
-                Resume
+                Coming{' '}
+                {simulcast_release_date
+                  ? dayjs(simulcast_release_date).fromNow()
+                  : 'soon'}
               </Text>
-              <Icon icon={faArrowRight} />
             </Flex>
-          </Link>
+          )}
         </Flex>
       </Box>
       <Progress colorScheme="blue" value={percentComplete} />

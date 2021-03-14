@@ -144,7 +144,7 @@ export const concept = ({ lesson, concept, isAdmin }) => `
 }[0]`;
 
 export const homepageCourses = () => `
-*[_type == "course" && visible == true] {
+*[_type == "course" && visible == true && !(_id in path('drafts.**'))] {
   title,
   level,
   length,

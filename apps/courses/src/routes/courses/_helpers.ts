@@ -321,7 +321,7 @@ export const useIsAllowedToAccessPage = (
     if (!canAccess) {
       let url = `/courses/${course}/${suggestedPage.lesson}`;
       if (suggestedPage.concept) url = `${url}/${suggestedPage.concept}`;
-      
+
       // TODO: https://github.com/OpenMined/openmined/issues/53
       // navigate(url);
       window.location.href = url;

@@ -113,7 +113,7 @@ export default ({
   const navigate = useNavigate();
 
   const {
-    course: { lessons, projectTitle, simulcast_release_date },
+    course: { lessons, projectTitle, simulcast, simulcast_release_date },
     title,
   } = page;
 
@@ -168,23 +168,26 @@ export default ({
     { text: '👍', val: 1 },
   ];
 
+  const simulcastEnd =
+    simulcast && lessons[lessonIndex + 1]?.concepts === undefined;
+
   return (
     <Box bg="gray.900" color="white">
       <GridContainer py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
-            {nextLesson ? (
-              <Icon icon={faCheckCircle} color="cyan.300" boxSize={12} mb={4} />
-            ) : (
+            {simulcastEnd ? (
               <Image
                 src="https://emojis.slackmojis.com/emojis/images/1572027878/6937/blob_thumbs_up.png?1572027878"
                 alt="Yes"
                 boxSize={12}
                 mb={3}
               />
+            ) : (
+              <Icon icon={faCheckCircle} color="cyan.300" boxSize={12} mb={4} />
             )}
             <Heading as="p" size="xl" textAlign="center" mb={4}>
-              {nextLesson ? 'Congratulations!' : 'Keep up the good work!'}
+              {simulcastEnd ? 'Keep up the good work!' : 'Congratulations!'}
             </Heading>
             <Heading
               as="p"
@@ -208,7 +211,7 @@ export default ({
                 mx={4}
                 flexShrink={0}
               >
-                {nextLesson ? 'Up Next' : 'Continue learning'}
+                {simulcastEnd ? 'Continue learning' : 'Up Next'}
               </Text>
               <Divider />
             </Flex>
@@ -249,7 +252,32 @@ export default ({
                 />
               )}
             </Box>
-            {nextLesson && lessons[lessonIndex + 1].concepts?.length > 0 ? (
+            {simulcastEnd ? (
+              <>
+                <Text
+                  mb={12}
+                  align="center"
+                  color="gray.400"
+                  display={['block', 'none']}
+                >
+                  You will be notified via email when the next lesson is
+                  released. Until then check out some of our other learning
+                  resources below
+                </Text>
+                <Text
+                  mb={12}
+                  align="center"
+                  color="gray.400"
+                  display={['none', 'block']}
+                >
+                  You will be notified via email when the next lesson is
+                  released.
+                  <br />
+                  Until then check out some of our other learning resources
+                  below
+                </Text>
+              </>
+            ) : (
               <Button
                 mb={12}
                 colorScheme="cyan"
@@ -264,45 +292,16 @@ export default ({
                     //       : nextLesson._id
                     //   }`
                     // );
-                    if (nextLesson) {
-                      window.location.href = `/courses/${course}/${
-                        typeof nextLesson === 'string'
-                          ? nextLesson
-                          : nextLesson._id
-                      }`;
-                    } else {
-                      window.location.href = `/courses/${course}`;
-                    }
+                    window.location.href = `/courses/${course}/${
+                      typeof nextLesson === 'string'
+                        ? nextLesson
+                        : nextLesson._id
+                    }`;
                   })
                 }
               >
                 Continue
               </Button>
-            ) : (
-              <>
-                <Text
-                  my={8}
-                  align="center"
-                  color="gray.400"
-                  display={['block', 'none']}
-                >
-                  You will be notified via email when the next lesson is
-                  released. Until then check out some of our other learning
-                  resources below
-                </Text>
-                <Text
-                  my={8}
-                  align="center"
-                  color="gray.400"
-                  display={['none', 'block']}
-                >
-                  You will be notified via email when the next lesson is
-                  released.
-                  <br />
-                  Until then check out some of our other learning resources
-                  below
-                </Text>
-              </>
             )}
             <Flex
               direction={{ base: 'column', md: 'row' }}

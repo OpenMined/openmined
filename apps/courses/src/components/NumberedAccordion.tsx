@@ -51,7 +51,7 @@ export default ({
   indexes,
   onToggleItem,
   sections,
-  simulcastReleaseDate,
+  simulcastReleaseDate = '',
   ...props
 }) => (
   <Accordion index={indexes} allowMultiple {...props}>

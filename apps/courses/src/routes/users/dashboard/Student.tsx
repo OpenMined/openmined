@@ -39,7 +39,7 @@ const combineProgressAndCourses = (courses, progress, filter) => {
   return tempCourses;
 };
 
-export const StudentContext = ({ courses, progress }) => {
+export const StudentContext = ({ courses, progress, userIsMentor }) => {
   const incompleteCourses = combineProgressAndCourses(
     courses,
     progress,
@@ -71,7 +71,7 @@ export const StudentContext = ({ courses, progress }) => {
   return (
     <SimpleGrid columns={1} spacing={4} width="full">
       {incompleteCourses.map((c) => (
-        <CourseProgressCard key={c.title} content={c} />
+        <CourseProgressCard key={c.title} content={c} ms={userIsMentor} />
       ))}
     </SimpleGrid>
   );

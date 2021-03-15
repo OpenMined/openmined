@@ -36,10 +36,16 @@ export default ({ content, ...props }) => {
   } = content;
 
   const stats = getCourseProgress(progress, lessons, project?.parts);
-  const percentComplete =
+  let mentorState = props.ms;
+  let percentComplete =
     ((stats.completedConcepts + stats.completedProjectParts) /
       (stats.concepts + stats.projectParts)) *
     100;
+
+  // don't require project completion values for mentors
+  if (mentorState) {
+    percentComplete = (stats.completedConcepts / stats.concepts) * 100;
+  }
 
   const nextAvailablePage = getNextAvailablePage(progress, lessons);
   let resumeLink = `/courses/${slug}/${nextAvailablePage.lesson}`;

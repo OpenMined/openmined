@@ -107,7 +107,7 @@ export default ({ content, ...props }) => {
               </Flex>
             );
           })}
-          {project && (
+          {project?.title && (
             <Flex align="center" mt={2} justifyContent="space-between">
               <Flex>
                 <Icon icon={faShapes} mr={3} color="gray.600" boxSize={5} />

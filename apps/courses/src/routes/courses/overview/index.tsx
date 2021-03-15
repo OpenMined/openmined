@@ -117,7 +117,8 @@ export default ({ course, page, progress }: CoursePagesProp) => {
   ) => (
     <Box bg="gray.200" p={8}>
       <Text>
-        {typeof description === 'string' ? description : description()}
+        {typeof description === 'string' && description}
+        {typeof description === 'function' && description()}
       </Text>
       {parts && (
         <List spacing={2} mt={4}>

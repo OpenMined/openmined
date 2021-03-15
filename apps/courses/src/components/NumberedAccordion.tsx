@@ -53,52 +53,64 @@ export default ({
   sections,
   simulcastReleaseDate = '',
   ...props
-}) => (
-  <Accordion index={indexes} allowMultiple {...props}>
-    {sections.map(({ title, content, image, icon, ...section }, index) => {
-      const shouldShowComingSoonBadge =
-        index > 0 &&
-        (sections[index - 1].concepts?.length > 0 || sections[index - 1].parts);
-      return (
-        <AccordionItem
-          border="0px"
-          mt={index === 0 ? 0 : 8}
-          key={index}
-          {...section}
-        >
-          <Flex alignItems="center" onClick={() => onToggleItem(index)}>
-            {!icon && !image && (
-              <CircledNumber
-                mr={6}
-                size={10}
-                isActive={indexes.includes(index)}
-              >
-                {index + 1}
-              </CircledNumber>
-            )}
-            {icon && <Icon icon={icon} boxSize={10} mr={6} />}
-            {image && <Image src={image} alt={title} boxSize={10} mr={6} />}
-            <AccordionButton
-              px={0}
-              borderBottomWidth="1px"
-              _hover={{ backgroundColor: 'initial' }}
-            >
-              <Heading size="lg" as="h3" flex="1" textAlign="left">
-                {title}
-              </Heading>
-              {shouldShowComingSoonBadge && (
-                <Badge color="white" bgColor="blue.700" mr={4}>
-                  Coming {dayjs(simulcastReleaseDate).fromNow()}
-                </Badge>
+}) => {
+  let isShowingBadge = false;
+  return (
+    <Accordion index={indexes} allowMultiple {...props}>
+      {sections.map(({ title, content, image, icon, ...section }, index) => {
+        const shouldShowComingSoonBadge =
+          index > 0 &&
+          !sections[index].concepts &&
+          !sections[index].parts &&
+          (sections[index - 1].concepts?.length > 0 ||
+            sections[index - 1].parts);
+
+        if (!isShowingBadge && shouldShowComingSoonBadge) {
+          isShowingBadge = true;
+        }
+
+        return (
+          <AccordionItem
+            border="0px"
+            mt={index === 0 ? 0 : 8}
+            key={index}
+            {...section}
+            isDisabled={isShowingBadge}
+          >
+            <Flex alignItems="center" onClick={() => onToggleItem(index)}>
+              {!icon && !image && (
+                <CircledNumber
+                  mr={6}
+                  size={10}
+                  isActive={indexes.includes(index)}
+                >
+                  {index + 1}
+                </CircledNumber>
               )}
-              <AccordionIcon fontSize="1.5rem" />
-            </AccordionButton>
-          </Flex>
-          <AccordionPanel ml={4} pl={12} pr={0} pt={4}>
-            {content}
-          </AccordionPanel>
-        </AccordionItem>
-      );
-    })}
-  </Accordion>
-);
+              {icon && <Icon icon={icon} boxSize={10} mr={6} />}
+              {image && <Image src={image} alt={title} boxSize={10} mr={6} />}
+              <AccordionButton
+                px={0}
+                borderBottomWidth="1px"
+                _hover={{ backgroundColor: 'initial' }}
+              >
+                <Heading size="lg" as="h3" flex="1" textAlign="left">
+                  {title}
+                </Heading>
+                {shouldShowComingSoonBadge && (
+                  <Badge color="white" bgColor="blue.700" mr={4}>
+                    Coming {dayjs(simulcastReleaseDate).fromNow()}
+                  </Badge>
+                )}
+                <AccordionIcon fontSize="1.5rem" />
+              </AccordionButton>
+            </Flex>
+            <AccordionPanel ml={4} pl={12} pr={0} pt={4}>
+              {content}
+            </AccordionPanel>
+          </AccordionItem>
+        );
+      })}
+    </Accordion>
+  );
+};

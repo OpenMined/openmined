@@ -1,11 +1,19 @@
 import React from 'react';
-import { Box, Text, Flex, Image, Heading, ChakraProps } from '@chakra-ui/react';
+import {
+  Box,
+  Text,
+  Flex,
+  Image,
+  Heading,
+  ChakraProps,
+  Badge,
+} from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
 import theme from '../theme';
 
 export default ({ content, ...props }) => {
-  const { title, visual, cost, level, length, slug, live } = content;
+  const { title, visual, cost, level, length, slug, live, simulcast } = content;
 
   const absoluteOpacityStyles: ChakraProps = {
     position: 'absolute',
@@ -46,9 +54,18 @@ export default ({ content, ...props }) => {
       />
       <Flex p={6} direction="column" justifyContent="space-between" flex={1}>
         <Box>
-          <Text fontFamily="mono" color="gray.400" textAlign="right" mb={2}>
-            {cost.toUpperCase()}
-          </Text>
+          <Flex justifyContent="space-between" alignItems="center" mb={2}>
+            <span>
+              {simulcast && (
+                <Badge color="white" bgColor="blue.700">
+                  Simulcast
+                </Badge>
+              )}
+            </span>
+            <Text fontFamily="mono" color="gray.400" textAlign="right">
+              {cost.toUpperCase()}
+            </Text>
+          </Flex>
           <Heading as="h3" size="lg" mb={8}>
             {title}
           </Heading>

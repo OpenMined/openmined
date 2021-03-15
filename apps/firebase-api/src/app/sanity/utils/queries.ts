@@ -4,13 +4,15 @@ export type SANITY_QUERY = {
 };
 
 export const search = () => `
-*[_type == "course" && visible == true] {
+*[_type == "course" && visible == true && !(_id in path('drafts.**'))] {
   title,
   description,
   level,
   length,
   cost,
   live,
+  simulcast,
+  simulcast_release_date,
   "slug": slug.current,
   visual {
     "default": default.asset -> url,
@@ -109,6 +111,8 @@ export const lessonComplete = ({ lesson, isAdmin }) => `
   description,
   resources,
   "course": *[_type == "course" && references(^._id)][0] {
+    simulcast,
+    simulcast_release_date,
     title,
     "projectTitle": project.title,
     "lessons": lessons[] -> {
@@ -150,6 +154,8 @@ export const homepageCourses = () => `
   length,
   cost,
   live,
+  simulcast,
+  simulcast_release_date,
   "slug": slug.current,
   visual {
     "default": default.asset -> url,

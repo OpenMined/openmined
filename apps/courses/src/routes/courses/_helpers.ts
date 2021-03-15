@@ -34,7 +34,7 @@ export const getCourseProgress = (u, ls, ps): CourseProgress => {
 
     if (hasCompletedLesson(u, l._id)) numCompletedLessons++;
 
-    l.concepts.forEach((c) => {
+    l.concepts?.forEach((c) => {
       numConcepts++;
 
       if (hasCompletedConcept(u, l._id, c._id)) numCompletedConcepts++;
@@ -212,9 +212,9 @@ export const getNextAvailablePage = (u, ls): NextAvailablePage => {
   // If we haven't started the course at all, send them to the first lesson initiation page
   if (!hasStartedCourse(u)) return { lesson: ls[0]._id, concept: null };
 
-  for (let i = 0; i < ls.length; i++) {
+  for (let i = 0; i < ls.length && ls[i].concepts?.length > 0; i++) {
     const currentLesson = ls[i];
-
+    console.log({ ls, currentLesson, i, l: ls[i] });
     // If lesson is not started, make sure to mark with started_at
     if (!hasStartedLesson(u, currentLesson._id)) {
       return { lesson: currentLesson._id, concept: null };

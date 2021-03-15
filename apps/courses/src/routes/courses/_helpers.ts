@@ -214,7 +214,7 @@ export const getNextAvailablePage = (u, ls): NextAvailablePage => {
 
   for (let i = 0; i < ls.length && ls[i].concepts?.length > 0; i++) {
     const currentLesson = ls[i];
-    console.log({ ls, currentLesson, i, l: ls[i] });
+
     // If lesson is not started, make sure to mark with started_at
     if (!hasStartedLesson(u, currentLesson._id)) {
       return { lesson: currentLesson._id, concept: null };

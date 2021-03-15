@@ -63,7 +63,9 @@ export default ({ content, ...props }) => {
       <Box p={6}>
         <Flex justify="space-between" align="center" mb={2}>
           <Heading as="h3" size="md">
-            {title}
+            <a href={`/courses/${slug}`} target="_self">
+              {title}
+            </a>
           </Heading>
           <Text color="blue.700" fontFamily="mono">
             {percentComplete.toFixed(1)}%

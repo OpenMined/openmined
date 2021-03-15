@@ -69,6 +69,10 @@ export default ({
           isShowingBadge = true;
         }
 
+        if (!title) {
+          return null;
+        }
+
         return (
           <AccordionItem
             border="0px"

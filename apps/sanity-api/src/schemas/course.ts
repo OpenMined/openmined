@@ -23,6 +23,19 @@ export default {
       type: 'boolean',
     },
     {
+      title: 'Is simulcast?',
+      description:
+        'Is there any content to be added to this course in a posterior date?',
+      name: 'simulcast',
+      type: 'boolean',
+    },
+    {
+      title: 'Next lesson/project date',
+      description: 'Next lesson/project release date',
+      name: 'simulcast_release_date',
+      type: 'datetime',
+    },
+    {
       title: 'Title',
       name: 'title',
       type: 'string',

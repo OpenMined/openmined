@@ -26,6 +26,9 @@ import {
   getProjectPartStatus,
   getProjectStatus,
   getNextAvailablePage,
+  getCourseProgress,
+  CourseProgress,
+  isAllowedToAccessPage,
 } from './_helpers';
 
 describe('course helpers', () => {
@@ -53,6 +56,81 @@ describe('course helpers', () => {
 
     expect(hasStartedCourse(user)).toBeTruthy();
     expect(hasCompletedCourse(user)).toBeTruthy();
+  });
+
+  describe('course progress', () => {
+    it('use completed 1 lesson and 1 concept', () => {
+      const user = {
+        started_at: Date.now(),
+        lessons: {
+          'a-lesson': {
+            started_at: Date.now(),
+            concepts: {
+              'a-1-concept': {
+                started_at: Date.now(),
+                completed_at: Date.now(),
+              },
+            },
+            completed_at: Date.now(),
+          },
+          'b-lesson': {
+            started_at: Date.now(),
+          },
+        },
+      };
+      const lessons = [
+        { _id: 'a-lesson', concepts: [{ _id: 'a-1-concept' }] },
+        { _id: 'b-lesson', concepts: [] },
+      ];
+      const projectParts = [{ _id: 'a-project-part' }];
+
+      const courseProgress: CourseProgress = getCourseProgress(
+        user,
+        lessons,
+        projectParts
+      );
+      expect(courseProgress.completedLessons).toBe(1);
+      expect(courseProgress.completedConcepts).toBe(1);
+      expect(courseProgress.completedProjectParts).toBe(0);
+    });
+
+    it('course progress', () => {
+      const user = {
+        started_at: Date.now(),
+        lessons: {
+          'a-lesson': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+          },
+          'b-lesson': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+          },
+        },
+        project: {
+          started_at: Date.now(),
+          parts: {
+            'a-project-part': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+          },
+        },
+      };
+      const lessons = [
+        { _id: 'a-lesson', concepts: [] },
+        { _id: 'b-lesson', concepts: [] },
+      ];
+      const projectParts = [{ _key: 'a-project-part' }];
+
+      const courseProgress: CourseProgress = getCourseProgress(
+        user,
+        lessons,
+        projectParts
+      );
+
+      expect(courseProgress.completedProjectParts).toBe(1);
+    });
   });
 });
 
@@ -1392,5 +1470,463 @@ describe('page helpers', () => {
 
     expect(result.lesson).toBe('project');
     expect(result.concept).toBe(null);
+  });
+});
+
+describe('isAllowedToAccessPage', () => {
+  it('when course is completed, it can access all pages', () => {
+    const user = {
+      started_at: Date.now(),
+      completed_at: Date.now(),
+      lessons: {
+        'a-lesson': {
+          started_at: Date.now(),
+          completed_at: Date.now(),
+          concepts: {
+            'a-1-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+            'a-2-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+          },
+        },
+      },
+      project: {
+        started_at: Date.now(),
+        completed_at: Date.now(),
+        parts: {
+          '1-project-part': {
+            started_at: Date.now(),
+            completed_at: Date.now(),
+          },
+        },
+      },
+    };
+    const lessons = [
+      {
+        _id: 'a-lesson',
+        concepts: [{ _id: 'a-1-concept' }, { _id: 'a-2-concept' }],
+      },
+    ];
+    const course = 'demo-course';
+    const suggestedPage = getNextAvailablePage(user, lessons);
+
+    // courseComplete
+    expect(
+      isAllowedToAccessPage(
+        'courseComplete',
+        user,
+        lessons,
+        course,
+        null,
+        null,
+        suggestedPage
+      )
+    ).toBe(true);
+
+    // project
+    expect(
+      isAllowedToAccessPage(
+        'project',
+        user,
+        lessons,
+        course,
+        'project',
+        null,
+        suggestedPage
+      )
+    ).toBe(true);
+
+    // lessonComplete
+    expect(
+      isAllowedToAccessPage(
+        'lessonComplete',
+        user,
+        lessons,
+        course,
+        'a-lesson',
+        'a-1-concept',
+        suggestedPage
+      )
+    ).toBe(true);
+
+    // cannot access non existing lesson, should be false
+    expect(
+      isAllowedToAccessPage(
+        'lesson',
+        user,
+        lessons,
+        course,
+        'non-existing-lesson',
+        null,
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // can access concept page
+    expect(
+      isAllowedToAccessPage(
+        'concept',
+        user,
+        lessons,
+        course,
+        'a-lesson',
+        'a-1-concept',
+        suggestedPage
+      )
+    ).toBe(true);
+
+    // false on non existing concept
+    expect(
+      isAllowedToAccessPage(
+        'concept',
+        user,
+        lessons,
+        course,
+        'a-lesson',
+        'does not exist',
+        suggestedPage
+      )
+    ).toBe(false);
+  });
+
+  it('when all lessons are completed', () => {
+    const user = {
+      started_at: Date.now(),
+      completed_at: Date.now(),
+      lessons: {
+        'a-lesson': {
+          started_at: Date.now(),
+          completed_at: Date.now(),
+          concepts: {
+            'a-1-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+            'a-2-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+          },
+        },
+      },
+      project: {
+        started_at: Date.now(),
+        parts: {
+          '1-project-part': {
+            started_at: Date.now(),
+          },
+        },
+      },
+    };
+    const lessons = [
+      {
+        _id: 'a-lesson',
+        concepts: [{ _id: 'a-1-concept' }, { _id: 'a-2-concept' }],
+      },
+    ];
+    const course = 'demo-course';
+    const suggestedPage = getNextAvailablePage(user, lessons);
+
+    // cannot access courseComplete
+    expect(
+      isAllowedToAccessPage(
+        'courseComplete',
+        user,
+        lessons,
+        course,
+        null,
+        null,
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // can access project
+    expect(
+      isAllowedToAccessPage(
+        'project',
+        user,
+        lessons,
+        course,
+        'project',
+        null,
+        suggestedPage
+      )
+    ).toBe(true);
+    
+    // can access projectSubmission
+    expect(
+      isAllowedToAccessPage(
+        'projectSubmission',
+        user,
+        lessons,
+        course,
+        'project',
+        '1-project-part',
+        suggestedPage
+      )
+    ).toBe(true);
+
+    // cannot access projectCompleted
+    expect(
+      isAllowedToAccessPage(
+        'projectComplete',
+        user,
+        lessons,
+        course,
+        'project',
+        'complete',
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // can access lessonComplete
+    expect(
+      isAllowedToAccessPage(
+        'lessonComplete',
+        user,
+        lessons,
+        course,
+        'a-lesson',
+        'complete',
+        suggestedPage
+      )
+    ).toBe(true);
+
+    // cannot access non existing lesson, should be false
+    expect(
+      isAllowedToAccessPage(
+        'lesson',
+        user,
+        lessons,
+        course,
+        'non-existing-lesson',
+        null,
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // can access concept page
+    expect(
+      isAllowedToAccessPage(
+        'concept',
+        user,
+        lessons,
+        course,
+        'a-lesson',
+        'a-1-concept',
+        suggestedPage
+      )
+    ).toBe(true);
+
+    // false on non existing concept
+    expect(
+      isAllowedToAccessPage(
+        'concept',
+        user,
+        lessons,
+        course,
+        'a-lesson',
+        'does not exist',
+        suggestedPage
+      )
+    ).toBe(false);
+  });
+
+  it('when lessons and concepts are partially completed', () => {
+    const user = {
+      started_at: Date.now(),
+      completed_at: Date.now(),
+      lessons: {
+        'a-lesson': {
+          started_at: Date.now(),
+          completed_at: Date.now(),
+          concepts: {
+            'a-1-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+            'a-2-concept': {
+              started_at: Date.now(),
+              completed_at: Date.now(),
+            },
+          },
+        },
+        'b-lesson': {
+          started_at: Date.now(),
+          concepts: {
+            'b-1-concept': {
+              started_at: Date.now(),
+            },
+          },
+        },
+      },
+      project: {
+        started_at: Date.now(),
+        parts: {
+          '1-project-part': {
+            started_at: Date.now(),
+          },
+        },
+      },
+    };
+    const lessons = [
+      {
+        _id: 'a-lesson',
+        concepts: [{ _id: 'a-1-concept' }, { _id: 'a-2-concept' }],
+      },
+      {
+        _id: 'b-lesson',
+        concepts: [{ _id: 'b-1-concept' }, { _id: 'b-2-concept' }],
+      },
+    ];
+    const course = 'demo-course';
+    const suggestedPage = getNextAvailablePage(user, lessons);
+
+    // cannot access courseComplete
+    expect(
+      isAllowedToAccessPage(
+        'courseComplete',
+        user,
+        lessons,
+        course,
+        null,
+        null,
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // cannot access project
+    expect(
+      isAllowedToAccessPage(
+        'project',
+        user,
+        lessons,
+        course,
+        'project',
+        null,
+        suggestedPage
+      )
+    ).toBe(false);
+    
+    // cannot access projectSubmission
+    expect(
+      isAllowedToAccessPage(
+        'projectSubmission',
+        user,
+        lessons,
+        course,
+        'project',
+        '1-project-part',
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // cannot access projectCompleted
+    expect(
+      isAllowedToAccessPage(
+        'projectComplete',
+        user,
+        lessons,
+        course,
+        'project',
+        'complete',
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // can access lessonComplete for lessons completed
+    expect(
+      isAllowedToAccessPage(
+        'lessonComplete',
+        user,
+        lessons,
+        course,
+        'a-lesson',
+        'complete',
+        suggestedPage
+      )
+    ).toBe(true);
+
+    // cannot access non existing lesson, should be false
+    expect(
+      isAllowedToAccessPage(
+        'lesson',
+        user,
+        lessons,
+        course,
+        'non-existing-lesson',
+        null,
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // can access concept page
+    expect(
+      isAllowedToAccessPage(
+        'concept',
+        user,
+        lessons,
+        course,
+        'a-lesson',
+        'a-1-concept',
+        suggestedPage
+      )
+    ).toBe(true);
+
+    // false on non existing concept
+    expect(
+      isAllowedToAccessPage(
+        'concept',
+        user,
+        lessons,
+        course,
+        'a-lesson',
+        'does not exist',
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // false on lesson that is not completed
+    expect(
+      isAllowedToAccessPage(
+        'lessonComplete',
+        user,
+        lessons,
+        course,
+        'b-lesson',
+        'complete',
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // false on concept that is not completed
+    expect(
+      isAllowedToAccessPage(
+        'concept',
+        user,
+        lessons,
+        course,
+        'b-lesson',
+        'b-2-concept',
+        suggestedPage
+      )
+    ).toBe(false);
+
+    // true on concept that should be started just before
+    expect(
+      isAllowedToAccessPage(
+        'concept',
+        user,
+        lessons,
+        course,
+        'b-lesson',
+        'b-1-concept',
+        suggestedPage
+      )
+    ).toBe(true);
   });
 });

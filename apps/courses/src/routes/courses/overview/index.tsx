@@ -52,6 +52,7 @@ import hexagon from '../../../assets/hexagon.svg';
 import heptagon from '../../../assets/heptagon.svg';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 import currentLessonIcon from '../../../assets/homepage/finger-point.svg';
+import dayjs from 'dayjs';
 
 const Detail = ({ title, value, icon = faCheckCircle }) => (
   <Flex align="center" mb={4}>
@@ -115,63 +116,66 @@ export default ({ course, page, progress }: CoursePagesProp) => {
     isTakingCourse
   ) => (
     <Box bg="gray.200" p={8}>
-      <Text mb={4}>
-        {typeof description === 'string' ? description : description()}
+      <Text>
+        {typeof description === 'string' && description}
+        {typeof description === 'function' && description()}
       </Text>
-      <List spacing={2}>
-        {parts.map(({ title, _id, type, _key }, index) => {
-          let isComplete = false;
+      {parts && (
+        <List spacing={2} mt={4}>
+          {parts.map(({ title, _id, type, _key }, index) => {
+            let isComplete = false;
 
-          if (progress) {
-            isComplete =
-              _id && !_key
-                ? hasCompletedConcept(progress, lessonId, _id)
-                : hasCompletedProjectPart(progress, _key);
-          }
+            if (progress) {
+              isComplete =
+                _id && !_key
+                  ? hasCompletedConcept(progress, lessonId, _id)
+                  : hasCompletedProjectPart(progress, _key);
+            }
 
-          let icon;
+            let icon;
 
-          const conceptIcon = type
-            ? type === 'video'
-              ? faPlayCircle
-              : faFile
-            : null;
+            const conceptIcon = type
+              ? type === 'video'
+                ? faPlayCircle
+                : faFile
+              : null;
 
-          if (isComplete) {
-            if (conceptIcon) icon = conceptIcon;
-            else icon = faCheckCircle;
-          } else {
-            if (conceptIcon) icon = conceptIcon;
-            else icon = faCircle;
-          }
+            if (isComplete) {
+              if (conceptIcon) icon = conceptIcon;
+              else icon = faCheckCircle;
+            } else {
+              if (conceptIcon) icon = conceptIcon;
+              else icon = faCircle;
+            }
 
-          const iconProps: any = {
-            boxSize: 5,
-            mr: 2,
-            color: isComplete ? 'blue.500' : 'gray.600',
-          };
+            const iconProps: any = {
+              boxSize: 5,
+              mr: 2,
+              color: isComplete ? 'blue.500' : 'gray.600',
+            };
 
-          return (
-            <ListItem key={index} display="flex" alignItems="center">
-              <ListIcon as={() => <Icon {...iconProps} icon={icon} />} />
-              {isComplete && (
-                <a
-                  href={
-                    lessonId
-                      ? `/courses/${course}/${lessonId}/${_id}`
-                      : `/courses/${course}/project/${_key}`
-                  }
-                  target="_self"
-                >
-                  {title}
-                </a>
-              )}
-              {!isComplete && title}
-            </ListItem>
-          );
-        })}
-      </List>
-      {isCurrent && isTakingCourse && (
+            return (
+              <ListItem key={index} display="flex" alignItems="center">
+                <ListIcon as={() => <Icon {...iconProps} icon={icon} />} />
+                {isComplete && (
+                  <a
+                    href={
+                      lessonId
+                        ? `/courses/${course}/${lessonId}/${_id}`
+                        : `/courses/${course}/project/${_key}`
+                    }
+                    target="_self"
+                  >
+                    {title}
+                  </a>
+                )}
+                {!isComplete && title}
+              </ListItem>
+            );
+          })}
+        </List>
+      )}
+      {isCurrent && isTakingCourse && parts && (
         <Flex justify="flex-end" mt={4}>
           {/* TODO: https://github.com/OpenMined/openmined/issues/53 */}
           {/* <Link to={resumeLink}> */}
@@ -199,6 +203,8 @@ export default ({ course, page, progress }: CoursePagesProp) => {
     certification,
     learnFrom,
     live,
+    simulcast,
+    simulcast_release_date,
     project,
   } = page;
 
@@ -209,7 +215,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
   const isTakingCourse = progress ? hasStartedCourse(progress) : false;
 
   const stats = isTakingCourse
-    ? getCourseProgress(progress, page.lessons, project.parts)
+    ? getCourseProgress(progress, page.lessons, project?.parts)
     : {};
   const percentComplete =
     ((stats.completedConcepts + stats.completedProjectParts) /
@@ -225,6 +231,10 @@ export default ({ course, page, progress }: CoursePagesProp) => {
 
   if (nextAvailablePage.concept) {
     resumeLink = `${resumeLink}/${nextAvailablePage.concept}`;
+  }
+
+  if (simulcast && percentComplete === 100) {
+    resumeLink = null;
   }
 
   const determineOpenLessons = () => {
@@ -253,6 +263,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
   const lessons = page.lessons
     ? page.lessons.map(({ title, description, concepts, _id }, index) => ({
         title,
+        concepts,
         content: prepareSyllabusContent(
           description,
           concepts,
@@ -270,6 +281,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
   if (project) {
     lessons.push({
       title: project.title,
+      parts: project.parts,
       content: prepareSyllabusContent(
         project.description,
         project.parts,
@@ -381,10 +393,17 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                     // to={resumeLink}
                     as="a"
                     href={resumeLink}
+                    disabled={!resumeLink}
                     target="_self"
                     ml={4}
                   >
-                    Continue
+                    {resumeLink
+                      ? 'Continue'
+                      : `Coming ${
+                          simulcast_release_date
+                            ? dayjs(simulcast_release_date).fromNow()
+                            : 'soon'
+                        }`}
                   </Button>
                 </Flex>
               )}
@@ -430,6 +449,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
                 indexes={indexes}
                 onToggleItem={toggleAccordionItem}
                 sections={lessons}
+                simulcastReleaseDate={simulcast_release_date}
               />
             )}
             {lessons.length === 0 && (
@@ -467,7 +487,7 @@ export default ({ course, page, progress }: CoursePagesProp) => {
               {courseStartLink ? 'Start Course' : 'Coming Soon'}
             </Button>
           )}
-          {isTakingCourse && (
+          {isTakingCourse && resumeLink && (
             <Button
               colorScheme="black"
               size="lg"

@@ -126,6 +126,10 @@ service cloud.firestore {
       }
     }
 
+    match /stats/{course} {
+      allow read: if isMentor(request.auth.uid);
+    }
+
     // This allows for the collectionGroup queries to be read by mentors
     match /{path=**}/submissions/{submission} {
       // NOTE: This should only be triggered when querying a collectionGroup of "submissions" on the mentor dashboard

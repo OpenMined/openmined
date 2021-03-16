@@ -10,6 +10,8 @@ import {
   Link,
   Text,
   Textarea,
+  Image,
+  Badge,
 } from '@chakra-ui/react';
 import {
   faArrowRight,
@@ -29,6 +31,7 @@ import Icon from '../../../components/Icon';
 import { handleErrors } from '../../../helpers';
 import { useNavigate } from 'react-router-dom';
 import { discussionLink } from '../../../content/links';
+import dayjs from 'dayjs';
 
 const DetailLink = ({ icon, children, ...props }) => (
   <Box
@@ -42,7 +45,7 @@ const DetailLink = ({ icon, children, ...props }) => (
   </Box>
 );
 
-const LessonLine = ({ status, title, type }) => {
+const LessonLine = ({ status, title, type, simulcastReleaseDate = '' }) => {
   let color, icon, iconColor;
 
   if (status === 'current') {
@@ -62,6 +65,10 @@ const LessonLine = ({ status, title, type }) => {
     } else if (type === 'project') {
       icon = faShapes;
     }
+  } else if (status === 'simulcast') {
+    color = 'white';
+    icon = faArrowRight;
+    iconColor = 'cyan.500';
   }
 
   return (
@@ -85,6 +92,11 @@ const LessonLine = ({ status, title, type }) => {
           Up Next
         </Text>
       )}
+      {status === 'simulcast' && (
+        <Badge color="white" bgColor="blue.700">
+          Coming {dayjs(simulcastReleaseDate).fromNow() ?? 'soon'}
+        </Badge>
+      )}
     </Flex>
   );
 };
@@ -101,7 +113,7 @@ export default ({
   const navigate = useNavigate();
 
   const {
-    course: { lessons, projectTitle },
+    course: { lessons, projectTitle, simulcast, simulcast_release_date },
     title,
   } = page;
 
@@ -116,8 +128,15 @@ export default ({
   // Get the current lesson index, the lesson number, and (if applicable) the next lesson or final project
   const lessonIndex = getLessonIndex(lessons, lesson);
   const lessonNum = lessonIndex + 1;
-  const nextLesson =
-    lessons.length > lessonNum ? lessons[lessonNum] : 'project';
+  let nextLesson;
+
+  if (lessons.length > lessonNum) {
+    nextLesson = lessons[lessonNum];
+  } else if (projectTitle) {
+    nextLesson = 'project';
+  } else {
+    nextLesson = null;
+  }
 
   // Create a function that is triggered when the lesson is completed
   // This is triggered by clicking the "Next" button in the <ConceptFooter />
@@ -149,14 +168,26 @@ export default ({
     { text: '👍', val: 1 },
   ];
 
+  const simulcastEnd =
+    simulcast && lessons[lessonIndex + 1]?.concepts === undefined;
+
   return (
     <Box bg="gray.900" color="white">
       <GridContainer py={[8, null, null, 16]}>
         {!isFeedbackActive && (
           <Flex direction="column" align="center" maxW={600} mx="auto">
-            <Icon icon={faCheckCircle} color="cyan.300" boxSize={12} mb={4} />
+            {simulcastEnd ? (
+              <Image
+                src="https://emojis.slackmojis.com/emojis/images/1572027878/6937/blob_thumbs_up.png?1572027878"
+                alt="Yes"
+                boxSize={12}
+                mb={3}
+              />
+            ) : (
+              <Icon icon={faCheckCircle} color="cyan.300" boxSize={12} mb={4} />
+            )}
             <Heading as="p" size="xl" textAlign="center" mb={4}>
-              Congratulations!
+              {simulcastEnd ? 'Keep up the good work!' : 'Congratulations!'}
             </Heading>
             <Heading
               as="p"
@@ -176,24 +207,35 @@ export default ({
               <Text
                 color="gray.400"
                 fontStyle="italic"
-                width={200}
                 textAlign="center"
+                mx={4}
+                flexShrink={0}
               >
-                Up Next
+                {simulcastEnd ? 'Continue learning' : 'Up Next'}
               </Text>
               <Divider />
             </Flex>
             <Box borderRadius="md" overflow="hidden" width="full" mb={8}>
-              <LessonLine status="current" type="lessson" title={title} />
+              <LessonLine status="current" type="lesson" title={title} />
               {lessons.length > lessonIndex + 1 && (
                 <LessonLine
-                  status="next"
+                  status={
+                    lessons[lessonIndex + 1].concepts?.length
+                      ? 'next'
+                      : 'simulcast'
+                  }
                   type="lesson"
                   title={lessons[lessonIndex + 1].title}
+                  simulcastReleaseDate={simulcast_release_date}
                 />
               )}
               {lessons.length === lessonIndex + 1 && (
-                <LessonLine status="next" type="project" title={projectTitle} />
+                <LessonLine
+                  status={projectTitle ? 'next' : 'simulcast'}
+                  type="project"
+                  title={projectTitle ?? 'New content'}
+                  simulcastReleaseDate={simulcast_release_date}
+                />
               )}
               {lessons.length > lessonIndex + 2 && (
                 <LessonLine
@@ -202,7 +244,7 @@ export default ({
                   title={lessons[lessonIndex + 2].title}
                 />
               )}
-              {lessons.length === lessonIndex + 2 && (
+              {lessons.length === lessonIndex + 2 && projectTitle && (
                 <LessonLine
                   status="later"
                   type="project"
@@ -210,28 +252,57 @@ export default ({
                 />
               )}
             </Box>
-            <Button
-              mb={12}
-              colorScheme="cyan"
-              size="lg"
-              onClick={() =>
-                onCompleteLesson().then(() => {
-                  // TODO: https://github.com/OpenMined/openmined/issues/53
-                  // navigate(
-                  //   `/courses/${course}/${
-                  //     typeof nextLesson === 'string'
-                  //       ? nextLesson
-                  //       : nextLesson._id
-                  //   }`
-                  // );
-                  window.location.href = `/courses/${course}/${
-                    typeof nextLesson === 'string' ? nextLesson : nextLesson._id
-                  }`;
-                })
-              }
-            >
-              Continue
-            </Button>
+            {simulcastEnd ? (
+              <>
+                <Text
+                  mb={12}
+                  align="center"
+                  color="gray.400"
+                  display={['block', 'none']}
+                >
+                  You will be notified via email when the next lesson is
+                  released. Until then check out some of our other learning
+                  resources below
+                </Text>
+                <Text
+                  mb={12}
+                  align="center"
+                  color="gray.400"
+                  display={['none', 'block']}
+                >
+                  You will be notified via email when the next lesson is
+                  released.
+                  <br />
+                  Until then check out some of our other learning resources
+                  below
+                </Text>
+              </>
+            ) : (
+              <Button
+                mb={12}
+                colorScheme="cyan"
+                size="lg"
+                onClick={() =>
+                  onCompleteLesson().then(() => {
+                    // TODO: https://github.com/OpenMined/openmined/issues/53
+                    // navigate(
+                    //   `/courses/${course}/${
+                    //     typeof nextLesson === 'string'
+                    //       ? nextLesson
+                    //       : nextLesson._id
+                    //   }`
+                    // );
+                    window.location.href = `/courses/${course}/${
+                      typeof nextLesson === 'string'
+                        ? nextLesson
+                        : nextLesson._id
+                    }`;
+                  })
+                }
+              >
+                Continue
+              </Button>
+            )}
             <Flex
               direction={{ base: 'column', md: 'row' }}
               justify="space-between"
@@ -313,7 +384,6 @@ export default ({
                 onClick={() => {
                   onProvideFeedback(vote, feedback).then(() => {
                     setFeedbackActive(false);
-
                     toast({
                       ...toastConfig,
                       title: 'Feedback sent',

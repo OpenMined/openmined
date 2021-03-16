@@ -170,7 +170,7 @@ export default ({
   }, [isBeforeDeadline]);
 
   // When the user attempts a submission
-  const onReviewSubmission = async (content, status) => {
+  const onReviewSubmission = async (content, status: 'passed' | 'failed') => {
     if (isBeforeDeadline()) {
       setHasClickedButton(true);
 

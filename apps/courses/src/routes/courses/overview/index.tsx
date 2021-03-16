@@ -39,6 +39,7 @@ import {
   hasCompletedProject,
   hasCompletedProjectPart,
   hasStartedCourse,
+  userIsMentor,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
@@ -107,7 +108,7 @@ const LearnFrom = ({ image, name, credential }) => (
   </Flex>
 );
 
-export default ({ course, page, progress }: CoursePagesProp) => {
+export default ({ course, page, progress, user }: CoursePagesProp) => {
   const prepareSyllabusContent = (
     description,
     parts,
@@ -217,10 +218,18 @@ export default ({ course, page, progress }: CoursePagesProp) => {
   const stats = isTakingCourse
     ? getCourseProgress(progress, page.lessons, project?.parts)
     : {};
-  const percentComplete =
+
+  const isMentor = userIsMentor(user);
+
+  let percentComplete =
     ((stats.completedConcepts + stats.completedProjectParts) /
       (stats.concepts + stats.projectParts)) *
     100;
+
+  // don't require project completion values for mentors
+  if (isMentor) {
+    percentComplete = (stats.completedConcepts / stats.concepts) * 100;
+  }
 
   const nextAvailablePage = isTakingCourse
     ? getNextAvailablePage(progress, page.lessons)

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CoursePageWhich } from '@openmined/shared/types';
+import { CoursePageWhich, User } from '@openmined/shared/types';
+import { useFirestore } from 'reactfire';
 
 export interface CourseProgress {
   lessons?: number;
@@ -342,4 +343,26 @@ export const useCoursePermissionGate = (user, lessons, page, params) => {
   // Patrick, pick things up here...
 
   return { page, user, lessons, params };
+};
+
+export const userIsMentor = async (user: firebase.User) => {
+  const db = useFirestore();
+  const dbUserRef = db.collection('users').doc(user.uid);
+  const [dbUser, setDbUser] = useState<User>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setDbUser((await dbUserRef.get()).data() as User);
+    };
+
+    if (user && user.uid && !dbUser) fetchUser();
+  }, [user, dbUser, dbUserRef]);
+
+  const isMentor =
+      dbUser &&
+      dbUser.is_mentor &&
+      dbUser.mentorable_courses &&
+      dbUser.mentorable_courses.length > 0;
+
+  return isMentor;
 };

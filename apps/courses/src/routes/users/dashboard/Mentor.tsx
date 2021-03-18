@@ -12,7 +12,6 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { Link as RRDLink } from 'react-router-dom';
 import {
   useFirestore,
   useFirestoreCollectionData,
@@ -30,11 +29,7 @@ import {
 import { faCalendarCheck } from '@fortawesome/free-regular-svg-icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {
-  MentorReview,
-  CourseProjectSubmission,
-  CourseMetric,
-} from '@openmined/shared/types';
+import { CourseProjectSubmission, CourseMetric } from '@openmined/shared/types';
 
 import {
   getSubmissionReviewEndTime,
@@ -79,8 +74,6 @@ const getMentorableCourses = (courses, user) =>
 
 export const MentorContext = ({ courses }) => {
   const toast = useToast();
-  const user: firebase.User = useUser();
-  const db = useFirestore();
   const functions: firebase.functions.Functions = useFunctions();
   // @ts-ignore
   functions.region = 'europe-west1';
@@ -131,13 +124,13 @@ export const MentorContext = ({ courses }) => {
               <Flex align="center">
                 <Icon icon={faShapes} boxSize={8} ml={1} mr={4} />
                 <Heading as="p" size="sm">
-                  {
-                    review.course.project.parts[
-                      review.course.project.parts.findIndex(
-                        (p) => p._key === review.part
-                      )
-                    ].title
-                  }
+                  {review.course.project
+                    ? review.course.project.parts[
+                        review.course.project.parts.findIndex(
+                          (p) => p._key === review.part
+                        )
+                      ].title
+                    : 'Upcoming project'}
                 </Heading>
               </Flex>
               <Flex align="center" mt={[3, null, 0]}>
@@ -256,12 +249,8 @@ const NullSetTabPanel = ({ children }) => (
 );
 
 export const MentorTabs = ({ courses, mentor }) => {
-  const ProjectQueueCourse = ({
-    title,
-    slug,
-    visual: { full },
-    project: { parts },
-  }) => {
+  const ProjectQueueCourse = ({ title, slug, visual: { full }, project }) => {
+    const parts = project?.parts;
     const toast = useToast();
     const functions: firebase.functions.Functions = useFunctions();
     // @ts-ignore
@@ -290,7 +279,7 @@ export const MentorTabs = ({ courses, mentor }) => {
             {title}
           </Heading>
           <Image src={full} alt={title} />
-          {(!!courseMetric && !!courseMetric.numSubmissionsPending) && (
+          {!!courseMetric && !!courseMetric.numSubmissionsPending && (
             <Text color="gray.400" mt={4}>
               {courseMetric.numSubmissionsPending} in queue
             </Text>
@@ -298,13 +287,33 @@ export const MentorTabs = ({ courses, mentor }) => {
         </Flex>
         <Flex p={6} direction="column" align="center">
           <Box mt={-3} mb={8} width="full">
-            {parts.map((part, index) => (
+            {parts ? (
+              parts.map((part, index) => (
+                <Flex
+                  align="center"
+                  p={3}
+                  borderBottom="1px solid"
+                  borderBottomColor="gray.400"
+                  key={index}
+                >
+                  <Circle
+                    bg="gray.800"
+                    color="white"
+                    fontWeight="bold"
+                    boxSize={8}
+                    mr={3}
+                  >
+                    {index + 1}
+                  </Circle>
+                  <Text fontWeight="bold">{part.title}</Text>
+                </Flex>
+              ))
+            ) : (
               <Flex
                 align="center"
                 p={3}
                 borderBottom="1px solid"
                 borderBottomColor="gray.400"
-                key={index}
               >
                 <Circle
                   bg="gray.800"
@@ -313,11 +322,11 @@ export const MentorTabs = ({ courses, mentor }) => {
                   boxSize={8}
                   mr={3}
                 >
-                  {index + 1}
+                  -
                 </Circle>
-                <Text fontWeight="bold">{part.title}</Text>
+                <Text fontWeight="bold">Upcoming project</Text>
               </Flex>
-            ))}
+            )}
           </Box>
           <Flex justify="space-between" align="center" width="full">
             <Link
@@ -339,40 +348,42 @@ export const MentorTabs = ({ courses, mentor }) => {
               placement="top"
               isDisabled={!assignDisabled}
             >
-              <Button
-                colorScheme="black"
-                disabled={hasRequestedReview || assignDisabled}
-                isLoading={hasRequestedReview}
-                onClick={() => {
-                  setHasRequestedReview(true);
+              {parts && (
+                <Button
+                  colorScheme="black"
+                  disabled={hasRequestedReview || assignDisabled}
+                  isLoading={hasRequestedReview}
+                  onClick={() => {
+                    setHasRequestedReview(true);
 
-                  requestReview({ course: slug }).then(({ data }) => {
-                    if (data && !data.error) {
-                      setHasRequestedReview(false);
+                    requestReview({ course: slug }).then(({ data }) => {
+                      if (data && !data.error) {
+                        setHasRequestedReview(false);
 
-                      toast({
-                        ...toastConfig,
-                        title: 'Review assigned',
-                        description: `You have been assigned a review, you have ${SUBMISSION_REVIEW_HOURS} hours to complete this review`,
-                        status: 'success',
-                      });
+                        toast({
+                          ...toastConfig,
+                          title: 'Review assigned',
+                          description: `You have been assigned a review, you have ${SUBMISSION_REVIEW_HOURS} hours to complete this review`,
+                          status: 'success',
+                        });
 
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else {
-                      toast({
-                        ...toastConfig,
-                        title: 'Error assigning review',
-                        description: data.error,
-                        status: 'error',
-                      });
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      } else {
+                        toast({
+                          ...toastConfig,
+                          title: 'Error assigning review',
+                          description: data.error,
+                          status: 'error',
+                        });
 
-                      setHasRequestedReview(false);
-                    }
-                  });
-                }}
-              >
-                Assign
-              </Button>
+                        setHasRequestedReview(false);
+                      }
+                    });
+                  }}
+                >
+                  Assign
+                </Button>
+              )}
             </Tooltip>
           </Flex>
         </Flex>
@@ -474,13 +485,13 @@ export const MentorTabs = ({ courses, mentor }) => {
                 {review.course.title}
               </Heading>
               <Text color="gray.700">
-                {
-                  review.course.project.parts[
-                    review.course.project.parts.findIndex(
-                      (p) => p._key === review.part
-                    )
-                  ].title
-                }
+                {review.course.project
+                  ? review.course.project.parts[
+                      review.course.project.parts.findIndex(
+                        (p) => p._key === review.part
+                      )
+                    ].title
+                  : 'Upcoming project'}
               </Text>
             </Box>
             {review.completed_at && (

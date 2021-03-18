@@ -263,7 +263,7 @@ export default ({
     ) {
       const conceptHeight =
         document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
+        window.innerHeight;
 
       const progress =
         conceptHeight <= 0 ? 100 : (scrollY / conceptHeight) * 100 || 0;

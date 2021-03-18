@@ -249,13 +249,8 @@ const NullSetTabPanel = ({ children }) => (
 );
 
 export const MentorTabs = ({ courses, mentor }) => {
-  const ProjectQueueCourse = ({
-    title,
-    slug,
-    visual: { full },
-    project = {},
-  }) => {
-    const { parts } = project;
+  const ProjectQueueCourse = ({ title, slug, visual: { full }, project }) => {
+    const parts = project?.parts;
     const toast = useToast();
     const functions: firebase.functions.Functions = useFunctions();
     // @ts-ignore

@@ -260,9 +260,9 @@ export const MentorTabs = ({ courses, mentor }) => {
 
     const [hasRequestedReview, setHasRequestedReview] = useState(false);
 
-    const db = useFirestore();
-    const courseMetricRef = db.collection('stats').doc(slug);
-    const courseMetric: CourseMetric = useFirestoreDocData(courseMetricRef);
+    // const db = useFirestore();
+    // const courseMetricRef = db.collection('stats').doc(slug);
+    // const courseMetric: CourseMetric = useFirestoreDocData(courseMetricRef);
 
     const activeReviewsData = useActiveReviewData();
     const assignDisabled = activeReviewsData.length > 0;
@@ -279,11 +279,11 @@ export const MentorTabs = ({ courses, mentor }) => {
             {title}
           </Heading>
           <Image src={full} alt={title} />
-          {!!courseMetric && !!courseMetric.numSubmissionsPending && (
+          {/* {!!courseMetric && !!courseMetric.numSubmissionsPending && (
             <Text color="gray.400" mt={4}>
               {courseMetric.numSubmissionsPending} in queue
             </Text>
-          )}
+          )} */}
         </Flex>
         <Flex p={6} direction="column" align="center">
           <Box mt={-3} mb={8} width="full">

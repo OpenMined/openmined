@@ -154,7 +154,7 @@ export default () => {
             <Flex direction={['column', null, 'row']} justify="space-between">
               <Box mt={6} width="full">
                 {(!mentorMode || !userIsMentor) && (
-                  <StudentContext courses={data} progress={dbCourses} />
+                  <StudentContext courses={data} progress={dbCourses} userIsMentor={userIsMentor} />
                 )}
                 {mentorMode && userIsMentor && <MentorContext courses={data} />}
               </Box>

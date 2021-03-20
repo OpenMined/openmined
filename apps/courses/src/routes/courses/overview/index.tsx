@@ -39,7 +39,7 @@ import {
   hasCompletedProject,
   hasCompletedProjectPart,
   hasStartedCourse,
-  userIsMentor,
+  useIsMentor,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
@@ -219,7 +219,7 @@ export default ({ course, page, progress, user }: CoursePagesProp) => {
     ? getCourseProgress(progress, page.lessons, project?.parts)
     : {};
 
-  const isMentor = userIsMentor(user);
+  const isMentor = useIsMentor({ user, course });
 
   let percentComplete =
     ((stats.completedConcepts + stats.completedProjectParts) /

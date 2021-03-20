@@ -345,7 +345,13 @@ export const useCoursePermissionGate = (user, lessons, page, params) => {
   return { page, user, lessons, params };
 };
 
-export const userIsMentor = async (user: firebase.User) => {
+export const useIsMentor = ({
+  user,
+  course,
+}: {
+  user: firebase.User;
+  course: string;
+}): boolean => {
   const db = useFirestore();
   const dbUserRef = db.collection('users').doc(user.uid);
   const [dbUser, setDbUser] = useState<User>(null);
@@ -358,11 +364,5 @@ export const userIsMentor = async (user: firebase.User) => {
     if (user && user.uid && !dbUser) fetchUser();
   }, [user, dbUser, dbUserRef]);
 
-  const isMentor =
-      dbUser &&
-      dbUser.is_mentor &&
-      dbUser.mentorable_courses &&
-      dbUser.mentorable_courses.length > 0;
-
-  return isMentor;
+  return dbUser?.is_mentor && dbUser.mentorable_courses?.includes(course);
 };

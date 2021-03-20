@@ -71,7 +71,7 @@ export const StudentContext = ({ courses, progress, userIsMentor }) => {
   return (
     <SimpleGrid columns={1} spacing={4} width="full">
       {incompleteCourses.map((c) => (
-        <CourseProgressCard key={c.title} content={c} ms={userIsMentor} />
+        <CourseProgressCard key={c.title} content={c} isMentor={userIsMentor} />
       ))}
     </SimpleGrid>
   );

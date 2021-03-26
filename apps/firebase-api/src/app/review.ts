@@ -3,7 +3,7 @@ import { logger } from 'firebase-functions';
 import dayjs from 'dayjs';
 
 import { SUBMISSION_REVIEW_HOURS } from '../../../courses/src/routes/courses/_helpers';
-import { MentorReview } from '@openmined/shared/types';
+import { MentorReview, CourseProjectSubmission } from '@openmined/shared/types';
 
 export const assignReview = async (data, context) => {
   // Get the current user and the course
@@ -46,18 +46,28 @@ export const assignReview = async (data, context) => {
         .where('mentor', '==', null)
         .where('student', '!=', dbUserRef)
         .orderBy('submitted_at', 'asc')
-        .limit(1)
         .get();
 
+      const assignments: CourseProjectSubmission[] = [];
+      dbSubmissions.forEach((submission) =>
+        assignments.push(submission.data() as CourseProjectSubmission)
+      );
+
+      // Filter out resigned from - since we cannot do 2 != filtering
+      const notResignedAssignments = assignments.filter((assignment) => {
+        const resignedMentors = assignment.resigned_mentors;
+        return !resignedMentors || !resignedMentors[user];
+      });
+
       // If we don't find anything...
-      if (dbSubmissions.empty) {
+      if (notResignedAssignments.length == 0) {
         return {
           error: `There are no submissions available for "${course}" course`,
         };
       }
 
       // Get the assignment
-      const assignment = dbSubmissions.docs[0].data();
+      const assignment = notResignedAssignments[0];
 
       // Get the ID of the student from that assignment
       const studentId = assignment.student._path.segments[1];
@@ -178,9 +188,17 @@ export const resignReview = async (data, context) => {
     );
 
     // Write the assignment to the submission
+    const newResignedMentors = assignment.resigned_mentors
+      ? { ...assignment.resigned_mentors, [mentor]: true }
+      : { [mentor]: true };
     batch.set(
       assignmentRef,
-      { mentor: null, review_started_at: null },
+      {
+        mentor: null,
+        review_started_at: null,
+        // log who resigned from this submission
+        resigned_mentors: newResignedMentors,
+      },
       { merge: true }
     );
 

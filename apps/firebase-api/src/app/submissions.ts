@@ -46,25 +46,3 @@ export const onCourseSubmissionUpdate = async (change, context) => {
 
   return { status: 'Filter not met' };
 };
-
-export const calculateSubmissionNum = async (change, context) => {
-  try {
-    const { courseId } = context.params;
-
-    const dbSubmissions = await admin
-      .firestore()
-      .collectionGroup('submissions')
-      .where('course', '==', courseId)
-      .where('mentor', '==', null)
-      .get();
-
-    const numSubmissionsPending = dbSubmissions.size;
-    await admin
-      .firestore()
-      .collection('stats')
-      .doc(courseId)
-      .set({ numSubmissionsPending }, { merge: true });
-  } catch (error) {
-    logger.error('calculateSubmissionNum failed', error);
-  }
-};

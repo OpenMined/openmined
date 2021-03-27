@@ -18,15 +18,16 @@ const AttemptedView = ({
   part,
   course,
   ...props
-}) => (
-  <Box {...props}>
+}) => {
+  return <Box {...props}>
     <Flex direction="column" align="center" textAlign="center" mb={6}>
       <Image src={image} boxSize={12} mb={4} />
       <Text fontWeight="bold" mb={2}>
         {title}
       </Text>
       <Text color="gray.700" fontSize="sm">
-        {typeof description === 'string' ? description : description()}
+        {/* description is string or element */}
+        {description}
       </Text>
     </Flex>
     {submissions.map((submission, index) => (
@@ -37,7 +38,7 @@ const AttemptedView = ({
       />
     ))}
   </Box>
-);
+};
 
 export default ({ content, course, onBeginProjectPart, ...props }) => {
   // TODO: https://github.com/OpenMined/openmined/issues/53

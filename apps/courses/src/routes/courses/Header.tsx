@@ -217,7 +217,7 @@ export default ({
 
   return (
     <Box
-      position="fixed"
+      position="sticky"
       width="100%"
       top={0}
       left={0}

@@ -88,7 +88,7 @@ export default () => {
   const name = `${user.first_name} ${user.last_name}`;
 
   const completedCourses =
-    data && user.completed_courses?.length > 0
+    data && user?.completed_courses?.length > 0
       ? user.completed_courses.map((c) => {
           const matchedCourse = data.find((d) => d.slug === c.course);
           return matchedCourse

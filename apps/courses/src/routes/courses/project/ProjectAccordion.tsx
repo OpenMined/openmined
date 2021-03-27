@@ -46,7 +46,7 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
   // The text to show when the user is pending a submission review
   const pendingReviewText = (
     <>
-      Thank you for your submission! Out mentors will review your work and give
+      Thank you for your submission! Our mentors will review your work and give
       you feedback within 1-2 days. You will receive a notification and an email
       when your project has been reviewed. In the meantime, see what others did
       by discussing this project on our{' '}

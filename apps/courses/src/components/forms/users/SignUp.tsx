@@ -213,14 +213,17 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         .collection('private')
         .doc(auth.currentUser.uid);
 
+      const profile = authUser.additionalUserInfo.profile as any;
+
       batch.set(userDoc, {
         first_name: firstName,
         last_name: lastName,
         notification_preferences: ['project_reviews'],
-        description: (authUser.additionalUserInfo.profile as any).bio,
-        github: (authUser.additionalUserInfo.profile as any).login,
-        twitter: (authUser.additionalUserInfo.profile as any).twitter_username,
-        website: (authUser.additionalUserInfo.profile as any).blog,
+        description: profile.bio,
+        github: profile.login,
+        twitter: profile.twitter_username,
+        website: profile.blog,
+        photoURL: profile.avatar_url,
       });
 
       batch.set(userPrivateDoc, {

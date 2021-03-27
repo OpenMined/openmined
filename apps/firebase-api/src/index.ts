@@ -25,11 +25,18 @@ import {
 import { completeCourse } from './app/courses';
 import { sendEmail } from './app/email';
 import sanity from './app/sanity';
-import {
-  onCourseSubmissionUpdate,
-  calculateSubmissionNum,
-} from './app/submissions';
+import { onCourseSubmissionUpdate } from './app/submissions';
 import { addUniqueNumberToUser, addUNumToAllUsers } from './app/users';
+
+// stats
+import { initStatsCollection } from './app/stats/index';
+import {
+  statsActiveUserIncrease,
+  statsActiveUserDecrease,
+} from './app/stats/active-users';
+import { calStatsOnWriteReviews } from './app/stats/reviews';
+import { calStatsOnWriteSubmissions } from './app/stats/submissions';
+import { calStatsOnWriteCourses } from './app/stats/courses';
 
 // Pick review for assignment or resign from a review
 exports.assignReview = functions
@@ -102,13 +109,44 @@ exports.calculateCompletedResignedReviews = functions
   .firestore.document('users/{mentorId}/reviews/{reviewId}')
   .onWrite(calculateCompletedResignedReviews);
 
-// Calculate the pending submissions in the queue
-exports.calculateSubmissionNum = functions
+// Init stats collection
+exports.initStatsCollection = functions
+  .region('europe-west1')
+  // Use higher memory and timeout since it might take some time to process
+  .runWith({ memory: '2GB', timeoutSeconds: 540 })
+  .https.onRequest(initStatsCollection);
+
+// Calculate the submissions related stats
+exports.calStatsOnWriteSubmissions = functions
   .region('europe-west1')
   .firestore.document(
     'users/{userId}/courses/{courseId}/submissions/{submissionId}'
   )
-  .onWrite(calculateSubmissionNum);
+  .onWrite(calStatsOnWriteSubmissions);
+
+// Calculated reviews related stats
+exports.calStatsOnWriteReviews = functions
+  .region('europe-west1')
+  .firestore.document('users/{mentorId}/reviews/{reviewId}')
+  .onWrite(calStatsOnWriteReviews);
+
+// Calculated courses related stats
+exports.calStatsOnWriteCourses = functions
+  .region('europe-west1')
+  .firestore.document('users/{userId}/courses/{courseId}')
+  .onWrite(calStatsOnWriteCourses);
+
+// Increase when there's a new user
+exports.statsActiveUserIncrease = functions
+  .region('europe-west1')
+  .auth.user()
+  .onCreate(statsActiveUserIncrease);
+
+// Decrease when user is removed
+exports.statsActiveUserDecrease = functions
+  .region('europe-west1')
+  .auth.user()
+  .onDelete(statsActiveUserDecrease);
 
 // Set up Sanity API requests
 exports.sanity = functions.region('europe-west1').https.onCall(sanity);

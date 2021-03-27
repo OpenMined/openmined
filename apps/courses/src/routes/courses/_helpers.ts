@@ -363,9 +363,9 @@ export const useIsMentor = ({
   course: string;
 }): boolean => {
   const db = useFirestore();
-  const dbUserRef = db.collection('users').doc(user.uid);
   const [dbUser, setDbUser] = useState<User>(null);
 
+  const dbUserRef = user ? db.collection('users').doc(user.uid) : null;
   useEffect(() => {
     const fetchUser = async () => {
       setDbUser((await dbUserRef.get()).data() as User);

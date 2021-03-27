@@ -1,4 +1,4 @@
-import { Course, ProjectAttemptStatus } from '@openmined/shared/types';
+import { Course, ProjectAttemptStatus, CourseProjectSubmission } from '@openmined/shared/types';
 import {
   hasCompletedConcept,
   hasCompletedLesson,
@@ -248,7 +248,7 @@ export const addSubmission = (
   db: firebase.firestore.Firestore,
   uId: string,
   courseId: string,
-  data: any
+  data: CourseProjectSubmission,
 ) => {
   const submission = getSubmissionsRef(db, uId, courseId).doc().id;
   const submissionRef = getSubmissionsRef(db, uId, courseId).doc(submission);
@@ -298,6 +298,7 @@ export const handleAttemptSubmission = async (
       review_content: null,
       review_started_at: null,
       review_ended_at: null,
+      resigned_mentors: {},
     });
 
     // Once that's done, add the submissions to the submissions array on the user's course document

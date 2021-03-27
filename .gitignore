@@ -40,3 +40,4 @@ typings
 Thumbs.db
 
 *-coverage.html
+*.swp

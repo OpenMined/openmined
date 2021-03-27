@@ -354,25 +354,3 @@ export const useCoursePermissionGate = (user, lessons, page, params) => {
 
   return { page, user, lessons, params };
 };
-
-export const useIsMentor = ({
-  user,
-  course,
-}: {
-  user: firebase.User;
-  course: string;
-}): boolean => {
-  const db = useFirestore();
-  const [dbUser, setDbUser] = useState<User>(null);
-
-  const dbUserRef = user ? db.collection('users').doc(user.uid) : null;
-  useEffect(() => {
-    const fetchUser = async () => {
-      setDbUser((await dbUserRef.get()).data() as User);
-    };
-
-    if (user && user.uid && !dbUser) fetchUser();
-  }, [user, dbUser, dbUserRef]);
-
-  return dbUser?.is_mentor && dbUser.mentorable_courses?.includes(course);
-};

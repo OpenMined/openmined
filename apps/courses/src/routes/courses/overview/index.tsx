@@ -15,7 +15,6 @@ import {
   Text,
   UnorderedList,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 import {
   faArrowRight,
   faCertificate,
@@ -39,7 +38,6 @@ import {
   hasCompletedProject,
   hasCompletedProjectPart,
   hasStartedCourse,
-  useIsMentor,
 } from '../_helpers';
 import GridContainer from '../../../components/GridContainer';
 import NumberedAccordion from '../../../components/NumberedAccordion';
@@ -54,6 +52,7 @@ import heptagon from '../../../assets/heptagon.svg';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 import currentLessonIcon from '../../../assets/homepage/finger-point.svg';
 import dayjs from 'dayjs';
+import { useLoadFirestoreUser } from '../../../hooks/useCourseUser';
 
 const Detail = ({ title, value, icon = faCheckCircle }) => (
   <Flex align="center" mb={4}>
@@ -219,7 +218,10 @@ export default ({ course, page, progress, user }: CoursePagesProp) => {
     ? getCourseProgress(progress, page.lessons, project?.parts)
     : {};
 
-  const isMentor = useIsMentor({ user, course });
+  const { user: dbUser } = useLoadFirestoreUser(user?.uid);
+
+  const isMentor =
+    dbUser?.is_mentor && dbUser.mentorable_courses?.includes(course);
 
   let percentComplete =
     ((stats.completedConcepts + stats.completedProjectParts) /

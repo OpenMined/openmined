@@ -1,7 +1,7 @@
 import React from 'react';
 import { BoxProps, Flex, Link } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useUser, useFirestore, useFirestoreDocData, useAuth } from 'reactfire';
+import { useFirestore, useAuth } from 'reactfire';
 import { User } from '@openmined/shared/types';
 
 import Form from '../_form';
@@ -31,6 +31,7 @@ import { handleErrors } from '../../../helpers';
 import { countries, primaryLanguages, skillLevels, timezones } from '../_data';
 
 import UploadAvatar from '../../UploadAvatar';
+import { useCourseUser } from '../../../hooks/useCourseUser';
 
 interface BasicInformationFormProps extends BoxProps {
   callback?: () => void;
@@ -44,13 +45,10 @@ export default ({
   onAddPassword,
   ...props
 }: BasicInformationFormProps) => {
-  const user: firebase.User = useUser();
   const auth = useAuth();
   const db = useFirestore();
   const toast = useToast();
-
-  const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: User = useFirestoreDocData(dbUserRef);
+  const { authUser, user, update } = useCourseUser();
 
   const onSuccess = () => {
     toast({
@@ -82,10 +80,7 @@ export default ({
       });
     }
 
-    return db
-      .collection('users')
-      .doc(user.uid)
-      .set(data, { merge: true })
+    return update(data)
       .then(onSuccess)
       .catch((error) => handleErrors(toast, error));
   };
@@ -109,16 +104,16 @@ export default ({
     timezone: optionalItem(timezones.map((d) => d.name)),
   });
 
-  const hasPasswordAccount = !!user.providerData.filter(
+  const hasPasswordAccount = authUser.providerData.some(
     (p) => p.providerId === 'password'
-  ).length;
+  );
 
-  const hasGithubAccount = !!user.providerData.filter(
+  const hasGithubAccount = authUser.providerData.some(
     (p) => p.providerId === 'github.com'
-  ).length;
+  );
 
   const fields = [
-    readOnlyEmailField(user.email, (props) => (
+    readOnlyEmailField(authUser.email, (props) => (
       <Flex {...props}>
         {hasPasswordAccount && (
           <Link onClick={onChangeEmailOrGithub}>Change</Link>
@@ -126,36 +121,36 @@ export default ({
         {!hasPasswordAccount && (
           <Link onClick={onAddPassword}>Add Password</Link>
         )}
-        {!user.emailVerified && (
+        {!authUser.emailVerified && (
           <Link color="red.500" ml={4} onClick={onReverifyEmail}>
             Resend Verification Email
           </Link>
         )}
       </Flex>
     )),
-    [firstNameField(dbUser.first_name), lastNameField(dbUser.last_name)],
-    descriptionField(dbUser.description),
-    [websiteField(dbUser.website), null],
+    [firstNameField(user.first_name), lastNameField(user.last_name)],
+    descriptionField(user.description),
+    [websiteField(user.website), null],
     [
-      readOnlyGithubField(dbUser.github || 'No Github Linked', (props) =>
+      readOnlyGithubField(user.github || 'No Github Linked', (props) =>
         hasGithubAccount ? null : (
           <Link {...props} onClick={onChangeEmailOrGithub}>
             Link Github
           </Link>
         )
       ),
-      twitterField(dbUser.twitter),
+      twitterField(user.twitter),
     ],
-    skillLevelField(dbUser.skill_level),
-    [primaryLanguageField(dbUser.primary_language), null],
-    [cityField(dbUser.city), countryField(dbUser.country)],
-    [timezoneField(dbUser.timezone), null],
+    skillLevelField(user.skill_level),
+    [primaryLanguageField(user.primary_language), null],
+    [cityField(user.city), countryField(user.country)],
+    [timezoneField(user.timezone), null],
   ];
 
   return (
     <>
       <UploadAvatar
-        currentAvatar={user.photoURL || null}
+        currentAvatar={user.photoURL}
         label="Profile Picture"
         mb={8}
       />

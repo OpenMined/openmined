@@ -47,6 +47,7 @@ export interface User {
   mentorable_courses?: string[];
   completed_courses?: CompletedCourse[];
   notification_preferences?: string[];
+  photoURL?: string;
 }
 
 export interface UserPrivate {

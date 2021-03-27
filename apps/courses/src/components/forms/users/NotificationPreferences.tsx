@@ -1,7 +1,7 @@
 import React from 'react';
 import { BoxProps } from '@chakra-ui/react';
 import * as yup from 'yup';
-import { useUser, useFirestore, useFirestoreDocData } from 'reactfire';
+import { useFirestore } from 'reactfire';
 import { User } from '@openmined/shared/types';
 
 import Form from '../_form';
@@ -9,18 +9,16 @@ import { notificationsField } from '../_fields';
 
 import useToast, { toastConfig } from '../../Toast';
 import { handleErrors } from '../../../helpers';
+import { useCourseUser } from '../../../hooks/useCourseUser';
 
 interface BasicInformationFormProps extends BoxProps {
   callback?: () => void;
 }
 
 export default ({ callback, ...props }: BasicInformationFormProps) => {
-  const user: firebase.User = useUser();
   const db = useFirestore();
+  const { user, update } = useCourseUser();
   const toast = useToast();
-
-  const dbUserRef = db.collection('users').doc(user.uid);
-  const dbUser: User = useFirestoreDocData(dbUserRef);
 
   const onSuccess = () => {
     toast({
@@ -40,17 +38,14 @@ export default ({ callback, ...props }: BasicInformationFormProps) => {
       data.notification_preferences = [data.notification_preferences];
     }
 
-    return db
-      .collection('users')
-      .doc(user.uid)
-      .set(data, { merge: true })
+    return update(data)
       .then(onSuccess)
       .catch((error) => handleErrors(toast, error));
   };
 
   const schema = yup.object().shape({});
 
-  const fields = [notificationsField(dbUser.notification_preferences)];
+  const fields = [notificationsField(user.notification_preferences)];
 
   return (
     <Form

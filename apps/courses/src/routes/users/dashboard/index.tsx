@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Avatar,
   Box,
@@ -13,9 +13,8 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Page from '@openmined/shared/util-page';
-import { User } from '@openmined/shared/types';
 import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
-import { useUser, useFirestore, useFirestoreCollectionData } from 'reactfire';
+import { useFirestore, useFirestoreCollectionData } from 'reactfire';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -26,6 +25,7 @@ import GridContainer from '../../../components/GridContainer';
 import Loading from '../../../components/Loading';
 import Icon from '../../../components/Icon';
 import { getLinkPropsFromLink } from '../../../helpers';
+import { useCourseUser } from '../../../hooks/useCourseUser';
 
 dayjs.extend(relativeTime);
 
@@ -51,30 +51,10 @@ const LinkItem = ({ title, icon, link, ...props }) => (
 const MENTOR_MODE_KEY = '@openmined/mentor-mode';
 
 export default () => {
-  const user: firebase.User = useUser();
   const db = useFirestore();
+  const { user, isMentor, uid, authUser } = useCourseUser();
 
-  const dbUserRef = db.collection('users').doc(user.uid);
-  const [dbUser, setDbUser] = useState<User>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      setDbUser((await dbUserRef.get()).data() as User);
-    };
-
-    if (user && user.uid && !dbUser) fetchUser();
-  }, [user, dbUser, dbUserRef]);
-
-  const userIsMentor =
-    dbUser &&
-    dbUser.is_mentor &&
-    dbUser.mentorable_courses &&
-    dbUser.mentorable_courses.length > 0;
-
-  const dbCoursesRef = db
-    .collection('users')
-    .doc(user.uid)
-    .collection('courses');
+  const dbCoursesRef = db.collection('users').doc(uid).collection('courses');
   const dbCourses = useFirestoreCollectionData(dbCoursesRef, {
     idField: 'uid',
   });
@@ -85,11 +65,11 @@ export default () => {
   );
 
   const resources =
-    !mentorMode || !userIsMentor ? studentResources : mentorResources;
+    !mentorMode || !isMentor ? studentResources : mentorResources;
 
   const { data, loading } = useFirebaseSanity('dashboardCourses');
 
-  if (loading || !dbUser) return <Loading />;
+  if (loading || !user) return <Loading />;
 
   return (
     <Page title="Dashboard">
@@ -107,10 +87,10 @@ export default () => {
               align="center"
             >
               <Heading as="h1" size="lg" mb={[2, null, null, 0]}>
-                Welcome, {dbUser.first_name}!
+                Welcome, {user.first_name}!
               </Heading>
               <Flex align="center" ml={[0, null, null, 6]}>
-                {userIsMentor && (
+                {isMentor && (
                   <>
                     <FormControl display="flex" alignItems="center">
                       <Switch
@@ -144,7 +124,8 @@ export default () => {
                 <Text color="gray.700" whiteSpace="nowrap">
                   Last login{' '}
                   {dayjs(
-                    user.metadata.lastSignInTime || user.metadata.creationTime
+                    authUser.metadata.lastSignInTime ||
+                      authUser.metadata.creationTime
                   ).fromNow()}
                 </Text>
               </Flex>
@@ -153,10 +134,14 @@ export default () => {
           <GridItem colStart={[1, null, null, 3]} colEnd={13}>
             <Flex direction={['column', null, 'row']} justify="space-between">
               <Box mt={6} width="full">
-                {(!mentorMode || !userIsMentor) && (
-                  <StudentContext courses={data} progress={dbCourses} userIsMentor={userIsMentor} />
+                {(!mentorMode || !isMentor) && (
+                  <StudentContext
+                    courses={data}
+                    progress={dbCourses}
+                    userIsMentor={isMentor}
+                  />
                 )}
-                {mentorMode && userIsMentor && <MentorContext courses={data} />}
+                {mentorMode && isMentor && <MentorContext courses={data} />}
               </Box>
               <Box mt={6} ml={[0, null, 6, 12]} minW={240}>
                 <Heading as="p" size="md">
@@ -171,11 +156,11 @@ export default () => {
           </GridItem>
           <GridItem colSpan={12}>
             <Box mt={[8, null, 12, 24]}>
-              {(!mentorMode || !userIsMentor) && (
+              {(!mentorMode || !isMentor) && (
                 <StudentTabs courses={data} progress={dbCourses} />
               )}
-              {mentorMode && userIsMentor && (
-                <MentorTabs courses={data} mentor={dbUser} />
+              {mentorMode && isMentor && (
+                <MentorTabs courses={data} mentor={user} />
               )}
             </Box>
           </GridItem>

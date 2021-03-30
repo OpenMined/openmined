@@ -32,7 +32,7 @@ export default ({ content, ...props }) => (
     <TabPanels
       bg="white"
       border="1px solid"
-      borderColor="gray.300"
+      borderColor="gray.200"
       borderBottomRadius="md"
     >
       {content.map(({ panel: Panel, title, ...i }) => (

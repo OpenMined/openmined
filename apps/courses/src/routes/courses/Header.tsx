@@ -248,7 +248,7 @@ export default ({
                 color="white"
                 flex={{ base: 1, [BREAK]: 'initial' }}
               >
-                {subtitle}: {title}
+                {title}
               </Heading>
             </Flex>
           )}

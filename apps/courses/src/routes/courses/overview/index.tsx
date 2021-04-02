@@ -14,6 +14,7 @@ import {
   SimpleGrid,
   Text,
   UnorderedList,
+  Link,
 } from '@chakra-ui/react';
 import {
   faArrowRight,
@@ -107,6 +108,12 @@ const LearnFrom = ({ image, name, credential }) => (
   </Flex>
 );
 
+const truncate = (description: string) => {
+  if (!description) return ''
+  if (description.length > 477) return description.substr(0, 477) + '...'
+  return description
+}
+
 export default ({ course, page, progress, user }: CoursePagesProp) => {
   const prepareSyllabusContent = (
     description,
@@ -117,8 +124,8 @@ export default ({ course, page, progress, user }: CoursePagesProp) => {
   ) => (
     <Box bg="gray.200" p={8}>
       <Text>
-        {typeof description === 'string' && description}
-        {typeof description === 'function' && description()}
+        {typeof description === 'string' && truncate(description)}
+        {typeof description === 'function' && truncate(description())}
       </Text>
       {parts && (
         <List spacing={2} mt={4}>
@@ -158,16 +165,18 @@ export default ({ course, page, progress, user }: CoursePagesProp) => {
               <ListItem key={index} display="flex" alignItems="center">
                 <ListIcon as={() => <Icon {...iconProps} icon={icon} />} />
                 {isComplete && (
-                  <a
+                  <Link
                     href={
                       lessonId
                         ? `/courses/${course}/${lessonId}/${_id}`
                         : `/courses/${course}/project/${_key}`
                     }
                     target="_self"
+                    textDecoration="none"
+                    _hover={{ textDecoration: 'underline' }}
                   >
                     {title}
-                  </a>
+                  </Link>
                 )}
                 {!isComplete && title}
               </ListItem>

@@ -162,7 +162,7 @@ export default ({ isOpen, onOpen, onClose, header, content, ...props }) => {
   const [sectionIndexes, setSectionIndexes] = useState([0]);
 
   const openAccordionItem = (index) =>
-    setSectionIndexes([...sectionIndexes, index]);
+    setSectionIndexes([index]);
   const toggleAccordionItem = (index) => {
     const isActive = sectionIndexes.includes(index);
 
@@ -192,7 +192,7 @@ export default ({ isOpen, onOpen, onClose, header, content, ...props }) => {
             {header}
           </DrawerHeader>
           <DrawerBody p={0}>
-            <Accordion allowMultiple index={sectionIndexes}>
+            <Accordion index={sectionIndexes}>
               {content.map((item, index) => (
                 <DrawerItem
                   key={index}

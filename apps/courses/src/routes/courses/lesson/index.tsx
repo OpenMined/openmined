@@ -157,10 +157,7 @@ export default ({
         </Box>
         <Box>
           <Text color="gray.700" mb={2}>
-            <Text fontWeight="bold" as="span">
-              {courseTitle}
-            </Text>{' '}
-            | Lesson {lessonNum}
+            Lesson {lessonNum}
           </Text>
           <Heading as="h1" size="xl">
             {title}

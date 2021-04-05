@@ -14,6 +14,7 @@ import {
   Link,
   Checkbox,
   Radio,
+  Collapse,
 } from '@chakra-ui/react';
 
 const SidebarItem = ({
@@ -37,7 +38,11 @@ const SidebarItem = ({
     </AccordionButton>
     <AccordionPanel pb={4}>
       {multiple ? (
-        <CheckboxGroup colorScheme="blue" value={value} onChange={(val) => setter(val)}>
+        <CheckboxGroup
+          colorScheme="blue"
+          value={value}
+          onChange={(val) => setter(val)}
+        >
           <Stack direction="column" align="flex-start">
             {options.map((item) => (
               <Checkbox key={item} value={item}>
@@ -47,7 +52,11 @@ const SidebarItem = ({
           </Stack>
         </CheckboxGroup>
       ) : (
-        <RadioGroup colorScheme="blue" value={value} onChange={(val) => setter(val)}>
+        <RadioGroup
+          colorScheme="blue"
+          value={value}
+          onChange={(val) => setter(val)}
+        >
           <Stack>
             {options.map((item) => (
               <Radio value={item} key={item} isChecked={item === value}>
@@ -67,7 +76,7 @@ export default ({ filters, numCourses, clearFilters }) => {
 
   return (
     <>
-      {numFilters !== 0 && (
+      <Collapse in={numFilters !== 0} unmountOnExit={true}>
         <Alert
           fontWeight="bold"
           flexDirection="column"
@@ -87,8 +96,12 @@ export default ({ filters, numCourses, clearFilters }) => {
             Clear filters ({numFilters})
           </Link>
         </Alert>
-      )}
-      <Accordion allowMultiple allowToggle>
+      </Collapse>
+      <Accordion
+        allowMultiple
+        allowToggle
+        defaultIndex={Array.from(Array(filters.length).keys())}
+      >
         {filters.map((filter) => (
           <SidebarItem key={filter.title} {...filter} />
         ))}

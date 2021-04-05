@@ -51,9 +51,9 @@ export default {
     ],
   },
   learn: {
-    title: "What You'll Learn",
+    title: "Course Set",
     description:
-      "In this series of courses, you'll learn how privacy is impacting every industry and how to build real-world products with privacy-preserving AI technology.",
+      "When you signup for this series of courses, you'll learn how privacy is impacting every industry and how to build real-world products with privacy-preserving AI technology.",
   },
   slides: {
     title: 'Learn from the Best Minds in the Industry',
@@ -63,7 +63,7 @@ export default {
   signup: {
     title: 'Sign Up Today',
     description:
-      'Sign up today to reserve your spot in the first class, starting on January 2nd, 2021.',
+      'Sign up for the Private AI Series today and begin your learning journey.',
   },
   signedup: {
     title: 'Thanks for Signing Up!',

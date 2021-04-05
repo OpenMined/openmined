@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
-import { Box, Heading, Text, SimpleGrid } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  Text,
+  SimpleGrid,
+  Button,
+  Center,
+} from '@chakra-ui/react';
 import { useFirebaseSanity } from '@openmined/shared/data-access-sanity';
+import { Link as RRDLink } from 'react-router-dom';
 
 import GridContainer from '../../components/GridContainer';
 import Course from '../../components/CourseCard';
+import { useUser } from 'reactfire';
 
 export default ({ title, description }) => {
+  const user = useUser();
   const { data, loading } = useFirebaseSanity('homepageCourses');
 
   const order = [
@@ -60,6 +70,19 @@ export default ({ title, description }) => {
               />
             ))}
         </SimpleGrid>
+        {!user && (
+          <Center>
+            <Button
+              as={RRDLink}
+              colorScheme={'white'}
+              variant="outline"
+              to="/signup"
+              mt={5}
+            >
+              Sign Up
+            </Button>
+          </Center>
+        )}
       </GridContainer>
     </Box>
   );

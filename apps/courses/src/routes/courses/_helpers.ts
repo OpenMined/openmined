@@ -133,6 +133,32 @@ export const hasReceivedPassingProjectPartReview = (u, p) => {
 
   return false;
 };
+export const getLastCompletedAndInProgressConcepts = (
+  u,
+  ls,
+  completed = 2,
+  inProgress = 1
+) => {
+  const completedConcepts = [];
+  const inProgressConcepts = [];
+
+  ls.forEach((l) => {
+    l.concepts?.forEach((c) => {
+      if (hasCompletedConcept(u, l._id, c._id)) {
+        completedConcepts.push(c);
+        if (completedConcepts.length > completed) {
+          completedConcepts.shift();
+        }
+      } else {
+        if (inProgressConcepts.length < inProgress) {
+          inProgressConcepts.push(c);
+        }
+      }
+    });
+  });
+
+  return { completedConcepts, inProgressConcepts };
+};
 export const hasReceivedFailingProjectPartReview = (u, p) => {
   if (!hasReceivedProjectPartReview(u, p)) return false;
 

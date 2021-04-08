@@ -18,6 +18,7 @@ import {
   getCourseProgress,
   getNextAvailablePage,
   hasCompletedLesson,
+  getLastCompletedAndInProgressConcepts,
 } from '../routes/courses/_helpers';
 import Icon from '../components/Icon';
 import dayjs from 'dayjs';
@@ -48,7 +49,7 @@ export default ({ content, isMentor, ...props }) => {
   }
 
   const nextAvailablePage = getNextAvailablePage(progress, lessons);
-
+  const { completedConcepts, inProgressConcepts } = getLastCompletedAndInProgressConcepts(progress, lessons, 2, 1)
   let resumeLink = `/courses/${slug}/${nextAvailablePage.lesson}`;
 
   if (nextAvailablePage.concept) {
@@ -84,19 +85,7 @@ export default ({ content, isMentor, ...props }) => {
           <Text>{length}</Text>
         </Flex>
         <Box bg="blue.50" p={4} borderRadius="md" mb={4}>
-          {lessons.map((l, i) => {
-            const shouldShowNextBadge =
-              i > 0 && lessons[i - 1].concepts?.length > 0 && !l.concepts;
-
-            const iconProps = hasCompletedLesson(progress, l._id)
-              ? {
-                  icon: faCheckCircle,
-                }
-              : {
-                  icon: faArrowRight,
-                  color: 'gray.600',
-                };
-
+          {completedConcepts.map((c, i) => {
             return (
               <Flex
                 align="center"
@@ -105,18 +94,28 @@ export default ({ content, isMentor, ...props }) => {
                 justifyContent="space-between"
               >
                 <Flex>
-                  <Icon {...iconProps} mr={3} boxSize={5} />
-                  <Text color="gray.700">{l.title}</Text>
+                  <Icon icon={faCheckCircle} mr={3} boxSize={5} />
+                  <Text color="gray.700">{c.title}</Text>
                 </Flex>
-                {shouldShowNextBadge && (
-                  <Badge color="white" bgColor="blue.700" justifySelf="end">
-                    Next
-                  </Badge>
-                )}
               </Flex>
             );
           })}
-          {project?.title && (
+          {inProgressConcepts.map((c, i) => {
+            return (
+              <Flex
+                align="center"
+                mt={completedConcepts.length == 0 ? 0 : 2}
+                key={i}
+                justifyContent="space-between"
+              >
+                <Flex>
+                  <Icon icon={faArrowRight} color="gray.600" mr={3} boxSize={5} />
+                  <Text color="gray.700">{c.title}</Text>
+                </Flex>
+              </Flex>
+            );
+          })}
+          {nextAvailablePage.lesson === 'project' && project?.title && (
             <Flex align="center" mt={2} justifyContent="space-between">
               <Flex>
                 <Icon icon={faShapes} mr={3} color="gray.600" boxSize={5} />

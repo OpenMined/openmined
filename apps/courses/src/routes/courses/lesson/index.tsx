@@ -166,9 +166,11 @@ export default ({
             {title}
           </Heading>
           <Divider my={6} />
-          <Text color="gray.700" mb={6}>
-            {typeof description === 'string' ? description : description()}
-          </Text>
+          {description && (
+            <Text color="gray.700" mb={6}>
+              {typeof description === 'string' ? description : description()}
+            </Text>
+          )}
           {learnHow && (
             <>
               <Heading as="p" size="md" mb={4}>

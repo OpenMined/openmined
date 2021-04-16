@@ -1,9 +1,11 @@
-import { QueryClient, QueryClientProvider } from 'react-query';
-import '@/styles/globals.css';
+import { QueryClient, QueryClientProvider } from 'react-query'
+import '@/styles/globals.css'
+import '@/lib/firebase'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {  
+
   return (
     <QueryClientProvider client={queryClient}>
       <Component {...pageProps} />

@@ -3,46 +3,39 @@
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2018,
+    "ecmaFeatures": {
+      "jsx": true
+    },
     "sourceType": "module",
-    "project": "./tsconfig.*?.json"
+    "project": "./tsconfig.json"
   },
-  "ignorePatterns": ["**/*"],
-  "plugins": ["@typescript-eslint", "@nrwl/nx"],
+  "ignorePatterns": ["node_modules/*", ".next/*", ".out/*", "!.prettierrc"],
+  "plugins": ["react-hooks", "@typescript-eslint", "jsx-a11y",
+    "testing-library/react"],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "prettier/@typescript-eslint"
+    "plugin:jest/recommended",
+    "plugin:prettier/recommended"
   ],
+  "rules": {
+    "react/prop-types": "off",
+    "jsx-a11y/anchor-us-valid": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "env": {
     "browser": true,
-    "amd": true,
+    "es6": true,
     "node": true
-  },
-  "rules": {
-    "@typescript-eslint/explicit-member-accessibility": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-parameter-properties": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@nrwl/nx/enforce-module-boundaries": [
-      "error",
-      {
-        "enforceBuildableLibDependency": true,
-        "allow": [],
-        "depConstraints": [
-          { "sourceTag": "*", "onlyDependOnLibsWithTags": ["*"] }
-        ]
-      }
-    ]
   },
   "overrides": [
     {
-      "files": ["*.tsx"],
-      "rules": {
-        "@typescript-eslint/no-unused-vars": "off"
-      }
+      "files": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+      "extends": ["plugin:testing-library/react"]
     }
   ]
 }

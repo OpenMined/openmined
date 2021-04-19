@@ -2,7 +2,7 @@ import { auth } from '@/lib/firebase'
 import { useForm } from 'react-hook-form';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
-export default function Sign() {
+const SignIn = () => {
   const { handleSubmit, register, errors } = useForm();
   const [
     signInWithEmailAndPassword,
@@ -10,6 +10,7 @@ export default function Sign() {
     loading,
     error,
   ] = useSignInWithEmailAndPassword(auth);
+
   const onSubmit = (data: any) => {
     signInWithEmailAndPassword(data.email, data.password)
   }
@@ -29,3 +30,5 @@ export default function Sign() {
     </form>
   );
 }
+
+export default SignIn

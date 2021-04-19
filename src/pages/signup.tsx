@@ -1,10 +1,9 @@
 import { auth } from '@/lib/firebase'
-import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 
-const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const SignUp = () => {  
+  const { handleSubmit, register, errors } = useForm();
   const [
     createUserWithEmailAndPassword,
     user,
@@ -12,39 +11,24 @@ const SignUp = () => {
     error,
   ] = useCreateUserWithEmailAndPassword(auth);
 
-  if (error) {
-    return (
-      <div>
-        <p>Error: {error.message}</p>
-      </div>
-    );
+  const onSubmit = (data: any) => {
+    createUserWithEmailAndPassword(data.email, data.password)
   }
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-  if (user) {
-    return (
-      <div>
-        <p>Registered User: {user.email}</p>
-      </div>
-    );
-  }
+
   return (
-    <div className="App">
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input name="email" placeholder="email" ref={register({ required: true })} />
+      {errors.email && <span>The field is required</span>}
+      <br />
       <input
         type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        name="password"
+        placeholder="password"
+        ref={register({ required: true })}
       />
-      <button onClick={() => createUserWithEmailAndPassword(email, password)}>
-        Register
-      </button>
-    </div>
+      {errors.password && <span>The field is required</span>}
+      <input type="submit" />
+    </form>
   );
 };
 

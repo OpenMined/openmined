@@ -46,8 +46,39 @@ const SignUp = () => {
         }
     })
 
-    // TODO: If we're creating an account for the first time, we need to store some information about the user
-    // see https://github.com/OpenMined/openmined/blob/dev/apps/courses/src/components/forms/users/SignUp.tsx
+    if (authUser) {
+      // TODO: If we're creating an account for the first time, we need to store some information about the user
+      // see https://github.com/OpenMined/openmined/blob/dev/apps/courses/src/components/forms/users/SignUp.tsx      
+      let firstName = ''
+      let lastName = ''
+
+      if (authUser.user.displayName && authUser.user.displayName !== '') {
+        const splitName = authUser.user.displayName.split(' ');
+
+        firstName = splitName.length >= 1 ? splitName[0] : authUser.user.displayName;
+        lastName = splitName.length >= 2 ? splitName.slice(1).join(' ') : ''
+      }
+
+      const profile = authUser.additionalUserInfo.profile as any
+
+      authUser.user.updateProfile({
+        first_name: firstName,
+        last_name: lastName,
+        notification_preferences: ['project_reviews'],
+        description: profile.bio,
+        github: profile.login,
+        twitter: profile.twitter_username,
+        website: profile.blog,
+        photoURL: profile.avatar_url,
+      }).then(() => {
+        // Update successful.
+        console.log('update success')
+      }).catch(error => {
+        // An error happened.
+        console.log(error)
+      })
+    }
+
 
   }  
 

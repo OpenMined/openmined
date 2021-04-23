@@ -2,6 +2,7 @@ import Link from 'next/link'
 import {useForm} from 'react-hook-form'
 import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import VisuallyHidden from '@reach/visually-hidden'
+import firebase from 'firebase/app'
 import {auth} from '@/lib/firebase'
 
 const SignUp = () => {
@@ -26,10 +27,40 @@ const SignUp = () => {
     createUserWithEmailAndPassword(email, password)
   }
 
+  const onGithubSubmit = async () => {
+    const githubProvider = new firebase.auth.GithubAuthProvider()
+
+    const authUser = await auth
+      .signInWithPopup(githubProvider)
+      .catch(error => {
+        // In the event that an account with this email already exists (because they signed up with email)
+        // Store the existing credential and email conflict, and then ask the user to input the password for their email account
+        // Otherwise... handleErrors()
+        if (error.code === 'auth/account-exists-with-different-credential') {
+          // Store the pending Github credential and conflicting email          
+
+          // Open the modal to ask for a password
+          console.log(error)   
+        } else {
+          console.log(error)
+        }
+    })
+
+    // TODO: If we're creating an account for the first time, we need to store some information about the user
+    // see https://github.com/OpenMined/openmined/blob/dev/apps/courses/src/components/forms/users/SignUp.tsx
+
+  }  
+
   if (user) {
-    // redirect to dashboard
+    // TODO: redirect to dashboard
+    return (
+      <p>user created</p>
+    )
   }
 
+  if (error) {
+    // TODO: error handling
+  }
   // TODO: if error, notify user -- use a notification component from OMUI
 
   return (
@@ -122,6 +153,7 @@ const SignUp = () => {
                   type="button"
                   disabled={loading}
                   className="px-4 py-2 text-white bg-black rounded-md"
+                  onClick={onGithubSubmit}
                 >
                   Sign up with GitHub
                 </button>

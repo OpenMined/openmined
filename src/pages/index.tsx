@@ -1,9 +1,9 @@
-import { useForm } from "react-hook-form"
+import {useForm} from 'react-hook-form'
 
 const index = () => {
   return (
     <div>
-      <h1>home</h1>    
+      <h1>home</h1>
     </div>
   )
 }

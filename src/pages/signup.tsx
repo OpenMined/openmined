@@ -1,9 +1,16 @@
 import Link from 'next/link'
+import {useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import VisuallyHidden from '@reach/visually-hidden'
 import firebase from 'firebase/app'
 import {auth} from '@/lib/firebase'
+
+interface CredentialProps {
+  credential?: any;
+  email?: string;
+  password?: string;
+}
 
 const SignUp = () => {
   const {
@@ -15,6 +22,7 @@ const SignUp = () => {
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(
     auth
   )
+  const [tempCredentials, setTempCredentials] = useState<CredentialProps>({});
 
   const onSubmit = (values: {
     email: string
@@ -38,9 +46,13 @@ const SignUp = () => {
         // Otherwise... handleErrors()
         if (error.code === 'auth/account-exists-with-different-credential') {
           // Store the pending Github credential and conflicting email          
-
-          // Open the modal to ask for a password
-          console.log(error)   
+          setTempCredentials({
+            credential: error.credential,
+            email: error.email,
+            password: null,
+          });
+          // TODO: Open the modal to ask for a password
+          console.log('credential error')   
         } else {
           console.log(error)
         }
@@ -72,7 +84,8 @@ const SignUp = () => {
         photoURL: profile.avatar_url,
       }).then(() => {
         // Update successful.
-        console.log('update success')
+        // TODO: change to trigger dashboard redirect here
+        console.log('user profile update success')
       }).catch(error => {
         // An error happened.
         console.log(error)

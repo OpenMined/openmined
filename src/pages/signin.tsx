@@ -21,7 +21,9 @@ const SignIn = () => {
 
   const onGithubSubmit = () => {
     const githubProvider = new firebase.auth.GithubAuthProvider()            
-    auth.signInWithPopup(githubProvider) 
+    auth.signInWithPopup(githubProvider).catch(error => {
+      console.log(error)
+    })
   }
 
   if (user) {

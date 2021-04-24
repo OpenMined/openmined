@@ -83,7 +83,6 @@ export default ({ page, header, children }) => {
       <Box
         minHeight="100vh"
         display="grid"
-        paddingTop={`${courseHeaderHeight}px`}
       >
         {children}
       </Box>

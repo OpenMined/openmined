@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import {useForm} from 'react-hook-form'
 import {useSignInWithEmailAndPassword} from 'react-firebase-hooks/auth'
-import firebase from 'firebase/app'
 import VisuallyHidden from '@reach/visually-hidden'
-import {auth} from '@/lib/firebase'
+import {auth, githubProvider} from '@/lib/firebase'
 
 const SignIn = () => {
   const {
@@ -19,8 +18,7 @@ const SignIn = () => {
     signInWithEmailAndPassword(email, password)
   }
 
-  const onGithubSubmit = () => {
-    const githubProvider = new firebase.auth.GithubAuthProvider()            
+  const onGithubSubmit = () => {    
     auth.signInWithPopup(githubProvider).catch(error => {
       console.log(error)
     })

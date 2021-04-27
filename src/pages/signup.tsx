@@ -3,8 +3,7 @@ import {useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import VisuallyHidden from '@reach/visually-hidden'
-import firebase from 'firebase/app'
-import {auth} from '@/lib/firebase'
+import {auth, githubProvider} from '@/lib/firebase'
 
 interface CredentialProps {
   credential?: any;
@@ -35,8 +34,7 @@ const SignUp = () => {
     createUserWithEmailAndPassword(email, password)
   }
 
-  const onGithubSubmit = async () => {
-    const githubProvider = new firebase.auth.GithubAuthProvider()
+  const onGithubSubmit = async () => {    
 
     const authUser = await auth
       .signInWithPopup(githubProvider)

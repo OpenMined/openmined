@@ -71,7 +71,7 @@ const SignUp = () => {
         lastName = splitName.length >= 2 ? splitName.slice(1).join(' ') : ''
       }
 
-      const profile = authUser.additionalUserInfo.profile as any
+      const profile = authUser.additionalUserInfo.profile
 
       authUser.user.updateProfile({
         first_name: firstName,

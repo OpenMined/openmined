@@ -1,8 +1,15 @@
 import Link from 'next/link'
+import {useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {useCreateUserWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import VisuallyHidden from '@reach/visually-hidden'
-import {auth} from '@/lib/firebase'
+import {auth, githubProvider} from '@/lib/firebase'
+
+interface CredentialProps {
+  credential?: any;
+  email?: string;
+  password?: string;
+}
 
 const SignUp = () => {
   const {
@@ -14,6 +21,7 @@ const SignUp = () => {
   const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(
     auth
   )
+  const [tempCredentials, setTempCredentials] = useState<CredentialProps>({});
 
   const onSubmit = (values: {
     email: string
@@ -26,10 +34,75 @@ const SignUp = () => {
     createUserWithEmailAndPassword(email, password)
   }
 
+  const onGithubSubmit = async () => {    
+
+    const authUser = await auth
+      .signInWithPopup(githubProvider)
+      .catch(error => {
+        // In the event that an account with this email already exists (because they signed up with email)
+        // Store the existing credential and email conflict, and then ask the user to input the password for their email account
+        // Otherwise... handleErrors()
+        if (error.code === 'auth/account-exists-with-different-credential') {
+          // Store the pending Github credential and conflicting email          
+          setTempCredentials({
+            credential: error.credential,
+            email: error.email,
+            password: null,
+          });
+          // TODO: Open the modal to ask for a password
+          console.log('credential error')   
+        } else {
+          console.log(error)
+        }
+    })
+
+    if (authUser) {
+      // TODO: If we're creating an account for the first time, we need to store some information about the user
+      // see https://github.com/OpenMined/openmined/blob/dev/apps/courses/src/components/forms/users/SignUp.tsx      
+      let firstName = ''
+      let lastName = ''
+
+      if (authUser.user.displayName && authUser.user.displayName !== '') {
+        const splitName = authUser.user.displayName.split(' ');
+
+        firstName = splitName.length >= 1 ? splitName[0] : authUser.user.displayName;
+        lastName = splitName.length >= 2 ? splitName.slice(1).join(' ') : ''
+      }
+
+      const profile = authUser.additionalUserInfo.profile
+
+      authUser.user.updateProfile({
+        first_name: firstName,
+        last_name: lastName,
+        notification_preferences: ['project_reviews'],
+        description: profile.bio,
+        github: profile.login,
+        twitter: profile.twitter_username,
+        website: profile.blog,
+        photoURL: profile.avatar_url,
+      }).then(() => {
+        // Update successful.
+        // TODO: change to trigger dashboard redirect here
+        console.log('user profile update success')
+      }).catch(error => {
+        // An error happened.
+        console.log(error)
+      })
+    }
+
+
+  }  
+
   if (user) {
-    // redirect to dashboard
+    // TODO: redirect to dashboard
+    return (
+      <p>user created</p>
+    )
   }
 
+  if (error) {
+    // TODO: error handling
+  }
   // TODO: if error, notify user -- use a notification component from OMUI
 
   return (
@@ -122,6 +195,7 @@ const SignUp = () => {
                   type="button"
                   disabled={loading}
                   className="px-4 py-2 text-white bg-black rounded-md"
+                  onClick={onGithubSubmit}
                 >
                   Sign up with GitHub
                 </button>

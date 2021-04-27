@@ -2,7 +2,7 @@ import Link from 'next/link'
 import {useForm} from 'react-hook-form'
 import {useSignInWithEmailAndPassword} from 'react-firebase-hooks/auth'
 import VisuallyHidden from '@reach/visually-hidden'
-import {auth} from '@/lib/firebase'
+import {auth, githubProvider} from '@/lib/firebase'
 
 const SignIn = () => {
   const {
@@ -18,12 +18,28 @@ const SignIn = () => {
     signInWithEmailAndPassword(email, password)
   }
 
+  const onGithubSubmit = () => {    
+    auth.signInWithPopup(githubProvider).catch(error => {
+      console.log(error)
+    })
+  }
+
   if (user) {
-    // TODO: redirect to dashboard
+    // TODO: redirect to dashboard    
+    return (
+      <div>
+        <p>Signed In User</p>
+      </div>
+    );
   }
 
   if (error) {
     // TODO: Handle error in notification
+    return (
+      <div>
+        <p>Error: {error.message}</p>
+      </div>
+    );
   }
 
   return (
@@ -36,7 +52,7 @@ const SignIn = () => {
           Franklin
         </p>
       </header>
-      <section>
+      <section>        
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col w-full space-y-4">
             <div className="flex flex-col space-y-4">
@@ -79,6 +95,7 @@ const SignIn = () => {
                     type="button"
                     disabled={loading}
                     className="px-4 py-2 text-white bg-black rounded-md"
+                    onClick={onGithubSubmit}
                   >
                     Sign in with GitHub
                   </button>

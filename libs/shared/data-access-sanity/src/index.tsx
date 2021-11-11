@@ -60,7 +60,7 @@ const processChildren = (children, markDefs) =>
         } else if (m === 'code') {
           return (
             <Code colorScheme="gray" key={i}>
-              {finalElem}
+              {typeof text === 'function' ? text() : text}
             </Code>
           );
         } else {

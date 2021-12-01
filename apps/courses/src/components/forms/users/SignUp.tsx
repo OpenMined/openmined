@@ -276,11 +276,13 @@ export default ({ callback, ...props }: SignUpFormProps) => {
                 onClick={onGithubSubmit}
                 colorScheme="black"
                 isLoading={isSubmitting}
+                disabled
               >
                 Sign Up with Github{' '}
                 <Icon icon={faGithub} ml={2} boxSize={4} color="white" />
               </Button>
             </Flex>
+            <Text mt={6} fontSize="sm" color="gray.700">* Github sign up is temporarily unavailable.</Text>
             <Divider my={6} />
             <Text fontSize="sm" color="gray.700">
               By signing up you agree to our{' '}

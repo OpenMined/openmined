@@ -13,9 +13,11 @@ import { handleErrors } from '../helpers';
 export default ({ currentAvatar, label, ...props }: any) => {
   const [preview, setPreview] = useState<string | undefined>();
   const storage = useStorage();
+  const db = useFirestore();
   const user: firebase.User = useUser();
   const auth = useAuth();
   const toast = useToast();
+  const dbRef = db.collection('users').doc(user.uid);
 
   const filename = 'avatar.png';
 
@@ -28,6 +30,7 @@ export default ({ currentAvatar, label, ...props }: any) => {
         auth.currentUser.updateProfile({
           photoURL: null,
         });
+        dbRef.set({ photoURL: '' }, { merge: true });
       })
       .then(() =>
         toast({
@@ -81,6 +84,8 @@ export default ({ currentAvatar, label, ...props }: any) => {
                   })
                 )
                 .catch((error) => handleErrors(toast, error));
+
+              dbRef.set({ photoURL }, { merge: true });
             });
           })
           .catch((error) => handleErrors(toast, error));

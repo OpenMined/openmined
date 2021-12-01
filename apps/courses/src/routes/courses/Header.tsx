@@ -96,6 +96,7 @@ export default ({
   title,
   subtitle,
   course,
+  lesson,
   sections,
   noShadow = false,
   noTitle = false,
@@ -217,7 +218,7 @@ export default ({
 
   return (
     <Box
-      position="fixed"
+      position="sticky"
       width="100%"
       top={0}
       left={0}
@@ -248,7 +249,7 @@ export default ({
                 color="white"
                 flex={{ base: 1, [BREAK]: 'initial' }}
               >
-                {subtitle}: {title}
+                {title}
               </Heading>
             </Flex>
           )}
@@ -284,9 +285,16 @@ export default ({
         onClose={onLeftDrawerClose}
         header={
           <>
-            <Text color="gray.400" mb={1}>
-              {subtitle}
-            </Text>
+            <Link
+              as={RRDLink}
+              to={`/courses/${course}/${lesson}`}
+              textDecoration="none"
+              _hover={{ textDecoration: 'underline' }}
+            >
+              <Text color="gray.400" mb={1}>
+                {subtitle}
+              </Text>
+            </Link>
             <Heading as="span" size="lg" display="block" mb={3}>
               {title}
             </Heading>

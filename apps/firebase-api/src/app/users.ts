@@ -4,7 +4,7 @@ import { logger } from 'firebase-functions';
 const getUserRef = (userId) =>
   admin.firestore().collection('users').doc(userId);
 
-const getAllUsers = (): Promise<any[]> =>
+export const getAllUsers = (): Promise<any[]> =>
   new Promise((resolve, reject) => {
     const allUsers = [];
 

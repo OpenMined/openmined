@@ -10,10 +10,9 @@ import {
   Stack,
   Divider,
 } from '@chakra-ui/react';
+import { useUser } from 'reactfire';
 import Page from '@openmined/shared/util-page';
 import { useParams, Link as RRDLink, Navigate } from 'react-router-dom';
-import { User } from '@openmined/shared/types';
-import { useUser, useFirestoreDocDataOnce, useFirestore } from 'reactfire';
 import {
   faPencilAlt,
   faLink,
@@ -29,6 +28,9 @@ import CourseCompleteCard from '../../../components/CourseCompleteCard';
 import { getLinkPropsFromLink } from '../../../helpers';
 import { discussionLink } from '../../../content/links';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
+
+import { useLoadFirestoreUser } from '../../../hooks/useCourseUser';
+import Loading from '../../../components/Loading';
 
 const SocialItem = ({ title, href, icon, ...props }) => (
   <Flex align="center" {...props}>
@@ -68,40 +70,38 @@ const LinkItem = ({ title, icon, link, ...props }) => {
 };
 
 export default () => {
-  const user: firebase.User = useUser();
-  const db = useFirestore();
   const { uid } = useParams();
-
-  const dbUserRef = db.collection('users').doc(uid);
-  const dbUser: User = useFirestoreDocDataOnce(dbUserRef);
-
-  if (!Object.keys(dbUser).length) return <Navigate to="/" />;
-
+  const authUser = useUser() as firebase.User;
+  const currentUid = authUser?.uid;
+  const { user } = useLoadFirestoreUser(uid);
   const { data, loading } = useFirebaseSanity('profileCourses');
 
-  if (loading) return null;
+  if (user === undefined) {
+    return <Navigate to="/" />;
+  }
 
-  const isSameUser = user && uid === user.uid;
-  const name = `${dbUser.first_name} ${dbUser.last_name}`;
+  if (!user || loading) {
+    return <Loading />;
+  }
+
+  const isSameUser = currentUid && currentUid === uid;
+  const name = `${user.first_name} ${user.last_name}`;
 
   const completedCourses =
-    data && dbUser.completed_courses && dbUser.completed_courses.length > 0
-      ? dbUser.completed_courses.map((c) => {
-          const matchedCourse = data.findIndex((d) => d.slug === c.course);
-
-          if (matchedCourse !== -1) {
-            return {
-              progress: { completed_at: c.completed_at },
-              ...data[matchedCourse],
-            };
-          }
-
-          return null;
+    data && user?.completed_courses?.length > 0
+      ? user.completed_courses.map((c) => {
+          const matchedCourse = data.find((d) => d.slug === c.course);
+          return matchedCourse
+            ? {
+                progress: { completed_at: c.completed_at },
+                ...matchedCourse,
+              }
+            : null;
         })
       : [];
 
   return (
-    <Page title={name} description={dbUser.description}>
+    <Page title={name} description={user.description}>
       <Box
         position="relative"
         bg="gray.50"
@@ -128,7 +128,7 @@ export default () => {
               width={['full', null, null, 280]}
             >
               {user && (
-                <Avatar src={user.photoURL || null} size="2xl" mb={4}>
+                <Avatar src={user.photoURL} size="2xl" mb={4}>
                   {isSameUser && (
                     <RRDLink to="/users/settings">
                       <AvatarBadge
@@ -152,31 +152,31 @@ export default () => {
                 {name}
               </Heading>
               <Text color="gray.700" mb={6}>
-                {dbUser.description}
+                {user.description}
               </Text>
               <Stack
                 direction="column"
                 align={['center', null, null, 'flex-start']}
                 spacing={2}
               >
-                {dbUser.github && (
+                {user.github && (
                   <SocialItem
-                    title={`@${dbUser.github}`}
-                    href={`https://github.com/${dbUser.github}`}
+                    title={`@${user.github}`}
+                    href={`https://github.com/${user.github}`}
                     icon={faGithub}
                   />
                 )}
-                {dbUser.twitter && (
+                {user.twitter && (
                   <SocialItem
-                    title={`@${dbUser.twitter}`}
-                    href={`https://twitter.com/${dbUser.twitter}`}
+                    title={`@${user.twitter}`}
+                    href={`https://twitter.com/${user.twitter}`}
                     icon={faTwitter}
                   />
                 )}
-                {dbUser.website && (
+                {user.website && (
                   <SocialItem
-                    title={dbUser.website}
-                    href={dbUser.website}
+                    title={user.website}
+                    href={user.website}
                     icon={faLink}
                   />
                 )}
@@ -202,11 +202,11 @@ export default () => {
               <Heading as="h3" size="md" mb={4}>
                 Completed Courses
               </Heading>
-              {completedCourses.length !== 0 &&
+              {completedCourses.length > 0 ? (
                 completedCourses.map((c) => (
                   <CourseCompleteCard key={c.title} content={c} mb={6} />
-                ))}
-              {completedCourses.length === 0 && (
+                ))
+              ) : (
                 <Box
                   p={4}
                   bg="gray.100"

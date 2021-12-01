@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CoursePageWhich } from '@openmined/shared/types';
+import { CoursePageWhich, User } from '@openmined/shared/types';
+import { useFirestore } from 'reactfire';
 
 export interface CourseProgress {
   lessons?: number;
@@ -132,6 +133,32 @@ export const hasReceivedPassingProjectPartReview = (u, p) => {
 
   return false;
 };
+export const getLastCompletedAndInProgressConcepts = (
+  u,
+  ls,
+  completed = 2,
+  inProgress = 1
+) => {
+  const completedConcepts = [];
+  const inProgressConcepts = [];
+
+  ls.forEach((l) => {
+    l.concepts?.forEach((c) => {
+      if (hasCompletedConcept(u, l._id, c._id)) {
+        completedConcepts.push(c);
+        if (completedConcepts.length > completed) {
+          completedConcepts.shift();
+        }
+      } else {
+        if (inProgressConcepts.length < inProgress) {
+          inProgressConcepts.push(c);
+        }
+      }
+    });
+  });
+
+  return { completedConcepts, inProgressConcepts };
+};
 export const hasReceivedFailingProjectPartReview = (u, p) => {
   if (!hasReceivedProjectPartReview(u, p)) return false;
 
@@ -253,6 +280,16 @@ const isSameRouteValue = (c1, c2) => c1 === c2 || (!c1 && !c2);
 const isSameLessonConcept = (c1, c2) =>
   c1.lesson === c2.lesson && isSameRouteValue(c1.concept, c2.concept);
 
+export const isMentorOfCourse = (user: User, course: string) => {
+  return (
+    user &&
+    user.is_mentor &&
+    user.mentorable_courses &&
+    Array.isArray(user.mentorable_courses) &&
+    user.mentorable_courses.indexOf(course) !== -1
+  );
+};
+
 export const isAllowedToAccessPage = (
   which: CoursePageWhich,
   user,
@@ -262,7 +299,7 @@ export const isAllowedToAccessPage = (
   concept,
   suggestedPage: NextAvailablePage
 ): boolean => {
-  // If project is completed, can acccess this page
+  // If project is completed, can access this page
   if (which === 'courseComplete') return hasCompletedProject(user);
 
   // If last lesson is completed, all lessons are completed.

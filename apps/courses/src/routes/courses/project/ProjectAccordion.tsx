@@ -18,15 +18,16 @@ const AttemptedView = ({
   part,
   course,
   ...props
-}) => (
-  <Box {...props}>
+}) => {
+  return <Box {...props}>
     <Flex direction="column" align="center" textAlign="center" mb={6}>
       <Image src={image} boxSize={12} mb={4} />
       <Text fontWeight="bold" mb={2}>
         {title}
       </Text>
       <Text color="gray.700" fontSize="sm">
-        {typeof description === 'string' ? description : description()}
+        {/* description is string or element */}
+        {description}
       </Text>
     </Flex>
     {submissions.map((submission, index) => (
@@ -37,7 +38,7 @@ const AttemptedView = ({
       />
     ))}
   </Box>
-);
+};
 
 export default ({ content, course, onBeginProjectPart, ...props }) => {
   // TODO: https://github.com/OpenMined/openmined/issues/53
@@ -46,7 +47,7 @@ export default ({ content, course, onBeginProjectPart, ...props }) => {
   // The text to show when the user is pending a submission review
   const pendingReviewText = (
     <>
-      Thank you for your submission! Out mentors will review your work and give
+      Thank you for your submission! Our mentors will review your work and give
       you feedback within 1-2 days. You will receive a notification and an email
       when your project has been reviewed. In the meantime, see what others did
       by discussing this project on our{' '}

@@ -14,8 +14,8 @@ import {
   SimpleGrid,
   Text,
   UnorderedList,
+  Link,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 import {
   faArrowRight,
   faCertificate,
@@ -53,6 +53,7 @@ import heptagon from '../../../assets/heptagon.svg';
 import waveform from '../../../assets/waveform/waveform-top-left-cool.png';
 import currentLessonIcon from '../../../assets/homepage/finger-point.svg';
 import dayjs from 'dayjs';
+import { useLoadFirestoreUser } from '../../../hooks/useCourseUser';
 
 const Detail = ({ title, value, icon = faCheckCircle }) => (
   <Flex align="center" mb={4}>
@@ -107,7 +108,13 @@ const LearnFrom = ({ image, name, credential }) => (
   </Flex>
 );
 
-export default ({ course, page, progress }: CoursePagesProp) => {
+const truncate = (description: string) => {
+  if (!description) return ''
+  if (description.length > 477) return description.substr(0, 477) + '...'
+  return description
+}
+
+export default ({ course, page, progress, user }: CoursePagesProp) => {
   const prepareSyllabusContent = (
     description,
     parts,
@@ -117,8 +124,8 @@ export default ({ course, page, progress }: CoursePagesProp) => {
   ) => (
     <Box bg="gray.200" p={8}>
       <Text>
-        {typeof description === 'string' && description}
-        {typeof description === 'function' && description()}
+        {typeof description === 'string' && truncate(description)}
+        {typeof description === 'function' && truncate(description())}
       </Text>
       {parts && (
         <List spacing={2} mt={4}>
@@ -158,16 +165,18 @@ export default ({ course, page, progress }: CoursePagesProp) => {
               <ListItem key={index} display="flex" alignItems="center">
                 <ListIcon as={() => <Icon {...iconProps} icon={icon} />} />
                 {isComplete && (
-                  <a
+                  <Link
                     href={
                       lessonId
                         ? `/courses/${course}/${lessonId}/${_id}`
                         : `/courses/${course}/project/${_key}`
                     }
                     target="_self"
+                    textDecoration="none"
+                    _hover={{ textDecoration: 'underline' }}
                   >
                     {title}
-                  </a>
+                  </Link>
                 )}
                 {!isComplete && title}
               </ListItem>
@@ -217,10 +226,21 @@ export default ({ course, page, progress }: CoursePagesProp) => {
   const stats = isTakingCourse
     ? getCourseProgress(progress, page.lessons, project?.parts)
     : {};
-  const percentComplete =
+
+  const { user: dbUser } = useLoadFirestoreUser(user?.uid);
+
+  const isMentor =
+    dbUser?.is_mentor && dbUser.mentorable_courses?.includes(course);
+
+  let percentComplete =
     ((stats.completedConcepts + stats.completedProjectParts) /
       (stats.concepts + stats.projectParts)) *
     100;
+
+  // don't require project completion values for mentors
+  if (isMentor) {
+    percentComplete = (stats.completedConcepts / stats.concepts) * 100;
+  }
 
   const nextAvailablePage = isTakingCourse
     ? getNextAvailablePage(progress, page.lessons)

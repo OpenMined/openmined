@@ -213,14 +213,17 @@ export default ({ callback, ...props }: SignUpFormProps) => {
         .collection('private')
         .doc(auth.currentUser.uid);
 
+      const profile = authUser.additionalUserInfo.profile as any;
+
       batch.set(userDoc, {
         first_name: firstName,
         last_name: lastName,
         notification_preferences: ['project_reviews'],
-        description: (authUser.additionalUserInfo.profile as any).bio,
-        github: (authUser.additionalUserInfo.profile as any).login,
-        twitter: (authUser.additionalUserInfo.profile as any).twitter_username,
-        website: (authUser.additionalUserInfo.profile as any).blog,
+        description: profile.bio,
+        github: profile.login,
+        twitter: profile.twitter_username,
+        website: profile.blog,
+        photoURL: profile.avatar_url,
       });
 
       batch.set(userPrivateDoc, {
@@ -273,11 +276,13 @@ export default ({ callback, ...props }: SignUpFormProps) => {
                 onClick={onGithubSubmit}
                 colorScheme="black"
                 isLoading={isSubmitting}
+                disabled
               >
                 Sign Up with Github{' '}
                 <Icon icon={faGithub} ml={2} boxSize={4} color="white" />
               </Button>
             </Flex>
+            <Text mt={6} fontSize="sm" color="gray.700">* Github sign up is temporarily unavailable.</Text>
             <Divider my={6} />
             <Text fontSize="sm" color="gray.700">
               By signing up you agree to our{' '}

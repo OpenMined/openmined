@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link as RRDLink } from 'react-router-dom';
-import { useAuth, useFirestore, useUser } from 'reactfire';
+import { useAuth } from 'reactfire';
 
 import { toastConfig } from '../components/Toast';
-import { User } from '@openmined/shared/types';
 
 export const capitalize = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1);
@@ -104,26 +103,6 @@ export const usePrevious = (value) => {
   }, [value]);
 
   return ref.current;
-};
-
-export const useDbUser = () => {
-  const user: firebase.User = useUser();
-  const db = useFirestore();
-  const [dbUser, setDbUser] = useState<User>(null);
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user: User = (await dbUserRef.get()).data() as User;
-        setDbUser(user);
-      } catch (err) {
-        // pass
-      }
-    };
-    const dbUserRef = user ? db.collection('users').doc(user.uid) : null;
-    dbUserRef && fetchUser();
-  }, [user]);
-
-  return dbUser;
 };
 
 export const COURSE_HEADER_ID = 'course-header';

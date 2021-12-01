@@ -47,6 +47,7 @@ export interface User {
   mentorable_courses?: string[];
   completed_courses?: CompletedCourse[];
   notification_preferences?: string[];
+  photoURL?: string;
 }
 
 export interface UserPrivate {
@@ -118,7 +119,7 @@ export type ProjectAttempt = {
 };
 
 export type CourseProjectSubmission = {
-  id: string;
+  id?: string;
   course: string;
   part: string;
   attempt: string | number;
@@ -130,6 +131,7 @@ export type CourseProjectSubmission = {
   review_content: string | null;
   review_started_at: firebase.firestore.Timestamp | null;
   review_ended_at: firebase.firestore.Timestamp | null;
+  resigned_mentors: { [mentorId: string]: boolean };
 };
 
 export type MentorReviewStatus = 'pending' | 'resigned' | 'reviewed'

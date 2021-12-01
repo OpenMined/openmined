@@ -4,7 +4,9 @@ import {
   hasCompletedProject,
   hasCompletedCourse,
   getProjectPartStatus,
+  isMentorOfCourse,
 } from '../../../courses/src/routes/courses/_helpers';
+import { User } from '@openmined/shared/types';
 
 export const completeCourse = async (data, context) => {
   // Get the current user and the assignment
@@ -15,6 +17,16 @@ export const completeCourse = async (data, context) => {
   if (!context.auth || !user) return { error: 'Sorry, you are not signed in' };
 
   try {
+    const userRef = admin
+      .firestore()
+      .collection('users')
+      .doc(user);
+    const dbUserSnapShot = await userRef.get();
+    if (!dbUserSnapShot.exists) {
+      return { error: 'Sorry, that user record does not exist' };
+    }
+    const dbUser: User = dbUserSnapShot.data() as User;
+
     const dbCourseRef = admin
       .firestore()
       .collection('users')
@@ -23,13 +35,12 @@ export const completeCourse = async (data, context) => {
       .doc(course);
 
     const dbCourse = await dbCourseRef.get();
-
     if (!dbCourse.exists) {
       return { error: 'Sorry, that course record does not exist' };
     }
 
     const dbCourseData = dbCourse.data();
-
+    const resIsMentorOfCourse = isMentorOfCourse(dbUser, course)
     if (
       !hasCompletedProject(dbCourseData) &&
       !hasCompletedCourse(dbCourseData)
@@ -54,14 +65,18 @@ export const completeCourse = async (data, context) => {
         );
 
       let status = null;
+      if (!resIsMentorOfCourse) {
+        Object.keys(dbCourseData.project.parts).forEach((part) => {
+          if (getProjectPartStatus(dbCourseData, part) !== 'passed') {
+            status = 'failed';
+          }
+        });
 
-      Object.keys(dbCourseData.project.parts).forEach((part) => {
-        if (getProjectPartStatus(dbCourseData, part) !== 'passed') {
-          status = 'failed';
-        }
-      });
-
-      if (!status) status = 'passed';
+        if (!status) status = 'passed';
+      } else {
+        // if user is mentor of the course, it should always pass
+        status = 'passed';
+      }
 
       await dbCourseRef.set(
         {

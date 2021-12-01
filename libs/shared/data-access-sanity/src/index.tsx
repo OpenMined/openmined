@@ -58,7 +58,11 @@ const processChildren = (children, markDefs) =>
             </Text>
           );
         } else if (m === 'code') {
-          return <Code key={i}>{finalElem}</Code>;
+          return (
+            <Code colorScheme="gray" key={i}>
+              {typeof text === 'function' ? text() : text}
+            </Code>
+          );
         } else {
           const extra = markDefs[m];
 

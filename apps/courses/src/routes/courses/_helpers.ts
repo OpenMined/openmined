@@ -299,39 +299,40 @@ export const isAllowedToAccessPage = (
   concept,
   suggestedPage: NextAvailablePage
 ): boolean => {
-  // If project is completed, can access this page
-  if (which === 'courseComplete') return hasCompletedProject(user);
-
-  // If last lesson is completed, all lessons are completed.
-  // If all lessons are completed, can access all project pages
-  if (isOnProjectPage(which))
-    return hasCompletedLesson(user, ls[ls.length - 1]._id);
-
-  if (which === 'lessonComplete') {
-    const clc = ls[getLessonIndex(ls, lesson)].concepts; // "Current lesson concepts"
-    // Are we on a lesson completion page, and has the last concept of the current lesson been completed?
-    return hasCompletedConcept(user, lesson, clc[clc.length - 1]._id);
-  }
-
-  // If it's next available page, pass right away
-  if (
-    isSameLessonConcept(
-      { lesson: suggestedPage.lesson, concept: suggestedPage.concept },
-      { lesson, concept }
-    )
-  ) {
-    return true;
-  }
-
-  // If lesson is started can access the lesson page
-  if (which === 'lesson') return hasStartedLesson(user, lesson);
-
-  if (which === 'concept') {
-    // Are we on a concept page, and has the concept been started?
-    return hasStartedConcept(user, lesson, concept);
-  }
-
-  return false;
+  return true;
+  // // If project is completed, can access this page
+  // if (which === 'courseComplete') return hasCompletedProject(user);
+  //
+  // // If last lesson is completed, all lessons are completed.
+  // // If all lessons are completed, can access all project pages
+  // if (isOnProjectPage(which))
+  //   return hasCompletedLesson(user, ls[ls.length - 1]._id);
+  //
+  // if (which === 'lessonComplete') {
+  //   const clc = ls[getLessonIndex(ls, lesson)].concepts; // "Current lesson concepts"
+  //   // Are we on a lesson completion page, and has the last concept of the current lesson been completed?
+  //   return hasCompletedConcept(user, lesson, clc[clc.length - 1]._id);
+  // }
+  //
+  // // If it's next available page, pass right away
+  // if (
+  //   isSameLessonConcept(
+  //     { lesson: suggestedPage.lesson, concept: suggestedPage.concept },
+  //     { lesson, concept }
+  //   )
+  // ) {
+  //   return true;
+  // }
+  //
+  // // If lesson is started can access the lesson page
+  // if (which === 'lesson') return hasStartedLesson(user, lesson);
+  //
+  // if (which === 'concept') {
+  //   // Are we on a concept page, and has the concept been started?
+  //   return hasStartedConcept(user, lesson, concept);
+  // }
+  //
+  // return false;
 };
 
 export const useIsAllowedToAccessPage = (

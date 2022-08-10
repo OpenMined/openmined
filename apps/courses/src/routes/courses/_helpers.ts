@@ -236,6 +236,22 @@ export const getProjectStatus = (u, ps) => {
 };
 
 export const getNextAvailablePage = (u, ls): NextAvailablePage => {
+  console.log("Progress", u)
+  console.log("lessons", ls)
+
+  // Something about lessons completed
+
+  // Order concepts in progress by completion date
+
+  // Select index most recent completed concept
+
+  // Select index of less concept is in
+
+  // Find currentLesson
+
+  // Find currentConcept (completedConcept index + 1)
+
+
   // If we haven't started the course at all, send them to the first lesson initiation page
   if (!hasStartedCourse(u)) return { lesson: ls[0]._id, concept: null };
 
